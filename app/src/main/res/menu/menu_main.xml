@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+     
+     <item
+        android:id="@+id/menu_out"
+        android:orderInCategory="100"
+        android:title="@string/menu_out"/>
+	<item
+        android:id="@+id/menu_gamelist"
+        android:orderInCategory="200"
+        android:title="@string/menu_game_list"/>
+	<item
+        android:id="@+id/menu_header"
+        android:orderInCategory="300"
+        android:title="@string/menu_create_header"/>
+
+	<item
+		android:id="@+id/menu_eventlist"
+		android:orderInCategory="400"
+		android:title="@string/menu_event_list"/>
+</menu>

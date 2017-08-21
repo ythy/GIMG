@@ -1,0 +1,320 @@
+package com.mx.gillustrated.activity;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import com.mx.gillustrated.R;
+import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.util.CommonUtil;
+import com.mx.gillustrated.util.UIUtils;
+import com.mx.gillustrated.vo.CardInfo;
+import com.mx.gillustrated.vo.CardTypeInfo;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+
+public class AddCardActivity extends BaseActivity {
+
+	private Button btnSave;
+	private Spinner spinnerAttr;
+	private Spinner spinnerLevel;
+	private Spinner spinnerType;
+	private EditText etId;
+	private EditText etNid;
+	private EditText etName;
+	private EditText etFrontName;
+	private EditText etCost;
+	private EditText etHP;
+	private EditText etAttack;
+	private EditText etDefense;
+	private ImageView ivNumber;
+	private ImageView ivAll;
+	private File m_fileNumber;
+	private File m_fileAll;
+	private Bitmap m_BitMapNumber;
+	private Bitmap m_BitMapAll;
+	private int mGameType;
+	private File mImagesFileDir;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_add);
+		
+		mGameType = getIntent().getIntExtra("game", -1);	
+				
+		btnSave = (Button) findViewById(R.id.btnSave);
+		btnSave.setOnClickListener(btnSaveClickListener);
+		
+		spinnerAttr = (Spinner) findViewById(R.id.spinnerAttr);
+		spinnerLevel = (Spinner) findViewById(R.id.spinnerLevel);
+		CommonUtil.setSpinnerItemSelectedByValue(spinnerLevel, "5");
+		etNid = (EditText) findViewById(R.id.etDetailNid);
+		etName = (EditText) findViewById(R.id.etDetailName);
+		etFrontName = (EditText) findViewById(R.id.etDetailFrontName);
+		etCost = (EditText) findViewById(R.id.etDetailCost);
+		etId = (EditText) findViewById(R.id.etDetailId);
+		etHP = (EditText) findViewById(R.id.etDetailHP);
+		etAttack = (EditText) findViewById(R.id.etDetailAttack);
+		etDefense = (EditText) findViewById(R.id.etDetailDefense);
+		spinnerType  = (Spinner) findViewById(R.id.spinnerType);
+		spinnerType.setSelection(0);
+		spinnerType.setOnItemSelectedListener(onTypeSelectlistener);
+		
+		ivNumber = (ImageView) findViewById(R.id.imgWithNumber);
+		ivAll = (ImageView) findViewById(R.id.imgAll);
+		
+		List<CardTypeInfo> cardTypes = mDBHelper.queryCardTypeList(mGameType);
+		spinnerAttr.setAdapter(UIUtils.getAttrSpinnerAdapter(getBaseContext(), cardTypes));
+
+		try {
+			showPicture();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	
+	
+	private void showPicture() throws FileNotFoundException, IOException {
+		if (android.os.Environment.MEDIA_MOUNTED.equals(android.os.Environment
+				.getExternalStorageState())) {
+			File fileDir = new File(Environment.getExternalStorageDirectory(),
+					MConfig.SRC_PATH);
+			if (!fileDir.exists())
+				return;
+
+			File file = new File(fileDir.getPath());
+			File[] fs = file.listFiles();
+			Arrays.sort(fs, new Comparator<File>() {
+				public int compare(File f1, File f2) {
+					long diff = f1.lastModified() - f2.lastModified();
+					if (diff > 0)
+						return -1;
+					else if (diff == 0)
+						return 0;
+					else
+						return 1;
+				}
+
+				public boolean equals(Object obj) {
+					return true;
+				}
+
+			});
+
+			for (int i = 0; i < fs.length; i++) {
+				if (i == 2)
+					break;
+
+				Bitmap bmp = MediaStore.Images.Media.getBitmap(
+						this.getContentResolver(), Uri.fromFile(fs[i]));
+				if (i == 0) {
+					m_fileAll = fs[i];
+					m_BitMapAll = bmp;
+					ivAll.setImageBitmap(bmp);
+				} else {
+					m_fileNumber = fs[i];
+					m_BitMapNumber = bmp;
+					ivNumber.setImageBitmap(bmp);
+				}
+			}
+
+		}
+
+	}
+	
+	AdapterView.OnItemSelectedListener onTypeSelectlistener = new AdapterView.OnItemSelectedListener() {
+
+		@Override
+		public void onItemSelected(AdapterView<?> arg0, View arg1, int index,
+				long arg3) {
+
+			String[] array = getResources().getStringArray(R.array.addType);
+			if( array[index].equals("更新附加图") || array[index].equals("更新数值图") ||  array[index].equals("新增单张图"))
+			{
+				ivNumber.setImageDrawable(null);
+			}
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> arg0) {
+
+		}
+
+	};
+
+	View.OnClickListener btnSaveClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+
+			mProgressDialog.show();
+			new Thread() {
+				public void run() {
+					
+					CardInfo card = new CardInfo();
+					if(!"".equals(etNid.getText().toString().trim()))
+						card.setNid(Integer.parseInt(etNid.getText().toString()));
+					String attr = spinnerAttr.getSelectedItem().toString();
+					card.setAttr(attr);
+					card.setGameId(mGameType);
+					card.setLevel(spinnerLevel.getSelectedItem().toString());
+					card.setName(etName.getText().toString().trim());
+					card.setFrontName(etFrontName.getText().toString().trim());
+					if (!etCost.getText().toString().trim().equals(""))
+						card.setCost(Integer.parseInt(etCost.getText()
+								.toString()));
+					if (!etHP.getText().toString().trim().equals(""))
+						card.setMaxHP(Integer.parseInt(etHP.getText()
+								.toString()));
+					if (!etAttack.getText().toString().trim().equals(""))
+						card.setMaxAttack(Integer.parseInt(etAttack.getText()
+								.toString()));
+					if (!etDefense.getText().toString().trim().equals(""))
+						card.setMaxDefense(Integer.parseInt(etDefense.getText()
+								.toString()));
+					int type = spinnerType.getSelectedItemPosition();
+					
+					mImagesFileDir = new File(
+							Environment.getExternalStorageDirectory(),
+							MConfig.SD_PATH + "/" + mGameType);
+					if(!mImagesFileDir.exists()){
+						mImagesFileDir.mkdirs();
+			        }
+					
+					if(type == 0 || type == 1){
+						long result	 = mDBHelper.addCardInfo(card);	
+						if (result != -1) {
+							if (ivAll.getDrawable() != null) {
+								if(type == 0 )
+								{
+									createImages((int)result, m_BitMapNumber, 1);
+								}				
+								if(type == 0 || type == 1)
+								{	
+									createImages((int)result, m_BitMapAll, type == 0 ? 2 : 1);
+								}
+								
+								CommonUtil.deleteImages(AddCardActivity.this,
+										m_fileAll);
+								if(type == 0)
+									CommonUtil.deleteImages(AddCardActivity.this,
+											m_fileNumber);
+							}
+							addHandler.sendEmptyMessage(1);
+						}
+					}else{
+						// 更新数值图  更新附加图
+						int id = Integer.parseInt(etId.getText().toString().trim());					
+						int nextnum = getNextImagesIndex(id);
+						File imageFile = new File(mImagesFileDir.getPath(),
+								CommonUtil.getImageFrontName( id, 1));
+						File nextFile = new File(mImagesFileDir.getPath(),
+								CommonUtil.getImageFrontName( id, nextnum));
+						if(type == 2){
+							imageFile.renameTo(nextFile);
+							createImages(id, m_BitMapAll, 1);
+							card.setId(id);	
+							card.setAttr(null);
+							card.setLevel(null);
+							card.setFrontName(null);
+							card.setName(null);
+							if(card.getCost() > 0 || card.getMaxHP() > 0 || card.getMaxAttack() > 0 || card.getMaxDefense() > 0)
+								mDBHelper.updateCardInfo(card);	
+						}							
+						else if(type == 3)
+							try {
+								CommonUtil.exportImgFromBitmap(m_BitMapAll, nextFile);
+							} catch (IOException e) {
+								e.printStackTrace();
+							} 
+						
+						CommonUtil.deleteImages(AddCardActivity.this,
+								m_fileAll);
+						addHandler.sendEmptyMessage(2);
+					}
+				}
+			}.start();
+		}
+	};
+	
+	private void createImages(int id, Bitmap bitmap, int num){
+		File imageFile;
+		FileOutputStream bos;
+		imageFile = new File(mImagesFileDir.getPath(),
+				CommonUtil.getImageFrontName(id, num));
+		try {
+			bos = new FileOutputStream(imageFile);
+			bitmap.compress(Bitmap.CompressFormat.JPEG,
+					30, bos);
+			bos.flush();
+			bos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private int getNextImagesIndex(int id){
+		int checknum = 3;
+		while(true){
+			File check = new File(mImagesFileDir.getPath(),
+					CommonUtil.getImageFrontName( id, checknum));
+			if(!check.exists()) 
+				break;
+			else
+				checknum++;
+		}
+		return checknum;
+	}
+	
+	
+	Handler addHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			if (msg.what == 1) {
+				forwardBack();
+			} else if (msg.what == 2) {
+				forwardBack();
+			}
+			
+		}
+
+	};
+	
+	private void forwardBack()
+	{
+		Intent intent = new Intent(AddCardActivity.this,
+				MainActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+		AddCardActivity.this.finish();
+		mProgressDialog.dismiss();
+	}
+	
+}

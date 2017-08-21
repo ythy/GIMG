@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white2"
+    android:orientation="horizontal"
+    android:tag="@string/app_name" >
+	
+    <TextView
+        android:id="@+id/tvHeaderImg"  
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:background="@color/color_white2"
+        android:gravity="center"
+        android:text="@string/header_img" 
+        android:singleLine="true"/>
+
+    <ImageView
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/divline" />
+	
+    <TextView
+         android:id="@+id/tvHeaderName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="15"
+        android:background="@color/color_white2"
+        android:gravity="center"
+        android:text="@string/header_name"
+        android:singleLine="true" />
+     
+
+    <ImageView
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/divline" />
+
+    <TextView
+        android:id="@+id/tvHeaderAttr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:background="@color/color_white2"
+        android:gravity="center"
+        android:text="@string/header_attr" 
+        android:singleLine="true"/>
+
+    <ImageView
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/divline" />
+	
+     <TextView
+        android:id="@+id/tvHeaderCost"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:background="@color/color_white2"
+        android:gravity="center"
+        android:text="@string/header_cost" 
+        android:singleLine="true"/>
+
+    <ImageView
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/divline" />
+    
+    <TextView
+        android:id="@+id/tvHeaderHP"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:background="@color/color_white2"
+        android:gravity="center"
+        android:text="@string/header_hp" 
+        android:singleLine="true"/>
+
+    <ImageView
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/divline" />
+
+    <TextView
+        android:id="@+id/tvHeaderAttack"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:background="@color/color_white2"
+        android:gravity="center"
+        android:text="@string/header_attack"
+        android:singleLine="true" />
+
+    <ImageView
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/divline" />
+
+    <TextView
+        android:id="@+id/tvHeaderDefense"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:background="@color/color_white2"
+        android:gravity="center"
+        android:text="@string/header_defense"
+        android:singleLine="true" />
+
+</LinearLayout>
