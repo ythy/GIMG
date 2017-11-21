@@ -521,7 +521,8 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
 		sql +=  " order by " + Event._ID + " " + Event.SORT_DESC ;
-        selectionArg = selectionValue.split(",");
+		if(!selectionValue.equals(""))
+        	selectionArg = selectionValue.split(",");
         Cursor cusor = this.getWritableDatabase().rawQuery(sql, selectionArg);
         if (cusor != null) {
             while (cusor.moveToNext()) {
