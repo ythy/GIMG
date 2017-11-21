@@ -232,6 +232,7 @@ public class DetailActivity extends BaseActivity {
 			if (result > 0) {
 				Intent intent = new Intent(DetailActivity.this,
 						MainActivity.class);
+				intent.putExtra("game", mCardInfo.getGameId());
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				DetailActivity.this.finish();

@@ -5,8 +5,10 @@ import java.util.List;
 
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.vo.CardInfo;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -17,6 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class DataListAdapter extends BaseAdapter {
@@ -24,7 +29,7 @@ public class DataListAdapter extends BaseAdapter {
 	private Context mcontext;
 	private LayoutInflater layoutInflator;
 	private List<CardInfo> list;
-	
+
 	public DataListAdapter() {
 	}
 
@@ -73,7 +78,14 @@ public class DataListAdapter extends BaseAdapter {
 					.findViewById(R.id.tvAttack);
 			component.tvDefense = (TextView) convertView
 					.findViewById(R.id.tvDefense);
+			component.tvNid = (TextView) convertView
+					.findViewById(R.id.tvNid);
 			convertView.setTag(component);
+
+			if( list.get(arg0).getNid() > 0)
+				component.tvNid.setVisibility(View.VISIBLE);
+			else
+				component.tvNid.setVisibility(View.GONE);
 		}
 		else
 		{
@@ -99,8 +111,8 @@ public class DataListAdapter extends BaseAdapter {
 			component.tvHP.setText(String.valueOf(list.get(arg0).getMaxHP()));
 			component.tvAttack.setText(String.valueOf(list.get(arg0).getMaxAttack()));
 			component.tvDefense.setText(String.valueOf(list.get(arg0).getMaxDefense()));
-			
-			
+			component.tvNid.setText(String.valueOf(list.get(arg0).getNid()));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -116,6 +128,7 @@ public class DataListAdapter extends BaseAdapter {
 		 public TextView tvCost;  
 		 public TextView tvHP;  
 		 public TextView tvAttack; 
-		 public TextView tvDefense;  
+		 public TextView tvDefense;
+		 public TextView tvNid;
 	}
 }

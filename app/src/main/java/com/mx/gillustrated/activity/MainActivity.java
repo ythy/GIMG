@@ -135,6 +135,9 @@ public class MainActivity extends BaseActivity {
     @OnItemSelected(R.id.spinnerGame)
     void onSelectlistener(int position){
         mGameType = spinnerGameData[position];
+        CommonUtil.setGameType(this, mGameType);
+        if(this.mGameType == 3)
+            mCurrentOrderBy = Card.COLUMN_NID;
         refreshMainData();
     }
 
@@ -163,7 +166,6 @@ public class MainActivity extends BaseActivity {
 		setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-
         UIUtils.setSpinnerClick(new ArrayList<Spinner>(){{
             add(spinnerName);
             add(spinnerCost);
@@ -171,14 +173,16 @@ public class MainActivity extends BaseActivity {
             add(spinnerFrontName);
             add(spinnerGameList);
         }});
+
+        mGameType = getIntent().getIntExtra("game", CommonUtil.getGameType(this));
         initParms();
         initHeader();
 
 		pageVboxLayout.setVisibility(View.GONE);
-		listViewMain.setOnItemClickListener(itemClickListener);
-		listViewMain.setOnScrollListener(new ListenerListViewScrollHandler(listViewMain, pageVboxLayout, 1));
+        listViewMain.setOnItemClickListener(itemClickListener);
+        listViewMain.setOnScrollListener(new ListenerListViewScrollHandler(listViewMain, pageVboxLayout, 1));
         mList = new ArrayList<CardInfo>();
-		mAdapter = new DataListAdapter(this, mList);
+        mAdapter = new DataListAdapter(this, mList);
 		setGameList();
 		
 		//temp
@@ -196,6 +200,8 @@ public class MainActivity extends BaseActivity {
     private void initParms(){
         mCurrentOrderBy = INIT_ORDER_BY;
         mCurrentOrderType =  INIT_ORDER_TYPE;
+        if(this.mGameType == 3)
+            mCurrentOrderBy = Card.COLUMN_NID;
     }
 
     private void initHeader() {
@@ -209,9 +215,12 @@ public class MainActivity extends BaseActivity {
         setHeaderClickHandler(mListHeaderView.tvName, Card.COLUMN_NAME);
         setHeaderClickHandler(mListHeaderView.tvAttr, Card.COLUMN_ATTR);
         setHeaderClickHandler(mListHeaderView.tvCost, Card.COLUMN_COST);
+        setHeaderClickHandler(mListHeaderView.tvImg, Card.COLUMN_NID);
+
         listViewMain.addHeaderView(headerView);
 
         mTextViewMap = new HashMap<String, TextView>(){{
+            put(Card.COLUMN_NID, mListHeaderView.tvImg);
             put(Card.COLUMN_MAXHP, mListHeaderView.tvHP);
             put(Card.COLUMN_MAXATTACK, mListHeaderView.tvAttack);
             put(Card.COLUMN_MAXDEFENSE, mListHeaderView.tvDefense);
@@ -284,18 +293,22 @@ public class MainActivity extends BaseActivity {
             public void accept(List<GameInfo> list) throws Exception {
                 String[] spinnerData = null;
                 if(list.size() > 0){
+                    int gameSelected = 0;
                     spinnerGameData = new int[list.size()];
                     spinnerData = new String[list.size()];
                     for(int i = 0; i < list.size(); i++){
                         spinnerData[i] = list.get(i).getName();
                         spinnerGameData[i] = list.get(i).getId();
+                        if(spinnerGameData[i] == mGameType)
+                            gameSelected = i;
                     }
                     ArrayAdapter< String> adapterName =
                             new ArrayAdapter< String>( getBaseContext(),
                                     android.R.layout.simple_gallery_item, spinnerData);
                     adapterName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerGameList.setAdapter(adapterName);
-                    mGameType = list.get(0).getId();
+                    spinnerGameList.setSelection(gameSelected);
+                    mGameType = list.get(gameSelected).getId();
                 }else{
                     new Thread() {
                         public void run() {
@@ -528,6 +541,7 @@ public class MainActivity extends BaseActivity {
 
 
     static class ListHeaderView{
+        @BindView(R.id.tvHeaderImg) TextView tvImg;
         @BindView(R.id.tvHeaderName) TextView tvName;
         @BindView(R.id.tvHeaderAttr) TextView tvAttr;
         @BindView(R.id.tvHeaderCost) TextView tvCost;

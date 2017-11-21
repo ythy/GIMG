@@ -8,7 +8,7 @@
 	
     <TextView
         android:id="@+id/tvHeaderImg"  
-        android:layout_width="40dp"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:background="@color/color_white2"
         android:gravity="center"

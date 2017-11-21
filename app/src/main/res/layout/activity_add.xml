@@ -247,18 +247,37 @@
                 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/imgWithNumber"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerInside" />
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/imgWithNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+                <Button
+                    android:id="@+id/btnDelNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/delete"
+                    android:visibility="gone"/>
+            </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/imgAll"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerInside" />
-
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/imgAll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside" />
+                <Button
+                    android:id="@+id/btnDelAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/delete"
+                    android:visibility="gone"/>
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 

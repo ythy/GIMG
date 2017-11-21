@@ -159,8 +159,8 @@ public class CommonUtil {
 	 *            1 image1 2 image2 3, 4, 5 point 6 header
 	 * @return
 	 */
-	public static MatrixInfo getMatrixInfo(Context context, int type) {
-		SharedPreferences sp = context.getSharedPreferences("matrixSet" + type,
+	public static MatrixInfo getMatrixInfo(Context context, int type, int gameType) {
+		SharedPreferences sp = context.getSharedPreferences("matrixSet" + type + "-" + gameType,
 				Context.MODE_PRIVATE);
 		MatrixInfo result = new MatrixInfo();
 		result.setX(sp.getInt("x", 0));
@@ -171,13 +171,23 @@ public class CommonUtil {
 	}
 
 	public static void setMatrixInfo(Context context, int type,
-			MatrixInfo matrixInfo) {
-		SharedPreferences sp = context.getSharedPreferences("matrixSet" + type,
+			MatrixInfo matrixInfo, int gameType) {
+		SharedPreferences sp = context.getSharedPreferences("matrixSet" + type + "-" + gameType,
 				Context.MODE_PRIVATE);
 		sp.edit().putInt("x", matrixInfo.getX()).commit();
 		sp.edit().putInt("y", matrixInfo.getY()).commit();
 		sp.edit().putInt("width", matrixInfo.getWidth()).commit();
 		sp.edit().putInt("height", matrixInfo.getHeight()).commit();
+	}
+
+	public static void setGameType(Context context, int gameType) {
+		SharedPreferences sp = context.getSharedPreferences("commonset", Context.MODE_PRIVATE);
+		sp.edit().putInt("gameType", gameType).commit();
+	}
+
+	public static int getGameType(Context context) {
+		SharedPreferences sp = context.getSharedPreferences("commonset", Context.MODE_PRIVATE);
+		return sp.getInt("gameType", 1);
 	}
 
 	public static File generateDataFile(String filename) {
@@ -434,7 +444,8 @@ public class CommonUtil {
                 }
                 if (index != 0) {
                     context.getContentResolver().delete(Images.Media.EXTERNAL_CONTENT_URI, Images.ImageColumns._ID + "=" + index, null);
-                }
+                }else
+					deleteImage(context, file);
             }
         }
 	}
@@ -469,7 +480,7 @@ public class CommonUtil {
 		File imageFile;
 		FileOutputStream bos;
 		Bitmap compress = null;
-		MatrixInfo sets = CommonUtil.getMatrixInfo(context, 6);
+		MatrixInfo sets = CommonUtil.getMatrixInfo(context, 6, gameType);
 		for(int i = 0; i < nids.length; i++)
 		{
 			headerFile = new File(headerDir.getPath(),
@@ -500,24 +511,23 @@ public class CommonUtil {
         if (fdelete.exists()) {
             if (fdelete.delete()) {
                 Log.e("-->", "file Deleted :" + fdelete.getPath());
-                callBroadCast(context);
+                callBroadCast(context, fdelete);
             } else {
                 Log.e("-->", "file not Deleted :" + fdelete.getPath());
             }
         }
     }
 	
-	private static void callBroadCast(Context context) {
-        if (Build.VERSION.SDK_INT >= 14) {
-            Log.e("-->", " >= 14");
-            MediaScannerConnection.scanFile(context, new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                public void onScanCompleted(String path, Uri uri) {
-                    Log.e("ExternalStorage", "Scanned " + path + ":");
-                    Log.e("ExternalStorage", "-> uri=" + uri);
-                }
-            });
+	private static void callBroadCast(Context context, File file) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//如果是4.4及以上版本
+            Log.e("-->", " >= 19");
+			Intent mediaScanIntent = new Intent(
+					Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+			Uri contentUri = Uri.fromFile(file); //out is your output file
+			mediaScanIntent.setData(contentUri);
+			context.sendBroadcast(mediaScanIntent);
         } else {
-            Log.e("-->", " < 14");
+            Log.e("-->", " < 19");
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
                     Uri.parse("file://" + Environment.getExternalStorageDirectory())));
         }
@@ -536,6 +546,22 @@ public class CommonUtil {
 		bos.flush();
 		bos.close();
     }
+
+	/**
+	 * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+	 */
+	public static int dip2px(Context context, float dpValue) {
+		final float scale = context.getResources().getDisplayMetrics().density;
+		return (int) (dpValue * scale + 0.5f);
+	}
+
+	/**
+	 * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+	 */
+	public static int px2dip(Context context, float pxValue) {
+		final float scale = context.getResources().getDisplayMetrics().density;
+		return (int) (pxValue / scale + 0.5f);
+	}
 	
 	public static String getImageFrontName(int nid, int id)
 	{

@@ -25,8 +25,8 @@ import com.mx.gillustrated.vo.MatrixInfo;
 
 public class DialogExportImg {
 
-	public static void show(final Context context, int nid, int gameId,
-			final Handler handler) {
+	public static void show(final Context context, int nid, final int gameId,
+							final Handler handler) {
 		final AlertDialog dlg = new AlertDialog.Builder(context).create();
 		dlg.show();
 		Window window = dlg.getWindow();
@@ -38,7 +38,7 @@ public class DialogExportImg {
 		final EditText width1 = (EditText) window.findViewById(R.id.etWidth1);
 		final EditText height1 = (EditText) window.findViewById(R.id.etHeight1);
 
-		MatrixInfo sets = CommonUtil.getMatrixInfo(context, 6);
+		MatrixInfo sets = CommonUtil.getMatrixInfo(context, 6, gameId);
 		x1.setText(String.valueOf(sets.getX()));
 		y1.setText(String.valueOf(sets.getY()));
 		width1.setText(String.valueOf(sets.getWidth()));
@@ -81,7 +81,7 @@ public class DialogExportImg {
 							.toString()), Integer.parseInt(width1.getText()
 							.toString()), Integer.parseInt(height1.getText()
 							.toString()));
-					CommonUtil.setMatrixInfo(context, 6, matrixInfo1);
+					CommonUtil.setMatrixInfo(context, 6, matrixInfo1, gameId);
 
 					imageView.setImageBitmap(CommonUtil.toRoundBitmap(CommonUtil.cutBitmap(
 							compressfinal, matrixInfo1, false)));

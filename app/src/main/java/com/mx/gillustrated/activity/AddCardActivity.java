@@ -52,7 +52,9 @@ public class AddCardActivity extends BaseActivity {
 	private Bitmap m_BitMapAll;
 	private int mGameType;
 	private File mImagesFileDir;
-	
+	private Button btnDelNumber;
+	private Button btnDelAll;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,7 +64,12 @@ public class AddCardActivity extends BaseActivity {
 				
 		btnSave = (Button) findViewById(R.id.btnSave);
 		btnSave.setOnClickListener(btnSaveClickListener);
-		
+
+		btnDelNumber = (Button) findViewById(R.id.btnDelNumber);
+		btnDelNumber.setOnClickListener(btnDelNumberClickListener);
+		btnDelAll = (Button) findViewById(R.id.btnDelAll);
+		btnDelAll.setOnClickListener(btnDelAllClickListener);
+
 		spinnerAttr = (Spinner) findViewById(R.id.spinnerAttr);
 		spinnerLevel = (Spinner) findViewById(R.id.spinnerLevel);
 		CommonUtil.setSpinnerItemSelectedByValue(spinnerLevel, "5");
@@ -103,6 +110,9 @@ public class AddCardActivity extends BaseActivity {
 			File fileDir = new File(Environment.getExternalStorageDirectory(),
 					MConfig.SRC_PATH);
 			if (!fileDir.exists())
+				fileDir = new File(Environment.getExternalStorageDirectory(),
+						MConfig.SRC_PATH_SAMSUNG);
+			if (!fileDir.exists())
 				return;
 
 			File file = new File(fileDir.getPath());
@@ -124,6 +134,10 @@ public class AddCardActivity extends BaseActivity {
 
 			});
 
+			btnDelAll.setVisibility(View.GONE);
+			btnDelNumber.setVisibility(View.GONE);
+			ivAll.setImageBitmap(null);
+			ivNumber.setImageBitmap(null);
 			for (int i = 0; i < fs.length; i++) {
 				if (i == 2)
 					break;
@@ -134,10 +148,12 @@ public class AddCardActivity extends BaseActivity {
 					m_fileAll = fs[i];
 					m_BitMapAll = bmp;
 					ivAll.setImageBitmap(bmp);
+					btnDelAll.setVisibility(View.VISIBLE);
 				} else {
 					m_fileNumber = fs[i];
 					m_BitMapNumber = bmp;
 					ivNumber.setImageBitmap(bmp);
+					btnDelNumber.setVisibility(View.VISIBLE);
 				}
 			}
 
@@ -155,6 +171,7 @@ public class AddCardActivity extends BaseActivity {
 			if( array[index].equals("更新附加图") || array[index].equals("更新数值图") ||  array[index].equals("新增单张图"))
 			{
 				ivNumber.setImageDrawable(null);
+				btnDelNumber.setVisibility(View.GONE);
 			}
 		}
 
@@ -163,6 +180,31 @@ public class AddCardActivity extends BaseActivity {
 
 		}
 
+	};
+
+
+	View.OnClickListener btnDelNumberClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			CommonUtil.deleteImages(getBaseContext(), m_fileNumber);
+			try {
+				showPicture();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+	View.OnClickListener btnDelAllClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			CommonUtil.deleteImages(getBaseContext(), m_fileAll);
+			try {
+				showPicture();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	};
 
 	View.OnClickListener btnSaveClickListener = new View.OnClickListener() {
@@ -311,6 +353,7 @@ public class AddCardActivity extends BaseActivity {
 	{
 		Intent intent = new Intent(AddCardActivity.this,
 				MainActivity.class);
+		intent.putExtra("game", mGameType);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
 		AddCardActivity.this.finish();
