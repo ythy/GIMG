@@ -21,12 +21,30 @@
              android:layout_height="wrap_content"
              />
     </LinearLayout>
-	
+
+    <LinearLayout
+        android:id="@+id/llImageOrientation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:layout_below="@id/lltop"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/chkOrientation"
+            android:text="@string/gameinfo_orientation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/llTitleAttr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/lltop"
+        android:layout_below="@id/llImageOrientation"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"

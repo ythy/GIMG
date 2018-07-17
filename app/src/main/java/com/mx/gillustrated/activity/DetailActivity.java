@@ -318,9 +318,10 @@ public class DetailActivity extends BaseActivity {
 							R.layout.child_images, null);
 					mLLImages.addView(child);
 					mImagesView.append(index, child);
-					
+
+					boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION, false);
 					ImageView image = (ImageView) child.findViewById(R.id.imgDetails);
-					image.setImageBitmap(bitmap);
+					image.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bitmap, 90) : bitmap );
 					Button btnDel = (Button) child.findViewById(R.id.btnDel);
 					btnDel.setTag(index + "*" + 0); 
 					btnDel.setOnClickListener(new View.OnClickListener() {

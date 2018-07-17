@@ -38,4 +38,5 @@
     <string name="set_Defense">防御显示与否</string>
     <string name="menu_event_list">活动列表</string>
 
+    <string name="gameinfo_orientation">横版显示图片</string>
 </resources>

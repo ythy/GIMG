@@ -138,6 +138,7 @@ public class AddCardActivity extends BaseActivity {
 			btnDelNumber.setVisibility(View.GONE);
 			ivAll.setImageBitmap(null);
 			ivNumber.setImageBitmap(null);
+			boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION, false);
 			for (int i = 0; i < fs.length; i++) {
 				if (i == 2)
 					break;
@@ -147,12 +148,12 @@ public class AddCardActivity extends BaseActivity {
 				if (i == 0) {
 					m_fileAll = fs[i];
 					m_BitMapAll = bmp;
-					ivAll.setImageBitmap(bmp);
+					ivAll.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bmp, 90) : bmp );
 					btnDelAll.setVisibility(View.VISIBLE);
 				} else {
 					m_fileNumber = fs[i];
 					m_BitMapNumber = bmp;
-					ivNumber.setImageBitmap(bmp);
+					ivNumber.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bmp, 90) : bmp );
 					btnDelNumber.setVisibility(View.VISIBLE);
 				}
 			}

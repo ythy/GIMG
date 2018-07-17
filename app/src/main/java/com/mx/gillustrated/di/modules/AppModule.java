@@ -2,6 +2,7 @@ package com.mx.gillustrated.di.modules;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.mx.gillustrated.MyApplication;
 import com.mx.gillustrated.provider.Providerdata;
@@ -35,5 +36,11 @@ public class AppModule {
     DBHelper provideDBHelper(Context context){
         return new DBHelper(context, Providerdata.DATABASE_NAME,
                 null, Providerdata.DATABASE_VERSION);
+    }
+
+    @Provides
+    @Singleton
+    SharedPreferences provideSharedPreferences(Context context){
+        return context.getSharedPreferences("commonset", Context.MODE_PRIVATE);
     }
 }

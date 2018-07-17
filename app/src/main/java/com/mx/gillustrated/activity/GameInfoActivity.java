@@ -24,10 +24,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 
 public class GameInfoActivity extends BaseActivity {
 	
@@ -39,13 +44,23 @@ public class GameInfoActivity extends BaseActivity {
 	private List<CardTypeInfo> mList;
 	private int mGameType;
 	private CardTypeListAdapter mAdapter;
-	
+
+	@BindView(R.id.chkOrientation)
+	CheckBox chkOrientation;
+
+	@OnCheckedChanged(R.id.chkOrientation)
+	void onOrientationCheckedChanged(CheckBox checkBox){
+		mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION, checkBox.isChecked()).commit();
+	}
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_gameinfo);
-		
+		ButterKnife.bind(this);
+
 		mGameType = getIntent().getIntExtra("game", -1);
 		
 		btnAdd = (Button) findViewById(R.id.btnGameAdd);
@@ -57,7 +72,10 @@ public class GameInfoActivity extends BaseActivity {
 			tvGameName.setText(gameinfoList.get(0).getName());
 		pageVboxLayout = (RelativeLayout) findViewById(R.id.pageVBox);
 		pageVboxLayout.setVisibility(View.GONE);
-		
+
+
+		chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION, false));
+
 		mLvGameMain.setOnScrollListener(new ListenerListViewScrollHandler(mLvGameMain, pageVboxLayout));
 		mList = new ArrayList<CardTypeInfo>();
 		mAdapter = new CardTypeListAdapter(this, mList);

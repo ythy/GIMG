@@ -93,6 +93,16 @@ public class CommonUtil {
 		return bitmap;
 	}
 
+	//旋转图片
+	public static Bitmap rotatePic(Bitmap bitmap, int degree) {
+		Matrix m = new Matrix();
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		m.setRotate(degree); // 旋转angle度
+		bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, m, true);// 从新生成图片
+		return bitmap;
+	}
+
 	/**
 	 * 读取图片文件旋转的角度
 	 * 
