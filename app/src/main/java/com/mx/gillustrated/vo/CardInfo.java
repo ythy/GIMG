@@ -3,7 +3,7 @@ package com.mx.gillustrated.vo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class CardInfo implements Parcelable{
+public class CardInfo extends SpinnerInfo implements Parcelable{
 	
 	private int id = -1;
 	private int nid;
@@ -12,7 +12,7 @@ public class CardInfo implements Parcelable{
 	private String frontName = null;
 	private String name = null;
 	private String attr;
-	private int attrId;
+	private int attrId = -1;
 	private String level;
 	private int cost;
 	private int maxHP;
@@ -193,6 +193,10 @@ public class CardInfo implements Parcelable{
 	    {
 	    	
 	    }
-			    
+
+		public CardInfo(String name)
+		{
+			this.name = name;
+		}
 
 }

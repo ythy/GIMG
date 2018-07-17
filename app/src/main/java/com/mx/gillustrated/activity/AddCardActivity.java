@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.mx.gillustrated.R;
+import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.util.UIUtils;
@@ -89,7 +90,9 @@ public class AddCardActivity extends BaseActivity {
 		ivAll = (ImageView) findViewById(R.id.imgAll);
 		
 		List<CardTypeInfo> cardTypes = mDBHelper.queryCardTypeList(mGameType);
-		spinnerAttr.setAdapter(UIUtils.getAttrSpinnerAdapter(getBaseContext(), cardTypes));
+		SpinnerCommonAdapter<CardTypeInfo> adapterName =
+				new SpinnerCommonAdapter( this, cardTypes);
+		spinnerAttr.setAdapter(adapterName);
 
 		try {
 			showPicture();
@@ -219,8 +222,9 @@ public class AddCardActivity extends BaseActivity {
 					CardInfo card = new CardInfo();
 					if(!"".equals(etNid.getText().toString().trim()))
 						card.setNid(Integer.parseInt(etNid.getText().toString()));
-					String attr = spinnerAttr.getSelectedItem().toString();
-					card.setAttr(attr);
+
+					CardTypeInfo cardTypeInfo = (CardTypeInfo) spinnerAttr.getSelectedItem();
+					card.setAttrId(cardTypeInfo.getId());
 					card.setGameId(mGameType);
 					card.setLevel(spinnerLevel.getSelectedItem().toString());
 					card.setName(etName.getText().toString().trim());
@@ -278,8 +282,7 @@ public class AddCardActivity extends BaseActivity {
 						if(type == 2){
 							imageFile.renameTo(nextFile);
 							createImages(id, m_BitMapAll, 1);
-							card.setId(id);	
-							card.setAttr(null);
+							card.setId(id);
 							card.setLevel(null);
 							card.setFrontName(null);
 							card.setName(null);

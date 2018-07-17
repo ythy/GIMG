@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,6 +20,7 @@ import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
 import com.mx.gillustrated.MyApplication;
+import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.DBCall;
 import com.mx.gillustrated.dialog.DialogExportImg;
 import com.mx.gillustrated.R;
@@ -136,8 +138,6 @@ public class MainActivity extends BaseActivity {
     void onSelectlistener(int position){
         mGameType = spinnerGameData[position];
         CommonUtil.setGameType(this, mGameType);
-        if(this.mGameType == 3)
-            mCurrentOrderBy = Card.COLUMN_NID;
         refreshMainData();
     }
 
@@ -251,22 +251,27 @@ public class MainActivity extends BaseActivity {
             return;
 
 		CardInfo card = new CardInfo();
-        if(!spinnerName.getSelectedItem().toString().equals(DEFAULT_NAME))
+        CardInfo spinnerSelected;
+
+        spinnerSelected = (CardInfo) spinnerName.getSelectedItem();
+        if(!spinnerSelected.getName().equals(DEFAULT_NAME))
         {
-            card.setName(spinnerName.getSelectedItem().toString());
+            card.setName(spinnerSelected.getName());
         }
-        if(!spinnerFrontName.getSelectedItem().toString().equals(DEFAULT_FRONTNAME))
+        spinnerSelected = (CardInfo) spinnerFrontName.getSelectedItem();
+        if(!spinnerSelected.getName().equals(DEFAULT_FRONTNAME))
         {
-            card.setFrontName(spinnerFrontName.getSelectedItem().toString());
+            card.setFrontName(spinnerSelected.getName());
         }
-        if(!spinnerCost.getSelectedItem().toString().equals(DEFAULT_COST))
+        spinnerSelected = (CardInfo) spinnerCost.getSelectedItem();
+        if(!spinnerSelected.getName().equals(DEFAULT_COST))
         {
-            card.setCost(Integer.parseInt(spinnerCost.getSelectedItem().toString()));
+            card.setCost(Integer.parseInt(spinnerSelected.getName()));
         }
-        if(!spinnerAttr.getSelectedItem().toString().equals(DEFAULT_ATTR))
+        spinnerSelected = (CardInfo) spinnerAttr.getSelectedItem();
+        if(!spinnerSelected.getName().equals(DEFAULT_ATTR))
         {
-            String attr = spinnerAttr.getSelectedItem().toString();
-            card.setAttr(attr);
+            card.setAttrId(spinnerSelected.getAttrId());
         }
         this.searchCards(card);
     }
@@ -346,21 +351,16 @@ public class MainActivity extends BaseActivity {
 		setSpinner(spinnerCost, Card.COLUMN_COST, DEFAULT_COST);
 		setSpinner(spinnerAttr, Card.COLUMN_ATTR, DEFAULT_ATTR);
 	}
-	
+
+    //设置筛选列表
 	private void setSpinner(Spinner spinner, String columnType, String defaultStr)
 	{
-		String[] spinnerData = null;
-		CardInfo[] cardArray = mDBHelper.queryCardDropList(columnType, mGameType);
-		Arrays.sort(cardArray, droplistComparator);
-		spinnerData = new String[cardArray.length + 1];
-		spinnerData[0] = defaultStr;
-		for(int i = 1; i <= cardArray.length; i++)
-			spinnerData[i] = cardArray[i - 1].getName();
-		
-		ArrayAdapter< String> adapterName = 
-				new ArrayAdapter< String>( this, 
-				android.R.layout.simple_gallery_item, spinnerData);
-		adapterName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		List<CardInfo> cardArray = mDBHelper.queryCardDropList(columnType, mGameType);
+        Collections.sort(cardArray, droplistComparator);
+        cardArray.add (0, new CardInfo(defaultStr));
+
+        SpinnerCommonAdapter<CardInfo> adapterName =
+				new SpinnerCommonAdapter( this, cardArray);
 		spinner.setAdapter(adapterName);
 	}
 	

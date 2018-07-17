@@ -1,6 +1,6 @@
 package com.mx.gillustrated.vo;
 
-public class CardTypeInfo {
+public class CardTypeInfo extends SpinnerInfo  {
 	private String name = ""; 
 	private int id = -1;
 	private int gameId = -1;

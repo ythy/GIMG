@@ -9,6 +9,7 @@ import com.mx.gillustrated.provider.Providerdata.Card;
 import com.mx.gillustrated.provider.Providerdata.CardType;
 import com.mx.gillustrated.provider.Providerdata.Game;
 import com.mx.gillustrated.provider.Providerdata.Event;
+import com.mx.gillustrated.provider.Providerdata.EventChain;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
@@ -46,7 +47,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + Card.COLUMN_NAME + " VARCHAR," 
                 + Card.COLUMN_FRONT_NAME + " VARCHAR," 
                 + Card.COLUMN_LEVEL + " VARCHAR," 
-                + Card.COLUMN_ATTR + " VARCHAR," 
+                + Card.COLUMN_ATTR + " VARCHAR,"
                 + Card.COLUMN_COST + " INTEGER," 
                 + Card.COLUMN_GAMETYPE + " INTEGER,"
                 + Card.COLUMN_EVENTTYPE + " INTEGER,"
@@ -75,6 +76,13 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ Event.COLUMN_DURATION + " VARCHAR, "
 				+ Event.COLUMN_SHOWING + " VARCHAR, "
 				+ Event.COLUMN_NAME + " VARCHAR )" );
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + EventChain.TABLE_NAME + " ("
+                + EventChain.COLUMN_CARD_NID + " INTEGER ,"
+                + EventChain.COLUMN_EVENT_ID + " INTEGER, "
+                + "PRIMARY KEY (" + EventChain.COLUMN_CARD_NID + " , "
+                + EventChain.COLUMN_EVENT_ID + " )) ");
     }   
     
     @Override
@@ -117,6 +125,21 @@ public class DBHelper extends SQLiteOpenHelper {
 			db.execSQL("ALTER TABLE " + Event.TABLE_NAME +
 					" ADD " + Event.COLUMN_SHOWING + " VARCHAR;");
 		}
+		else if(newVersion == 7)
+		{
+			db.execSQL("CREATE TABLE IF NOT EXISTS "
+					+ EventChain.TABLE_NAME + " ("
+					+ EventChain.COLUMN_CARD_NID + " INTEGER ,"
+					+ EventChain.COLUMN_EVENT_ID + " INTEGER, "
+					+ "PRIMARY KEY (" + EventChain.COLUMN_CARD_NID + " , "
+					+ EventChain.COLUMN_EVENT_ID + " )) ");
+
+
+            db.execSQL(
+                    "UPDATE " + Card.TABLE_NAME +
+                            " SET " + Card.COLUMN_ATTR + "= ( SELECT " + CardType._ID + " FROM " + CardType.TABLE_NAME +
+                            " WHERE " + CardType.COLUMN_NAME + " = " + Card.COLUMN_ATTR + " ) ");
+        }
     }
     
     
@@ -160,12 +183,12 @@ public class DBHelper extends SQLiteOpenHelper {
         		sqlWhere += Card.COLUMN_NID + "=? ";
         		selectionValue += String.valueOf(cardinfo.getNid()) + ",";
         	}
-        	if(cardinfo.getAttr() != null)
+        	if(cardinfo.getAttrId() > -1)
         	{
         		if(!sqlWhere.equals(""))
     				sqlWhere += " and ";
         		sqlWhere += Card.COLUMN_ATTR + "=? ";
-        		selectionValue += String.valueOf(cardinfo.getAttr()) + ",";
+        		selectionValue += String.valueOf(cardinfo.getAttrId()) + ",";
         	}
         	if(cardinfo.getLevel() != null)
         	{
@@ -193,7 +216,8 @@ public class DBHelper extends SQLiteOpenHelper {
 				cardInfo.setNid(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_NID)));
 				cardInfo.setName(cusor.getString(cusor.getColumnIndex(Card.COLUMN_NAME)));
 				cardInfo.setFrontName(cusor.getString(cusor.getColumnIndex(Card.COLUMN_FRONT_NAME)));
-				cardInfo.setAttr(cusor.getString(cusor.getColumnIndex(Card.COLUMN_ATTR)));
+				cardInfo.setAttr(queryCardTypeName(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_ATTR)),gametype));
+                cardInfo.setAttrId(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_ATTR)));
 				cardInfo.setLevel(cusor.getString(cusor.getColumnIndex(Card.COLUMN_LEVEL)));
 				cardInfo.setCost(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_COST)));
 				cardInfo.setGameId(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_GAMETYPE)));
@@ -225,12 +249,12 @@ public class DBHelper extends SQLiteOpenHelper {
     			sqlWhere += Card.COLUMN_NAME + " like ? ";
         		selectionValue += "%" + searchinfo.getName() + "%,";
         	}
-        	if(searchinfo.getAttr() != null)
+        	if(searchinfo.getAttrId() > -1)
         	{
         		if(!sqlWhere.equals(""))
     				sqlWhere += " and ";
         		sqlWhere += Card.COLUMN_ATTR + "=? ";
-        		selectionValue += String.valueOf(searchinfo.getAttr()) + ",";
+        		selectionValue += String.valueOf(searchinfo.getAttrId()) + ",";
         	}
         	if(searchinfo.getCost() != 0)
         	{
@@ -254,7 +278,8 @@ public class DBHelper extends SQLiteOpenHelper {
 				cardInfo.setNid(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_NID)));
 				cardInfo.setName(cusor.getString(cusor.getColumnIndex(Card.COLUMN_NAME)));
 				cardInfo.setFrontName(cusor.getString(cusor.getColumnIndex(Card.COLUMN_FRONT_NAME)));
-				cardInfo.setAttr(cusor.getString(cusor.getColumnIndex(Card.COLUMN_ATTR)));
+                cardInfo.setAttr(queryCardTypeName(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_ATTR)),gameid));
+                cardInfo.setAttrId(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_ATTR)));
 				cardInfo.setLevel(cusor.getString(cusor.getColumnIndex(Card.COLUMN_LEVEL)));
 				cardInfo.setCost(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_COST)));
 				cardInfo.setGameId(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_GAMETYPE)));
@@ -269,51 +294,30 @@ public class DBHelper extends SQLiteOpenHelper {
     	return cardInfo;
     }
     
-    public CardInfo[] queryCardDropList(String Type, int gametype) {
-    	String sql = "SELECT distinct("+ Type + "), count(*) FROM " + Card.TABLE_NAME + 
+    public List<CardInfo> queryCardDropList(String Type, int gametype) {
+    	String sql = "SELECT distinct("+ Type + "), count(*) FROM " + Card.TABLE_NAME +
     			" WHERE " + Card.COLUMN_GAMETYPE + "=?"  + " GROUP BY " + Type;
     	Cursor cusor = this.getWritableDatabase().rawQuery(sql, new String[]{ String.valueOf(gametype)} );
-    	int total = cusor.getCount();
-    	CardInfo[] infos = new CardInfo[total];
+        List<CardInfo> infos = new ArrayList();
     	int i = 0;
 		if (cusor != null) {
 			while (cusor.moveToNext()) {
 				CardInfo cardInfo = new CardInfo();
-				cardInfo.setName(cusor.getString(0));
+                if(Type == Card.COLUMN_ATTR ) {
+                    cardInfo.setName(queryCardTypeName(cusor.getInt(0), gametype));
+                    cardInfo.setAttrId(cusor.getInt(0));
+                }
+                 else
+				    cardInfo.setName(cusor.getString(0));
 				cardInfo.setNid(cusor.getInt(1));
-				infos[i++] = cardInfo;
+                infos.add(cardInfo);
 			}
 			cusor.close();
 		}
 		return infos;
     }
     
-    public CardInfo queryCard(String id) {
-    	String selection = Card.ID + "=?";
-    	String[] selectionArg = new String[] {id};
-    	CardInfo cardInfo = new CardInfo();
-    	Cursor cusor = this.getWritableDatabase().query(Card.TABLE_NAME, null, selection, selectionArg, null, null, null);
-		if (cusor != null) {
-			while (cusor.moveToNext()) {
-				cardInfo.setId(cusor.getInt(cusor.getColumnIndex(Card.ID)));
-				cardInfo.setNid(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_NID)));
-				cardInfo.setName(cusor.getString(cusor.getColumnIndex(Card.COLUMN_NAME)));
-				cardInfo.setFrontName(cusor.getString(cusor.getColumnIndex(Card.COLUMN_FRONT_NAME)));
-				cardInfo.setAttr(cusor.getString(cusor.getColumnIndex(Card.COLUMN_ATTR)));
-				cardInfo.setLevel(cusor.getString(cusor.getColumnIndex(Card.COLUMN_LEVEL)));
-				cardInfo.setCost(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_COST)));
-				cardInfo.setGameId(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_GAMETYPE)));
-				cardInfo.setMaxHP(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_MAXHP)));
-				cardInfo.setMaxAttack(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_MAXATTACK)));
-				cardInfo.setMaxDefense(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_MAXDEFENSE)));
-                cardInfo.setRemark(cusor.getString(cusor.getColumnIndex(Card.COLUMN_REMARK)));
-                cardInfo.setEventId(cusor.getInt(cusor.getColumnIndex(Card.COLUMN_EVENTTYPE)));
-			}
-			cusor.close();
-		}
-		return cardInfo;
-    }
-    
+
     public void addAllCardInfo(List<CardInfo> list){ 
     	for(int i = 0; i < list.size(); i++)
     	{
@@ -338,8 +342,8 @@ public class DBHelper extends SQLiteOpenHelper {
 			values.put(Card.COLUMN_MAXATTACK, cardinfo.getMaxAttack());
 		if(cardinfo.getMaxDefense() > 0)
 			values.put(Card.COLUMN_MAXDEFENSE, cardinfo.getMaxDefense());
-		if(cardinfo.getAttr() != null)
-			values.put(Card.COLUMN_ATTR, cardinfo.getAttr());
+		if(cardinfo.getAttrId() > -1)
+			values.put(Card.COLUMN_ATTR, cardinfo.getAttrId());
 		if(cardinfo.getLevel() != null)
 			values.put(Card.COLUMN_LEVEL, cardinfo.getLevel());
 		if(cardinfo.getCost() > 0)
@@ -349,14 +353,6 @@ public class DBHelper extends SQLiteOpenHelper {
         if(cardinfo.getEventId() > 0)
             values.put(Card.COLUMN_EVENTTYPE, cardinfo.getEventId());
 
-		return this.getWritableDatabase().update(Card.TABLE_NAME, values, selection, selectionArg);
-    }
-    
-    public long updateCardAttrInfo(CardInfo cardinfo, String attr){
-    	String selection = Card.COLUMN_GAMETYPE + "=? " + Card.COLUMN_ATTR + "=? ";
-    	String[] selectionArg = new String[] {String.valueOf(cardinfo.getGameId()), cardinfo.getAttr()};
-		ContentValues values = new ContentValues(); 
-		values.put(Card.COLUMN_ATTR, attr);
 		return this.getWritableDatabase().update(Card.TABLE_NAME, values, selection, selectionArg);
     }
     
@@ -378,7 +374,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(Card.COLUMN_REMARK, cardinfo.getRemark());
         values.put(Card.COLUMN_GAMETYPE, cardinfo.getGameId());
 		values.put(Card.COLUMN_LEVEL, cardinfo.getLevel());   
-		values.put(Card.COLUMN_ATTR, cardinfo.getAttr());   
+		values.put(Card.COLUMN_ATTR, cardinfo.getAttrId());
 		values.put(Card.COLUMN_COST, cardinfo.getCost());   
 		values.put(Card.COLUMN_MAXHP, cardinfo.getMaxHP());   
 		values.put(Card.COLUMN_MAXATTACK, cardinfo.getMaxAttack());   
@@ -462,7 +458,24 @@ public class DBHelper extends SQLiteOpenHelper {
 		values.put(CardType.COLUMN_GAMETYPE, info.getGameId()); 
 	    return this.getWritableDatabase().insert(CardType.TABLE_NAME, null, values);  
     }
-    
+
+    //查询卡片属性ID 对应的名称
+    private String queryCardTypeName(int id, int gameId)
+    {
+        String sql = "SELECT * FROM " + CardType.TABLE_NAME +
+         " WHERE " +  CardType.ID + "=? AND " + CardType.COLUMN_GAMETYPE + "=?";
+        String[] selectionArg = new String[]{ String.valueOf(id), String.valueOf(gameId) };
+
+        Cursor cusor = this.getWritableDatabase().rawQuery(sql, selectionArg);
+        if (cusor != null) {
+            while (cusor.moveToNext()) {
+                return cusor.getString(cusor.getColumnIndex(CardType.COLUMN_NAME));
+            }
+            cusor.close();
+        }
+        return null;
+    }
+
     public void addAlCardTypeInfo(List<CardTypeInfo> list){ 
     	for(int i = 0; i < list.size(); i++)
     	{
@@ -605,5 +618,6 @@ public class DBHelper extends SQLiteOpenHelper {
 		String[] selectionArg = new String[] {String.valueOf(eventInfo.getId())};
 		return this.getWritableDatabase().delete(Event.TABLE_NAME, selection, selectionArg);
 	}
+
 
 } 

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mx.gillustrated.R;
+import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.adapter.SpinnerSimpleAdapter;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.provider.Providerdata;
@@ -112,7 +113,9 @@ public class DetailActivity extends BaseActivity {
 		
 		spinnerAttr = (Spinner) findViewById(R.id.spinnerAttr);
 		List<CardTypeInfo> cardTypes = mDBHelper.queryCardTypeList(mCardInfo.getGameId());
-		spinnerAttr.setAdapter(UIUtils.getAttrSpinnerAdapter(getBaseContext(), cardTypes));
+		SpinnerCommonAdapter<CardTypeInfo> adapterName =
+				new SpinnerCommonAdapter( this, cardTypes);
+		spinnerAttr.setAdapter(adapterName);
 
         spinnerEvents = (Spinner) findViewById(R.id.spinnerEvents);
         EventInfo requst = new EventInfo();
@@ -173,8 +176,8 @@ public class DetailActivity extends BaseActivity {
 		etFrontName.setText(info.getFrontName());
 		etDetail.setText(info.getRemark());
 		etNid.setText(String.valueOf(info.getNid()));
-		String attr = info.getAttr();
-		CommonUtil.setSpinnerItemSelectedByValue(spinnerAttr, attr);
+		String attr = String.valueOf(info.getAttrId());
+		CommonUtil.setSpinnerItemSelectedByValue2(spinnerAttr, attr);
 			
 		CommonUtil.setSpinnerItemSelectedByValue(spinnerLevel,
 				String.valueOf(info.getLevel()));
@@ -210,8 +213,9 @@ public class DetailActivity extends BaseActivity {
 			card = new CardInfo();
 			card.setId(mId);
 			card.setNid(Integer.parseInt(etNid.getText().toString()));
-			String attr = spinnerAttr.getSelectedItem().toString();
-			card.setAttr(attr);
+
+			CardTypeInfo cardTypeInfo = (CardTypeInfo) spinnerAttr.getSelectedItem();
+			card.setAttrId(cardTypeInfo.getId());
 			card.setLevel(spinnerLevel.getSelectedItem().toString());
 
 			EventInfo event = (EventInfo) spinnerEvents.getSelectedItem();

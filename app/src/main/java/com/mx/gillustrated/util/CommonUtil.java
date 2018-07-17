@@ -15,7 +15,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.MatrixInfo;
 
 import android.content.ContentResolver;
@@ -476,8 +478,26 @@ public class CommonUtil {
 			}
 		}
 
-	} 
-	
+	}
+
+	/**
+	 * 根据值, 设置spinner默认选中:
+	 * @param spinner
+	 * @param value
+	 */
+	public static void setSpinnerItemSelectedByValue2(Spinner spinner, String value){
+
+		SpinnerCommonAdapter<CardTypeInfo> apsAdapter= (SpinnerCommonAdapter<CardTypeInfo>) spinner.getAdapter(); //得到SpinnerAdapter对象
+		int k= apsAdapter.getCount();
+		for(int i = 0; i < k; i++){
+			if(value.equals(String.valueOf(apsAdapter.getItem(i).getId()))){
+				spinner.setSelection(i, true);// 默认选中项
+				break;
+			}
+		}
+
+	}
+
 	public static void generateHeaderImg(Context context, int[] nids, int gameType, boolean isReWrite ){
     	File imageDir = new File(Environment.getExternalStorageDirectory(),
 				MConfig.SD_PATH + "/" + gameType);

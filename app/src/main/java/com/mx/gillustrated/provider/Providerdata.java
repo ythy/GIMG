@@ -14,7 +14,7 @@ public class Providerdata {
      * 数据库的版本
      * 版本2 增加Remark
      */
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 7;
     
     
     public static final class Card implements BaseColumns{
@@ -108,6 +108,26 @@ public class Providerdata {
         public static final String COLUMN_CONTENT = "content";
         public static final String COLUMN_GAMEID= "gameid";
         public static final String COLUMN_SHOWING = "showFlag";
+
+        public static final String SORT_DESC = " DESC";
+        public static final String SORT_ASC = " ASC";
+    }
+
+    public static final class EventChain implements BaseColumns{
+
+        //表名
+        public static final String TABLE_NAME = "event_chain";
+
+        //访问该ContentProvider的URI
+        public static final Uri CONTENT_URI = Uri.parse("content://"+AUTHORITY+"/" + TABLE_NAME);
+
+        //新增mimeType  vnd.android.cursor.dir/开头返回多条数据    vnd.android.cursor.item/开头返回单条数据
+        public static final String CONTENT_TYPE="vnd.android.cursor.dir/vnd.mx.EventChain";
+        public static final String CONTENT_TYPE_ITEM="vnd.android.cursor.item/vnd.mx.EventChain";
+
+        //列名
+        public static final String COLUMN_CARD_NID = "cardNid";
+        public static final String COLUMN_EVENT_ID = "eventId";
 
         public static final String SORT_DESC = " DESC";
         public static final String SORT_ASC = " ASC";
