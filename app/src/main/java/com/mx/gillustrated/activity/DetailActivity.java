@@ -3,24 +3,19 @@ package com.mx.gillustrated.activity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
-import com.mx.gillustrated.adapter.SpinnerSimpleAdapter;
 import com.mx.gillustrated.common.MConfig;
-import com.mx.gillustrated.provider.Providerdata;
 import com.mx.gillustrated.util.CommonUtil;
-import com.mx.gillustrated.util.DBHelper;
 import com.mx.gillustrated.util.UIUtils;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
 
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,7 +29,6 @@ import android.provider.MediaStore;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -51,12 +45,6 @@ import butterknife.OnClick;
 
 public class DetailActivity extends BaseActivity {
 
-	private Button btnSave;
-	private Button btnSave2;
-	private Button btnDel;
-	private Button btnDel2;
-	private Button mBtnNext;
-	private Button mBtnLast;
 	private EditText etHP;
 	private EditText etAttack;
 	private EditText etDefense;
@@ -67,7 +55,6 @@ public class DetailActivity extends BaseActivity {
 	private CardInfo mCardInfo;
 	private Spinner spinnerAttr;
 	private Spinner spinnerLevel;
-    private Spinner spinnerEvents;
 	private EditText etCost;
 	private CheckBox chkModify;
 	private TextView tvId;
@@ -82,7 +69,7 @@ public class DetailActivity extends BaseActivity {
 	private SparseArray<View> mImagesView;
 	private LinearLayout mLLImages;
 	private List<EventInfo> mEventList;
-	private SparseArray<View> mEventView = new SparseArray<View>();;
+	private SparseArray<View> mEventView = new SparseArray<View>();
 
 	@BindView(R.id.btnSaveEvent)
 	Button btnSaveEvent;
@@ -145,13 +132,13 @@ public class DetailActivity extends BaseActivity {
 		etNid = (EditText) findViewById(R.id.etDetailNid);
 		etDetail = (EditText) findViewById(R.id.etDetail);
 
-		btnSave = (Button) findViewById(R.id.btnSave);
-		btnSave2 = (Button) findViewById(R.id.btnSave2);
+		Button btnSave = (Button) findViewById(R.id.btnSave);
+		Button btnSave2 = (Button) findViewById(R.id.btnSave2);
 		btnSave.setOnClickListener(btnSaveClickListener);
 		btnSave2.setOnClickListener(btnSaveClickListener);
-		btnDel = (Button) findViewById(R.id.btnDel);
+		Button btnDel = (Button) findViewById(R.id.btnDel);
 		btnDel.setOnClickListener(btnDelClickListener);
-		btnDel2 = (Button) findViewById(R.id.btnDel2);
+		Button btnDel2 = (Button) findViewById(R.id.btnDel2);
 		btnDel2.setOnClickListener(btnDel2ClickListener);
 		
 		tvId = (TextView) findViewById(R.id.tvId);
@@ -160,20 +147,20 @@ public class DetailActivity extends BaseActivity {
 		spinnerAttr = (Spinner) findViewById(R.id.spinnerAttr);
 		List<CardTypeInfo> cardTypes = mDBHelper.queryCardTypeList(mCardInfo.getGameId());
 		SpinnerCommonAdapter<CardTypeInfo> adapterName =
-				new SpinnerCommonAdapter( this, cardTypes);
+				new SpinnerCommonAdapter<CardTypeInfo>( this, cardTypes);
 		spinnerAttr.setAdapter(adapterName);
 
 		spinnerLevel = (Spinner) findViewById(R.id.spinnerLevel);
 		etCost = (EditText) findViewById(R.id.etDetailCost);
-		
-		mBtnNext = (Button) findViewById(R.id.btnNext);
+
+		Button mBtnNext = (Button) findViewById(R.id.btnNext);
 		mBtnNext.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				searchCardSide(1);
 			}
 		});
-		mBtnLast = (Button) findViewById(R.id.btnLast);
+		Button mBtnLast = (Button) findViewById(R.id.btnLast);
 		mBtnLast.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -280,9 +267,6 @@ public class DetailActivity extends BaseActivity {
 			CardTypeInfo cardTypeInfo = (CardTypeInfo) spinnerAttr.getSelectedItem();
 			card.setAttrId(cardTypeInfo.getId());
 			card.setLevel(spinnerLevel.getSelectedItem().toString());
-
-			EventInfo event = (EventInfo) spinnerEvents.getSelectedItem();
-            card.setEventId(event.getId());
 
 			card.setCost(Integer.parseInt(etCost.getText().toString()));
 			card.setName(etName.getText().toString().trim());
