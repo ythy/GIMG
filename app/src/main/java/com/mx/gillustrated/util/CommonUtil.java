@@ -19,6 +19,7 @@ import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.MatrixInfo;
+import com.mx.gillustrated.vo.SpinnerInfo;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -487,7 +488,7 @@ public class CommonUtil {
 	 */
 	public static void setSpinnerItemSelectedByValue2(Spinner spinner, String value){
 
-		SpinnerCommonAdapter<CardTypeInfo> apsAdapter= (SpinnerCommonAdapter<CardTypeInfo>) spinner.getAdapter(); //得到SpinnerAdapter对象
+		SpinnerCommonAdapter<SpinnerInfo> apsAdapter= (SpinnerCommonAdapter<SpinnerInfo>) spinner.getAdapter(); //得到SpinnerAdapter对象
 		int k= apsAdapter.getCount();
 		for(int i = 0; i < k; i++){
 			if(value.equals(String.valueOf(apsAdapter.getItem(i).getId()))){

@@ -3,6 +3,7 @@ package com.mx.gillustrated.activity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DetailActivity extends BaseActivity {
 
@@ -75,11 +81,51 @@ public class DetailActivity extends BaseActivity {
 	private SparseArray<File> mImagesFiles;
 	private SparseArray<View> mImagesView;
 	private LinearLayout mLLImages;
-	
+	private List<EventInfo> mEventList;
+	private SparseArray<View> mEventView = new SparseArray<View>();;
+
+	@BindView(R.id.btnSaveEvent)
+	Button btnSaveEvent;
+
+	@BindView(R.id.btnAddEvent)
+	Button btnAddEvent;
+
+	@BindView(R.id.llShowEvent)
+	LinearLayout llShowEvent;
+
+	@BindView(R.id.scrollView)
+	ScrollView mScrollView;
+
+	@OnClick(R.id.btnAddEvent)
+	void onAddEventClickHandler(){
+		addEvent();
+		mScrollView.post(new Runnable() {
+			@Override
+			public void run() {
+				mScrollView.smoothScrollTo(0, 5000);
+			}
+		});
+	}
+
+	@OnClick(R.id.btnSaveEvent)
+	void onSaveEvnetClickHandler(){
+		int[] events = new int[ mEventView.size() ];
+		for( int i = 0; i < mEventView.size(); i++ )
+		{
+			Spinner spinner = (Spinner) mEventView.get(mEventView.keyAt(i)).findViewById(R.id.spinnerEvent);
+			EventInfo info = (EventInfo) spinner.getSelectedItem();
+			events[i] = info.getId();
+		}
+		mDBHelper.setCardEvent(mCardInfo.getId(), events);
+		Toast.makeText(DetailActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_detail);
+		ButterKnife.bind(this);
+
 		Intent intent = getIntent();
 		CardInfo info = intent.getParcelableExtra("card");
 		mMainSearchInfo = intent.getParcelableExtra("cardSearchCondition");
@@ -117,14 +163,6 @@ public class DetailActivity extends BaseActivity {
 				new SpinnerCommonAdapter( this, cardTypes);
 		spinnerAttr.setAdapter(adapterName);
 
-        spinnerEvents = (Spinner) findViewById(R.id.spinnerEvents);
-        EventInfo requst = new EventInfo();
-        requst.setGameId(info.getGameId());
-		requst.setShowing("Y");
-        List<EventInfo> eventList = mDBHelper.queryEventList(requst);
-        eventList.add(0, new EventInfo());
-        spinnerEvents.setAdapter(new SpinnerSimpleAdapter(this, eventList));
-
 		spinnerLevel = (Spinner) findViewById(R.id.spinnerLevel);
 		etCost = (EditText) findViewById(R.id.etDetailCost);
 		
@@ -143,11 +181,39 @@ public class DetailActivity extends BaseActivity {
 				searchCardSide(-1);
 			}
 		});
-		
+
+		showEvents();
 		showCardInfo();
 		
 	}
-	
+
+	private void showEvents(){
+		EventInfo requst = new EventInfo();
+		requst.setGameId(mCardInfo.getGameId());
+		requst.setShowing("Y");
+		mEventList = mDBHelper.queryEventList(requst);
+		mEventList.add(0, new EventInfo(""));
+
+		List<Integer> events = mDBHelper.queryCardEvents(mCardInfo.getId());
+		for( int i = 0; i < events.size(); i++ )
+		{
+			if(isExistInEvent(events.get(i))){
+				Spinner spinner = addEvent();
+				CommonUtil.setSpinnerItemSelectedByValue2(spinner, String.valueOf(events.get(i)));
+			}
+		}
+	}
+
+	private boolean isExistInEvent(int id){
+		if(mEventList == null)
+			return false;
+		for (int i = 0; i < mEventList.size(); i++){
+			if(mEventList.get(i).getId() == id)
+				return true;
+		}
+		return false;
+	}
+
 	private void searchCardSide(int type){
 		int newPositon = mCurrentPosition;
 		newPositon += type;
@@ -181,9 +247,6 @@ public class DetailActivity extends BaseActivity {
 			
 		CommonUtil.setSpinnerItemSelectedByValue(spinnerLevel,
 				String.valueOf(info.getLevel()));
-
-		SpinnerSimpleAdapter eventAdapter = (SpinnerSimpleAdapter)spinnerEvents.getAdapter();
-		spinnerEvents.setSelection(eventAdapter.getPosition(info.getEventId()));
 
 		etCost.setText(String.valueOf(info.getCost()));
 		tvId.setText(String.valueOf(info.getId()));
@@ -367,4 +430,54 @@ public class DetailActivity extends BaseActivity {
 
 	};
 
+	private Spinner addEvent(){
+		View child = LayoutInflater.from(DetailActivity.this).inflate(
+				R.layout.child_event, null);
+		llShowEvent.addView(child);
+		Spinner spinner = (Spinner) child.findViewById(R.id.spinnerEvent);
+		UIUtils.setSpinnerSingleClick(spinner);
+		SpinnerCommonAdapter<EventInfo> adapter =
+				new SpinnerCommonAdapter( DetailActivity.this, mEventList);
+		spinner.setAdapter(adapter);
+		Button delBtn = (Button) child.findViewById(R.id.btnDel);
+
+		int roundtag = (int) Math.round(Math.random() * 100000000);
+		delBtn.setTag( roundtag + "*" + 0);
+
+		delBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String[] tag = v.getTag().toString().split("\\*");
+				View line = mEventView.get(Integer.parseInt(tag[0]));
+				Spinner select = (Spinner) line.findViewById(R.id.spinnerEvent);
+				EventInfo info = (EventInfo) select.getSelectedItem();
+				int id = info.getId();
+				if( id == -1 ) {
+					llShowEvent.removeView(line);
+					mEventView.remove(Integer.parseInt(tag[0]));
+				}else{
+					long timenow = Calendar.getInstance().getTime().getTime();
+					if(Math.abs(timenow - Long.valueOf(tag[1])) > 5000)
+					{
+						Toast.makeText(DetailActivity.this, "请再次点击删除", Toast.LENGTH_SHORT).show();
+						v.setTag(tag[0] + "*" + timenow);
+					}else{
+						v.setTag(tag[0] + "*" + 0);
+						long r = mDBHelper.delCardEvent(mCardInfo.getId(), id);
+						if( r > -1)
+						{
+							llShowEvent.removeView(line);
+							mEventView.remove(Integer.parseInt(tag[0]));
+							Toast.makeText(DetailActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+						}
+					}
+				}
+
+			}
+		});
+
+		mEventView.append(roundtag, child);
+
+		return spinner;
+	}
 }

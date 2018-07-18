@@ -8,7 +8,7 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	private int id = -1;
 	private int nid;
 	private int gameId;
-	private int eventId = 0;
+	private int eventId = -1;
 	private String frontName = null;
 	private String name = null;
 	private String attr;

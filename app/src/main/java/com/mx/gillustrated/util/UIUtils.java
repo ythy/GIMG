@@ -30,14 +30,18 @@ public class UIUtils {
 	public static void setSpinnerClick(List<Spinner> spinners){
 		for (Iterator<Spinner> iter = spinners.iterator(); iter.hasNext();) {
 			final Spinner spinner = (Spinner) iter.next();
-			LinearLayout llparentCost = (LinearLayout) spinner.getParent();
-			llparentCost.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					spinner.performClick();
-				}
-			});
+			setSpinnerSingleClick(spinner);
 		}
 	}
-	
+
+	public static void setSpinnerSingleClick(final Spinner spinner){
+		LinearLayout llparentCost = (LinearLayout) spinner.getParent();
+		llparentCost.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				spinner.performClick();
+			}
+		});
+
+	}
 }

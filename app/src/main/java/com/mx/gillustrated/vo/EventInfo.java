@@ -4,13 +4,20 @@ package com.mx.gillustrated.vo;
  * Created by maoxin on 2017/2/22.
  */
 
-public class EventInfo {
+public class EventInfo extends SpinnerInfo  {
     private String name = null; //活动名称
     private int gameId = -1;
     private int id = -1;
     private String duration = null; //活动期间
     private String content = null;  //活动内容
     private String showing = null; //是否是卡片可选项
+
+    public EventInfo(){
+    }
+
+    public EventInfo(String name){
+        this.name = name;
+    }
 
     public String getShowing() {
         return showing;

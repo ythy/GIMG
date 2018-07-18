@@ -39,16 +39,11 @@ import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,29 +51,19 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import javax.inject.Inject;
-
 import butterknife.BindColor;
 import butterknife.BindView;
-import butterknife.BindViews;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
+
 
 public class MainActivity extends BaseActivity {
 
@@ -88,7 +73,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.spinnerName) Spinner spinnerName;
     @BindView(R.id.spinnerCost) Spinner spinnerCost;
     @BindView(R.id.spinnerAttr) Spinner spinnerAttr;
-    @BindView(R.id.spinnerFrontName) Spinner spinnerFrontName;
+    @BindView(R.id.spinnerFrontName) Spinner spinnerEvent;
     @BindView(R.id.spinnerGame) Spinner spinnerGameList;
     @BindView(R.id.pageVBox) RelativeLayout pageVboxLayout;
 
@@ -112,7 +97,7 @@ public class MainActivity extends BaseActivity {
             mSpinnerChangedCount++;
         if(spinnerAttr.getSelectedItemPosition() > 0)
             mSpinnerChangedCount++;
-        if(spinnerFrontName.getSelectedItemPosition() > 0)
+        if(spinnerEvent.getSelectedItemPosition() > 0)
             mSpinnerChangedCount++;
 
         initParms();
@@ -123,7 +108,7 @@ public class MainActivity extends BaseActivity {
         spinnerName.setSelection(0);
         spinnerCost.setSelection(0);
         spinnerAttr.setSelection(0);
-        spinnerFrontName.setSelection(0);
+        spinnerEvent.setSelection(0);
     }
 
     @OnItemSelected({R.id.spinnerName, R.id.spinnerCost, R.id.spinnerAttr, R.id.spinnerFrontName})
@@ -146,7 +131,7 @@ public class MainActivity extends BaseActivity {
 	private static String DEFAULT_NAME = "名称";
 	private static String DEFAULT_COST = "コスト";
 	private static String DEFAULT_ATTR = "属性";
-	private static String DEFAULT_FRONTNAME = "活动";
+	private static String DEFAULT_EVENT = "活动";
 
     private List<CardInfo> mList;
     private DataListAdapter mAdapter;
@@ -170,7 +155,7 @@ public class MainActivity extends BaseActivity {
             add(spinnerName);
             add(spinnerCost);
             add(spinnerAttr);
-            add(spinnerFrontName);
+            add(spinnerEvent);
             add(spinnerGameList);
         }});
 
@@ -247,7 +232,7 @@ public class MainActivity extends BaseActivity {
     private void searchData() {
         setHeaderColor();
         if(spinnerName.getSelectedItem() == null || spinnerCost.getSelectedItem() == null ||
-                spinnerAttr.getSelectedItem() == null || spinnerFrontName.getSelectedItem() == null)
+                spinnerAttr.getSelectedItem() == null || spinnerEvent.getSelectedItem() == null)
             return;
 
 		CardInfo card = new CardInfo();
@@ -258,10 +243,10 @@ public class MainActivity extends BaseActivity {
         {
             card.setName(spinnerSelected.getName());
         }
-        spinnerSelected = (CardInfo) spinnerFrontName.getSelectedItem();
-        if(!spinnerSelected.getName().equals(DEFAULT_FRONTNAME))
+        EventInfo spinnerSelected2 = (EventInfo) spinnerEvent.getSelectedItem();
+        if(!spinnerSelected2.getName().equals(DEFAULT_EVENT))
         {
-            card.setFrontName(spinnerSelected.getName());
+            card.setEventId(spinnerSelected2.getId());
         }
         spinnerSelected = (CardInfo) spinnerCost.getSelectedItem();
         if(!spinnerSelected.getName().equals(DEFAULT_COST))
@@ -347,9 +332,17 @@ public class MainActivity extends BaseActivity {
 	private void refreshMainData(){
 		mSpinnerChangedCount = 4;
 		setSpinner(spinnerName, Card.COLUMN_NAME, DEFAULT_NAME);
-        setSpinner(spinnerFrontName, Card.COLUMN_FRONT_NAME, DEFAULT_FRONTNAME);
 		setSpinner(spinnerCost, Card.COLUMN_COST, DEFAULT_COST);
 		setSpinner(spinnerAttr, Card.COLUMN_ATTR, DEFAULT_ATTR);
+        //设置活动下拉列表
+        EventInfo requst = new EventInfo();
+        requst.setGameId(mGameType);
+        requst.setShowing("Y");
+        List<EventInfo> mEventList = mDBHelper.queryEventList(requst);
+        mEventList.add(0, new EventInfo(DEFAULT_EVENT));
+        SpinnerCommonAdapter<EventInfo> adapterEvent =
+                new SpinnerCommonAdapter( this, mEventList);
+        spinnerEvent.setAdapter(adapterEvent);
 	}
 
     //设置筛选列表

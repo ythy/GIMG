@@ -203,7 +203,18 @@ public class DBHelper extends SQLiteOpenHelper {
     				sqlWhere += " and ";
         		sqlWhere += Card.COLUMN_COST + "=? ";
         		selectionValue += String.valueOf(cardinfo.getCost()) + ",";
-        	}
+        	}if(cardinfo.getEventId() > -1)
+			{
+				if(!sqlWhere.equals(""))
+					sqlWhere += " and ";
+				sqlWhere += "EXISTS ( SELECT * FROM  "
+						+ EventChain.TABLE_NAME
+						+ " WHERE " + Card.TABLE_NAME + "." + Card._ID + " = "
+						+ EventChain.TABLE_NAME + "." + EventChain.COLUMN_CARD_NID + " and "
+						+ EventChain.TABLE_NAME + "." + EventChain.COLUMN_EVENT_ID + " = ? ) ";
+
+				selectionValue += String.valueOf(cardinfo.getEventId()) + ",";
+			}
     	}
     	if(!selectionValue.equals(""))
     		selectionArg = selectionValue.split(",");
@@ -619,5 +630,73 @@ public class DBHelper extends SQLiteOpenHelper {
 		return this.getWritableDatabase().delete(Event.TABLE_NAME, selection, selectionArg);
 	}
 
+	// 卡片和活动关联 开始
 
+	public long setCardEvent( int nid, int[] events ) {
+		for( int i = 0; i < events.length; i++ ){
+			addCardEvent( nid, events[i] );
+		}
+		return 0;
+	}
+
+	private boolean checkCardDespairIsExisting( int nid, int id   ){
+		String selection = EventChain.COLUMN_CARD_NID + "=?  AND " +  EventChain.COLUMN_EVENT_ID + "=? ";
+		String[] selectionArg = new String[] {String.valueOf(nid), String.valueOf(id)};
+		Cursor cusor = this.getWritableDatabase().query(EventChain.TABLE_NAME, null, selection, selectionArg, null, null, null);
+		if(cusor.getCount() > 0)
+			return true;
+		else
+			return false;
+	}
+
+	private long addCardEvent( int nid, int id ){
+		if(checkCardDespairIsExisting(nid, id) || id == -1)
+			return -1;
+		ContentValues values = new ContentValues();
+		values.put(EventChain.COLUMN_CARD_NID, nid);
+		values.put(EventChain.COLUMN_EVENT_ID,id);
+		return this.getWritableDatabase().insert(EventChain.TABLE_NAME, null, values);
+	}
+
+	public long delCardEvent( int nid, int id )
+	{
+		String selection = EventChain.COLUMN_CARD_NID + "=? and "
+				+ EventChain.COLUMN_EVENT_ID + "=?";
+		String[] selectionArg = new String[] {String.valueOf(nid), String.valueOf(id)};
+		return this.getWritableDatabase().delete(EventChain.TABLE_NAME, selection, selectionArg);
+	}
+
+	/**
+	 * get card`s event name
+	 * @param nid
+	 * @return
+	 */
+	public List<Integer> queryCardEvents( int nid ) {
+		String selection = EventChain.COLUMN_CARD_NID + "=?";
+		String[] selectionArg = new String[] {String.valueOf(nid)};
+		Cursor cusor = this.getWritableDatabase().query(EventChain.TABLE_NAME, null, selection, selectionArg, null, null, null);
+		List<Integer> eventlist = new  ArrayList<Integer>();
+		if (cusor != null) {
+			while (cusor.moveToNext()) {
+				eventlist.add(cusor.getInt(cusor.getColumnIndex(EventChain.COLUMN_EVENT_ID)));
+			}
+			cusor.close();
+		}
+		return eventlist;
+	}
+
+	public List<Integer[]> queryAllCardEvents() {
+		Cursor cusor = this.getWritableDatabase().query(EventChain.TABLE_NAME, null, null, null, null, null, null);
+		List<Integer[]> eventlist = new  ArrayList<Integer[]>();
+		if (cusor != null) {
+			while (cusor.moveToNext()) {
+				Integer[] array = new Integer[2];
+				array[0] = cusor.getInt(cusor.getColumnIndex(EventChain.COLUMN_CARD_NID));
+				array[1] = cusor.getInt(cusor.getColumnIndex(EventChain.COLUMN_EVENT_ID));
+				eventlist.add(array);
+			}
+			cusor.close();
+		}
+		return eventlist;
+	}
 } 
