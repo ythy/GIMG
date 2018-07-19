@@ -41,10 +41,12 @@ import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,7 +66,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 import io.reactivex.functions.Consumer;
-
 
 public class MainActivity extends BaseActivity {
 
@@ -86,7 +87,8 @@ public class MainActivity extends BaseActivity {
     private Map<String, TextView> mTextViewMap;
     private String mCurrentOrderBy;
     private String mCurrentOrderType;
-    private String mSpinnerLastSelect;
+    private String mSpinnerLastSelect; //保存最后一次本页面Spinner检索条件
+    private int mListViewLastPosition; //保存最后一次本页面滚动位置
 
     @BindView(R.id.lvMain) ListView listViewMain;
     @BindView(R.id.spinnerName) Spinner spinnerName;
@@ -188,6 +190,7 @@ public class MainActivity extends BaseActivity {
         mCurrentOrderBy = order == null ? INIT_ORDER_BY : order.split("\\*")[0];
         mCurrentOrderType =  order == null ? INIT_ORDER_TYPE : order.split("\\*")[1];
         mSpinnerLastSelect = getIntent().getStringExtra("spinnerIndexs");
+        mListViewLastPosition = getIntent().getIntExtra("position", 0);
     }
 
     private void initHeader() {
@@ -296,12 +299,12 @@ public class MainActivity extends BaseActivity {
                     spinnerGameList.setSelection(gameSelected);
                     mGameType = list.get(gameSelected).getId();
                 }else{
-//                    new Thread() {
-//                        public void run() {
+                    new Thread() {
+                        public void run() {
                             DataBakUtil.getDataFromFiles(mDBHelper);
                             mainHandler.sendEmptyMessage(1);
-//                        }
-//                    }.start();
+                        }
+                    }.start();
                 }
             }
         }).subscribe();
@@ -354,8 +357,8 @@ public class MainActivity extends BaseActivity {
 			return o2.getNid() - o1.getNid();
 		}
 	};
-	
-	private void searchCards(CardInfo info){
+
+    private void searchCards(CardInfo info){
 		mList.clear();
 		mSearchCondition = info;
 		mList.addAll(mDBHelper.queryCards(info, mCurrentOrderBy + mCurrentOrderType, mGameType));
@@ -415,11 +418,17 @@ public class MainActivity extends BaseActivity {
 		}
 	};
 
-	private void updateList(boolean flag) {
+    private void updateList(boolean flag) {
 		if (flag)
 			listViewMain.setAdapter(mAdapter);
 		else
 			mAdapter.notifyDataSetChanged();
+
+        if(mListViewLastPosition > 0 ){
+            listViewMain.setSelection(mListViewLastPosition);
+            mListViewLastPosition = 0;
+        }
+
 	}
 	
 	@Override
