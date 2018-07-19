@@ -22,7 +22,7 @@ import android.content.res.AssetManager;
 
 public class JsonFileReader {
 
-	public static String getJson(Context context, File fileName) {
+	public static String getJson(File fileName) {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		try {
@@ -51,7 +51,7 @@ public class JsonFileReader {
 				cardinfo.setRemark(object.getString("remark"));
 				cardinfo.setEventId(object.getInt("event"));
 				cardinfo.setName(object.getString("name"));
-				cardinfo.setAttr(object.getString("attr"));
+				cardinfo.setAttrId(object.getInt("attr"));
 				cardinfo.setLevel(object.getString("level"));
 				cardinfo.setCost(object.getInt("cost"));
 				cardinfo.setMaxHP(object.getInt("maxHP"));
@@ -116,6 +116,23 @@ public class JsonFileReader {
 				info.setContent(object.getString("content"));
 				info.setDuration(object.getString("duration"));
 				info.setShowing(object.getString("showing"));
+				result.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public static List<Integer[]> setCardEventListData(JSONArray array) {
+		List<Integer[]> result = new ArrayList<Integer[]>();
+		try {
+			int len = array.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject object = array.getJSONObject(i);
+				Integer[] info = new Integer[2];
+				info[0] = object.getInt("cardId");
+				info[1] = object.getInt("eventId");
 				result.add(info);
 			}
 		} catch (JSONException e) {

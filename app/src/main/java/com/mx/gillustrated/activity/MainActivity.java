@@ -31,6 +31,7 @@ import com.mx.gillustrated.provider.Providerdata;
 import com.mx.gillustrated.provider.Providerdata.Card;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.util.DBHelper;
+import com.mx.gillustrated.util.DataBakUtil;
 import com.mx.gillustrated.util.JsonFileReader;
 import com.mx.gillustrated.util.ServiceUtils;
 import com.mx.gillustrated.util.UIUtils;
@@ -68,6 +69,24 @@ import io.reactivex.functions.Consumer;
 public class MainActivity extends BaseActivity {
 
     private static String TAG = "MainActivity";
+    private static String INIT_ORDER_BY = Card.ID;
+    private static String INIT_ORDER_TYPE = Card.SORT_DESC;
+    private static String DEFAULT_NAME = "名称";
+    private static String DEFAULT_COST = "コスト";
+    private static String DEFAULT_ATTR = "属性";
+    private static String DEFAULT_EVENT = "活动";
+
+    private List<CardInfo> mList;
+    private DataListAdapter mAdapter;
+    private int mGameType = -1; //游戏类别
+    private int[] spinnerGameData;
+    private CardInfo mSearchCondition = null;
+    private int mSpinnerChangedCount = 0; //控制 select变更后是否参与检索
+    private ListHeaderView mListHeaderView;
+    private Map<String, TextView> mTextViewMap;
+    private String mCurrentOrderBy;
+    private String mCurrentOrderType;
+    private String mSpinnerLastSelect;
 
     @BindView(R.id.lvMain) ListView listViewMain;
     @BindView(R.id.spinnerName) Spinner spinnerName;
@@ -100,11 +119,12 @@ public class MainActivity extends BaseActivity {
         if(spinnerEvent.getSelectedItemPosition() > 0)
             mSpinnerChangedCount++;
 
-        initParms();
-        if(mSpinnerChangedCount == 0){
+        mCurrentOrderBy = INIT_ORDER_BY;
+        mCurrentOrderType =  INIT_ORDER_TYPE;
+
+        if(mSpinnerChangedCount == 0){ //没有变化
             searchData(); //默认检索
         }
-
         spinnerName.setSelection(0);
         spinnerCost.setSelection(0);
         spinnerAttr.setSelection(0);
@@ -123,51 +143,20 @@ public class MainActivity extends BaseActivity {
     void onSelectlistener(int position){
         mGameType = spinnerGameData[position];
         CommonUtil.setGameType(this, mGameType);
-        refreshMainData();
+        startSearchMainData();
     }
 
-    private static String INIT_ORDER_BY = Card.ID;
-    private static String INIT_ORDER_TYPE = Card.SORT_DESC;
-	private static String DEFAULT_NAME = "名称";
-	private static String DEFAULT_COST = "コスト";
-	private static String DEFAULT_ATTR = "属性";
-	private static String DEFAULT_EVENT = "活动";
-
-    private List<CardInfo> mList;
-    private DataListAdapter mAdapter;
-	private int mGameType = -1; //游戏类别
-	private int[] spinnerGameData;
-	private CardInfo mSearchCondition = null;
-	private int mSpinnerChangedCount = 0; //控制 select变更后是否参与检索
-    private ListHeaderView mListHeaderView;
-    private Map<String, TextView> mTextViewMap;
-    private String mCurrentOrderBy;
-    private String mCurrentOrderType;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-
-        ButterKnife.bind(this);
-        UIUtils.setSpinnerClick(new ArrayList<Spinner>(){{
-            add(spinnerName);
-            add(spinnerCost);
-            add(spinnerAttr);
-            add(spinnerEvent);
-            add(spinnerGameList);
-        }});
-
         mGameType = getIntent().getIntExtra("game", CommonUtil.getGameType(this));
-        initParms();
-        initHeader();
+        ButterKnife.bind(this);
 
-		pageVboxLayout.setVisibility(View.GONE);
-        listViewMain.setOnItemClickListener(itemClickListener);
-        listViewMain.setOnScrollListener(new ListenerListViewScrollHandler(listViewMain, pageVboxLayout, 1));
-        mList = new ArrayList<CardInfo>();
-        mAdapter = new DataListAdapter(this, mList);
+        initViewAndVariable();
+        initHeader();
 		setGameList();
 		
 		//temp
@@ -182,18 +171,27 @@ public class MainActivity extends BaseActivity {
 		 
 	}
 
-    private void initParms(){
-        mCurrentOrderBy = INIT_ORDER_BY;
-        mCurrentOrderType =  INIT_ORDER_TYPE;
-        if(this.mGameType == 3)
-            mCurrentOrderBy = Card.COLUMN_NID;
+    private void initViewAndVariable(){
+        UIUtils.setSpinnerClick(new ArrayList<Spinner>(){{
+            add(spinnerName);
+            add(spinnerCost);
+            add(spinnerAttr);
+            add(spinnerEvent);
+            add(spinnerGameList);
+        }});
+        pageVboxLayout.setVisibility(View.GONE);
+        listViewMain.setOnItemClickListener(itemClickListener);
+        listViewMain.setOnScrollListener(new ListenerListViewScrollHandler(listViewMain, pageVboxLayout, 0));
+        mList = new ArrayList<CardInfo>();
+        mAdapter = new DataListAdapter(this, mList);
+        String order =  getIntent().getStringExtra("orderBy");
+        mCurrentOrderBy = order == null ? INIT_ORDER_BY : order.split("\\*")[0];
+        mCurrentOrderType =  order == null ? INIT_ORDER_TYPE : order.split("\\*")[1];
+        mSpinnerLastSelect = getIntent().getStringExtra("spinnerIndexs");
     }
 
     private void initHeader() {
-        View headerView = LayoutInflater.from(getBaseContext()).inflate(
-                R.layout.adapter_mainlist_header, null);
-
-        mListHeaderView = new ListHeaderView(headerView);
+        mListHeaderView = new ListHeaderView(findViewById(R.id.ll_header));
         setHeaderClickHandler(mListHeaderView.tvHP, Card.COLUMN_MAXHP);
         setHeaderClickHandler(mListHeaderView.tvAttack, Card.COLUMN_MAXATTACK);
         setHeaderClickHandler(mListHeaderView.tvDefense, Card.COLUMN_MAXDEFENSE);
@@ -201,8 +199,6 @@ public class MainActivity extends BaseActivity {
         setHeaderClickHandler(mListHeaderView.tvAttr, Card.COLUMN_ATTR);
         setHeaderClickHandler(mListHeaderView.tvCost, Card.COLUMN_COST);
         setHeaderClickHandler(mListHeaderView.tvImg, Card.COLUMN_NID);
-
-        listViewMain.addHeaderView(headerView);
 
         mTextViewMap = new HashMap<String, TextView>(){{
             put(Card.COLUMN_NID, mListHeaderView.tvImg);
@@ -300,28 +296,12 @@ public class MainActivity extends BaseActivity {
                     spinnerGameList.setSelection(gameSelected);
                     mGameType = list.get(gameSelected).getId();
                 }else{
-                    new Thread() {
-                        public void run() {
-                            File fileDir = new File(Environment.getExternalStorageDirectory(),
-                                    MConfig.SD_DATA_PATH);
-                            File jsonFile = new File(fileDir.getPath(), "cardinfo.json");
-                            if(jsonFile.exists()){
-                                String out = JsonFileReader.getJson(MainActivity.this, jsonFile);
-                                JSONObject jsonObj;
-                                try {
-                                    jsonObj = new JSONObject(out);
-                                    mDBHelper.addAllCardInfo(JsonFileReader.setListData(jsonObj.getJSONArray("rows")));
-                                    mDBHelper.addAllGameNameInfo(JsonFileReader.setGameListData(jsonObj.getJSONArray("rowsGame")));
-                                    mDBHelper.addAlCardTypeInfo(JsonFileReader.setCardTypeListData(jsonObj.getJSONArray("rowsCardType")));
-                                    mDBHelper.addAllEvents(JsonFileReader.setEventListData(jsonObj.getJSONArray("rowsEvents")));
-                                    mainHandler.sendEmptyMessage(1);
-                                } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }.start();
+//                    new Thread() {
+//                        public void run() {
+                            DataBakUtil.getDataFromFiles(mDBHelper);
+                            mainHandler.sendEmptyMessage(1);
+//                        }
+//                    }.start();
                 }
             }
         }).subscribe();
@@ -329,7 +309,7 @@ public class MainActivity extends BaseActivity {
 
 
 	
-	private void refreshMainData(){
+	private void startSearchMainData(){
 		mSpinnerChangedCount = 4;
 		setSpinner(spinnerName, Card.COLUMN_NAME, DEFAULT_NAME);
 		setSpinner(spinnerCost, Card.COLUMN_COST, DEFAULT_COST);
@@ -343,6 +323,16 @@ public class MainActivity extends BaseActivity {
         SpinnerCommonAdapter<EventInfo> adapterEvent =
                 new SpinnerCommonAdapter( this, mEventList);
         spinnerEvent.setAdapter(adapterEvent);
+
+        if(mSpinnerLastSelect != null){
+            String[] temp = mSpinnerLastSelect.split(",");
+            spinnerName.setSelection(Integer.parseInt(temp[0]));
+            spinnerCost.setSelection(Integer.parseInt(temp[1]));
+            spinnerAttr.setSelection(Integer.parseInt(temp[2]));
+            spinnerEvent.setSelection(Integer.parseInt(temp[3]));
+            mSpinnerLastSelect = null;
+        }
+
 	}
 
     //设置筛选列表
@@ -405,16 +395,20 @@ public class MainActivity extends BaseActivity {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 				long arg3) {
-			if (position != 0) {
+			if (position >= 0) {
 				Intent intent = new Intent(MainActivity.this,
 						DetailActivity.class);
 				CardInfo info = (CardInfo) arg0.getItemAtPosition(position);
 				info.setGameId(mGameType);
 				intent.putExtra("card", info);
 				intent.putExtra("cardSearchCondition", mSearchCondition);
-				intent.putExtra("orderBy", mCurrentOrderBy + mCurrentOrderType);
+				intent.putExtra("orderBy", mCurrentOrderBy + "*" + mCurrentOrderType);
 				intent.putExtra("positon", position);
 				intent.putExtra("totalCount", arg0.getCount());
+                intent.putExtra("spinnerIndexs", spinnerName.getSelectedItemPosition() + "," +
+                        spinnerCost.getSelectedItemPosition() + "," +
+                        spinnerAttr.getSelectedItemPosition() + "," +
+                        spinnerEvent.getSelectedItemPosition() + "," );
 				startActivity(intent);
 			}
 
@@ -441,12 +435,8 @@ public class MainActivity extends BaseActivity {
         switch(item.getItemId())  
         { 
         	case  R.id.menu_out :
-	        	try {
-	        		CommonUtil.printFile(generateJsonString(), CommonUtil.generateDataFile("cardinfo.json"));
-	        		Toast.makeText(this, "导出成功", Toast.LENGTH_SHORT).show();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+                DataBakUtil.saveDataToFiles(mDBHelper);
+                Toast.makeText(this, "导出成功", Toast.LENGTH_SHORT).show();
 	            break; 
         	case  R.id.menu_gamelist :
         		Intent intent = new Intent(MainActivity.this, GameListActivity.class);
@@ -464,73 +454,6 @@ public class MainActivity extends BaseActivity {
         return true; 
     } 
 	
-	
-	private String generateJsonString() throws JSONException
-	{
-		List<CardInfo> data = mDBHelper.queryCards(null, null, -1);
-		JSONArray rows = new JSONArray();
-		for(int i = 0; i < data.size(); i++)
-		{
-			JSONObject line = new JSONObject();
-			line.put("nid", data.get(i).getNid());
-			line.put("id", data.get(i).getId());
-			line.put("gameid", data.get(i).getGameId());
-			line.put("frontname", data.get(i).getFrontName());
-            line.put("remark", data.get(i).getRemark() == null ? "" : data.get(i).getRemark());
-            line.put("event", data.get(i).getEventId());
-			line.put("name", data.get(i).getName());
-			line.put("attr", data.get(i).getAttr());
-			line.put("cost", data.get(i).getCost());
-			line.put("level", data.get(i).getLevel());
-			line.put("maxHP", data.get(i).getMaxHP());
-			line.put("maxAttack", data.get(i).getMaxAttack());
-			line.put("maxDefense", data.get(i).getMaxDefense());
-			rows.put(line);
-		}
-		
-		List<GameInfo> dataGame = mDBHelper.queryGameList(null);
-		JSONArray rowsGame = new JSONArray();
-		for(int i = 0; i < dataGame.size(); i++)
-		{
-			JSONObject line = new JSONObject();
-			line.put("id", dataGame.get(i).getId());
-			line.put("name", dataGame.get(i).getName());
-			rowsGame.put(line);
-		}
-		
-		List<CardTypeInfo> dataCardType = mDBHelper.queryCardTypeList(-1);
-		JSONArray rowsCardType = new JSONArray();
-		for(int i = 0; i < dataCardType.size(); i++)
-		{
-			JSONObject line = new JSONObject();
-			line.put("id", dataCardType.get(i).getId());
-			line.put("gameid", dataCardType.get(i).getGameId());
-			line.put("name", dataCardType.get(i).getName());
-			rowsCardType.put(line);
-		}
-
-        List<EventInfo> eventlist = mDBHelper.queryEventList(null);
-        JSONArray rowsEvents = new JSONArray();
-        for(int i = 0; i < eventlist.size(); i++)
-        {
-            JSONObject line = new JSONObject();
-            line.put("id", eventlist.get(i).getId());
-            line.put("gameid", eventlist.get(i).getGameId());
-            line.put("name", eventlist.get(i).getName());
-            line.put("content", eventlist.get(i).getContent());
-            line.put("duration", eventlist.get(i).getDuration());
-            line.put("showing", eventlist.get(i).getShowing() == null ? "" :  eventlist.get(i).getShowing() );
-            rowsEvents.put(line);
-        }
-
-		JSONObject result = new JSONObject();
-		result.put("rows", rows);
-		result.put("rowsGame", rowsGame);
-		result.put("rowsCardType", rowsCardType);
-        result.put("rowsEvents", rowsEvents);
-		result.put("head", "GIMG");
-		return result.toString();
-	}
 
 
     static class ListHeaderView{

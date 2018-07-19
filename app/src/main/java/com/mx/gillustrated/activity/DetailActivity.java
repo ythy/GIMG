@@ -64,7 +64,7 @@ public class DetailActivity extends BaseActivity {
 	private String mMainSearchOrderBy;
 	private int mCurrentPosition;
 	private int mMainTotalCount;
-	
+
 	private SparseArray<File> mImagesFiles;
 	private SparseArray<View> mImagesView;
 	private LinearLayout mLLImages;
@@ -119,7 +119,7 @@ public class DetailActivity extends BaseActivity {
 		mMainSearchOrderBy = intent.getStringExtra("orderBy");
 		mCurrentPosition = intent.getIntExtra("positon", -1);
 		mMainTotalCount = intent.getIntExtra("totalCount", 0);
-		
+
 		mCardInfo = info;
 		mId = info.getId();
 
@@ -204,11 +204,11 @@ public class DetailActivity extends BaseActivity {
 	private void searchCardSide(int type){
 		int newPositon = mCurrentPosition;
 		newPositon += type;
-		if(newPositon < 1 || newPositon >= mMainTotalCount){
+		if(newPositon < 0 || newPositon >= mMainTotalCount){
 			Toast.makeText(getBaseContext(), "顶端/底端", Toast.LENGTH_SHORT).show();
 			return;
 		}	
-		CardInfo result = mDBHelper.queryCardSide(mMainSearchInfo, mCardInfo.getGameId(), newPositon, mMainSearchOrderBy);
+		CardInfo result = mDBHelper.queryCardSide(mMainSearchInfo, mCardInfo.getGameId(), newPositon, mMainSearchOrderBy.split("\\*")[0] +  mMainSearchOrderBy.split("\\*")[1]);
 		if(result != null){
 			mCurrentPosition = newPositon;
 			mCardInfo = result;
@@ -268,7 +268,8 @@ public class DetailActivity extends BaseActivity {
 			card.setAttrId(cardTypeInfo.getId());
 			card.setLevel(spinnerLevel.getSelectedItem().toString());
 
-			card.setCost(Integer.parseInt(etCost.getText().toString()));
+			card.setCost(etCost.getText().toString().trim().equals("") ? 0
+					: Integer.parseInt(etCost.getText().toString()));
 			card.setName(etName.getText().toString().trim());
 			card.setFrontName(etFrontName.getText().toString().trim());
 			card.setRemark(etDetail.getText().toString().trim());
@@ -284,6 +285,8 @@ public class DetailActivity extends BaseActivity {
 				Intent intent = new Intent(DetailActivity.this,
 						MainActivity.class);
 				intent.putExtra("game", mCardInfo.getGameId());
+				intent.putExtra("orderBy", mMainSearchOrderBy);
+				intent.putExtra("spinnerIndexs", getIntent().getStringExtra("spinnerIndexs"));
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				DetailActivity.this.finish();

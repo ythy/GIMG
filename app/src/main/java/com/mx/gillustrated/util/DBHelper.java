@@ -280,7 +280,7 @@ public class DBHelper extends SQLiteOpenHelper {
     		selectionArg = selectionValue.split(",");
     	
     	Cursor cusor = this.getWritableDatabase().rawQuery(sql + (selectionArg == null ? 
-    			"" : " WHERE " + sqlWhere) + " order by " + order + " limit " + (position - 1)  + ",1", selectionArg);
+    			"" : " WHERE " + sqlWhere) + " order by " + order + " limit " + (position)  + ",1", selectionArg);
     	
     	if (cusor != null) {
 			while (cusor.moveToNext()) {
@@ -357,7 +357,7 @@ public class DBHelper extends SQLiteOpenHelper {
 			values.put(Card.COLUMN_ATTR, cardinfo.getAttrId());
 		if(cardinfo.getLevel() != null)
 			values.put(Card.COLUMN_LEVEL, cardinfo.getLevel());
-		if(cardinfo.getCost() > 0)
+		if(cardinfo.getCost() > -1)
 			values.put(Card.COLUMN_COST, cardinfo.getCost());
 		if(cardinfo.getNid() > 0)
 			values.put(Card.COLUMN_NID, cardinfo.getNid());
@@ -658,6 +658,13 @@ public class DBHelper extends SQLiteOpenHelper {
 		return this.getWritableDatabase().insert(EventChain.TABLE_NAME, null, values);
 	}
 
+	public void addAllCardEvent(List<Integer[]> list){
+		for(int i = 0; i < list.size(); i++)
+		{
+			addCardEvent(list.get(i)[0], list.get(i)[1]);
+		}
+	}
+
 	public long delCardEvent( int nid, int id )
 	{
 		String selection = EventChain.COLUMN_CARD_NID + "=? and "
@@ -699,4 +706,5 @@ public class DBHelper extends SQLiteOpenHelper {
 		}
 		return eventlist;
 	}
+	// 卡片和活动关联 结束
 } 

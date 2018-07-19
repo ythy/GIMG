@@ -186,12 +186,19 @@
     </LinearLayout>
 
     <!-- android:listSelector="@android:color/transparent" -->
-
+    <LinearLayout
+        android:id="@+id/ll_header"
+        android:layout_below="@id/lltop"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/adapter_mainlist_header" />
+    </LinearLayout>
     <ListView
         android:id="@+id/lvMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/lltop"
+        android:layout_below="@id/ll_header"
         android:cacheColorHint="#00000000"
         android:divider="@color/color_gray3"
         android:dividerHeight="1px"
