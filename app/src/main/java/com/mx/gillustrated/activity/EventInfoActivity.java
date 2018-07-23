@@ -68,7 +68,7 @@ public class EventInfoActivity extends BaseActivity {
         request.setContent(mContent.getText().toString());
         request.setShowing(mCbShowing.isChecked() ? "Y" : "N");
         request.setGameId(mGameId);
-        long result = mDBHelper.updateEvent(request);
+        long result = mOrmHelper.getEventInfoDao().update(request);
         if(result > -1){
             if(mEventId > -1)
                 Toast.makeText(getBaseContext(), "更新成功", Toast.LENGTH_SHORT).show();
@@ -134,9 +134,7 @@ public class EventInfoActivity extends BaseActivity {
     }
 
     private void mainSearch() {
-        EventInfo request = new EventInfo();
-        request.setId(mEventId);
-        EventInfo result = mDBHelper.queryEvent(request);
+        EventInfo result = mOrmHelper.getEventInfoDao().queryForId(mEventId);
 
         mName.setText(result.getName());
         mDuration.setText(result.getDuration());
@@ -209,9 +207,7 @@ public class EventInfoActivity extends BaseActivity {
     }
 
     private void delEvent(){
-        EventInfo request = new EventInfo();
-        request.setId(mEventId);
-        long result = mDBHelper.delEventInfo(request);
+        long result = mOrmHelper.getEventInfoDao().deleteById(mEventId);
         if(result > -1){
             Toast.makeText(getBaseContext(), "删除成功", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(EventInfoActivity.this, EventsActivity.class);

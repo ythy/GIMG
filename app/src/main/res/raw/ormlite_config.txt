@@ -1,0 +1,81 @@
+#
+# generated on 2018/07/23 05:57:24
+#
+# --table-start--
+dataClass=com.mx.gillustrated.vo.GameInfo
+tableName=game_info
+# --table-fields-start--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=id
+columnName=_id
+id=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.mx.gillustrated.vo.CardTypeInfo
+tableName=card_type_info
+# --table-fields-start--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=id
+columnName=_id
+id=true
+# --field-end--
+# --field-start--
+fieldName=gameId
+columnName=game_type
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.mx.gillustrated.vo.CardEventInfo
+tableName=event_chain
+# --table-fields-start--
+# --field-start--
+fieldName=cardNid
+uniqueCombo=true
+# --field-end--
+# --field-start--
+fieldName=eventId
+uniqueCombo=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.mx.gillustrated.vo.EventInfo
+tableName=event_info
+# --table-fields-start--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=gameId
+columnName=gameid
+# --field-end--
+# --field-start--
+fieldName=id
+columnName=_id
+id=true
+# --field-end--
+# --field-start--
+fieldName=duration
+# --field-end--
+# --field-start--
+fieldName=content
+# --field-end--
+# --field-start--
+fieldName=showing
+columnName=showFlag
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

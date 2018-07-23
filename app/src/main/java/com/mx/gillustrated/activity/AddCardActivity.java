@@ -11,6 +11,7 @@ import java.util.List;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.provider.Providerdata;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.util.UIUtils;
 import com.mx.gillustrated.vo.CardInfo;
@@ -89,7 +90,7 @@ public class AddCardActivity extends BaseActivity {
 		ivNumber = (ImageView) findViewById(R.id.imgWithNumber);
 		ivAll = (ImageView) findViewById(R.id.imgAll);
 		
-		List<CardTypeInfo> cardTypes = mDBHelper.queryCardTypeList(mGameType);
+		List<CardTypeInfo> cardTypes = mOrmHelper.getCardTypeInfoDao().queryForEq("game_type", mGameType);
 		SpinnerCommonAdapter<CardTypeInfo> adapterName =
 				new SpinnerCommonAdapter( this, cardTypes);
 		spinnerAttr.setAdapter(adapterName);

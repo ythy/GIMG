@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
@@ -124,15 +125,13 @@ public class JsonFileReader {
 		return result;
 	}
 
-	public static List<Integer[]> setCardEventListData(JSONArray array) {
-		List<Integer[]> result = new ArrayList<Integer[]>();
+	public static List<CardEventInfo> setCardEventListData(JSONArray array) {
+		List<CardEventInfo> result = new ArrayList<CardEventInfo>();
 		try {
 			int len = array.length();
 			for (int i = 0; i < len; i++) {
 				JSONObject object = array.getJSONObject(i);
-				Integer[] info = new Integer[2];
-				info[0] = object.getInt("cardId");
-				info[1] = object.getInt("eventId");
+				CardEventInfo info = new CardEventInfo( object.getInt("cardId"), object.getInt("eventId"));
 				result.add(info);
 			}
 		} catch (JSONException e) {

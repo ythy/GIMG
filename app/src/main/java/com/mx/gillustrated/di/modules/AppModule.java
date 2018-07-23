@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.mx.gillustrated.MyApplication;
+import com.mx.gillustrated.database.DataBaseHelper;
+import com.mx.gillustrated.database.DatabaseManager;
 import com.mx.gillustrated.provider.Providerdata;
 import com.mx.gillustrated.util.DBHelper;
 
@@ -36,6 +38,12 @@ public class AppModule {
     DBHelper provideDBHelper(Context context){
         return new DBHelper(context, Providerdata.DATABASE_NAME,
                 null, Providerdata.DATABASE_VERSION);
+    }
+
+    @Provides
+    @Singleton
+    DataBaseHelper provideDataBaseHelper(Context context){
+        return DatabaseManager.getHelper(context, DataBaseHelper.class);
     }
 
     @Provides

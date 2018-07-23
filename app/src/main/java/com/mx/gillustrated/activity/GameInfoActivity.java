@@ -67,9 +67,8 @@ public class GameInfoActivity extends BaseActivity {
 		btnAdd.setOnClickListener(onAddBtnClickListerner);
 		mLvGameMain = (ListView) findViewById(R.id.lvGameInfoMain);
 		tvGameName = (TextView) findViewById(R.id.tvGameName);
-		List<GameInfo> gameinfoList = mDBHelper.queryGameList(new GameInfo(mGameType));
-		if(gameinfoList.size() > 0)
-			tvGameName.setText(gameinfoList.get(0).getName());
+		GameInfo gameinfoList = mOrmHelper.getGameInfoDao().queryForId(mGameType);
+		tvGameName.setText(gameinfoList.getName());
 		pageVboxLayout = (RelativeLayout) findViewById(R.id.pageVBox);
 		pageVboxLayout.setVisibility(View.GONE);
 
@@ -89,7 +88,7 @@ public class GameInfoActivity extends BaseActivity {
 		mainHandler.post( new Runnable() {
 			@Override
 			public void run() {
-				List<CardTypeInfo> list = mDBHelper.queryCardTypeList( mGameType);
+				List<CardTypeInfo> list = mOrmHelper.getCardTypeInfoDao().queryForEq(Providerdata.CardType.COLUMN_GAMETYPE, mGameType);
 				Message msg = mainHandler.obtainMessage();
 				msg.what = 1;
 				msg.obj = list;
@@ -116,7 +115,7 @@ public class GameInfoActivity extends BaseActivity {
 		@Override
 		public void onSaveBtnClickListener(CardTypeInfo info) {
 			// TODO Auto-generated method stub
-			long result = mDBHelper.updateCardType(info);
+			long result = mOrmHelper.getCardTypeInfoDao().update(info);
 			if( result > -1) {
 				Toast.makeText(GameInfoActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
 				searchMain();

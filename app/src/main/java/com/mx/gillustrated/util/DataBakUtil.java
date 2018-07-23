@@ -5,6 +5,8 @@ import android.widget.Toast;
 
 import com.mx.gillustrated.activity.MainActivity;
 import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.database.DataBaseHelper;
+import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
@@ -25,15 +27,15 @@ public class DataBakUtil {
 
     private static final String BakFileName = "cardinfo.json";
 
-    public static void saveDataToFiles(DBHelper mDBHelper){
+    public static void saveDataToFiles(DBHelper mDBHelper, DataBaseHelper mOrmHelper){
         try {
-            CommonUtil.printFile(generateJsonString(mDBHelper), CommonUtil.generateDataFile(BakFileName));
+            CommonUtil.printFile(generateJsonString(mDBHelper, mOrmHelper), CommonUtil.generateDataFile(BakFileName));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public static void getDataFromFiles(DBHelper mDBHelper){
+    public static void getDataFromFiles(DBHelper mDBHelper, DataBaseHelper mOrmHelper){
         File fileDir = new File(Environment.getExternalStorageDirectory(),
                 MConfig.SD_DATA_PATH);
         File jsonFile = new File(fileDir.getPath(), BakFileName);
@@ -43,10 +45,10 @@ public class DataBakUtil {
             try {
                 jsonObj = new JSONObject(out);
                 mDBHelper.addAllCardInfo(JsonFileReader.setListData(jsonObj.getJSONArray("rows")));
-                mDBHelper.addAllGameNameInfo(JsonFileReader.setGameListData(jsonObj.getJSONArray("rowsGame")));
-                mDBHelper.addAlCardTypeInfo(JsonFileReader.setCardTypeListData(jsonObj.getJSONArray("rowsCardType")));
-                mDBHelper.addAllEvents(JsonFileReader.setEventListData(jsonObj.getJSONArray("rowsEvents")));
-                mDBHelper.addAllCardEvent(JsonFileReader.setCardEventListData(jsonObj.getJSONArray("rowsCardEvents")));
+                mOrmHelper.getGameInfoDao().addGameInfos(JsonFileReader.setGameListData(jsonObj.getJSONArray("rowsGame")));
+                mOrmHelper.getCardTypeInfoDao().addCardTypes(JsonFileReader.setCardTypeListData(jsonObj.getJSONArray("rowsCardType")));
+                mOrmHelper.getEventInfoDao().addEventInfos(JsonFileReader.setEventListData(jsonObj.getJSONArray("rowsEvents")));
+                mOrmHelper.getCardEventInfoDao().addCardEvents(JsonFileReader.setCardEventListData(jsonObj.getJSONArray("rowsCardEvents")));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -54,7 +56,7 @@ public class DataBakUtil {
         }
     }
 
-    private static  String generateJsonString(DBHelper mDBHelper) throws JSONException
+    private static  String generateJsonString(DBHelper mDBHelper, DataBaseHelper mOrmHelper) throws JSONException
     {
         List<CardInfo> data = mDBHelper.queryCards(null, null, -1);
         JSONArray rows = new JSONArray();
@@ -77,7 +79,7 @@ public class DataBakUtil {
             rows.put(line);
         }
 
-        List<GameInfo> dataGame = mDBHelper.queryGameList(null);
+        List<GameInfo> dataGame = mOrmHelper.getGameInfoDao().queryForAll();
         JSONArray rowsGame = new JSONArray();
         for(int i = 0; i < dataGame.size(); i++)
         {
@@ -87,7 +89,7 @@ public class DataBakUtil {
             rowsGame.put(line);
         }
 
-        List<CardTypeInfo> dataCardType = mDBHelper.queryCardTypeList(-1);
+        List<CardTypeInfo> dataCardType = mOrmHelper.getCardTypeInfoDao().queryForAll();
         JSONArray rowsCardType = new JSONArray();
         for(int i = 0; i < dataCardType.size(); i++)
         {
@@ -98,7 +100,7 @@ public class DataBakUtil {
             rowsCardType.put(line);
         }
 
-        List<EventInfo> eventlist = mDBHelper.queryEventList(null);
+        List<EventInfo> eventlist = mOrmHelper.getEventInfoDao().queryForAll();
         JSONArray rowsEvents = new JSONArray();
         for(int i = 0; i < eventlist.size(); i++)
         {
@@ -112,13 +114,13 @@ public class DataBakUtil {
             rowsEvents.put(line);
         }
 
-        List<Integer[]> cardEvents = mDBHelper.queryAllCardEvents();
+        List<CardEventInfo> cardEvents = mOrmHelper.getCardEventInfoDao().queryForAll();
         JSONArray rowsCardEvents = new JSONArray();
         for(int i = 0; i < cardEvents.size(); i++)
         {
             JSONObject line = new JSONObject();
-            line.put("cardId", cardEvents.get(i)[0]);
-            line.put("eventId", cardEvents.get(i)[1]);
+            line.put("cardId", cardEvents.get(i).getCardNid());
+            line.put("eventId", cardEvents.get(i).getEventId());
             rowsCardEvents.put(line);
         }
 

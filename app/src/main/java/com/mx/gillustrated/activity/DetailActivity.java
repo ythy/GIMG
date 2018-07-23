@@ -3,14 +3,24 @@ package com.mx.gillustrated.activity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.StatementBuilder;
+import com.j256.ormlite.support.CompiledStatement;
+import com.j256.ormlite.support.DatabaseConnection;
+import com.j256.ormlite.support.DatabaseResults;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.provider.Providerdata;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.util.UIUtils;
+import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
@@ -96,14 +106,14 @@ public class DetailActivity extends BaseActivity {
 
 	@OnClick(R.id.btnSaveEvent)
 	void onSaveEvnetClickHandler(){
-		int[] events = new int[ mEventView.size() ];
+		List<CardEventInfo> events = new ArrayList<>();
 		for( int i = 0; i < mEventView.size(); i++ )
 		{
 			Spinner spinner = (Spinner) mEventView.get(mEventView.keyAt(i)).findViewById(R.id.spinnerEvent);
 			EventInfo info = (EventInfo) spinner.getSelectedItem();
-			events[i] = info.getId();
+			events.add(new CardEventInfo(mCardInfo.getId(), info.getId()));
 		}
-		mDBHelper.setCardEvent(mCardInfo.getId(), events);
+		mOrmHelper.getCardEventInfoDao().addCardEvents(events);
 		Toast.makeText(DetailActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
 	}
 
@@ -145,7 +155,9 @@ public class DetailActivity extends BaseActivity {
 		mLLImages = (LinearLayout) findViewById(R.id.llImages);
 		
 		spinnerAttr = (Spinner) findViewById(R.id.spinnerAttr);
-		List<CardTypeInfo> cardTypes = mDBHelper.queryCardTypeList(mCardInfo.getGameId());
+//		QueryBuilder<CardTypeInfo, Integer> qb = mOrmHelper.getCardTypeInfoDao().queryBuilder();
+//		qb.where().
+		List<CardTypeInfo> cardTypes = mOrmHelper.getCardTypeInfoDao().queryForEq(Providerdata.CardType.COLUMN_GAMETYPE, mCardInfo.getGameId());
 		SpinnerCommonAdapter<CardTypeInfo> adapterName =
 				new SpinnerCommonAdapter<CardTypeInfo>( this, cardTypes);
 		spinnerAttr.setAdapter(adapterName);
@@ -175,18 +187,15 @@ public class DetailActivity extends BaseActivity {
 	}
 
 	private void showEvents(){
-		EventInfo requst = new EventInfo();
-		requst.setGameId(mCardInfo.getGameId());
-		requst.setShowing("Y");
-		mEventList = mDBHelper.queryEventList(requst);
+		mEventList = mOrmHelper.getEventInfoDao().getListByGameId(mCardInfo.getGameId(), "Y");
 		mEventList.add(0, new EventInfo(""));
 
-		List<Integer> events = mDBHelper.queryCardEvents(mCardInfo.getId());
+		List<CardEventInfo> events = mOrmHelper.getCardEventInfoDao().getListByCardId(mCardInfo.getId());
 		for( int i = 0; i < events.size(); i++ )
 		{
-			if(isExistInEvent(events.get(i))){
+			if(isExistInEvent(events.get(i).getEventId())){
 				Spinner spinner = addEvent();
-				CommonUtil.setSpinnerItemSelectedByValue2(spinner, String.valueOf(events.get(i)));
+				CommonUtil.setSpinnerItemSelectedByValue2(spinner, String.valueOf(events.get(i).getEventId()));
 			}
 		}
 	}
@@ -451,8 +460,7 @@ public class DetailActivity extends BaseActivity {
 						v.setTag(tag[0] + "*" + timenow);
 					}else{
 						v.setTag(tag[0] + "*" + 0);
-						long r = mDBHelper.delCardEvent(mCardInfo.getId(), id);
-						if( r > -1)
+						long r = mOrmHelper.getCardEventInfoDao().delCardEvents(new CardEventInfo(mCardInfo.getId(), id));
 						{
 							llShowEvent.removeView(line);
 							mEventView.remove(Integer.parseInt(tag[0]));

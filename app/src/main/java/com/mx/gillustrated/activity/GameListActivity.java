@@ -58,7 +58,7 @@ public class GameListActivity extends BaseActivity {
 
 		@Override
 		public void onSaveBtnClickListener(GameInfo info) {
-			long result = mDBHelper.updateGameName(info);
+			long result = mOrmHelper.getGameInfoDao().update(info);
 			if( result > -1) {
 				Toast.makeText(GameListActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
 				searchMain();
@@ -101,7 +101,7 @@ public class GameListActivity extends BaseActivity {
 		mainHandler.post( new Runnable() {
 			@Override
 			public void run() {
-				List<GameInfo> list = mDBHelper.queryGameList(null);
+				List<GameInfo> list = mOrmHelper.getGameInfoDao().queryForAll();
 				Message msg = mainHandler.obtainMessage();
 				msg.what = 1;
 				msg.obj = list;

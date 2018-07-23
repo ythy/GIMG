@@ -14,7 +14,7 @@ public class Providerdata {
      * 数据库的版本
      * 版本2 增加Remark
      */
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 9;
     
     
     public static final class Card implements BaseColumns{

@@ -105,9 +105,7 @@ public class EventsActivity extends BaseActivity {
         mainHandler.post( new Runnable() {
             @Override
             public void run() {
-                EventInfo request = new EventInfo();
-                request.setGameId(mGameId);
-                List<EventInfo> list = mDBHelper.queryEventList(request);
+                List<EventInfo> list = mOrmHelper.getEventInfoDao().getListByGameId(mGameId, null);
                 Message msg = mainHandler.obtainMessage();
                 msg.what = 1;
                 msg.obj = list;

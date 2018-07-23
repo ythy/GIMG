@@ -275,7 +275,7 @@ public class MainActivity extends BaseActivity {
         ServiceUtils.createConnect(new DBCall<List<GameInfo>>() {
             @Override
             public List<GameInfo> enqueue() {
-                return mDBHelper.queryGameList(null);
+                return mOrmHelper.getGameInfoDao().queryForAll();
             }
         }).doOnNext(new Consumer<List<GameInfo>>() {
             @Override
@@ -301,7 +301,7 @@ public class MainActivity extends BaseActivity {
                 }else{
                     new Thread() {
                         public void run() {
-                            DataBakUtil.getDataFromFiles(mDBHelper);
+                            DataBakUtil.getDataFromFiles(mDBHelper, mOrmHelper);
                             mainHandler.sendEmptyMessage(1);
                         }
                     }.start();
@@ -318,10 +318,7 @@ public class MainActivity extends BaseActivity {
 		setSpinner(spinnerCost, Card.COLUMN_COST, DEFAULT_COST);
 		setSpinner(spinnerAttr, Card.COLUMN_ATTR, DEFAULT_ATTR);
         //设置活动下拉列表
-        EventInfo requst = new EventInfo();
-        requst.setGameId(mGameType);
-        requst.setShowing("Y");
-        List<EventInfo> mEventList = mDBHelper.queryEventList(requst);
+        List<EventInfo> mEventList = mOrmHelper.getEventInfoDao().getListByGameId(mGameType, "Y");
         mEventList.add(0, new EventInfo(DEFAULT_EVENT));
         SpinnerCommonAdapter<EventInfo> adapterEvent =
                 new SpinnerCommonAdapter( this, mEventList);
@@ -444,7 +441,7 @@ public class MainActivity extends BaseActivity {
         switch(item.getItemId())  
         { 
         	case  R.id.menu_out :
-                DataBakUtil.saveDataToFiles(mDBHelper);
+                DataBakUtil.saveDataToFiles(mDBHelper, mOrmHelper);
                 Toast.makeText(this, "导出成功", Toast.LENGTH_SHORT).show();
 	            break; 
         	case  R.id.menu_gamelist :

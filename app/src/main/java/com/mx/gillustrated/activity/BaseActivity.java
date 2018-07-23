@@ -1,6 +1,7 @@
 package com.mx.gillustrated.activity;
 
 import com.mx.gillustrated.MyApplication;
+import com.mx.gillustrated.database.DataBaseHelper;
 import com.mx.gillustrated.di.components.DaggerBaseActivityComponent;
 import com.mx.gillustrated.di.modules.BaseActivityModule;
 import com.mx.gillustrated.util.DBHelper;
@@ -15,6 +16,9 @@ public abstract class BaseActivity extends Activity {
 
 	@Inject
 	DBHelper mDBHelper;
+
+    @Inject
+    DataBaseHelper mOrmHelper;
 
     @Inject
 	ProgressDialog mProgressDialog;
