@@ -7,19 +7,28 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by maoxin on 2017/2/22.
  */
 
-@DatabaseTable(tableName = "event_info")
+@DatabaseTable(tableName = EventInfo.TABLE_NAME)
 public class EventInfo extends SpinnerInfo  {
+
+    public static final String TABLE_NAME = "event_info";
+    public static final String ID = "_id";
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_DURATION = "duration";
+    public static final String COLUMN_CONTENT = "content";
+    public static final String COLUMN_GAMEID= "gameid";
+    public static final String COLUMN_SHOWING = "showFlag";
+
     @DatabaseField
     private String name = null; //活动名称
-    @DatabaseField(columnName = "gameid")
-    private int gameId = -1;
-    @DatabaseField(id = true, columnName="_id")
-    private int id = -1;
+    @DatabaseField(columnName = COLUMN_GAMEID)
+    private int gameId;
+    @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName=ID)
+    private int id;
     @DatabaseField
     private String duration = null; //活动期间
     @DatabaseField
     private String content = null;  //活动内容
-    @DatabaseField(columnName = "showFlag")
+    @DatabaseField(columnName = COLUMN_SHOWING)
     private String showing = null; //是否是卡片可选项
 
     public EventInfo(){

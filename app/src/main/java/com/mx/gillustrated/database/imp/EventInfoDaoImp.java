@@ -4,6 +4,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
@@ -42,10 +43,12 @@ public class EventInfoDaoImp extends RuntimeExceptionDao<EventInfo, Integer> {
 
     public List<EventInfo> getListByGameId(int gameId, String showFlag ){
         QueryBuilder<EventInfo, Integer> qb = this.queryBuilder();
+        Where<EventInfo, Integer> where = qb.where();
         try {
-            qb.where().eq("gameid", gameId);
-            if(showFlag != null)
-                qb.where().eq("showFlag", showFlag);
+            where.eq(EventInfo.COLUMN_GAMEID, gameId);
+            if(showFlag != null) {
+                where.and().eq(EventInfo.COLUMN_SHOWING, showFlag);
+            }
             return this.query(qb.prepare());
         } catch (SQLException e) {
             e.printStackTrace();

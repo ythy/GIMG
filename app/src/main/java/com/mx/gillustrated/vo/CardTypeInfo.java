@@ -3,18 +3,22 @@ package com.mx.gillustrated.vo;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "card_type_info")
+@DatabaseTable(tableName = CardTypeInfo.TABLE_NAME)
 public class CardTypeInfo extends SpinnerInfo  {
+
+	public static final String TABLE_NAME = "card_type_info";
+	public static final String ID = "_id";
+	public static final String COLUMN_NAME = "name";
+	public static final String COLUMN_GAMETYPE = "game_type";
 
 	@DatabaseField
 	private String name = "";
-	@DatabaseField(id = true, columnName="_id")
-	private int id = -1;
-	@DatabaseField(columnName="game_type")
-	private int gameId = -1;
+	@DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName=ID)
+	private int id;
+	@DatabaseField(columnName=COLUMN_GAMETYPE)
+	private int gameId;
 	
-	public CardTypeInfo(int id, int gid){
-		this.id = id;
+	public CardTypeInfo(int gid){
 		this.gameId = gid;
 	}
 	

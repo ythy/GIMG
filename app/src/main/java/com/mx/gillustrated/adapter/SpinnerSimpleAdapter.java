@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import com.mx.gillustrated.provider.Providerdata;
 import com.mx.gillustrated.vo.EventInfo;
 
 import java.util.List;

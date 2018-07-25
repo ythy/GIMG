@@ -3,21 +3,59 @@ package com.mx.gillustrated.vo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = CardInfo.TABLE_NAME)
 public class CardInfo extends SpinnerInfo implements Parcelable{
-	
-	private int id = -1;
+
+	public static final String TABLE_NAME = "card_info";
+	public static final String SORT_DESC = "DESC ";
+	public static final String SORT_ASC = "ASC ";
+
+	public static final String ID = "_id";
+	public static final String COLUMN_NID = "nid";
+	public static final String COLUMN_NAME = "name";
+	public static final String COLUMN_FRONT_NAME = "front_name";
+	public static final String COLUMN_LEVEL = "level";
+	public static final String COLUMN_ATTR= "attr";
+	public static final String COLUMN_COST = "cost";
+	public static final String COLUMN_MAXHP = "max_hp";
+	public static final String COLUMN_MAXATTACK = "max_attack";
+	public static final String COLUMN_MAXDEFENSE = "max_defense";
+	public static final String COLUMN_GAMETYPE = "game_type";
+	public static final String COLUMN_IMGUPDATE = "img_update";
+	public static final String COLUMN_REMARK = "remark";
+	public static final String COLUMN_EVENTTYPE = "event_type";
+
+	@DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName=ID)
+	private int id;
+	@DatabaseField
 	private int nid;
+	@DatabaseField(columnName = COLUMN_GAMETYPE)
 	private int gameId;
-	private int eventId = -1;
+	@DatabaseField(columnName = COLUMN_EVENTTYPE)
+	private int eventId;
+	@DatabaseField(columnName = COLUMN_FRONT_NAME)
 	private String frontName = null;
+	@DatabaseField
 	private String name = null;
 	private String attr;
-	private int attrId = -1;
+	@DatabaseField(columnName = COLUMN_ATTR)
+	private int attrId;
+	@DatabaseField
 	private String level;
-	private int cost;
+	@DatabaseField
+	private int cost = -1;
+	@DatabaseField(columnName = COLUMN_MAXHP)
 	private int maxHP;
+	@DatabaseField(columnName = COLUMN_MAXATTACK)
 	private int maxAttack;
+	@DatabaseField(columnName = COLUMN_MAXDEFENSE)
 	private int maxDefense;
+	@DatabaseField(columnName = COLUMN_IMGUPDATE, defaultValue = "0")
+	private int imageUpdate;
+	@DatabaseField
 	private String remark = null; //卡片备注
 
 	public int getEventId() {
@@ -30,6 +68,14 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 
 	public String getRemark() {
 		return remark;
+	}
+
+	public int getImageUpdate() {
+		return imageUpdate;
+	}
+
+	public void setImageUpdate(int imageUpdate) {
+		this.imageUpdate = imageUpdate;
 	}
 
 	public void setRemark(String remark) {
@@ -154,6 +200,7 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 		dest.writeInt(maxDefense);
 		dest.writeString(remark);
 		dest.writeInt(eventId);
+		dest.writeInt(imageUpdate);
 	}
 	
 	 public static final Parcelable.Creator<CardInfo> CREATOR = new Creator<CardInfo>()
@@ -187,6 +234,7 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 			maxDefense = in.readInt();
 			remark = in.readString();
 			eventId = in.readInt();
+			imageUpdate = in.readInt();
 	    }
 	    
 	    public CardInfo()
@@ -197,6 +245,21 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 		public CardInfo(String name)
 		{
 			this.name = name;
+		}
+
+		public CardInfo(String[] searchParams){
+			this.name = searchParams[0];
+			this.cost = Integer.parseInt(searchParams[1]);
+			this.attrId = Integer.parseInt(searchParams[2]);
+			this.eventId = Integer.parseInt(searchParams[3]);
+		}
+
+		public String[] getCardSearchParam(){
+			return new String[]{
+				this.name, String.valueOf(this.cost),
+					String.valueOf(this.attrId),
+					String.valueOf(this.eventId),
+			};
 		}
 
 }

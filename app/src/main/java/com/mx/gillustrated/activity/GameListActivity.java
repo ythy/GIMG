@@ -3,20 +3,16 @@ package com.mx.gillustrated.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.j256.ormlite.dao.Dao;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.GameListAdapter;
 import com.mx.gillustrated.adapter.GameListAdapter.DespairTouchListener;
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler;
-import com.mx.gillustrated.provider.Providerdata;
-import com.mx.gillustrated.util.DBHelper;
 import com.mx.gillustrated.vo.GameInfo;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -58,9 +54,9 @@ public class GameListActivity extends BaseActivity {
 
 		@Override
 		public void onSaveBtnClickListener(GameInfo info) {
-			long result = mOrmHelper.getGameInfoDao().update(info);
-			if( result > -1) {
-				Toast.makeText(GameListActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
+			Dao.CreateOrUpdateStatus result = mOrmHelper.getGameInfoDao().createOrUpdate(info);
+			if( result.isCreated() || result.isUpdated() ) {
+				Toast.makeText(GameListActivity.this, result.isCreated() ? "新增成功" : "更新成功", Toast.LENGTH_SHORT).show();
 				searchMain();
 			}
 				

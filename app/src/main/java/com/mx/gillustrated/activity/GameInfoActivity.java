@@ -6,12 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.j256.ormlite.dao.Dao;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.CardTypeListAdapter;
 import com.mx.gillustrated.adapter.CardTypeListAdapter.DespairTouchListener;
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler;
-import com.mx.gillustrated.provider.Providerdata;
-import com.mx.gillustrated.util.DBHelper;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
@@ -61,7 +60,7 @@ public class GameInfoActivity extends BaseActivity {
 		setContentView(R.layout.activity_gameinfo);
 		ButterKnife.bind(this);
 
-		mGameType = getIntent().getIntExtra("game", -1);
+		mGameType = getIntent().getIntExtra("game", 0);
 		
 		btnAdd = (Button) findViewById(R.id.btnGameAdd);
 		btnAdd.setOnClickListener(onAddBtnClickListerner);
@@ -88,7 +87,7 @@ public class GameInfoActivity extends BaseActivity {
 		mainHandler.post( new Runnable() {
 			@Override
 			public void run() {
-				List<CardTypeInfo> list = mOrmHelper.getCardTypeInfoDao().queryForEq(Providerdata.CardType.COLUMN_GAMETYPE, mGameType);
+				List<CardTypeInfo> list = mOrmHelper.getCardTypeInfoDao().queryForEq(CardTypeInfo.COLUMN_GAMETYPE, mGameType);
 				Message msg = mainHandler.obtainMessage();
 				msg.what = 1;
 				msg.obj = list;
@@ -115,9 +114,9 @@ public class GameInfoActivity extends BaseActivity {
 		@Override
 		public void onSaveBtnClickListener(CardTypeInfo info) {
 			// TODO Auto-generated method stub
-			long result = mOrmHelper.getCardTypeInfoDao().update(info);
-			if( result > -1) {
-				Toast.makeText(GameInfoActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
+			Dao.CreateOrUpdateStatus result = mOrmHelper.getCardTypeInfoDao().createOrUpdate(info);
+			if( result.isCreated() || result.isUpdated() ) {
+				Toast.makeText(GameInfoActivity.this, result.isCreated() ? "新增成功" : "更新成功", Toast.LENGTH_SHORT).show();
 				searchMain();
 			}
 		}
@@ -128,7 +127,7 @@ public class GameInfoActivity extends BaseActivity {
 		
 		@Override
 		public void onClick(View v) {		
-			mList.add(0, new CardTypeInfo(-1, mGameType));
+			mList.add(0, new CardTypeInfo(mGameType));
 			updateList(false);
 		}
 	};

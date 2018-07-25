@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.j256.ormlite.dao.Dao;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.util.CommonUtil;
@@ -68,13 +69,9 @@ public class EventInfoActivity extends BaseActivity {
         request.setContent(mContent.getText().toString());
         request.setShowing(mCbShowing.isChecked() ? "Y" : "N");
         request.setGameId(mGameId);
-        long result = mOrmHelper.getEventInfoDao().update(request);
-        if(result > -1){
-            if(mEventId > -1)
-                Toast.makeText(getBaseContext(), "更新成功", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(getBaseContext(), "新增成功", Toast.LENGTH_SHORT).show();
-
+        Dao.CreateOrUpdateStatus result = mOrmHelper.getEventInfoDao().createOrUpdate(request);
+        if(result.isCreated() || result.isUpdated() ){
+            Toast.makeText(getBaseContext(), result.isCreated() ? "新增成功" : "更新成功", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(EventInfoActivity.this, EventsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("game", mGameId);
@@ -127,9 +124,9 @@ public class EventInfoActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         mBtnDel.setTag(0);
-        mEventId = getIntent().getIntExtra("event", -1);
-        mGameId = getIntent().getIntExtra("game", -1);
-        if(mEventId > -1)
+        mEventId = getIntent().getIntExtra("event", 0);
+        mGameId = getIntent().getIntExtra("game", 0);
+        if(mEventId > 0)
             mainSearch();
     }
 

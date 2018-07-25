@@ -8,46 +8,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-
-import com.mx.gillustrated.MyApplication;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.DBCall;
 import com.mx.gillustrated.dialog.DialogExportImg;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.DataListAdapter;
-import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler;
-import com.mx.gillustrated.provider.Providerdata;
-import com.mx.gillustrated.provider.Providerdata.Card;
 import com.mx.gillustrated.util.CommonUtil;
-import com.mx.gillustrated.util.DBHelper;
 import com.mx.gillustrated.util.DataBakUtil;
-import com.mx.gillustrated.util.JsonFileReader;
 import com.mx.gillustrated.util.ServiceUtils;
 import com.mx.gillustrated.util.UIUtils;
 import com.mx.gillustrated.vo.CardInfo;
-import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.RequiresApi;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -70,8 +50,8 @@ import io.reactivex.functions.Consumer;
 public class MainActivity extends BaseActivity {
 
     private static String TAG = "MainActivity";
-    private static String INIT_ORDER_BY = Card.ID;
-    private static String INIT_ORDER_TYPE = Card.SORT_DESC;
+    private static String INIT_ORDER_BY = CardInfo.ID;
+    private static String INIT_ORDER_TYPE = CardInfo.SORT_DESC;
     private static String DEFAULT_NAME = "名称";
     private static String DEFAULT_COST = "コスト";
     private static String DEFAULT_ATTR = "属性";
@@ -79,7 +59,7 @@ public class MainActivity extends BaseActivity {
 
     private List<CardInfo> mList;
     private DataListAdapter mAdapter;
-    private int mGameType = -1; //游戏类别
+    private int mGameType = 0; //游戏类别
     private int[] spinnerGameData;
     private CardInfo mSearchCondition = null;
     private int mSpinnerChangedCount = 0; //控制 select变更后是否参与检索
@@ -195,22 +175,22 @@ public class MainActivity extends BaseActivity {
 
     private void initHeader() {
         mListHeaderView = new ListHeaderView(findViewById(R.id.ll_header));
-        setHeaderClickHandler(mListHeaderView.tvHP, Card.COLUMN_MAXHP);
-        setHeaderClickHandler(mListHeaderView.tvAttack, Card.COLUMN_MAXATTACK);
-        setHeaderClickHandler(mListHeaderView.tvDefense, Card.COLUMN_MAXDEFENSE);
-        setHeaderClickHandler(mListHeaderView.tvName, Card.COLUMN_NAME);
-        setHeaderClickHandler(mListHeaderView.tvAttr, Card.COLUMN_ATTR);
-        setHeaderClickHandler(mListHeaderView.tvCost, Card.COLUMN_COST);
-        setHeaderClickHandler(mListHeaderView.tvImg, Card.COLUMN_NID);
+        setHeaderClickHandler(mListHeaderView.tvHP, CardInfo.COLUMN_MAXHP);
+        setHeaderClickHandler(mListHeaderView.tvAttack, CardInfo.COLUMN_MAXATTACK);
+        setHeaderClickHandler(mListHeaderView.tvDefense, CardInfo.COLUMN_MAXDEFENSE);
+        setHeaderClickHandler(mListHeaderView.tvName, CardInfo.COLUMN_NAME);
+        setHeaderClickHandler(mListHeaderView.tvAttr, CardInfo.COLUMN_ATTR);
+        setHeaderClickHandler(mListHeaderView.tvCost, CardInfo.COLUMN_COST);
+        setHeaderClickHandler(mListHeaderView.tvImg, CardInfo.COLUMN_NID);
 
         mTextViewMap = new HashMap<String, TextView>(){{
-            put(Card.COLUMN_NID, mListHeaderView.tvImg);
-            put(Card.COLUMN_MAXHP, mListHeaderView.tvHP);
-            put(Card.COLUMN_MAXATTACK, mListHeaderView.tvAttack);
-            put(Card.COLUMN_MAXDEFENSE, mListHeaderView.tvDefense);
-            put(Card.COLUMN_NAME, mListHeaderView.tvName);
-            put(Card.COLUMN_ATTR, mListHeaderView.tvAttr);
-            put(Card.COLUMN_COST, mListHeaderView.tvCost);
+            put(CardInfo.COLUMN_NID, mListHeaderView.tvImg);
+            put(CardInfo.COLUMN_MAXHP, mListHeaderView.tvHP);
+            put(CardInfo.COLUMN_MAXATTACK, mListHeaderView.tvAttack);
+            put(CardInfo.COLUMN_MAXDEFENSE, mListHeaderView.tvDefense);
+            put(CardInfo.COLUMN_NAME, mListHeaderView.tvName);
+            put(CardInfo.COLUMN_ATTR, mListHeaderView.tvAttr);
+            put(CardInfo.COLUMN_COST, mListHeaderView.tvCost);
         }};
     }
 
@@ -219,9 +199,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if(mCurrentOrderBy == column)
-                    mCurrentOrderType = mCurrentOrderType.equals(Card.SORT_ASC) ? Card.SORT_DESC : Card.SORT_ASC;
+                    mCurrentOrderType = mCurrentOrderType.equals(CardInfo.SORT_ASC) ? CardInfo.SORT_DESC : CardInfo.SORT_ASC;
                 else
-                    mCurrentOrderType = Card.SORT_DESC;
+                    mCurrentOrderType = CardInfo.SORT_DESC;
                 mCurrentOrderBy = column;
                 searchData();
             }
@@ -301,7 +281,7 @@ public class MainActivity extends BaseActivity {
                 }else{
                     new Thread() {
                         public void run() {
-                            DataBakUtil.getDataFromFiles(mDBHelper, mOrmHelper);
+                            DataBakUtil.getDataFromFiles(mOrmHelper);
                             mainHandler.sendEmptyMessage(1);
                         }
                     }.start();
@@ -314,9 +294,9 @@ public class MainActivity extends BaseActivity {
 	
 	private void startSearchMainData(){
 		mSpinnerChangedCount = 4;
-		setSpinner(spinnerName, Card.COLUMN_NAME, DEFAULT_NAME);
-		setSpinner(spinnerCost, Card.COLUMN_COST, DEFAULT_COST);
-		setSpinner(spinnerAttr, Card.COLUMN_ATTR, DEFAULT_ATTR);
+		setSpinner(spinnerName, CardInfo.COLUMN_NAME, DEFAULT_NAME);
+		setSpinner(spinnerCost, CardInfo.COLUMN_COST, DEFAULT_COST);
+		setSpinner(spinnerAttr, CardInfo.COLUMN_ATTR, DEFAULT_ATTR);
         //设置活动下拉列表
         List<EventInfo> mEventList = mOrmHelper.getEventInfoDao().getListByGameId(mGameType, "Y");
         mEventList.add(0, new EventInfo(DEFAULT_EVENT));
@@ -338,10 +318,9 @@ public class MainActivity extends BaseActivity {
     //设置筛选列表
 	private void setSpinner(Spinner spinner, String columnType, String defaultStr)
 	{
-		List<CardInfo> cardArray = mDBHelper.queryCardDropList(columnType, mGameType);
+		List<CardInfo> cardArray = mOrmHelper.getCardInfoDao().queryCardDropList(columnType, mGameType);
         Collections.sort(cardArray, droplistComparator);
-        cardArray.add (0, new CardInfo(defaultStr));
-
+        cardArray.add(0, new CardInfo(defaultStr));
         SpinnerCommonAdapter<CardInfo> adapterName =
 				new SpinnerCommonAdapter( this, cardArray);
 		spinner.setAdapter(adapterName);
@@ -357,8 +336,9 @@ public class MainActivity extends BaseActivity {
 
     private void searchCards(CardInfo info){
 		mList.clear();
+        info.setGameId(mGameType);
 		mSearchCondition = info;
-		mList.addAll(mDBHelper.queryCards(info, mCurrentOrderBy + mCurrentOrderType, mGameType));
+		mList.addAll(mOrmHelper.getCardInfoDao().queryCards(info, mCurrentOrderBy, mCurrentOrderType.equals( CardInfo.SORT_DESC) ? true : false, -1 ));
 		updateList(true);
 	}
 	
@@ -399,9 +379,8 @@ public class MainActivity extends BaseActivity {
 				Intent intent = new Intent(MainActivity.this,
 						DetailActivity.class);
 				CardInfo info = (CardInfo) arg0.getItemAtPosition(position);
-				info.setGameId(mGameType);
-				intent.putExtra("card", info);
-				intent.putExtra("cardSearchCondition", mSearchCondition);
+				intent.putExtra("card", info.getId());
+				intent.putExtra("cardSearchCondition", mSearchCondition.getCardSearchParam());
 				intent.putExtra("orderBy", mCurrentOrderBy + "*" + mCurrentOrderType);
 				intent.putExtra("positon", position);
 				intent.putExtra("totalCount", arg0.getCount());
@@ -441,7 +420,7 @@ public class MainActivity extends BaseActivity {
         switch(item.getItemId())  
         { 
         	case  R.id.menu_out :
-                DataBakUtil.saveDataToFiles(mDBHelper, mOrmHelper);
+                DataBakUtil.saveDataToFiles(mOrmHelper);
                 Toast.makeText(this, "导出成功", Toast.LENGTH_SHORT).show();
 	            break; 
         	case  R.id.menu_gamelist :

@@ -3,14 +3,18 @@ package com.mx.gillustrated.vo;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "game_info")
+@DatabaseTable(tableName = GameInfo.TABLE_NAME)
 public class GameInfo {
+
+	public static final String TABLE_NAME = "game_info";
+	public static final String ID = "_id";
+	public static final String COLUMN_NAME = "name";
 
 	@DatabaseField
 	private String name = null; //游戏名称
 
-	@DatabaseField(id = true, columnName="_id")
-	private int id = -1;
+	@DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName=ID)
+	private int id;
 	
 	public GameInfo(){
 		

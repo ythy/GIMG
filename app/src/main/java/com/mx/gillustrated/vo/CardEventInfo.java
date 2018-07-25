@@ -7,14 +7,18 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by maoxin on 2018/7/23.
  */
 
-@DatabaseTable(tableName = "event_chain")
+@DatabaseTable(tableName = CardEventInfo.TABLE_NAME)
 public class CardEventInfo {
 
-    @DatabaseField(uniqueCombo = true)
-    private int cardNid = -1;
+    public static final String TABLE_NAME = "event_chain";
+    public static final String COLUMN_CARD_NID = "cardNid";
+    public static final String COLUMN_EVENT_ID = "eventId";
 
     @DatabaseField(uniqueCombo = true)
-    private int eventId = -1;
+    private int cardNid;
+
+    @DatabaseField(uniqueCombo = true)
+    private int eventId;
 
     public CardEventInfo(){
     }

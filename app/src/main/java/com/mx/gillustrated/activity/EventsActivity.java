@@ -6,12 +6,7 @@ import java.util.List;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.EventsAdapter;
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler;
-import com.mx.gillustrated.provider.Providerdata;
-import com.mx.gillustrated.util.DBHelper;
 import com.mx.gillustrated.vo.EventInfo;
-import com.mx.gillustrated.vo.GameInfo;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,7 +30,7 @@ public class EventsActivity extends BaseActivity {
     @OnClick(R.id.btnDespairAdd)
     void onAddBtnClickListerner(){
         Intent intent = new Intent(EventsActivity.this, EventInfoActivity.class);
-        intent.putExtra("event", -1);
+        intent.putExtra("event", 0);
         intent.putExtra("game", mGameId);
         startActivity(intent);
     }
@@ -61,7 +56,7 @@ public class EventsActivity extends BaseActivity {
         setContentView(R.layout.activity_events);
         ButterKnife.bind(this);
 
-        mGameId = getIntent().getIntExtra("game", -1);
+        mGameId = getIntent().getIntExtra("game", 0);
         pageVboxLayout.setVisibility(View.GONE);
         mLvDespairMain.setOnScrollListener(new ListenerListViewScrollHandler(mLvDespairMain, pageVboxLayout));
         mList = new ArrayList<EventInfo>();

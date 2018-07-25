@@ -11,12 +11,9 @@ import java.util.List;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
-import com.mx.gillustrated.provider.Providerdata;
 import com.mx.gillustrated.util.CommonUtil;
-import com.mx.gillustrated.util.UIUtils;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -62,7 +59,7 @@ public class AddCardActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add);
 		
-		mGameType = getIntent().getIntExtra("game", -1);	
+		mGameType = getIntent().getIntExtra("game", 0);
 				
 		btnSave = (Button) findViewById(R.id.btnSave);
 		btnSave.setOnClickListener(btnSaveClickListener);
@@ -252,7 +249,7 @@ public class AddCardActivity extends BaseActivity {
 			        }
 					
 					if(type == 0 || type == 1){
-						long result	 = mDBHelper.addCardInfo(card);	
+						long result	 = mOrmHelper.getCardInfoDao().create(card);
 						if (result != -1) {
 							if (ivAll.getDrawable() != null) {
 								if(type == 0 )
@@ -288,8 +285,8 @@ public class AddCardActivity extends BaseActivity {
 							card.setFrontName(null);
 							card.setName(null);
 							if(card.getCost() > 0 || card.getMaxHP() > 0 || card.getMaxAttack() > 0 || card.getMaxDefense() > 0)
-								mDBHelper.updateCardInfo(card);	
-						}							
+								mOrmHelper.getCardInfoDao().update(card);
+						}
 						else if(type == 3)
 							try {
 								CommonUtil.exportImgFromBitmap(m_BitMapAll, nextFile);

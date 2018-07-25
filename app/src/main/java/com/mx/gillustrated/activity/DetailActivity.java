@@ -17,7 +17,6 @@ import com.j256.ormlite.support.DatabaseResults;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
-import com.mx.gillustrated.provider.Providerdata;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.util.UIUtils;
 import com.mx.gillustrated.vo.CardEventInfo;
@@ -70,7 +69,7 @@ public class DetailActivity extends BaseActivity {
 	private TextView tvId;
 	private int mId;
 
-	private CardInfo mMainSearchInfo;
+	private String[] mMainSearchInfo;
 	private String mMainSearchOrderBy;
 	private int mCurrentPosition;
 	private int mMainTotalCount;
@@ -124,14 +123,12 @@ public class DetailActivity extends BaseActivity {
 		ButterKnife.bind(this);
 
 		Intent intent = getIntent();
-		CardInfo info = intent.getParcelableExtra("card");
-		mMainSearchInfo = intent.getParcelableExtra("cardSearchCondition");
+		mId = intent.getIntExtra("card", 0);
+		mMainSearchInfo = intent.getStringArrayExtra("cardSearchCondition");
 		mMainSearchOrderBy = intent.getStringExtra("orderBy");
 		mCurrentPosition = intent.getIntExtra("positon", -1);
 		mMainTotalCount = intent.getIntExtra("totalCount", 0);
-
-		mCardInfo = info;
-		mId = info.getId();
+		mCardInfo = mOrmHelper.getCardInfoDao().queryForId(mId);
 
 		chkModify = (CheckBox) findViewById(R.id.chkModify);
 		etHP = (EditText) findViewById(R.id.etDetailHP);
@@ -155,9 +152,7 @@ public class DetailActivity extends BaseActivity {
 		mLLImages = (LinearLayout) findViewById(R.id.llImages);
 		
 		spinnerAttr = (Spinner) findViewById(R.id.spinnerAttr);
-//		QueryBuilder<CardTypeInfo, Integer> qb = mOrmHelper.getCardTypeInfoDao().queryBuilder();
-//		qb.where().
-		List<CardTypeInfo> cardTypes = mOrmHelper.getCardTypeInfoDao().queryForEq(Providerdata.CardType.COLUMN_GAMETYPE, mCardInfo.getGameId());
+		List<CardTypeInfo> cardTypes = mOrmHelper.getCardTypeInfoDao().queryForEq(CardInfo.COLUMN_GAMETYPE, mCardInfo.getGameId());
 		SpinnerCommonAdapter<CardTypeInfo> adapterName =
 				new SpinnerCommonAdapter<CardTypeInfo>( this, cardTypes);
 		spinnerAttr.setAdapter(adapterName);
@@ -216,8 +211,11 @@ public class DetailActivity extends BaseActivity {
 		if(newPositon < 0 || newPositon >= mMainTotalCount){
 			Toast.makeText(getBaseContext(), "顶端/底端", Toast.LENGTH_SHORT).show();
 			return;
-		}	
-		CardInfo result = mDBHelper.queryCardSide(mMainSearchInfo, mCardInfo.getGameId(), newPositon, mMainSearchOrderBy.split("\\*")[0] +  mMainSearchOrderBy.split("\\*")[1]);
+		}
+		String order = mMainSearchOrderBy.split("\\*")[0];
+		boolean isDesc = mMainSearchOrderBy.split("\\*")[1].equals( CardInfo.SORT_DESC) ? true : false;
+		CardInfo result = mOrmHelper.getCardInfoDao().queryCards(new CardInfo(mMainSearchInfo) , order, isDesc, newPositon ).get(0);
+
 		if(result != null){
 			mCurrentPosition = newPositon;
 			mCardInfo = result;
@@ -266,13 +264,13 @@ public class DetailActivity extends BaseActivity {
 				CardInfo cardOld = mCardInfo;
 				card = new CardInfo();
 				card.setName(etName.getText().toString().trim());
-				result = mDBHelper.updateCardName(card, cardOld);
+				result = mOrmHelper.getCardInfoDao().updateCardName(card, cardOld);
 			}
 
 			card = new CardInfo();
 			card.setId(mId);
 			card.setNid(Integer.parseInt(etNid.getText().toString()));
-
+			card.setGameId(mCardInfo.getGameId());
 			CardTypeInfo cardTypeInfo = (CardTypeInfo) spinnerAttr.getSelectedItem();
 			card.setAttrId(cardTypeInfo.getId());
 			card.setLevel(spinnerLevel.getSelectedItem().toString());
@@ -288,7 +286,7 @@ public class DetailActivity extends BaseActivity {
 					: Integer.parseInt(etAttack.getText().toString()));
 			card.setMaxDefense(etDefense.getText().toString().trim().equals("") ? 0
 					: Integer.parseInt(etDefense.getText().toString()));
-			result += mDBHelper.updateCardInfo(card);
+			result += mOrmHelper.getCardInfoDao().update(card);
 
 			if (result > 0) {
 				Intent intent = new Intent(DetailActivity.this,
@@ -318,9 +316,7 @@ public class DetailActivity extends BaseActivity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									CardInfo card = new CardInfo();
-									card.setId(mCardInfo.getId());
-									long result = mDBHelper.delCardInfo(card);
+									long result = mOrmHelper.getCardInfoDao().deleteById(mCardInfo.getId());
 									if (result != -1) {
 										
 										for(int i = 0; i < mImagesFiles.size(); i++)
@@ -449,7 +445,7 @@ public class DetailActivity extends BaseActivity {
 				Spinner select = (Spinner) line.findViewById(R.id.spinnerEvent);
 				EventInfo info = (EventInfo) select.getSelectedItem();
 				int id = info.getId();
-				if( id == -1 ) {
+				if( id == 0 ) {
 					llShowEvent.removeView(line);
 					mEventView.remove(Integer.parseInt(tag[0]));
 				}else{

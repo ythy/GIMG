@@ -27,15 +27,15 @@ public class DataBakUtil {
 
     private static final String BakFileName = "cardinfo.json";
 
-    public static void saveDataToFiles(DBHelper mDBHelper, DataBaseHelper mOrmHelper){
+    public static void saveDataToFiles(DataBaseHelper mOrmHelper){
         try {
-            CommonUtil.printFile(generateJsonString(mDBHelper, mOrmHelper), CommonUtil.generateDataFile(BakFileName));
+            CommonUtil.printFile(generateJsonString(mOrmHelper), CommonUtil.generateDataFile(BakFileName));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public static void getDataFromFiles(DBHelper mDBHelper, DataBaseHelper mOrmHelper){
+    public static void getDataFromFiles(DataBaseHelper mOrmHelper){
         File fileDir = new File(Environment.getExternalStorageDirectory(),
                 MConfig.SD_DATA_PATH);
         File jsonFile = new File(fileDir.getPath(), BakFileName);
@@ -44,7 +44,7 @@ public class DataBakUtil {
             JSONObject jsonObj;
             try {
                 jsonObj = new JSONObject(out);
-                mDBHelper.addAllCardInfo(JsonFileReader.setListData(jsonObj.getJSONArray("rows")));
+                mOrmHelper.getCardInfoDao().addCardInfos(JsonFileReader.setListData(jsonObj.getJSONArray("rows")));
                 mOrmHelper.getGameInfoDao().addGameInfos(JsonFileReader.setGameListData(jsonObj.getJSONArray("rowsGame")));
                 mOrmHelper.getCardTypeInfoDao().addCardTypes(JsonFileReader.setCardTypeListData(jsonObj.getJSONArray("rowsCardType")));
                 mOrmHelper.getEventInfoDao().addEventInfos(JsonFileReader.setEventListData(jsonObj.getJSONArray("rowsEvents")));
@@ -56,9 +56,9 @@ public class DataBakUtil {
         }
     }
 
-    private static  String generateJsonString(DBHelper mDBHelper, DataBaseHelper mOrmHelper) throws JSONException
+    private static  String generateJsonString(DataBaseHelper mOrmHelper) throws JSONException
     {
-        List<CardInfo> data = mDBHelper.queryCards(null, null, -1);
+        List<CardInfo> data = mOrmHelper.getCardInfoDao().queryForAll();
         JSONArray rows = new JSONArray();
         for(int i = 0; i < data.size(); i++)
         {

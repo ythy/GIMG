@@ -7,10 +7,14 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.database.imp.CardEventInfoDaoImp;
+import com.mx.gillustrated.database.imp.CardInfoDaoImp;
 import com.mx.gillustrated.database.imp.CardTypeInfoDaoImp;
 import com.mx.gillustrated.database.imp.EventInfoDaoImp;
 import com.mx.gillustrated.database.imp.GameInfoDaoImp;
+import com.mx.gillustrated.vo.CardEventInfo;
+import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
+import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
 import java.sql.SQLException;
@@ -27,7 +31,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
     private static final int DATABASE_VERSION = 9;
 
     private static final Class[] CONFIG_CLASSES = {
-            GameInfo.class, CardTypeInfo.class
+            GameInfo.class, CardTypeInfo.class, CardEventInfo.class, EventInfo.class, CardInfo.class,
     };
 
     public DataBaseHelper(Context context){
@@ -52,7 +56,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        String a = "1";
+
     }
 
     public GameInfoDaoImp getGameInfoDao(){
@@ -69,5 +73,9 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 
     public EventInfoDaoImp getEventInfoDao(){
         return new EventInfoDaoImp(this);
+    }
+
+    public CardInfoDaoImp getCardInfoDao(){
+        return new CardInfoDaoImp(this);
     }
 }

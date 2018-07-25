@@ -5,7 +5,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.mx.gillustrated.provider.Providerdata;
 import com.mx.gillustrated.vo.CardEventInfo;
 
 import java.sql.SQLException;
@@ -37,8 +36,8 @@ public class CardEventInfoDaoImp  extends RuntimeExceptionDao<CardEventInfo, Int
     public void addCardEvents(List<CardEventInfo> infos){
         for(CardEventInfo event: infos){
             List<CardEventInfo> matching = this.queryForMatching(event);
-            // -1 是空白行
-            if(event.getEventId() > -1 && (matching == null || matching.size() == 0))
+            // 0 是空白行
+            if(event.getEventId() > 0 && (matching == null || matching.size() == 0))
                 this.create(event);
         }
     }
@@ -46,8 +45,9 @@ public class CardEventInfoDaoImp  extends RuntimeExceptionDao<CardEventInfo, Int
     public int delCardEvents(CardEventInfo info){
         DeleteBuilder<CardEventInfo, Integer> qb  = this.deleteBuilder();
         try {
-            qb.where().eq("cardNid", info.getCardNid());
-            qb.where().eq("eventId", info.getEventId());
+            qb.where().eq(CardEventInfo.COLUMN_CARD_NID, info.getCardNid())
+                    .and()
+                    .eq(CardEventInfo.COLUMN_EVENT_ID, info.getEventId());
             return this.delete(qb.prepare());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -58,7 +58,7 @@ public class CardEventInfoDaoImp  extends RuntimeExceptionDao<CardEventInfo, Int
     public List<CardEventInfo> getListByCardId(int cardId){
         QueryBuilder<CardEventInfo, Integer> qb = this.queryBuilder();
         try {
-            qb.where().eq("cardNid", cardId);
+            qb.where().eq(CardEventInfo.COLUMN_CARD_NID, cardId);
             return this.query(qb.prepare());
         } catch (SQLException e) {
             e.printStackTrace();

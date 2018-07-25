@@ -1,5 +1,5 @@
 #
-# generated on 2018/07/23 05:57:24
+# generated on 2018/07/25 10:03:30
 #
 # --table-start--
 dataClass=com.mx.gillustrated.vo.GameInfo
@@ -11,7 +11,8 @@ fieldName=name
 # --field-start--
 fieldName=id
 columnName=_id
-id=true
+generatedId=true
+allowGeneratedIdInsert=true
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -26,7 +27,8 @@ fieldName=name
 # --field-start--
 fieldName=id
 columnName=_id
-id=true
+generatedId=true
+allowGeneratedIdInsert=true
 # --field-end--
 # --field-start--
 fieldName=gameId
@@ -64,7 +66,8 @@ columnName=gameid
 # --field-start--
 fieldName=id
 columnName=_id
-id=true
+generatedId=true
+allowGeneratedIdInsert=true
 # --field-end--
 # --field-start--
 fieldName=duration
@@ -75,6 +78,67 @@ fieldName=content
 # --field-start--
 fieldName=showing
 columnName=showFlag
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.mx.gillustrated.vo.CardInfo
+tableName=card_info
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=_id
+generatedId=true
+allowGeneratedIdInsert=true
+# --field-end--
+# --field-start--
+fieldName=nid
+# --field-end--
+# --field-start--
+fieldName=gameId
+columnName=game_type
+# --field-end--
+# --field-start--
+fieldName=eventId
+columnName=event_type
+# --field-end--
+# --field-start--
+fieldName=frontName
+columnName=front_name
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=attrId
+columnName=attr
+# --field-end--
+# --field-start--
+fieldName=level
+# --field-end--
+# --field-start--
+fieldName=cost
+# --field-end--
+# --field-start--
+fieldName=maxHP
+columnName=max_hp
+# --field-end--
+# --field-start--
+fieldName=maxAttack
+columnName=max_attack
+# --field-end--
+# --field-start--
+fieldName=maxDefense
+columnName=max_defense
+# --field-end--
+# --field-start--
+fieldName=imageUpdate
+columnName=img_update
+defaultValue=0
+# --field-end--
+# --field-start--
+fieldName=remark
 # --field-end--
 # --table-fields-end--
 # --table-end--
