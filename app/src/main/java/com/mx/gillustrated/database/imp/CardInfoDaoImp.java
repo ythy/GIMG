@@ -55,10 +55,10 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
     }
 
 
-    public List<CardInfo> queryCards(CardInfo cardinfo, String orderBy, boolean isDesc, long position) {
+    public List<CardInfo> queryCards(CardInfo cardinfo, String orderBy, boolean isAsc, long position) {
         List<CardInfo> result = null;
         QueryBuilder<CardInfo, Integer> qb = this.queryBuilder();
-        qb.orderBy(orderBy, isDesc);
+        qb.orderBy(orderBy, isAsc);
         qb.selectRaw("*");
 //        qb.selectRaw("(SELECT " + CardTypeInfo.COLUMN_NAME + " FROM " + CardTypeInfo.TABLE_NAME + " where " +
 //                CardTypeInfo.TABLE_NAME +  "." + CardTypeInfo.ID + " = " + CardInfo.TABLE_NAME + "." + CardInfo.COLUMN_ATTR + ") ATTRNAME" );

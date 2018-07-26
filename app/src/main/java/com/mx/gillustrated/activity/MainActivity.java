@@ -338,7 +338,7 @@ public class MainActivity extends BaseActivity {
 		mList.clear();
         info.setGameId(mGameType);
 		mSearchCondition = info;
-		mList.addAll(mOrmHelper.getCardInfoDao().queryCards(info, mCurrentOrderBy, mCurrentOrderType.equals( CardInfo.SORT_DESC) ? true : false, -1 ));
+		mList.addAll(mOrmHelper.getCardInfoDao().queryCards(info, mCurrentOrderBy, mCurrentOrderType.equals( CardInfo.SORT_ASC) ? true : false, -1 ));
 		updateList(true);
 	}
 	

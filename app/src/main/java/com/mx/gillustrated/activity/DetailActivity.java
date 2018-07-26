@@ -213,7 +213,7 @@ public class DetailActivity extends BaseActivity {
 			return;
 		}
 		String order = mMainSearchOrderBy.split("\\*")[0];
-		boolean isDesc = mMainSearchOrderBy.split("\\*")[1].equals( CardInfo.SORT_DESC) ? true : false;
+		boolean isDesc = mMainSearchOrderBy.split("\\*")[1].equals( CardInfo.SORT_ASC) ? true : false;
 		CardInfo result = mOrmHelper.getCardInfoDao().queryCards(new CardInfo(mMainSearchInfo) , order, isDesc, newPositon ).get(0);
 
 		if(result != null){
