@@ -230,6 +230,8 @@ public class AddCardActivity extends BaseActivity {
 					if (!etCost.getText().toString().trim().equals(""))
 						card.setCost(Integer.parseInt(etCost.getText()
 								.toString()));
+					else
+						card.setCost(0);
 					if (!etHP.getText().toString().trim().equals(""))
 						card.setMaxHP(Integer.parseInt(etHP.getText()
 								.toString()));
@@ -249,16 +251,17 @@ public class AddCardActivity extends BaseActivity {
 			        }
 					
 					if(type == 0 || type == 1){
-						long result	 = mOrmHelper.getCardInfoDao().create(card);
-						if (result != -1) {
+						mOrmHelper.getCardInfoDao().create(card);
+						long newId = card.getId();
+						if (newId != -1) {
 							if (ivAll.getDrawable() != null) {
 								if(type == 0 )
 								{
-									createImages((int)result, m_BitMapNumber, 1);
+									createImages((int)newId, m_BitMapNumber, 1);
 								}				
 								if(type == 0 || type == 1)
 								{	
-									createImages((int)result, m_BitMapAll, type == 0 ? 2 : 1);
+									createImages((int)newId, m_BitMapAll, type == 0 ? 2 : 1);
 								}
 								
 								CommonUtil.deleteImages(AddCardActivity.this,
