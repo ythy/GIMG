@@ -12,6 +12,7 @@ import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.util.CommonUtil;
+import com.mx.gillustrated.util.PinyinUtil;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import android.content.Intent;
@@ -226,6 +227,7 @@ public class AddCardActivity extends BaseActivity {
 					card.setGameId(mGameType);
 					card.setLevel(spinnerLevel.getSelectedItem().toString());
 					card.setName(etName.getText().toString().trim());
+					card.setPinyinName(PinyinUtil.convert(card.getName()));
 					card.setFrontName(etFrontName.getText().toString().trim());
 					if (!etCost.getText().toString().trim().equals(""))
 						card.setCost(Integer.parseInt(etCost.getText()

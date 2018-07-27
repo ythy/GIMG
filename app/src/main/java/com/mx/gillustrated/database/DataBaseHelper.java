@@ -11,6 +11,7 @@ import com.mx.gillustrated.database.imp.CardInfoDaoImp;
 import com.mx.gillustrated.database.imp.CardTypeInfoDaoImp;
 import com.mx.gillustrated.database.imp.EventInfoDaoImp;
 import com.mx.gillustrated.database.imp.GameInfoDaoImp;
+import com.mx.gillustrated.util.PinyinUtil;
 import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
@@ -18,6 +19,7 @@ import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by maoxin on 2018/7/20.
@@ -28,7 +30,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
     // name of the database file for your application
     private static final String DATABASE_NAME = "GIMG.db";
     // any time you make changes to your database objects, you may have to increase the database version
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 11;
 
     private static final Class[] CONFIG_CLASSES = {
             GameInfo.class, CardTypeInfo.class, CardEventInfo.class, EventInfo.class, CardInfo.class,
@@ -56,7 +58,15 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-
+        if(oldVersion < 10){
+            getCardInfoDao().executeRaw("ALTER TABLE " + CardInfo.TABLE_NAME + " ADD COLUMN  " + CardInfo.COLUMN_PINYIN_NAME + " VARCHAR; ");
+        }if(oldVersion < 11){
+            List<CardInfo> list = getCardInfoDao().queryForAll();
+            for( CardInfo card : list ){
+                card.setPinyinName(PinyinUtil.convert(card.getName()));
+                getCardInfoDao().update(card);
+            }
+        }
     }
 
     public GameInfoDaoImp getGameInfoDao(){

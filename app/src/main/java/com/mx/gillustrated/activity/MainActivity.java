@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -45,6 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import butterknife.OnTextChanged;
 import io.reactivex.functions.Consumer;
 
 public class MainActivity extends BaseActivity {
@@ -77,10 +79,22 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.spinnerFrontName) Spinner spinnerEvent;
     @BindView(R.id.spinnerGame) Spinner spinnerGameList;
     @BindView(R.id.pageVBox) RelativeLayout pageVboxLayout;
+    @BindView(R.id.etPinyin) EditText etPinyin;
 
     @BindColor(R.color.color_white2) int mColorWhite2;
     @BindColor(R.color.color_white) int mColorWhite;
 
+    @OnTextChanged(R.id.etPinyin)
+    void onEtPinyinChanged(){
+        boolean breaks = etPinyin.getTag() == null ? false : (boolean) etPinyin.getTag() ;//防止change事件二次检索
+        if(breaks){
+            etPinyin.setTag(false);
+            return;
+        }
+        String input = etPinyin.getText().toString();
+        mSearchCondition.setPinyinName(input);
+        searchCards(mSearchCondition);
+    }
 
     @OnClick(R.id.btnAdd)
     void btnAddClickListener(){
@@ -103,6 +117,9 @@ public class MainActivity extends BaseActivity {
 
         mCurrentOrderBy = INIT_ORDER_BY;
         mCurrentOrderType =  INIT_ORDER_TYPE;
+
+        etPinyin.setTag(true);
+        etPinyin.setText("");
 
         if(mSpinnerChangedCount == 0){ //没有变化
             searchData(); //默认检索
@@ -334,12 +351,20 @@ public class MainActivity extends BaseActivity {
 		}
 	};
 
-    private void searchCards(CardInfo info){
-		mList.clear();
+    private void searchCards(final CardInfo info){
         info.setGameId(mGameType);
 		mSearchCondition = info;
-		mList.addAll(mOrmHelper.getCardInfoDao().queryCards(info, mCurrentOrderBy, mCurrentOrderType.equals( CardInfo.SORT_ASC) ? true : false, -1 ));
-		updateList(true);
+        mProgressDialog.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<CardInfo> list =  mOrmHelper.getCardInfoDao().queryCards(info, mCurrentOrderBy, mCurrentOrderType.equals( CardInfo.SORT_ASC) ? true : false, -1 );
+                Message msg = Message.obtain();
+                msg.what = 5;
+                msg.obj = list;
+                mainHandler.sendMessage(msg);
+            }
+        }).start();
 	}
 	
 	Handler mainHandler = new Handler() {
@@ -364,7 +389,13 @@ public class MainActivity extends BaseActivity {
 			}
 			else if (msg.what == 3) {
 				Toast.makeText(MainActivity.this, "生成头像完成", Toast.LENGTH_SHORT).show();
-			}
+			}else if(msg.what == 5){
+                List<CardInfo> list = (List<CardInfo>) msg.obj;
+                mList.clear();
+                mList.addAll(list);
+                updateList(true);
+                mProgressDialog.dismiss();
+            }
 		}
 		
 

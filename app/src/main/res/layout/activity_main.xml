@@ -185,10 +185,24 @@
         </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_pinyin"
+        android:layout_below="@id/lltop"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:background="@drawable/edit_pinyin"
+            android:id="@+id/etPinyin"
+            android:layout_width="200dp"
+            android:layout_marginBottom="2dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
     <!-- android:listSelector="@android:color/transparent" -->
     <LinearLayout
         android:id="@+id/ll_header"
-        android:layout_below="@id/lltop"
+        android:layout_below="@id/ll_pinyin"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

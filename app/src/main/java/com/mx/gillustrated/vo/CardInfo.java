@@ -27,6 +27,7 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	public static final String COLUMN_IMGUPDATE = "img_update";
 	public static final String COLUMN_REMARK = "remark";
 	public static final String COLUMN_EVENTTYPE = "event_type";
+	public static final String COLUMN_PINYIN_NAME = "pinyin_name";
 
 	@DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName=ID)
 	private int id;
@@ -57,6 +58,16 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	private int imageUpdate;
 	@DatabaseField
 	private String remark = null; //卡片备注
+	@DatabaseField(columnName = COLUMN_PINYIN_NAME)
+	private String pinyinName;
+
+	public String getPinyinName() {
+		return pinyinName;
+	}
+
+	public void setPinyinName(String pinyinName) {
+		this.pinyinName = pinyinName;
+	}
 
 	public int getEventId() {
 		return eventId;

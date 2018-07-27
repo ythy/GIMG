@@ -18,6 +18,7 @@ import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.util.CommonUtil;
+import com.mx.gillustrated.util.PinyinUtil;
 import com.mx.gillustrated.util.UIUtils;
 import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
@@ -264,6 +265,7 @@ public class DetailActivity extends BaseActivity {
 				CardInfo cardOld = mCardInfo;
 				card = new CardInfo();
 				card.setName(etName.getText().toString().trim());
+				card.setPinyinName(PinyinUtil.convert(card.getName()));
 				result = mOrmHelper.getCardInfoDao().updateCardName(card, cardOld);
 			}
 
@@ -278,6 +280,7 @@ public class DetailActivity extends BaseActivity {
 			card.setCost(etCost.getText().toString().trim().equals("") ? 0
 					: Integer.parseInt(etCost.getText().toString()));
 			card.setName(etName.getText().toString().trim());
+			card.setPinyinName(PinyinUtil.convert(card.getName()));
 			card.setFrontName(etFrontName.getText().toString().trim());
 			card.setRemark(etDetail.getText().toString().trim());
 			card.setMaxHP(etHP.getText().toString().trim().equals("") ? 0
