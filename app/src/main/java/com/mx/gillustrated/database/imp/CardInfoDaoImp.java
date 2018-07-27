@@ -70,7 +70,7 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
             Where<CardInfo, Integer> where =  qb.where();
             where.eq(CardInfo.COLUMN_GAMETYPE, cardinfo.getGameId());
             if(cardinfo.getPinyinName() != null)
-                where.and().like(CardInfo.COLUMN_PINYIN_NAME, "%" + cardinfo.getPinyinName() + "%");
+                where.and().like(CardInfo.COLUMN_PINYIN_NAME, cardinfo.getPinyinName() + "%");
             if(cardinfo.getName() != null)
                 where.and().like(CardInfo.COLUMN_NAME, "%" + cardinfo.getName() + "%");
             if(cardinfo.getFrontName() != null)

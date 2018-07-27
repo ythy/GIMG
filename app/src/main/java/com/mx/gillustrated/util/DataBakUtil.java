@@ -70,6 +70,7 @@ public class DataBakUtil {
             line.put("remark", data.get(i).getRemark() == null ? "" : data.get(i).getRemark());
             line.put("event", data.get(i).getEventId());
             line.put("name", data.get(i).getName());
+            line.put("pinyinName", data.get(i).getPinyinName());
             line.put("attr", data.get(i).getAttrId());
             line.put("cost", data.get(i).getCost());
             line.put("level", data.get(i).getLevel());

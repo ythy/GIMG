@@ -52,6 +52,7 @@ public class JsonFileReader {
 				cardinfo.setRemark(object.getString("remark"));
 				cardinfo.setEventId(object.getInt("event"));
 				cardinfo.setName(object.getString("name"));
+				cardinfo.setPinyinName(object.getString("pinyinName"));
 				cardinfo.setAttrId(object.getInt("attr"));
 				cardinfo.setLevel(object.getString("level"));
 				cardinfo.setCost(object.getInt("cost"));
