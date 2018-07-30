@@ -226,7 +226,8 @@ public class EventInfoActivity extends BaseActivity {
                     Uri uri = data.getData();
                     try {
                         String[] pojo = { MediaStore.Images.Media.DATA };
-                        Cursor cursor = managedQuery(uri, pojo, null, null, null);
+                        Cursor cursor = getContentResolver().query(uri,
+                                pojo, null, null, null);
                         if (cursor != null) {
                             ContentResolver cr = getContentResolver();
                             int colunm_index = cursor

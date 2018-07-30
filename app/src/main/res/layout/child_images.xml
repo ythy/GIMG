@@ -2,10 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingTop="15dp" >
+    android:orientation="horizontal">
 
-    <AbsoluteLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
@@ -13,7 +12,6 @@
             android:id="@+id/imgDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter" />
 
@@ -23,6 +21,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/delete" 
             android:visibility="gone"/>
-    </AbsoluteLayout>
+    </RelativeLayout>
 
 </LinearLayout>
