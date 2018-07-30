@@ -2,6 +2,7 @@ package com.mx.gillustrated.activity;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +48,7 @@ public class EventInfoActivity extends BaseActivity {
     private int mGameId;
     private static final int SELECT_PIC_BY_PICK_PHOTO = 10;
     private SparseArray<File> mImagesFiles;
-    private SparseArray<View> mImagesView;
+    private SparseArray<ImageBox> mImagesView;
 
     @BindView(R.id.etDetailName)
     EditText mName;
@@ -104,14 +106,21 @@ public class EventInfoActivity extends BaseActivity {
     @OnClick(R.id.btnDel2)
     void onImagesDel(){
         for(int i = 0; i < mImagesView.size(); i++){
-            Button btnDel = (Button) mImagesView.valueAt(i).findViewById(R.id.btnDel);
-            btnDel.setVisibility(View.VISIBLE);
+            if(mImagesView.valueAt(i).btnDel.getVisibility() == View.GONE){
+                mImagesView.valueAt(i).btnDel.setVisibility(View.VISIBLE);
+                mImagesView.valueAt(i).indexEt.setVisibility(View.VISIBLE);
+            }else{
+                mImagesView.valueAt(i).btnDel.setVisibility(View.GONE);
+                mImagesView.valueAt(i).indexEt.setVisibility(View.GONE);
+            }
         }
     }
 
 
     @OnClick(R.id.btnAdd)
     void onAddImages(){
+        if(mEventId == 0)
+            return;
         Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
         this.startActivityForResult(intent, SELECT_PIC_BY_PICK_PHOTO);
@@ -147,7 +156,7 @@ public class EventInfoActivity extends BaseActivity {
     private void showImages()
     {
         mImagesFiles = new SparseArray<File>();
-        mImagesView = new SparseArray<View>();
+        mImagesView = new SparseArray<ImageBox>();
         mLLImages.removeAllViews();
         if (android.os.Environment.MEDIA_MOUNTED.equals(android.os.Environment
                 .getExternalStorageState())) {
@@ -168,21 +177,20 @@ public class EventInfoActivity extends BaseActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    View child = LayoutInflater.from(EventInfoActivity.this).inflate(
-                            R.layout.child_images, null);
-                    mLLImages.addView(child);
-                    mImagesView.append(index, child);
 
-                    ImageView image = (ImageView) child.findViewById(R.id.imgDetails);
-                    image.setImageBitmap(bitmap);
-                    Button btnDel = (Button) child.findViewById(R.id.btnDel);
-                    btnDel.setTag(index + "*" + 0);
-                    btnDel.setOnClickListener(new View.OnClickListener() {
+                    ImageBox imageBox = new ImageBox(EventInfoActivity.this);
+
+                    mLLImages.addView(imageBox.view);
+                    mImagesView.append(index, imageBox);
+                    imageBox.imageView.setImageBitmap(bitmap);
+
+                    imageBox.btnDel.setTag(index + "*" + 0);
+                    imageBox.btnDel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String[] tag = v.getTag().toString().split("\\*");
                             int key = Integer.parseInt(tag[0]);
-                            View line = mImagesView.get(key);
+                            View line = mImagesView.get(key).view;
                             long timenow = Calendar.getInstance().getTime().getTime();
                             if(Math.abs(timenow - Long.valueOf(tag[1])) > 5000)
                             {
@@ -196,6 +204,41 @@ public class EventInfoActivity extends BaseActivity {
                                 mImagesFiles.remove(key);
                                 Toast.makeText(EventInfoActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                             }
+                        }
+                    });
+
+                    imageBox.indexEt.setText(String.valueOf(index));
+                    final int oldIndex = index;
+                    imageBox.indexEt.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if(hasFocus)
+                                return;
+                            EditText editText = (EditText) v;
+                            int newIndex = Integer.parseInt(editText.getText().toString());
+                            int endIndex = mImagesView.keyAt(mImagesView.size() - 1);
+                            if(newIndex == oldIndex)
+                                return;
+                            if(newIndex > endIndex)
+                                CommonUtil.renameFile(mImagesFiles.get(oldIndex), CommonUtil.getImageFrontName(mEventId, endIndex + 1));
+                            else if( mImagesFiles.get(newIndex) == null)
+                                CommonUtil.renameFile(mImagesFiles.get(oldIndex), CommonUtil.getImageFrontName(mEventId, newIndex));
+                            else{
+                               for( int i = mImagesFiles.size() - 1; i >= 0; i--){
+                                   int key = mImagesFiles.keyAt(i);
+                                   if(newIndex > oldIndex){ //向下移
+                                       if(key >= newIndex)
+                                           CommonUtil.renameFile(mImagesFiles.get(key), CommonUtil.getImageFrontName(mEventId, key + 1));
+                                   }else{ //向上移
+                                       if(key > oldIndex)
+                                           CommonUtil.renameFile(mImagesFiles.get(key), CommonUtil.getImageFrontName(mEventId, key + 1));
+                                       else if(key == oldIndex)
+                                           CommonUtil.renameFile(mImagesFiles.get(newIndex), CommonUtil.getImageFrontName(mEventId, key + 1));
+                                   }
+                               }
+                                CommonUtil.renameFile(mImagesFiles.get(oldIndex), CommonUtil.getImageFrontName(mEventId, newIndex));
+                            }
+                            showImages();
                         }
                     });
                 }
@@ -293,4 +336,21 @@ public class EventInfoActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
+
+    class ImageBox{
+        @BindView(R.id.imgDetails)
+        ImageView imageView;
+        @BindView(R.id.btnDel)
+        Button btnDel;
+        @BindView(R.id.etSeq)
+        EditText indexEt;
+        View view;
+
+        ImageBox(Activity context){
+            view = LayoutInflater.from(context).inflate(
+                    R.layout.child_images, null);
+            ButterKnife.bind(this, view);
+        }
+    }
+
 }

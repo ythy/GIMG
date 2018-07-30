@@ -378,7 +378,7 @@ public class DetailActivity extends BaseActivity {
 						e.printStackTrace();
 					}
 					View child = LayoutInflater.from(DetailActivity.this).inflate(
-							R.layout.child_images, null);
+							R.layout.child_images_gap, null);
 					mLLImages.addView(child);
 					mImagesView.append(index, child);
 

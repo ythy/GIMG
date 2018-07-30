@@ -598,5 +598,9 @@ public class CommonUtil {
 	{
 		return "IM" + nid + "_" + id + ".png";
 	}
-	
+
+	public static void renameFile(File file, String newName){
+		File to = new File(file.getParent() + "/", newName);
+		file.renameTo(to);
+	}
 }

@@ -13,24 +13,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            android:layout_marginBottom="20dp"
             android:scaleType="fitCenter" />
 
         <Button
             android:id="@+id/btnDel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/delete" 
+            android:background="@drawable/delete"
             android:visibility="gone"/>
 
-        <EditText
-            android:id="@+id/etSeq"
-            android:layout_toRightOf="@id/btnDel"
-            android:layout_marginLeft="20dp"
-            android:layout_width="50dp"
-            android:inputType="number"
-            android:maxLines="1"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
     </RelativeLayout>
 
 </LinearLayout>
