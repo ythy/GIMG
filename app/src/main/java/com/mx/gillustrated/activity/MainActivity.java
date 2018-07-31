@@ -1,17 +1,12 @@
 package com.mx.gillustrated.activity;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.DBCall;
+import com.mx.gillustrated.component.MainActivityHeader;
 import com.mx.gillustrated.dialog.DialogExportImg;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.DataListAdapter;
@@ -41,7 +36,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindColor;
 import butterknife.BindView;
 
 import butterknife.ButterKnife;
@@ -66,12 +60,12 @@ public class MainActivity extends BaseActivity {
     private int[] spinnerGameData;
     private CardInfo mSearchCondition = null;
     private int mSpinnerChangedCount = 0; //控制 select变更后是否参与检索
-    private ListHeaderView mListHeaderView;
-    private Map<String, TextView> mTextViewMap;
+
     private String mCurrentOrderBy;
     private String mCurrentOrderType;
     private String mSpinnerLastSelect; //保存最后一次本页面Spinner检索条件
     private int mListViewLastPosition; //保存最后一次本页面滚动位置
+    private MainActivityHeader mMainActivityHeader;
 
     @BindView(R.id.lvMain) ListView listViewMain;
     @BindView(R.id.spinnerName) Spinner spinnerName;
@@ -91,8 +85,7 @@ public class MainActivity extends BaseActivity {
         startActivity(intentEvent);
     }
 
-    @BindColor(R.color.color_white2) int mColorWhite2;
-    @BindColor(R.color.color_white) int mColorWhite;
+
 
     @OnTextChanged(R.id.etPinyin)
     void onEtPinyinChanged(){
@@ -165,7 +158,17 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initViewAndVariable();
-        initHeader();
+        mMainActivityHeader = new MainActivityHeader(this, new MainActivityHeader.HeaderHandle(){
+            @Override
+            public void onHeaderClick(String column) {
+                if(mCurrentOrderBy == column)
+                    mCurrentOrderType = mCurrentOrderType.equals(CardInfo.SORT_ASC) ? CardInfo.SORT_DESC : CardInfo.SORT_ASC;
+                else
+                    mCurrentOrderType = CardInfo.SORT_DESC;
+                mCurrentOrderBy = column;
+                searchData();
+            }
+        });
 		setGameList();
 		
 		//temp
@@ -200,43 +203,8 @@ public class MainActivity extends BaseActivity {
         mListViewLastPosition = getIntent().getIntExtra("position", 0);
     }
 
-    private void initHeader() {
-        mListHeaderView = new ListHeaderView(findViewById(R.id.ll_header));
-        setHeaderClickHandler(mListHeaderView.tvHP, CardInfo.COLUMN_MAXHP);
-        setHeaderClickHandler(mListHeaderView.tvAttack, CardInfo.COLUMN_MAXATTACK);
-        setHeaderClickHandler(mListHeaderView.tvDefense, CardInfo.COLUMN_MAXDEFENSE);
-        setHeaderClickHandler(mListHeaderView.tvName, CardInfo.COLUMN_NAME);
-        setHeaderClickHandler(mListHeaderView.tvAttr, CardInfo.COLUMN_ATTR);
-        setHeaderClickHandler(mListHeaderView.tvCost, CardInfo.COLUMN_COST);
-        setHeaderClickHandler(mListHeaderView.tvImg, CardInfo.COLUMN_NID);
-
-        mTextViewMap = new HashMap<String, TextView>(){{
-            put(CardInfo.COLUMN_NID, mListHeaderView.tvImg);
-            put(CardInfo.COLUMN_MAXHP, mListHeaderView.tvHP);
-            put(CardInfo.COLUMN_MAXATTACK, mListHeaderView.tvAttack);
-            put(CardInfo.COLUMN_MAXDEFENSE, mListHeaderView.tvDefense);
-            put(CardInfo.COLUMN_NAME, mListHeaderView.tvName);
-            put(CardInfo.COLUMN_ATTR, mListHeaderView.tvAttr);
-            put(CardInfo.COLUMN_COST, mListHeaderView.tvCost);
-        }};
-    }
-
-    void setHeaderClickHandler(TextView tv, final String column){
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mCurrentOrderBy == column)
-                    mCurrentOrderType = mCurrentOrderType.equals(CardInfo.SORT_ASC) ? CardInfo.SORT_DESC : CardInfo.SORT_ASC;
-                else
-                    mCurrentOrderType = CardInfo.SORT_DESC;
-                mCurrentOrderBy = column;
-                searchData();
-            }
-        });
-    }
-
     private void searchData() {
-        setHeaderColor();
+        mMainActivityHeader.setHeaderColor(mCurrentOrderBy);
         if(spinnerName.getSelectedItem() == null || spinnerCost.getSelectedItem() == null ||
                 spinnerAttr.getSelectedItem() == null || spinnerEvent.getSelectedItem() == null)
             return;
@@ -265,15 +233,6 @@ public class MainActivity extends BaseActivity {
             card.setAttrId(spinnerSelected.getAttrId());
         }
         this.searchCards(card);
-    }
-
-    private void setHeaderColor() {
-        for(Map.Entry<String, TextView> iterator : mTextViewMap.entrySet()){
-            if(iterator.getValue() != null)
-                iterator.getValue().setBackgroundColor(mColorWhite2);
-        }
-        if(mTextViewMap.get(mCurrentOrderBy) != null)
-            mTextViewMap.get(mCurrentOrderBy).setBackgroundColor(mColorWhite);
     }
 
     private void setGameList()
