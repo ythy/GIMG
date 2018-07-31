@@ -368,7 +368,8 @@ public class MainActivity extends BaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<CardInfo> list =  mOrmHelper.getCardInfoDao().queryCards(info, mCurrentOrderBy, mCurrentOrderType.equals( CardInfo.SORT_ASC) ? true : false, -1 );
+                List<CardInfo> list =  mOrmHelper.getCardInfoDao().queryCards(info, mCurrentOrderBy, mCurrentOrderType.equals( CardInfo.SORT_ASC) ? true : false,
+                        0, 5000 );
                 Message msg = Message.obtain();
                 msg.what = 5;
                 msg.obj = list;

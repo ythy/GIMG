@@ -55,7 +55,7 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
     }
 
 
-    public List<CardInfo> queryCards(CardInfo cardinfo, String orderBy, boolean isAsc, long position) {
+    public List<CardInfo> queryCards(CardInfo cardinfo, String orderBy, boolean isAsc, long position, long limit) {
         List<CardInfo> result = null;
         QueryBuilder<CardInfo, Integer> qb = this.queryBuilder();
         qb.orderBy(orderBy, isAsc);
@@ -63,10 +63,10 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
 //        qb.selectRaw("(SELECT " + CardTypeInfo.COLUMN_NAME + " FROM " + CardTypeInfo.TABLE_NAME + " where " +
 //                CardTypeInfo.TABLE_NAME +  "." + CardTypeInfo.ID + " = " + CardInfo.TABLE_NAME + "." + CardInfo.COLUMN_ATTR + ") ATTRNAME" );
         try {
-            if(position > -1){
-                qb.limit(1L);
-                qb.offset(position);
-            }
+
+            qb.limit(limit);
+            qb.offset(position);
+
             Where<CardInfo, Integer> where =  qb.where();
             where.eq(CardInfo.COLUMN_GAMETYPE, cardinfo.getGameId());
             if(cardinfo.getPinyinName() != null)
@@ -96,6 +96,7 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
             for( CardInfo cardInfo : result ){
                 cardInfo.setAttr(getAttrName(cardInfo.getAttrId()));
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
