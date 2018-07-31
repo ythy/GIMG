@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -80,6 +81,15 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.spinnerGame) Spinner spinnerGameList;
     @BindView(R.id.pageVBox) RelativeLayout pageVboxLayout;
     @BindView(R.id.etPinyin) EditText etPinyin;
+    @BindView(R.id.btnShowEvents)
+    Button btnEvents;
+
+    @OnClick(R.id.btnShowEvents)
+    void onBtnShowEventsClick(){
+        Intent intentEvent = new Intent(MainActivity.this, EventsActivity.class);
+        intentEvent.putExtra("game", mGameType);
+        startActivity(intentEvent);
+    }
 
     @BindColor(R.color.color_white2) int mColorWhite2;
     @BindColor(R.color.color_white) int mColorWhite;
@@ -462,14 +472,11 @@ public class MainActivity extends BaseActivity {
         		DialogExportImg.show(this, mList.get(0).getId(), mGameType, mainHandler);
 		        break;
             case  R.id.menu_eventlist :
-                Intent intentEvent = new Intent(MainActivity.this, EventsActivity.class);
-                intentEvent.putExtra("game", mGameType);
-                startActivity(intentEvent);
+                onBtnShowEventsClick();
                 break;
         }
         return true; 
     } 
-	
 
 
     static class ListHeaderView{
