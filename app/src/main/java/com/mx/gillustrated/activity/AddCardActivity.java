@@ -255,8 +255,8 @@ public class AddCardActivity extends BaseActivity {
 					if(type == 0 || type == 1){
 						mOrmHelper.getCardInfoDao().create(card);
 						long newId = card.getId();
-						if (newId != -1) {
-							if (ivAll.getDrawable() != null) {
+						if (newId != 0) {
+							if (m_BitMapAll != null) {
 								if(type == 0 )
 								{
 									createImages((int)newId, m_BitMapNumber, 1);

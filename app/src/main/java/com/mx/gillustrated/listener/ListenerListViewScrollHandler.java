@@ -15,10 +15,12 @@ public class ListenerListViewScrollHandler implements OnScrollListener {
 	private RelativeLayout pageVboxLayout; //计数用   例： 1/4
 	private TextView pageText;
 	private int mAddRowNum = 0;//增加了几个额外行 刷新行或者表头行都计入数量
+	private ScrollHandle mScrollHandle;
 
-	public ListenerListViewScrollHandler(ListView lv, RelativeLayout rl, int addRowNum)
+	public ListenerListViewScrollHandler(ListView lv, RelativeLayout rl, int addRowNum, ScrollHandle scrollHandle)
 	{
 		mAddRowNum = addRowNum;
+		mScrollHandle = scrollHandle;
 		init(lv, rl);
 	}
 
@@ -65,13 +67,19 @@ public class ListenerListViewScrollHandler implements OnScrollListener {
 		}
 		if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
 			setPageBox(false);
+			if(isLastRow)
+				mScrollHandle.scrollLastRow(deliverylist.getCount() - mAddRowNum);
 		}
 		if (isLastRow == true
 				&& scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
 			setPageBox(false);
 		}
+
 	}
 
+	public interface ScrollHandle{
+		void scrollLastRow(int totalItemCount);
+	}
 	 
 
 }

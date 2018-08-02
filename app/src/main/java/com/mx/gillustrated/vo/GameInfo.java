@@ -4,7 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = GameInfo.TABLE_NAME)
-public class GameInfo {
+public class GameInfo extends SpinnerInfo {
 
 	public static final String TABLE_NAME = "game_info";
 	public static final String ID = "_id";

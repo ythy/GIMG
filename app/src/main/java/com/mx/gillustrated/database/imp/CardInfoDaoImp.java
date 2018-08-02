@@ -10,6 +10,7 @@ import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.dao.RawRowObjectMapper;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.field.DataType;
+import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
@@ -93,8 +94,18 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
                         + CardEventInfo.TABLE_NAME + "." + CardEventInfo.COLUMN_EVENT_ID + " = " + cardinfo.getEventId() + "  ) ");
             }
             result = this.queryRaw(qb.prepareStatementString(), this.getRawRowMapper()).getResults();
+
+            //计算总数
+            QueryBuilder<CardInfo, Integer> qbCount = this.queryBuilder();
+            qbCount.setCountOf(true);
+            qbCount.orderBy(orderBy, isAsc);
+            qbCount.selectRaw("*");
+            qbCount.setWhere(where);
+            int count = (int) this.countOf(qbCount.prepare());
+
             for( CardInfo cardInfo : result ){
                 cardInfo.setAttr(getAttrName(cardInfo.getAttrId()));
+                cardInfo.setTotalCount(count);
             }
 
         } catch (SQLException e) {

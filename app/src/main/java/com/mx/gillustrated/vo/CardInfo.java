@@ -61,6 +61,16 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	@DatabaseField(columnName = COLUMN_PINYIN_NAME)
 	private String pinyinName;
 
+	private int totalCount;
+
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+
 	public String getPinyinName() {
 		return pinyinName;
 	}

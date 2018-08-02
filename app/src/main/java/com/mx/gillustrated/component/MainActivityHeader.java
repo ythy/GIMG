@@ -56,6 +56,7 @@ public class MainActivityHeader {
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setHeaderColor(column);
                 mHeaderHandle.onHeaderClick(column);
             }
         });
@@ -90,6 +91,6 @@ public class MainActivityHeader {
     }
 
     public interface HeaderHandle{
-        void onHeaderClick(String column);
+        void onHeaderClick(String c);
     }
 }

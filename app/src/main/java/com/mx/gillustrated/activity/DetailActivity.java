@@ -298,6 +298,7 @@ public class DetailActivity extends BaseActivity {
 				intent.putExtra("orderBy", mMainSearchOrderBy);
 				intent.putExtra("spinnerIndexs", getIntent().getStringExtra("spinnerIndexs"));
 				intent.putExtra("position", mCurrentPosition);
+				intent.putExtra("currentPage", getIntent().getIntExtra("currentPage", 1));
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				DetailActivity.this.finish();
