@@ -1,22 +1,16 @@
 package com.mx.gillustrated.component;
 
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
-
 import com.mx.gillustrated.R;
-import com.mx.gillustrated.activity.DetailActivity;
 import com.mx.gillustrated.activity.MainActivity;
 import com.mx.gillustrated.adapter.DataListAdapter;
 import com.mx.gillustrated.database.DataBaseHelper;
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler;
-import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.vo.CardInfo;
 
 import java.util.ArrayList;
@@ -83,12 +77,12 @@ public class MainActivityListView {
     }
 
 
-    public void search(){
+    private void search(){
         mDataViewHandle.onSearchStart();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<CardInfo> list =  mOrmHelper.getCardInfoDao().queryCards(mSearchCondition, mOrderBy, mIsAsc == CardInfo.SORT_ASC,
+                List<CardInfo> list =  mOrmHelper.getCardInfoDao().queryCards(mSearchCondition, mOrderBy, mIsAsc.equals(CardInfo.SORT_ASC) ,
                         initPage == 1 ? (currentPage - 1) * PAGE_SIZE : 0, initPage * PAGE_SIZE );
                 Message msg = Message.obtain();
                 msg.obj = list;
@@ -157,7 +151,7 @@ public class MainActivityListView {
 
     }
 
-    AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
 
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int position,
@@ -169,7 +163,7 @@ public class MainActivityListView {
         }
     };
 
-    Handler handler = new Handler() {
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);

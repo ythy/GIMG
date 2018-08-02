@@ -1,6 +1,5 @@
 package com.mx.gillustrated.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.mx.gillustrated.common.DBCall;
 import com.mx.gillustrated.component.MainActivityHeader;
@@ -8,8 +7,6 @@ import com.mx.gillustrated.component.MainActivityListView;
 import com.mx.gillustrated.component.MainActivityTop;
 import com.mx.gillustrated.dialog.DialogExportImg;
 import com.mx.gillustrated.R;
-import com.mx.gillustrated.adapter.DataListAdapter;
-import com.mx.gillustrated.listener.ListenerListViewScrollHandler;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.util.DataBakUtil;
 import com.mx.gillustrated.util.ServiceUtils;
@@ -20,16 +17,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 import butterknife.BindView;
 
@@ -185,7 +177,7 @@ public class MainActivity extends BaseActivity {
 				final int index = msg.what;
 				new Thread() {
 					public void run() {
-                    CommonUtil.generateHeaderImg(MainActivity.this, mMainActivityListView.getIdList() , mGameType, index == 2 ? false : true);
+                    CommonUtil.generateHeaderImg(MainActivity.this, mMainActivityListView.getIdList() , mGameType, index != 2);
                     mainHandler.sendEmptyMessage(3);
 					}
 				}.start();
