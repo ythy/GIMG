@@ -185,6 +185,7 @@ public class MainActivityTop {
         void onGameTypeSelectlistener(int position){
             int gameType = mSpinnerGameData.get(position).getId();
             CommonUtil.setGameType(mContext, gameType);
+            mTopHandle.onGameTypeChanged(gameType);
             initializeSppinersByGame(gameType); // 检索入口 由setSelection触发
         }
 
@@ -198,6 +199,7 @@ public class MainActivityTop {
     public interface TopHandle{
         void onSearchData();
         void onRefresh();
+        void onGameTypeChanged(int type);
     }
 
     private static Comparator<CardInfo> droplistComparator = new Comparator<CardInfo>() {

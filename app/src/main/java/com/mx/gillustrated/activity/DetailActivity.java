@@ -383,7 +383,7 @@ public class DetailActivity extends BaseActivity {
 					mLLImages.addView(child);
 					mImagesView.append(index, child);
 
-					boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION, false);
+					boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mCardInfo.getGameId(), false);
 					ImageView image = (ImageView) child.findViewById(R.id.imgDetails);
 					image.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bitmap, 90) : bitmap );
 					Button btnDel = (Button) child.findViewById(R.id.btnDel);

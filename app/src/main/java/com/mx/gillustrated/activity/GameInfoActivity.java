@@ -49,7 +49,7 @@ public class GameInfoActivity extends BaseActivity {
 
 	@OnCheckedChanged(R.id.chkOrientation)
 	void onOrientationCheckedChanged(CheckBox checkBox){
-		mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION, checkBox.isChecked()).commit();
+		mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION + mGameType, checkBox.isChecked()).commit();
 	}
 
 

@@ -96,6 +96,11 @@ public class MainActivity extends BaseActivity {
                 etPinyin.setTag(true);
                 etPinyin.setText("");
             }
+
+            @Override
+            public void onGameTypeChanged(int type) {
+                mGameType = type;
+            }
         });
 
         mMainActivityListView = new MainActivityListView(this, mOrmHelper, new MainActivityListView.DataViewHandle(){

@@ -1,6 +1,8 @@
 package com.mx.gillustrated.listener;
 
 import com.mx.gillustrated.R;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 public class ListenerListViewScrollHandler implements OnScrollListener {
 	
 	private boolean isLastRow = false;
+    private int lastCount = 0; //避免反复触发last事件
 	private ListView deliverylist;
 	private RelativeLayout pageVboxLayout; //计数用   例： 1/4
 	private TextView pageText;
@@ -38,13 +41,16 @@ public class ListenerListViewScrollHandler implements OnScrollListener {
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
+        if(firstVisibleItem == 0)
+            lastCount = 0;
 
 		if (pageVboxLayout.getVisibility() == View.VISIBLE) {
 			setPageBox(true);
 		}
 		if (firstVisibleItem + visibleItemCount == totalItemCount
-				&& totalItemCount > 0) {
-			isLastRow = true;
+				&& totalItemCount > 0 && lastCount < totalItemCount) {
+            isLastRow = true;
+            lastCount = totalItemCount;
 		}
 	}
 
@@ -57,7 +63,6 @@ public class ListenerListViewScrollHandler implements OnScrollListener {
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		int totalCount = deliverylist.getCount() - mAddRowNum;
 		
 		if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
 			setPageBox(true);
@@ -67,14 +72,11 @@ public class ListenerListViewScrollHandler implements OnScrollListener {
 		}
 		if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
 			setPageBox(false);
-			if(isLastRow)
+			if(isLastRow) {
 				mScrollHandle.scrollLastRow(deliverylist.getCount() - mAddRowNum);
+				isLastRow = false;
+			}
 		}
-		if (isLastRow == true
-				&& scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-			setPageBox(false);
-		}
-
 	}
 
 	public interface ScrollHandle{

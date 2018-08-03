@@ -2,6 +2,7 @@ package com.mx.gillustrated.component;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
