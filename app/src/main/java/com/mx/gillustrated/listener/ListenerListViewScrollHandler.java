@@ -72,7 +72,7 @@ public class ListenerListViewScrollHandler implements OnScrollListener {
 		}
 		if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
 			setPageBox(false);
-			if(isLastRow) {
+			if(isLastRow && mScrollHandle != null) {
 				mScrollHandle.scrollLastRow(deliverylist.getCount() - mAddRowNum);
 				isLastRow = false;
 			}

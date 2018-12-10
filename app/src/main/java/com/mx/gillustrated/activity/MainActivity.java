@@ -1,5 +1,7 @@
 package com.mx.gillustrated.activity;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import com.mx.gillustrated.common.DBCall;
 import com.mx.gillustrated.component.MainActivityHeader;
@@ -15,6 +17,7 @@ import com.mx.gillustrated.vo.GameInfo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Menu;
@@ -135,9 +138,9 @@ public class MainActivity extends BaseActivity {
 		//temp
 //		File fileDirTemp = new File(Environment.getExternalStorageDirectory(),
 //				"backup");
-//		File fileTemp = new File(fileDirTemp.getPath(), "ss.text");
+//		File fileTemp = new File(fileDirTemp.getPath(), "qingdao.xlsx");
 //		 try {
-//			CommonUtil.copyBigDataToSD(this, "ss.text", fileTemp.getPath());
+//			CommonUtil.copyBigDataToSD(this, "qingdao.xlsx", fileTemp.getPath());
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}

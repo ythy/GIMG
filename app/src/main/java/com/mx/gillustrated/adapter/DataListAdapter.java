@@ -57,7 +57,7 @@ public class DataListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int arg0, View convertView, ViewGroup arg2) {
 		Component component = null;
-		
+
 		if (convertView == null) {
 			convertView = layoutInflator.inflate(
 					R.layout.adapter_mainlist, null);
@@ -89,9 +89,9 @@ public class DataListAdapter extends BaseAdapter {
 		}
 		else
 		{
-			component = (Component) convertView.getTag();  
+			component = (Component) convertView.getTag();
 		}
-		
+
 		try {
 			File imageDir = new File(Environment.getExternalStorageDirectory(), MConfig.SD_HEADER_PATH + "/" + list.get(arg0).getGameId());
 			File file = new File(imageDir.getPath(), list.get(arg0).getId() + "_h.png");
@@ -102,7 +102,7 @@ public class DataListAdapter extends BaseAdapter {
 			}
 			else
 				component.ivHeader.setImageBitmap(null);
-			
+
 			component.tvName.setText(list.get(arg0).getName());
 			component.tvFrontName.setText(list.get(arg0).getFrontName());
 			String attr = list.get(arg0).getAttr();
@@ -116,18 +116,18 @@ public class DataListAdapter extends BaseAdapter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return convertView;
 	}
-	
+
 	private static class Component{
-		 public ImageView ivHeader; 
-		 public TextView tvFrontName;  
-		 public TextView tvName;  
-		 public TextView tvAttr; 
-		 public TextView tvCost;  
-		 public TextView tvHP;  
-		 public TextView tvAttack; 
+		 public ImageView ivHeader;
+		 public TextView tvFrontName;
+		 public TextView tvName;
+		 public TextView tvAttr;
+		 public TextView tvCost;
+		 public TextView tvHP;
+		 public TextView tvAttack;
 		 public TextView tvDefense;
 		 public TextView tvNid;
 	}

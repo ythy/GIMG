@@ -99,7 +99,8 @@ public class MainActivityListView {
     }
 
     public void searchData(String pinyin){
-        mSearchCondition.setPinyinName(pinyin);
+        if(mSearchCondition != null)
+            mSearchCondition.setPinyinName(pinyin);
         currentPage = 1;
         search();
     }
