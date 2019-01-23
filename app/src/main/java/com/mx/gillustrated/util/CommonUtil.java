@@ -140,7 +140,7 @@ public class CommonUtil {
 	public static Bitmap cutBitmap(Bitmap bitmap, MatrixInfo matrixinfo,
 			boolean flag) {
 		Bitmap result = null;
-		if(matrixinfo.getHeight() == 0 || matrixinfo.getWidth() == 0)
+		if(matrixinfo.getHeight() == 0 && matrixinfo.getWidth() == 0)
 			return bitmap;
 		
 		if (flag)

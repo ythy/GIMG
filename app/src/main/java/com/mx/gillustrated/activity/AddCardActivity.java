@@ -15,20 +15,30 @@ import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.util.PinyinUtil;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
+import com.mx.gillustrated.vo.MatrixInfo;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 
 public class AddCardActivity extends BaseActivity {
 
@@ -55,11 +65,46 @@ public class AddCardActivity extends BaseActivity {
 	private Button btnDelNumber;
 	private Button btnDelAll;
 
+	@BindView(R.id.chkAdjustImg)
+	CheckBox chkAdjustImg;
+
+	@BindView(R.id.tvAdjustImgTop)
+	EditText tvAdjustImgTop;
+
+	@BindView(R.id.tvAdjustImgBottom)
+	EditText tvAdjustImgBottom;
+
+	@BindView(R.id.tvAdjustImgLeft)
+	EditText tvAdjustImgLeft;
+
+	@BindView(R.id.tvAdjustImgRight)
+	EditText tvAdjustImgRight;
+
+	@OnCheckedChanged(R.id.chkAdjustImg)
+	void onCheckAdjustImgTopChanged(boolean checked){
+		int top = Integer.parseInt(this.tvAdjustImgTop.getText().toString());
+		int bottom = Integer.parseInt(this.tvAdjustImgBottom.getText().toString());
+		int left = Integer.parseInt(this.tvAdjustImgLeft.getText().toString());
+		int right = Integer.parseInt(this.tvAdjustImgRight.getText().toString());
+		mSP.edit().putBoolean(SHARE_IMAGES_MATRIX + mGameType, checked).commit();
+		mSP.edit().putString(SHARE_IMAGES_MATRIX_NUMBER + mGameType, top + "," + bottom + "," + left + "," + right).commit();
+		try {
+			this.showPicture();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add);
-		
+
+		ButterKnife.bind(this);
+
 		mGameType = getIntent().getIntExtra("game", 0);
 				
 		btnSave = (Button) findViewById(R.id.btnSave);
@@ -93,6 +138,8 @@ public class AddCardActivity extends BaseActivity {
 				new SpinnerCommonAdapter( this, cardTypes);
 		spinnerAttr.setAdapter(adapterName);
 
+		setImagesMatrixConfig();
+
 		try {
 			showPicture();
 		} catch (FileNotFoundException e) {
@@ -102,8 +149,30 @@ public class AddCardActivity extends BaseActivity {
 		}
 
 	}
-	
-	
+
+	private void setImagesMatrixConfig(){
+		String[] numbers = mSP.getString(SHARE_IMAGES_MATRIX_NUMBER + mGameType, "0,0,0,0").split(",");
+		tvAdjustImgTop.setText(numbers[0]);
+		tvAdjustImgBottom.setText(numbers[1]);
+		tvAdjustImgLeft.setText(numbers[2]);
+		tvAdjustImgRight.setText(numbers[3]);
+		chkAdjustImg.setChecked(mSP.getBoolean(SHARE_IMAGES_MATRIX + mGameType, false));
+	}
+
+	private Bitmap getMatrixBitmap(Bitmap input){
+		int top = Integer.parseInt(this.tvAdjustImgTop.getText().toString());
+		int bottom = Integer.parseInt(this.tvAdjustImgBottom.getText().toString());
+		int left = Integer.parseInt(this.tvAdjustImgLeft.getText().toString());
+		int right = Integer.parseInt(this.tvAdjustImgRight.getText().toString());
+
+		MatrixInfo matrixinfo = new MatrixInfo();
+		matrixinfo.setY( top );
+		matrixinfo.setX( left );
+		matrixinfo.setHeight( top + bottom );
+		matrixinfo.setWidth( left + right );
+
+		return CommonUtil.cutBitmap(input, matrixinfo, true);
+	}
 	
 	
 	private void showPicture() throws FileNotFoundException, IOException {
@@ -140,13 +209,16 @@ public class AddCardActivity extends BaseActivity {
 			btnDelNumber.setVisibility(View.GONE);
 			ivAll.setImageBitmap(null);
 			ivNumber.setImageBitmap(null);
-			boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION, false);
+			boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false);
 			for (int i = 0; i < fs.length; i++) {
 				if (i == 2)
 					break;
 
 				Bitmap bmp = MediaStore.Images.Media.getBitmap(
 						this.getContentResolver(), Uri.fromFile(fs[i]));
+				if(this.chkAdjustImg.isChecked())
+					bmp = getMatrixBitmap(bmp);
+
 				if (i == 0) {
 					m_fileAll = fs[i];
 					m_BitMapAll = bmp;
@@ -315,6 +387,8 @@ public class AddCardActivity extends BaseActivity {
 				CommonUtil.getImageFrontName(id, num));
 		try {
 			bos = new FileOutputStream(imageFile);
+			if(this.chkAdjustImg.isChecked())
+				bitmap = getMatrixBitmap(bitmap);
 			bitmap.compress(Bitmap.CompressFormat.JPEG,
 					30, bos);
 			bos.flush();

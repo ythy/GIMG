@@ -72,7 +72,7 @@ public class GameInfoActivity extends BaseActivity {
 		pageVboxLayout.setVisibility(View.GONE);
 
 
-		chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION, false));
+		chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false));
 
 		mLvGameMain.setOnScrollListener(new ListenerListViewScrollHandler(mLvGameMain, pageVboxLayout));
 		mList = new ArrayList<CardTypeInfo>();
