@@ -39,6 +39,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
 public class AddCardActivity extends BaseActivity {
 
@@ -80,14 +81,27 @@ public class AddCardActivity extends BaseActivity {
 	@BindView(R.id.tvAdjustImgRight)
 	EditText tvAdjustImgRight;
 
-	@OnCheckedChanged(R.id.chkAdjustImg)
-	void onCheckAdjustImgTopChanged(boolean checked){
+	@OnClick(R.id.btnSaveMatrix)
+	void onSaveMatrixBtnClick(){
 		int top = Integer.parseInt(this.tvAdjustImgTop.getText().toString());
 		int bottom = Integer.parseInt(this.tvAdjustImgBottom.getText().toString());
 		int left = Integer.parseInt(this.tvAdjustImgLeft.getText().toString());
 		int right = Integer.parseInt(this.tvAdjustImgRight.getText().toString());
-		mSP.edit().putBoolean(SHARE_IMAGES_MATRIX + mGameType, checked).commit();
 		mSP.edit().putString(SHARE_IMAGES_MATRIX_NUMBER + mGameType, top + "," + bottom + "," + left + "," + right).commit();
+		if(chkAdjustImg.isChecked()){
+			try {
+				this.showPicture();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+	}
+
+	@OnCheckedChanged(R.id.chkAdjustImg)
+	void onCheckAdjustImgTopChanged(boolean checked){
+		mSP.edit().putBoolean(SHARE_IMAGES_MATRIX + mGameType, checked).commit();
 		try {
 			this.showPicture();
 		} catch (IOException e) {
