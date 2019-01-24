@@ -188,6 +188,8 @@ public class AddCardActivity extends BaseActivity {
 
 			File file = new File(fileDir.getPath());
 			File[] fs = file.listFiles();
+			if(fs == null)
+				return;
 			Arrays.sort(fs, new Comparator<File>() {
 				public int compare(File f1, File f2) {
 					long diff = f1.lastModified() - f2.lastModified();

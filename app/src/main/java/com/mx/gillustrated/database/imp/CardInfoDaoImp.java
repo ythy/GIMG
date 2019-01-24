@@ -75,7 +75,7 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
             if(cardinfo.getName() != null)
                 where.and().like(CardInfo.COLUMN_NAME, "%" + cardinfo.getName() + "%");
             if(cardinfo.getFrontName() != null)
-                where.and().like(CardInfo.COLUMN_FRONT_NAME, "%" + cardinfo.getFrontName() + "%");
+                where.and().eq(CardInfo.COLUMN_FRONT_NAME, cardinfo.getFrontName() );
             if(cardinfo.getId() > 0)
                 where.and().eq(CardInfo.ID, cardinfo.getId());
             if(cardinfo.getNid() > 0)

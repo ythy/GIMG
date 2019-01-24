@@ -274,6 +274,8 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 			this.attrId = Integer.parseInt(searchParams[2]);
 			this.eventId = Integer.parseInt(searchParams[3]);
 			this.gameId = Integer.parseInt(searchParams[4]);
+			this.frontName = searchParams[5];
+			this.level = searchParams[6];
 		}
 
 		public String[] getCardSearchParam(){
@@ -282,6 +284,8 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 					String.valueOf(this.attrId),
 					String.valueOf(this.eventId),
 					String.valueOf(this.gameId),
+					this.frontName,
+					this.level,
 			};
 		}
 
