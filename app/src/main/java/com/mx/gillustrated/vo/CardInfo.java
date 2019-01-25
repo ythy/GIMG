@@ -29,6 +29,8 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	public static final String COLUMN_EVENTTYPE = "event_type";
 	public static final String COLUMN_PINYIN_NAME = "pinyin_name";
 
+	public static final String COLUMN_TOTAL = "total_number";
+
 	@DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName=ID)
 	private int id;
 	@DatabaseField

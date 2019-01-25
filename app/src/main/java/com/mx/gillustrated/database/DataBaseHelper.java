@@ -36,9 +36,12 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
             GameInfo.class, CardTypeInfo.class, CardEventInfo.class, EventInfo.class, CardInfo.class,
     };
 
+    public Context mContext;
+
     public DataBaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION,
                 R.raw.ormlite_config);
+        mContext = context;
     }
 
     /**

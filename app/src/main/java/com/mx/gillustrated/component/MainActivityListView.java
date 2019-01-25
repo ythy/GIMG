@@ -36,7 +36,7 @@ public class MainActivityListView {
     private DataListAdapter mAdapter;
     private int mListViewLastPosition; //保存最后一次本页面滚动位置
 
-    private static final int  PAGE_SIZE = 20;
+    private static final int  PAGE_SIZE = 50;
     private int currentPage;
     private int initPage; //初始页数，默认是1  如果从详细页面返回，可能为1+
     private int totalItemCount;

@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 
 import com.mx.gillustrated.R;
+import com.mx.gillustrated.activity.BaseActivity;
+import com.mx.gillustrated.activity.MainActivity;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.vo.CardInfo;
@@ -26,14 +28,14 @@ import android.widget.TextView;
 
 public class DataListAdapter extends BaseAdapter {
 
-	private Context mcontext;
+	private MainActivity mcontext;
 	private LayoutInflater layoutInflator;
 	private List<CardInfo> list;
 
 	public DataListAdapter() {
 	}
 
-	public DataListAdapter(Context context, List<CardInfo> items) {
+	public DataListAdapter(MainActivity context, List<CardInfo> items) {
 		mcontext = context;
 		layoutInflator = LayoutInflater.from(mcontext);
 		list = items;
@@ -80,6 +82,8 @@ public class DataListAdapter extends BaseAdapter {
 					.findViewById(R.id.tvDefense);
 			component.tvNid = (TextView) convertView
 					.findViewById(R.id.tvNid);
+			component.tvTotal = (TextView) convertView
+					.findViewById(R.id.tvTotal);
 			convertView.setTag(component);
 
 			if( list.get(arg0).getNid() > 0)
@@ -92,30 +96,39 @@ public class DataListAdapter extends BaseAdapter {
 			component = (Component) convertView.getTag();
 		}
 
-		try {
-			File imageDir = new File(Environment.getExternalStorageDirectory(), MConfig.SD_HEADER_PATH + "/" + list.get(arg0).getGameId());
-			File file = new File(imageDir.getPath(), list.get(arg0).getId() + "_h.png");
-			if(file.exists())
-			{
-				Bitmap bmp = MediaStore.Images.Media.getBitmap(mcontext.getContentResolver(), Uri.fromFile(file));
-				component.ivHeader.setImageBitmap(bmp);
+		boolean showHeader = mcontext.mSP.getBoolean(BaseActivity.SHARE_SHOW_HEADER_IMAGES + list.get(arg0).getGameId(), false);
+		if(showHeader){
+			component.tvTotal.setVisibility(View.GONE);
+			try {
+				File imageDir = new File(Environment.getExternalStorageDirectory(), MConfig.SD_HEADER_PATH + "/" + list.get(arg0).getGameId());
+				File file = new File(imageDir.getPath(), list.get(arg0).getId() + "_h.png");
+				if(file.exists())
+				{
+					Bitmap bmp = MediaStore.Images.Media.getBitmap(mcontext.getContentResolver(), Uri.fromFile(file));
+					component.ivHeader.setImageBitmap(bmp);
+				}
+				else
+					component.ivHeader.setImageBitmap(null);
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			else
-				component.ivHeader.setImageBitmap(null);
-
-			component.tvName.setText(list.get(arg0).getName());
-			component.tvFrontName.setText(list.get(arg0).getFrontName());
-			String attr = list.get(arg0).getAttr();
-			component.tvAttr.setText(attr);
-			component.tvCost.setText(String.valueOf(list.get(arg0).getCost()));
-			component.tvHP.setText(String.valueOf(list.get(arg0).getMaxHP()));
-			component.tvAttack.setText(String.valueOf(list.get(arg0).getMaxAttack()));
-			component.tvDefense.setText(String.valueOf(list.get(arg0).getMaxDefense()));
-			component.tvNid.setText(String.valueOf(list.get(arg0).getNid()));
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+		else {
+			component.tvTotal.setVisibility(View.VISIBLE);
+			int total = list.get(arg0).getMaxHP() + list.get(arg0).getMaxAttack() + list.get(arg0).getMaxDefense();
+			component.tvTotal.setText( String.valueOf(total));
+		}
+
+		component.tvName.setText(list.get(arg0).getName());
+		component.tvFrontName.setText(list.get(arg0).getFrontName());
+		String attr = list.get(arg0).getAttr();
+		component.tvAttr.setText(attr);
+		component.tvCost.setText(String.valueOf(list.get(arg0).getCost()));
+		component.tvHP.setText(String.valueOf(list.get(arg0).getMaxHP()));
+		component.tvAttack.setText(String.valueOf(list.get(arg0).getMaxAttack()));
+		component.tvDefense.setText(String.valueOf(list.get(arg0).getMaxDefense()));
+		component.tvNid.setText(String.valueOf(list.get(arg0).getNid()));
 
 		return convertView;
 	}
@@ -130,5 +143,7 @@ public class DataListAdapter extends BaseAdapter {
 		 public TextView tvAttack;
 		 public TextView tvDefense;
 		 public TextView tvNid;
+		 public TextView tvTotal;
+
 	}
 }

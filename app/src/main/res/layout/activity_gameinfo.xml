@@ -41,10 +41,28 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/llHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:layout_below="@id/llImageOrientation"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/chkHeader"
+            android:text="是否显示头像"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/llTitleAttr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/llImageOrientation"
+        android:layout_below="@id/llHeader"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"

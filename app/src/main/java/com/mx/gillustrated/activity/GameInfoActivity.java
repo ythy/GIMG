@@ -52,6 +52,14 @@ public class GameInfoActivity extends BaseActivity {
 		mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION + mGameType, checkBox.isChecked()).commit();
 	}
 
+	@BindView(R.id.chkHeader)
+	CheckBox chkHeader;
+
+	@OnCheckedChanged(R.id.chkHeader)
+	void onHeaderCheckedChanged(CheckBox checkBox){
+		mSP.edit().putBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, checkBox.isChecked()).commit();
+	}
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +81,7 @@ public class GameInfoActivity extends BaseActivity {
 
 
 		chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false));
+		chkHeader.setChecked(mSP.getBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, false));
 
 		mLvGameMain.setOnScrollListener(new ListenerListViewScrollHandler(mLvGameMain, pageVboxLayout));
 		mList = new ArrayList<CardTypeInfo>();

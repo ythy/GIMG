@@ -1,5 +1,6 @@
 package com.mx.gillustrated.database.imp;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -14,6 +15,7 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
+import com.mx.gillustrated.activity.BaseActivity;
 import com.mx.gillustrated.database.DataBaseHelper;
 import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
@@ -32,6 +34,7 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
 
     private static Dao<CardInfo, Integer> mDao = null;
     private DataBaseHelper mOrm = null;
+    private Context mContext;
 
     private static Dao<CardInfo, Integer> getDao(DataBaseHelper orm) {
         if (mDao == null){
@@ -47,6 +50,7 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
     public CardInfoDaoImp(DataBaseHelper orm) {
         super(CardInfoDaoImp.getDao(orm));
         this.mOrm = orm;
+        this.mContext = orm.mContext;
     }
 
     public void addCardInfos(List<CardInfo> infos){
@@ -59,8 +63,13 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
     public List<CardInfo> queryCards(CardInfo cardinfo, String orderBy, boolean isAsc, long position, long limit) {
         List<CardInfo> result = null;
         QueryBuilder<CardInfo, Integer> qb = this.queryBuilder();
-        qb.orderBy(orderBy, isAsc);
-        qb.selectRaw("*");
+        boolean showHeader = mContext.getSharedPreferences("commonset", Context.MODE_PRIVATE).getBoolean(BaseActivity.SHARE_SHOW_HEADER_IMAGES, false);
+        if(orderBy.equals(CardInfo.COLUMN_NID) && !showHeader)
+            orderBy = CardInfo.COLUMN_TOTAL;
+        //qb.orderBy(orderBy, isAsc);
+        qb.orderByRaw(orderBy + " " + ( isAsc ? "ASC" : "DESC") );
+        //qb.selectRaw("*");
+        qb.selectRaw("*," + CardInfo.COLUMN_MAXATTACK + "+" +  CardInfo.COLUMN_MAXDEFENSE + "+" + CardInfo.COLUMN_MAXHP + " " + CardInfo.COLUMN_TOTAL);
 //        qb.selectRaw("(SELECT " + CardTypeInfo.COLUMN_NAME + " FROM " + CardTypeInfo.TABLE_NAME + " where " +
 //                CardTypeInfo.TABLE_NAME +  "." + CardTypeInfo.ID + " = " + CardInfo.TABLE_NAME + "." + CardInfo.COLUMN_ATTR + ") ATTRNAME" );
         try {
@@ -93,12 +102,11 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
                         + CardEventInfo.TABLE_NAME + "." + CardEventInfo.COLUMN_CARD_NID + " and "
                         + CardEventInfo.TABLE_NAME + "." + CardEventInfo.COLUMN_EVENT_ID + " = " + cardinfo.getEventId() + "  ) ");
             }
-            result = this.queryRaw(qb.prepareStatementString(), this.getRawRowMapper()).getResults();
+            result = this.queryRaw(qb.prepareStatementString(), new CardInfoRowMapper()).getResults();
 
             //计算总数
             QueryBuilder<CardInfo, Integer> qbCount = this.queryBuilder();
             qbCount.setCountOf(true);
-            qbCount.orderBy(orderBy, isAsc);
             qbCount.selectRaw("*");
             qbCount.setWhere(where);
             int count = (int) this.countOf(qbCount.prepare());
@@ -161,6 +169,57 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
     }
 
 
+    private static class CardInfoRowMapper implements RawRowMapper<CardInfo>{
 
+        @Override
+        public CardInfo mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
+            CardInfo info = new CardInfo();
+            for(int i = 0; i < columnNames.length; i++){
+                switch (columnNames[i]){
+                    case CardInfo.ID:
+                        info.setId(Integer.parseInt(resultColumns[i]));
+                        break;
+                    case CardInfo.COLUMN_ATTR:
+                        info.setAttrId(Integer.parseInt(resultColumns[i]));
+                        break;
+                    case CardInfo.COLUMN_COST:
+                        info.setCost(Integer.parseInt(resultColumns[i]));
+                        break;
+                    case CardInfo.COLUMN_FRONT_NAME:
+                        info.setFrontName(resultColumns[i]);
+                        break;
+                    case CardInfo.COLUMN_GAMETYPE:
+                        info.setGameId(Integer.parseInt(resultColumns[i]));
+                        break;
+                    case CardInfo.COLUMN_LEVEL:
+                        info.setLevel(resultColumns[i]);
+                        break;
+                    case CardInfo.COLUMN_MAXATTACK:
+                        info.setMaxAttack(Integer.parseInt(resultColumns[i]));
+                        break;
+                    case CardInfo.COLUMN_MAXDEFENSE:
+                        info.setMaxDefense(Integer.parseInt(resultColumns[i]));
+                        break;
+                    case CardInfo.COLUMN_MAXHP:
+                        info.setMaxHP(Integer.parseInt(resultColumns[i]));
+                        break;
+                    case CardInfo.COLUMN_NAME:
+                        info.setName(resultColumns[i]);
+                        break;
+                    case CardInfo.COLUMN_NID:
+                        info.setNid(Integer.parseInt(resultColumns[i]));
+                        break;
+                    case CardInfo.COLUMN_PINYIN_NAME:
+                        info.setPinyinName(resultColumns[i]);
+                        break;
+                    case CardInfo.COLUMN_REMARK:
+                        info.setRemark(resultColumns[i]);
+                        break;
+                }
+
+            }
+            return info;
+        }
+    }
 
 }
