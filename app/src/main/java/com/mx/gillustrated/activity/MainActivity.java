@@ -35,7 +35,7 @@ import io.reactivex.functions.Consumer;
 
 public class MainActivity extends BaseActivity {
 
-    private int mGameType = 0; //游戏类别
+    public int mGameType = 0; //游戏类别
     private MainActivityHeader mMainActivityHeader;
     private MainActivityTop mMainActivityTop;
     private MainActivityListView mMainActivityListView;

@@ -59,10 +59,37 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/llPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:layout_below="@id/llHeader"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="分页设置"
+            />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinnerPager"
+            android:entries="@array/pagerArray"
+            >
+
+        </Spinner>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/llTitleAttr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/llHeader"
+        android:layout_below="@id/llPager"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"

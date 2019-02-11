@@ -80,11 +80,12 @@ public class MainActivityListView {
 
     private void search(){
         mDataViewHandle.onSearchStart();
+        final int pageSize = mContext.mSP.getInt(mContext.SHARE_PAGE_SIZE + mContext.mGameType, PAGE_SIZE);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 List<CardInfo> list =  mOrmHelper.getCardInfoDao().queryCards(mSearchCondition, mOrderBy, mIsAsc.equals(CardInfo.SORT_ASC) ,
-                        initPage == 1 ? (currentPage - 1) * PAGE_SIZE : 0, initPage * PAGE_SIZE );
+                        initPage == 1 ? (currentPage - 1) * pageSize : 0, initPage * pageSize );
                 Message msg = Message.obtain();
                 msg.obj = list;
                 handler.sendMessage(msg);

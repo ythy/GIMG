@@ -1,17 +1,9 @@
 package com.mx.gillustrated.database.imp;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.util.Log;
-
-import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
-import com.j256.ormlite.dao.RawRowObjectMapper;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.j256.ormlite.field.DataType;
-import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
@@ -19,8 +11,6 @@ import com.mx.gillustrated.activity.BaseActivity;
 import com.mx.gillustrated.database.DataBaseHelper;
 import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
-import com.mx.gillustrated.vo.CardTypeInfo;
-import com.mx.gillustrated.vo.EventInfo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

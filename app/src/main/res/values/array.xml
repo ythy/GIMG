@@ -9,7 +9,15 @@
         <item>2</item>
         <item>1</item>
     </string-array>
-    
+
+    <string-array name="pagerArray">
+        <item>20</item>
+        <item>50</item>
+        <item>100</item>
+        <item>200</item>
+        <item>500</item>
+    </string-array>
+
     <string-array name="addType">
         <item>新增常规图</item>
         <item>新增单张图</item>

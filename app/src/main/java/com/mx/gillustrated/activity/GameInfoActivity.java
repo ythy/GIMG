@@ -26,12 +26,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnItemSelected;
 
 public class GameInfoActivity extends BaseActivity {
 	
@@ -60,6 +62,14 @@ public class GameInfoActivity extends BaseActivity {
 		mSP.edit().putBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, checkBox.isChecked()).commit();
 	}
 
+	@BindView(R.id.spinnerPager)
+	Spinner spinnerPager;
+
+	@OnItemSelected(R.id.spinnerPager)
+	void onPagerChanged(int position){
+		String[] array = getResources().getStringArray(R.array.pagerArray);
+		mSP.edit().putInt(SHARE_PAGE_SIZE + mGameType, Integer.parseInt(array[position])).commit();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +92,13 @@ public class GameInfoActivity extends BaseActivity {
 
 		chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false));
 		chkHeader.setChecked(mSP.getBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, false));
+		int pagerSize = mSP.getInt(SHARE_PAGE_SIZE, 50);
+		String[] pagerArray = getResources().getStringArray(R.array.pagerArray);
+		int position = 1;
+		for (int i = 0; i < pagerArray.length; i++)
+			if( Integer.parseInt(pagerArray[i]) == pagerSize)
+				position = i;
+		spinnerPager.setSelection(position);
 
 		mLvGameMain.setOnScrollListener(new ListenerListViewScrollHandler(mLvGameMain, pageVboxLayout));
 		mList = new ArrayList<CardTypeInfo>();
