@@ -92,7 +92,7 @@ public class GameInfoActivity extends BaseActivity {
 
 		chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false));
 		chkHeader.setChecked(mSP.getBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, false));
-		int pagerSize = mSP.getInt(SHARE_PAGE_SIZE, 50);
+		int pagerSize = mSP.getInt(SHARE_PAGE_SIZE+ mGameType, 50);
 		String[] pagerArray = getResources().getStringArray(R.array.pagerArray);
 		int position = 1;
 		for (int i = 0; i < pagerArray.length; i++)
