@@ -1,25 +1,26 @@
 package com.mx.gillustrated.activity;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import com.j256.ormlite.dao.Dao;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.CardTypeListAdapter;
 import com.mx.gillustrated.adapter.CardTypeListAdapter.DespairTouchListener;
+import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler;
+import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
 public class GameInfoActivity extends BaseActivity {
@@ -70,6 +72,50 @@ public class GameInfoActivity extends BaseActivity {
 		String[] array = getResources().getStringArray(R.array.pagerArray);
 		mSP.edit().putInt(SHARE_PAGE_SIZE + mGameType, Integer.parseInt(array[position])).commit();
 	}
+
+	@OnClick(R.id.btnDelAll)
+	void onDeleteAllDataHandler(){
+		new AlertDialog.Builder(GameInfoActivity.this)
+				.setMessage("确定要删除吗")
+				.setPositiveButton("Ok",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+												int which) {
+								mOrmHelper.getCardInfoDao().delCardInfoByGameId(mGameType);
+								mOrmHelper.getEventInfoDao().delEventInfoByGameId(mGameType);
+								mOrmHelper.getCardTypeInfoDao().delCardTypeInfoByGameId(mGameType);
+								mOrmHelper.getGameInfoDao().deleteById(mGameType);
+
+								File imagesFileDir = new File(
+										Environment.getExternalStorageDirectory(),
+										MConfig.SD_PATH + "/" + mGameType);
+								if(imagesFileDir.exists()){
+									File[] child = imagesFileDir.listFiles();
+									for(int i = 0; i < child.length; i++){
+										CommonUtil.deleteImage(GameInfoActivity.this, child[i]);
+									}
+								}
+								File eventFileDir = new File(
+										Environment.getExternalStorageDirectory(),
+										MConfig.SD_EVENT_PATH + "/" + mGameType);
+								if(eventFileDir.exists()){
+									File[] child = eventFileDir.listFiles();
+									for(int i = 0; i < child.length; i++){
+										CommonUtil.deleteImage(GameInfoActivity.this, child[i]);
+									}
+								}
+
+								Intent intent = new Intent(
+										GameInfoActivity.this,
+										GameListActivity.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								startActivity(intent);
+								GameInfoActivity.this.finish();
+							}
+						}).setNegativeButton("Cancel", null).show();
+	}
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

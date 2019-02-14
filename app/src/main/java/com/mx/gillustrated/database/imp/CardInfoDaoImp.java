@@ -4,6 +4,7 @@ import android.content.Context;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
@@ -49,6 +50,17 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
         }
     }
 
+    public int delCardInfoByGameId(int gameId){
+        DeleteBuilder<CardInfo, Integer> db = this.deleteBuilder();
+        Where<CardInfo, Integer> where = db.where();
+        try {
+            where.eq(CardInfo.COLUMN_GAMETYPE, gameId);
+            return this.delete(db.prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 
     public List<CardInfo> queryCards(CardInfo cardinfo, String orderBy, boolean isAsc, long position, long limit) {
         List<CardInfo> result = null;

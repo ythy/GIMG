@@ -3,9 +3,11 @@ package com.mx.gillustrated.database.imp;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.mx.gillustrated.vo.CardEventInfo;
+import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
@@ -54,6 +56,18 @@ public class EventInfoDaoImp extends RuntimeExceptionDao<EventInfo, Integer> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int delEventInfoByGameId(int gameId){
+        DeleteBuilder<EventInfo, Integer> db = this.deleteBuilder();
+        Where<EventInfo, Integer> where = db.where();
+        try {
+            where.eq(EventInfo.COLUMN_GAMEID, gameId);
+            return this.delete(db.prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
 }
