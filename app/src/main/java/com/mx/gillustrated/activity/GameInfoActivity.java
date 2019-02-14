@@ -95,6 +95,7 @@ public class GameInfoActivity extends BaseActivity {
 									for(int i = 0; i < child.length; i++){
 										CommonUtil.deleteImage(GameInfoActivity.this, child[i]);
 									}
+									imagesFileDir.delete();
 								}
 								File eventFileDir = new File(
 										Environment.getExternalStorageDirectory(),
@@ -104,6 +105,7 @@ public class GameInfoActivity extends BaseActivity {
 									for(int i = 0; i < child.length; i++){
 										CommonUtil.deleteImage(GameInfoActivity.this, child[i]);
 									}
+									eventFileDir.delete();
 								}
 
 								Intent intent = new Intent(
