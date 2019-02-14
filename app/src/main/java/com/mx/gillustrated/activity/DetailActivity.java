@@ -184,6 +184,7 @@ public class DetailActivity extends BaseActivity {
 	}
 
 	private void showEvents(){
+		llShowEvent.removeAllViews();
 		mEventList = mOrmHelper.getEventInfoDao().getListByGameId(mCardInfo.getGameId(), "Y");
 		mEventList.add(0, new EventInfo(""));
 
@@ -222,6 +223,7 @@ public class DetailActivity extends BaseActivity {
 			mCurrentPosition = newPositon;
 			mCardInfo = result;
 			mId = mCardInfo.getId();
+			showEvents();
 			showCardInfo();
 		}
 	}
