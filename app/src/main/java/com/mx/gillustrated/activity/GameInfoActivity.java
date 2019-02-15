@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -40,13 +41,18 @@ import butterknife.OnItemSelected;
 public class GameInfoActivity extends BaseActivity {
 	
 	private Button btnAdd;
-	private TextView tvGameName;
 	private ListView mLvGameMain;
 	private RelativeLayout pageVboxLayout;
 	
 	private List<CardTypeInfo> mList;
 	private int mGameType;
 	private CardTypeListAdapter mAdapter;
+
+	@BindView(R.id.etGameDetail)
+	EditText mEtGameDetail;
+
+	@BindView(R.id.etGameName)
+	EditText mEtGameName;
 
 	@BindView(R.id.chkOrientation)
 	CheckBox chkOrientation;
@@ -71,6 +77,17 @@ public class GameInfoActivity extends BaseActivity {
 	void onPagerChanged(int position){
 		String[] array = getResources().getStringArray(R.array.pagerArray);
 		mSP.edit().putInt(SHARE_PAGE_SIZE + mGameType, Integer.parseInt(array[position])).commit();
+	}
+
+	@OnClick(R.id.btnSaveAll)
+	void onSaveClickHandler(){
+		GameInfo gameInfo = new GameInfo();
+		gameInfo.setId(this.mGameType);
+		gameInfo.setDetail(mEtGameDetail.getText().toString());
+		gameInfo.setName(mEtGameName.getText().toString());
+        int result = mOrmHelper.getGameInfoDao().update(gameInfo);
+        if(result == 1)
+            Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
 	}
 
 	@OnClick(R.id.btnDelAll)
@@ -131,9 +148,9 @@ public class GameInfoActivity extends BaseActivity {
 		btnAdd = (Button) findViewById(R.id.btnGameAdd);
 		btnAdd.setOnClickListener(onAddBtnClickListerner);
 		mLvGameMain = (ListView) findViewById(R.id.lvGameInfoMain);
-		tvGameName = (TextView) findViewById(R.id.tvGameName);
 		GameInfo gameinfoList = mOrmHelper.getGameInfoDao().queryForId(mGameType);
-		tvGameName.setText(gameinfoList.getName());
+		mEtGameName.setText(gameinfoList.getName());
+		mEtGameDetail.setText(gameinfoList.getDetail());
 		pageVboxLayout = (RelativeLayout) findViewById(R.id.pageVBox);
 		pageVboxLayout.setVisibility(View.GONE);
 

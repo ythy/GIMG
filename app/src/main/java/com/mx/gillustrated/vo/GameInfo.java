@@ -9,9 +9,13 @@ public class GameInfo extends SpinnerInfo {
 	public static final String TABLE_NAME = "game_info";
 	public static final String ID = "_id";
 	public static final String COLUMN_NAME = "name";
+	public static final String COLUMN_DETAIL="detail";
 
 	@DatabaseField
 	private String name = null; //游戏名称
+
+	@DatabaseField
+	private String detail = null; //游戏说明
 
 	@DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName=ID)
 	private int id;
@@ -22,6 +26,14 @@ public class GameInfo extends SpinnerInfo {
 	
 	public GameInfo( int id){
 		this.id = id;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
 	}
 
 	public String getName() {

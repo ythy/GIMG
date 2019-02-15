@@ -82,6 +82,7 @@ public class GameListAdapter extends BaseAdapter {
 					GameInfo despairInfo = new GameInfo();
 					despairInfo.setId(id);
 					despairInfo.setName(name);
+					despairInfo.setDetail(list.get(position).getDetail());
 					mListener.onSaveBtnClickListener(despairInfo);
 				}
 			});

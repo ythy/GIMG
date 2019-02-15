@@ -87,6 +87,7 @@ public class DataBakUtil {
             JSONObject line = new JSONObject();
             line.put("id", dataGame.get(i).getId());
             line.put("name", dataGame.get(i).getName());
+            line.put("detail", dataGame.get(i).getDetail());
             rowsGame.put(line);
         }
 

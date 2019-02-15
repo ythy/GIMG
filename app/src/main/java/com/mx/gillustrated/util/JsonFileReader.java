@@ -77,6 +77,7 @@ public class JsonFileReader {
 				GameInfo gameinfo = new GameInfo();
 				gameinfo.setId(object.getInt("id")); 
 				gameinfo.setName(object.getString("name"));
+				gameinfo.setDetail(object.getString("detail"));
 				result.add(gameinfo);
 			}
 
