@@ -431,29 +431,39 @@ public class DetailActivity extends BaseActivity {
 	};
 
 	private Spinner addEvent(){
-		View child = LayoutInflater.from(DetailActivity.this).inflate(
+		final View child = LayoutInflater.from(DetailActivity.this).inflate(
 				R.layout.child_event, null);
 		llShowEvent.addView(child);
-		Spinner spinner = (Spinner) child.findViewById(R.id.spinnerEvent);
-		UIUtils.setSpinnerSingleClick(spinner);
+
+		final InlineEvent event = new InlineEvent(child);
+		UIUtils.setSpinnerSingleClick(event.spinner);
 		SpinnerCommonAdapter<EventInfo> adapter =
 				new SpinnerCommonAdapter( DetailActivity.this, mEventList);
-		spinner.setAdapter(adapter);
-		Button delBtn = (Button) child.findViewById(R.id.btnDel);
+		event.spinner.setAdapter(adapter);
+
+		event.btnDetail.setOnClickListener(new Button.OnClickListener(
+		) {
+			@Override
+			public void onClick(View v) {
+				EventInfo info = (EventInfo) event.spinner.getSelectedItem();
+				Intent intent = new Intent(DetailActivity.this, EventInfoActivity.class);
+				intent.putExtra("event", info.getId());
+				intent.putExtra("game", mCardInfo.getGameId());
+				startActivity(intent);
+			}
+		});
 
 		int roundtag = (int) Math.round(Math.random() * 100000000);
-		delBtn.setTag( roundtag + "*" + 0);
+		event.btnDel.setTag( roundtag + "*" + 0);
 
-		delBtn.setOnClickListener(new View.OnClickListener() {
+		event.btnDel.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				String[] tag = v.getTag().toString().split("\\*");
-				View line = mEventView.get(Integer.parseInt(tag[0]));
-				Spinner select = (Spinner) line.findViewById(R.id.spinnerEvent);
-				EventInfo info = (EventInfo) select.getSelectedItem();
+				EventInfo info = (EventInfo) event.spinner.getSelectedItem();
 				int id = info.getId();
 				if( id == 0 ) {
-					llShowEvent.removeView(line);
+					llShowEvent.removeView(child);
 					mEventView.remove(Integer.parseInt(tag[0]));
 				}else{
 					long timenow = Calendar.getInstance().getTime().getTime();
@@ -465,18 +475,36 @@ public class DetailActivity extends BaseActivity {
 						v.setTag(tag[0] + "*" + 0);
 						long r = mOrmHelper.getCardEventInfoDao().delCardEvents(new CardEventInfo(mCardInfo.getId(), id));
 						{
-							llShowEvent.removeView(line);
+							llShowEvent.removeView(child);
 							mEventView.remove(Integer.parseInt(tag[0]));
 							Toast.makeText(DetailActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
 						}
 					}
 				}
-
 			}
 		});
 
 		mEventView.append(roundtag, child);
-
-		return spinner;
+		return event.spinner;
 	}
+
+	static class InlineEvent{
+
+		@BindView(R.id.spinnerEvent)
+		Spinner spinner;
+
+		@BindView(R.id.btnDetail)
+		Button btnDetail;
+
+		@BindView(R.id.btnDel)
+		Button btnDel;
+
+
+		public InlineEvent(View view){
+			ButterKnife.bind(this, view);
+		}
+
+	}
+
+
 }
