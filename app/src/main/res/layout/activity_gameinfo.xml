@@ -74,10 +74,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <CheckBox
+            android:id="@+id/chkHeader"
+            android:text="是否显示头像"
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
+
     <LinearLayout
-        android:id="@+id/llHeader"
+        android:id="@+id/llPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
@@ -87,24 +95,13 @@
         android:orientation="horizontal" >
 
         <CheckBox
-            android:id="@+id/chkHeader"
-            android:text="是否显示头像"
+            android:id="@+id/chkOrientationEvent"
+            android:text="@string/gameinfo_orientation_e"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llPager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
-        android:layout_below="@id/llHeader"
-        android:orientation="horizontal" >
-
         <TextView
+            android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="分页设置"

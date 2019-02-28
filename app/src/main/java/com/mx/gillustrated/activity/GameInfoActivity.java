@@ -57,9 +57,18 @@ public class GameInfoActivity extends BaseActivity {
 	@BindView(R.id.chkOrientation)
 	CheckBox chkOrientation;
 
+	@BindView(R.id.chkOrientationEvent)
+	CheckBox chkOrientationE;
+
+
 	@OnCheckedChanged(R.id.chkOrientation)
 	void onOrientationCheckedChanged(CheckBox checkBox){
 		mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION + mGameType, checkBox.isChecked()).commit();
+	}
+
+	@OnCheckedChanged(R.id.chkOrientationEvent)
+	void onOrientationECheckedChanged(CheckBox checkBox){
+		mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, checkBox.isChecked()).commit();
 	}
 
 	@BindView(R.id.chkHeader)
@@ -156,6 +165,7 @@ public class GameInfoActivity extends BaseActivity {
 
 
 		chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false));
+        chkOrientationE.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, false));
 		chkHeader.setChecked(mSP.getBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, false));
 		int pagerSize = mSP.getInt(SHARE_PAGE_SIZE+ mGameType, 50);
 		String[] pagerArray = getResources().getStringArray(R.array.pagerArray);

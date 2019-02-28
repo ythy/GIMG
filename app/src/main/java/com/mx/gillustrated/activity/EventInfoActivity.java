@@ -182,7 +182,9 @@ public class EventInfoActivity extends BaseActivity {
 
                     mLLImages.addView(imageBox.view);
                     mImagesView.append(index, imageBox);
-                    imageBox.imageView.setImageBitmap(bitmap);
+
+                    boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT +  mGameId, false);
+                    imageBox.imageView.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bitmap, 90) : bitmap );
 
                     imageBox.btnDel.setTag(index + "*" + 0);
                     imageBox.btnDel.setOnClickListener(new View.OnClickListener() {
