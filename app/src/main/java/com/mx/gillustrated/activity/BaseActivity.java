@@ -28,6 +28,7 @@ public abstract class BaseActivity extends Activity {
     public static final String SHARE_IMAGES_MATRIX_NUMBER = "add_images_matrix_number";
     public static final String SHARE_SHOW_HEADER_IMAGES = "show_header_images";
     public static final String SHARE_PAGE_SIZE = "list_page_size";
+    public static final String SHARE_IMAGES_HEADER_SCALE_NUMBER = "header_images_scale_float_number";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

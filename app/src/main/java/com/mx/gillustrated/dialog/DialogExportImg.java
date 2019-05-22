@@ -19,14 +19,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.mx.gillustrated.R;
+import com.mx.gillustrated.activity.BaseActivity;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.vo.MatrixInfo;
 
 public class DialogExportImg {
 
-	public static void show(final Context context, int nid, final int gameId,
-							final Handler handler) {
+	public static void show(final BaseActivity context, int nid, final int gameId,
+                            final Handler handler) {
 		final AlertDialog dlg = new AlertDialog.Builder(context).create();
 		dlg.show();
 		Window window = dlg.getWindow();
@@ -37,13 +38,15 @@ public class DialogExportImg {
 		final EditText y1 = (EditText) window.findViewById(R.id.etY1);
 		final EditText width1 = (EditText) window.findViewById(R.id.etWidth1);
 		final EditText height1 = (EditText) window.findViewById(R.id.etHeight1);
+        final EditText etScale = (EditText) window.findViewById(R.id.etScale);
 
 		MatrixInfo sets = CommonUtil.getMatrixInfo(context, 6, gameId);
 		x1.setText(String.valueOf(sets.getX()));
 		y1.setText(String.valueOf(sets.getY()));
 		width1.setText(String.valueOf(sets.getWidth()));
 		height1.setText(String.valueOf(sets.getHeight()));
-		
+        etScale.setText(String.valueOf(getScale(context,gameId)));
+
 		Bitmap compress = null;
 		if (android.os.Environment.MEDIA_MOUNTED.equals(android.os.Environment
 				.getExternalStorageState())) {
@@ -69,8 +72,14 @@ public class DialogExportImg {
 		Button btnSave = (Button) window.findViewById(R.id.btnSave);
 		if (compress != null) {
 			final Bitmap compressfinal = compress;
-			imageView.setImageBitmap(CommonUtil.toRoundBitmap(CommonUtil.cutBitmap(compress,
-					sets, false)));
+			float scaleNum = getScale(context,gameId);
+			if(scaleNum == 0)
+				imageView.setImageBitmap(CommonUtil.toRoundBitmap(CommonUtil.cutBitmap(compress,
+						sets, false)));
+			else
+				imageView.setImageBitmap(CommonUtil.scaleBitmap(CommonUtil.cutBitmap(compress,
+						sets, false), scaleNum));
+
 			btnSave.setOnClickListener(new View.OnClickListener() {
 
 				@Override
@@ -83,8 +92,13 @@ public class DialogExportImg {
 							.toString()));
 					CommonUtil.setMatrixInfo(context, 6, matrixInfo1, gameId);
 
-					imageView.setImageBitmap(CommonUtil.toRoundBitmap(CommonUtil.cutBitmap(
-							compressfinal, matrixInfo1, false)));
+                    Bitmap cutBitMap = CommonUtil.cutBitmap(compressfinal, matrixInfo1, false);
+                    float scaleNum = Float.valueOf(etScale.getText().toString());
+                    setScale(context, gameId, scaleNum);
+                    if(scaleNum == 0)
+					    imageView.setImageBitmap(CommonUtil.toRoundBitmap(cutBitMap));
+                    else
+                        imageView.setImageBitmap(CommonUtil.scaleBitmap(cutBitMap, scaleNum));
 				}
 
 			});
@@ -127,5 +141,14 @@ public class DialogExportImg {
 		
 		
 	}
+
+	private static float getScale(BaseActivity activity, int gameType){
+        float number = activity.mSP.getFloat(activity.SHARE_IMAGES_HEADER_SCALE_NUMBER + gameType, 0f);
+        return number;
+    }
+
+    private static void setScale(BaseActivity activity, int gameType, float scale){
+        activity.mSP.edit().putFloat(activity.SHARE_IMAGES_HEADER_SCALE_NUMBER + gameType, scale).commit();
+    }
 
 }

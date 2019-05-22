@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import com.mx.gillustrated.activity.BaseActivity;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.vo.CardTypeInfo;
@@ -136,7 +137,8 @@ public class CommonUtil {
 		}
 		return degree;
 	}
-	
+
+    // flag :
 	public static Bitmap cutBitmap(Bitmap bitmap, MatrixInfo matrixinfo,
 			boolean flag) {
 		Bitmap result = null;
@@ -382,6 +384,12 @@ public class CommonUtil {
 		return binarymap;
 	}
 
+	public static Bitmap scaleBitmap(Bitmap src, float scale) {
+        final int width = src.getWidth();
+        final int height = src.getHeight();
+		return Bitmap.createScaledBitmap(src, (int) (width * scale), (int) (height * scale), false);
+	}
+
 	// 转化圆形
 	public static Bitmap toRoundBitmap(Bitmap bitmap) {
 		int width = bitmap.getWidth();
@@ -499,7 +507,7 @@ public class CommonUtil {
 
 	}
 
-	public static void generateHeaderImg(Context context, int[] nids, int gameType, boolean isReWrite ){
+	public static void generateHeaderImg(BaseActivity context, int[] nids, int gameType, boolean isReWrite ){
     	File imageDir = new File(Environment.getExternalStorageDirectory(),
 				MConfig.SD_PATH + "/" + gameType);
 		File headerDir = new File(Environment.getExternalStorageDirectory(),
@@ -524,8 +532,15 @@ public class CommonUtil {
 				compress = MediaStore.Images.Media.getBitmap(
 						context.getContentResolver(), Uri.fromFile(imageFile));
 				bos = new FileOutputStream(headerFile);
-				CommonUtil.toRoundBitmap(CommonUtil.cutBitmap(compress,
-						sets, false)).compress(Bitmap.CompressFormat.PNG, 100, bos);
+
+                float scaleNum = context.mSP.getFloat(context.SHARE_IMAGES_HEADER_SCALE_NUMBER + gameType, 0f);
+                Bitmap cutBitMap = CommonUtil.cutBitmap(compress, sets, false);
+
+                if(scaleNum == 0)
+                    CommonUtil.toRoundBitmap(cutBitMap).compress(Bitmap.CompressFormat.PNG, 100, bos);
+                else
+                    CommonUtil.scaleBitmap(cutBitMap, scaleNum).compress(Bitmap.CompressFormat.PNG, 100, bos);
+
 				bos.flush();
 				bos.close();
 				compress.recycle();

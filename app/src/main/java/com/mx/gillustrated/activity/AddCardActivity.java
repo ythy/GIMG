@@ -403,8 +403,6 @@ public class AddCardActivity extends BaseActivity {
 				CommonUtil.getImageFrontName(id, num));
 		try {
 			bos = new FileOutputStream(imageFile);
-			if(this.chkAdjustImg.isChecked())
-				bitmap = getMatrixBitmap(bitmap);
 			bitmap.compress(Bitmap.CompressFormat.JPEG,
 					30, bos);
 			bos.flush();

@@ -49,4 +49,19 @@ public class CardTypeInfoDaoImp  extends RuntimeExceptionDao<CardTypeInfo, Integ
         }
         return -1;
     }
+
+    public int delCardTypeInfoById(int nid, int gameId){
+        DeleteBuilder<CardTypeInfo, Integer> db = this.deleteBuilder();
+        Where<CardTypeInfo, Integer> where = db.where();
+        try {
+            where.eq(CardTypeInfo.COLUMN_GAMETYPE, gameId);
+            where.and();
+            where.eq(CardTypeInfo.ID, nid);
+            return this.delete(db.prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
 }
