@@ -210,12 +210,12 @@
                 android:orientation="horizontal" >
 
                 <TextView
+                    android:id="@+id/tv_header_hp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:paddingRight="10dp"
-                    android:text="@string/header_hp" />
+                    android:paddingRight="10dp" />
 
                 <EditText
                     android:id="@+id/etDetailHP"
@@ -240,12 +240,12 @@
                 android:orientation="horizontal" >
 
                 <TextView
+                    android:id="@+id/tv_header_A"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:paddingRight="10dp"
-                    android:text="@string/header_attack" />
+                    android:paddingRight="10dp" />
 
                 <EditText
                     android:id="@+id/etDetailAttack"
@@ -270,12 +270,12 @@
                 android:orientation="horizontal" >
 
                 <TextView
+                    android:id="@+id/tv_header_D"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:paddingRight="10dp"
-                    android:text="@string/header_defense" />
+                    android:paddingRight="10dp" />
 
                 <EditText
                     android:id="@+id/etDetailDefense"

@@ -24,11 +24,20 @@ public class MainActivityHeader {
     private ListHeaderView mListHeaderView;
     private MainActivity mContext;
     private HeaderHandle mHeaderHandle;
+    private ResourceController mResourceController;
 
-    public MainActivityHeader(MainActivity context, HeaderHandle headerHandle){
+    public MainActivityHeader(MainActivity context, HeaderHandle headerHandle, int gameId){
         mContext = context;
         mHeaderHandle = headerHandle;
         initialize();
+        setResourceController(gameId);
+    }
+
+    public void setResourceController(int gameId){
+        mResourceController = new ResourceController(mContext, gameId);
+        mListHeaderView.tvHP.setText(mResourceController.getNumber1());
+        mListHeaderView.tvAttack.setText(mResourceController.getNumber2());
+        mListHeaderView.tvDefense.setText(mResourceController.getNumber3());
     }
 
     private void initialize(){

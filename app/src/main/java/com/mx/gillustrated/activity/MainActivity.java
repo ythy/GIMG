@@ -94,7 +94,7 @@ public class MainActivity extends BaseActivity {
             public void onHeaderClick(String column) {
                 mMainActivityListView.searchDataOrderby(column);
             }
-        });
+        }, mGameType);
 
         mMainActivityTop = new MainActivityTop(this, mOrmHelper, new MainActivityTop.TopHandle(){
             @Override
@@ -116,6 +116,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onGameTypeChanged(int type) {
                 mGameType = type;
+                mMainActivityHeader.setResourceController(mGameType);
             }
         });
 

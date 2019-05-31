@@ -17,6 +17,7 @@ import com.j256.ormlite.support.DatabaseResults;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.component.ResourceController;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.util.PinyinUtil;
 import com.mx.gillustrated.util.UIUtils;
@@ -81,6 +82,17 @@ public class DetailActivity extends BaseActivity {
 	private LinearLayout mLLImages;
 	private List<EventInfo> mEventList;
 	private SparseArray<View> mEventView = new SparseArray<View>();
+	private ResourceController mResourceController;
+
+	@BindView(R.id.tv_header_hp)
+	TextView tvHeaderNumber1;
+
+	@BindView(R.id.tv_header_A)
+	TextView tvHeaderNumber2;
+
+	@BindView(R.id.tv_header_D)
+	TextView tvHeaderNumber3;
+
 
 	@BindView(R.id.btnSaveEvent)
 	Button btnSaveEvent;
@@ -131,6 +143,7 @@ public class DetailActivity extends BaseActivity {
 		mCurrentPosition = intent.getIntExtra("positon", -1);
 		mMainTotalCount = intent.getIntExtra("totalCount", 0);
 		mCardInfo = mOrmHelper.getCardInfoDao().queryForId(mId);
+		mResourceController = new ResourceController(this, mCardInfo.getGameId() );
 
 		chkModify = (CheckBox) findViewById(R.id.chkModify);
 		etHP = (EditText) findViewById(R.id.etDetailHP);
@@ -149,7 +162,11 @@ public class DetailActivity extends BaseActivity {
 		btnDel.setOnClickListener(btnDelClickListener);
 		Button btnDel2 = (Button) findViewById(R.id.btnDel2);
 		btnDel2.setOnClickListener(btnDel2ClickListener);
-		
+
+		tvHeaderNumber1.setText(mResourceController.getNumber1());
+		tvHeaderNumber2.setText(mResourceController.getNumber2());
+		tvHeaderNumber3.setText(mResourceController.getNumber3());
+
 		tvId = (TextView) findViewById(R.id.tvId);
 		mLLImages = (LinearLayout) findViewById(R.id.llImages);
 		

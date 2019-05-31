@@ -9,6 +9,7 @@ import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.CardTypeListAdapter;
 import com.mx.gillustrated.adapter.CardTypeListAdapter.DespairTouchListener;
 import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.component.ResourceController;
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.vo.CardTypeInfo;
@@ -36,7 +37,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import butterknife.OnItemSelected;
+import butterknife.OnTextChanged;
 
 public class GameInfoActivity extends BaseActivity {
 
@@ -47,6 +50,17 @@ public class GameInfoActivity extends BaseActivity {
     private List<CardTypeInfo> mList;
     private int mGameType;
     private CardTypeListAdapter mAdapter;
+    private ResourceController mResourceController;
+
+    @BindView(R.id.et_number1)
+    EditText mEtNumber1;
+
+    @BindView(R.id.et_number2)
+    EditText mEtNumber2;
+
+    @BindView(R.id.et_number3)
+    EditText mEtNumber3;
+
 
     @BindView(R.id.etGameDetail)
     EditText mEtGameDetail;
@@ -60,6 +74,20 @@ public class GameInfoActivity extends BaseActivity {
     @BindView(R.id.chkOrientationEvent)
     CheckBox chkOrientationE;
 
+    @OnTextChanged(R.id.et_number1)
+    void onNumber1TextChanged(CharSequence text){
+        mResourceController.setNumber1(text.toString());
+    }
+
+    @OnTextChanged(R.id.et_number2)
+    void onNumber2TextChanged(CharSequence text){
+        mResourceController.setNumber2(text.toString());
+    }
+
+    @OnTextChanged(R.id.et_number3)
+    void onNumber3TextChanged(CharSequence text){
+        mResourceController.setNumber3(text.toString());
+    }
 
     @OnCheckedChanged(R.id.chkOrientation)
     void onOrientationCheckedChanged(CheckBox checkBox) {
@@ -153,7 +181,7 @@ public class GameInfoActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         mGameType = getIntent().getIntExtra("game", 0);
-
+        mResourceController = new ResourceController(this, mGameType);
         btnAdd = (Button) findViewById(R.id.btnGameAdd);
         btnAdd.setOnClickListener(onAddBtnClickListerner);
         mLvGameMain = (ListView) findViewById(R.id.lvGameInfoMain);
@@ -163,6 +191,9 @@ public class GameInfoActivity extends BaseActivity {
         pageVboxLayout = (RelativeLayout) findViewById(R.id.pageVBox);
         pageVboxLayout.setVisibility(View.GONE);
 
+        mEtNumber1.setText(mResourceController.getNumber1());
+        mEtNumber2.setText(mResourceController.getNumber2());
+        mEtNumber3.setText(mResourceController.getNumber3());
 
         chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false));
         chkOrientationE.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, false));

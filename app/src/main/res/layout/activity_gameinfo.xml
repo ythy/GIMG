@@ -119,10 +119,45 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_number"
+        android:layout_below="@id/llPager"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_number1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:lines="1"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/et_number2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:lines="1"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/et_number3"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:lines="1"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
         android:id="@+id/llTitleAttr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/llPager"
+        android:layout_below="@id/ll_number"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
