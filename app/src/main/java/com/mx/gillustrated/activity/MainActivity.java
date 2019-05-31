@@ -20,9 +20,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.view.inputmethod.BaseInputConnection;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -48,6 +50,17 @@ public class MainActivity extends BaseActivity {
         Intent intentEvent = new Intent(MainActivity.this, EventsActivity.class);
         intentEvent.putExtra("game", mGameType);
         startActivity(intentEvent);
+    }
+
+    @BindView(R.id.btnShowMenu) Button btnMenu;
+
+    @OnClick(R.id.btnShowMenu)
+    void onBtnShowMenuClick(){
+        BaseInputConnection mInputConnection = new BaseInputConnection(btnMenu, true);
+        KeyEvent down = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MENU);
+        mInputConnection.sendKeyEvent(down);
+        KeyEvent up = new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MENU);
+        mInputConnection.sendKeyEvent(up);
     }
 
     @OnTextChanged(R.id.etPinyin)
