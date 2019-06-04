@@ -15,16 +15,19 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.component.ResourceController;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.vo.EventInfo;
 
@@ -49,6 +52,7 @@ public class EventInfoActivity extends BaseActivity {
     private static final int SELECT_PIC_BY_PICK_PHOTO = 10;
     private SparseArray<File> mImagesFiles;
     private SparseArray<ImageBox> mImagesView;
+    private ResourceController mResourceController;
 
     @BindView(R.id.etDetailName)
     EditText mName;
@@ -135,6 +139,7 @@ public class EventInfoActivity extends BaseActivity {
         mBtnDel.setTag(0);
         mEventId = getIntent().getIntExtra("event", 0);
         mGameId = getIntent().getIntExtra("game", 0);
+        mResourceController = new ResourceController(this, mGameId);
         if(mEventId > 0)
             mainSearch();
     }
@@ -178,10 +183,21 @@ public class EventInfoActivity extends BaseActivity {
                         e.printStackTrace();
                     }
 
-                    ImageBox imageBox = new ImageBox(EventInfoActivity.this);
-
+                    final ImageBox imageBox = new ImageBox(EventInfoActivity.this);
                     mLLImages.addView(imageBox.view);
                     mImagesView.append(index, imageBox);
+
+                    if(mResourceController.getEventImagesGap()) {
+                        mLLImages.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imageBox.view.getLayoutParams();
+                                layoutParams.setMargins(0, 0, 0, 20);
+                                imageBox.view.setLayoutParams(layoutParams);
+                            }
+                        });
+                    }
+
 
                     boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT +  mGameId, false);
                     imageBox.imageView.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bitmap, 90) : bitmap );

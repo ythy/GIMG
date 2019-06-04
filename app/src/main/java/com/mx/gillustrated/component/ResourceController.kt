@@ -25,5 +25,9 @@ class ResourceController(private val context:BaseActivity, private val gameId:In
             context.mSP.edit().putString("${gameId}_row_number3", value).commit()
         }
 
-
+    var eventImagesGap:Boolean
+        get() = context.mSP.getBoolean("${gameId}_event_images_gap", false)
+        set(value) {
+            context.mSP.edit().putBoolean("${gameId}_event_images_gap", value).commit()
+        }
 }
