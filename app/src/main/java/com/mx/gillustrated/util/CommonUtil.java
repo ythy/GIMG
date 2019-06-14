@@ -145,13 +145,14 @@ public class CommonUtil {
 		if(matrixinfo.getHeight() == 0 && matrixinfo.getWidth() == 0)
 			return bitmap;
 		
-		if (flag)
+		if (flag) {
+			if (bitmap.getWidth() <= matrixinfo.getWidth() || bitmap.getHeight() <= matrixinfo.getHeight())
+				return bitmap;
 			result = Bitmap.createBitmap(bitmap, matrixinfo.getX(),
 					matrixinfo.getY(),
 					bitmap.getWidth() - matrixinfo.getWidth(),
 					bitmap.getHeight() - matrixinfo.getHeight());
-		else
-		{
+		} else {
 			if( (matrixinfo.getX() + matrixinfo.getWidth() > bitmap.getWidth()) ||
 					(matrixinfo.getY() + matrixinfo.getHeight() > bitmap.getHeight()))
 			{
