@@ -3,220 +3,230 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_content_bg_normal" >
-
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="0px"
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
-    <LinearLayout
-        android:id="@+id/lltop"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-		
-        <EditText
-             android:id="@+id/etGameName"
-             android:layout_width="150dp"
-             android:maxLines="1"
-             android:layout_height="wrap_content"
-             />
-        <Button
-            android:id="@+id/btnDelAll"
-            android:text="删除所有数据"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <Button
-            android:id="@+id/btnSaveAll"
-            android:layout_marginLeft="5dp"
-            android:text="保存"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <LinearLayout
-        android:id="@+id/llDetail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
-        android:layout_below="@id/lltop"
-        android:orientation="horizontal" >
-
-        <EditText
-            android:id="@+id/etGameDetail"
-            android:minLines="3"
-            android:textSize="12sp"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent">
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/lltop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
 
-    <LinearLayout
-        android:id="@+id/llImageOrientation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
-        android:layout_below="@id/llDetail"
-        android:orientation="horizontal" >
+                <EditText
+                    android:id="@+id/etGameName"
+                    android:layout_width="150dp"
+                    android:maxLines="1"
+                    android:layout_height="wrap_content"
+                    />
+                <Button
+                    android:id="@+id/btnDelAll"
+                    android:text="删除所有数据"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/btnSaveAll"
+                    android:layout_marginLeft="5dp"
+                    android:text="保存"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/chkOrientation"
-            android:text="@string/gameinfo_orientation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <LinearLayout
+                android:id="@+id/llDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:layout_below="@id/lltop"
+                android:orientation="horizontal" >
 
-        <CheckBox
-            android:id="@+id/chkHeader"
-            android:text="头像"
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/etGameDetail"
+                    android:minLines="3"
+                    android:textSize="12sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <CheckBox
-            android:id="@+id/chkEventGap"
-            android:text="@string/gameinfo_event_images_gap"
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llImageOrientation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:layout_below="@id/llDetail"
+                android:orientation="horizontal" >
 
+                <CheckBox
+                    android:id="@+id/chkOrientation"
+                    android:text="@string/gameinfo_orientation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:id="@+id/llPager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
-        android:layout_below="@id/llImageOrientation"
-        android:orientation="horizontal" >
+                <CheckBox
+                    android:id="@+id/chkHeader"
+                    android:text="头像"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-        <CheckBox
-            android:id="@+id/chkOrientationEvent"
-            android:text="@string/gameinfo_orientation_e"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/chkEventGap"
+                    android:text="@string/gameinfo_event_images_gap"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="分页设置"
-            />
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinnerPager"
-            android:entries="@array/pagerArray"
-            >
-
-        </Spinner>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_number"
-        android:layout_below="@id/llPager"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/et_number1"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:lines="1"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/et_number2"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:lines="1"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/et_number3"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:lines="1"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
+            </LinearLayout>
 
 
-    <LinearLayout
-        android:id="@+id/llTitleAttr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ll_number"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-		
-        <TextView  
-			 android:text="@string/set_attr"	
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             />
-        <Button
-             android:id="@+id/btnGameAdd"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_marginLeft="30dp"
-             android:background="@drawable/add" >
-         </Button>
+            <LinearLayout
+                android:id="@+id/llPager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:layout_below="@id/llImageOrientation"
+                android:orientation="horizontal" >
 
-    </LinearLayout>
-    
-    <ListView
-        android:id="@+id/lvGameInfoMain"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/llTitleAttr"
-        android:cacheColorHint="#00000000"
-        android:divider="@null"
-        android:fastScrollEnabled="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:descendantFocusability="afterDescendants"
-        android:scrollingCache="true" >
-    </ListView>
-	
+                <CheckBox
+                    android:id="@+id/chkOrientationEvent"
+                    android:text="@string/gameinfo_orientation_e"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-    
-    <RelativeLayout
-        android:id="@+id/pageVBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:visibility="gone" >
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分页设置"
+                    />
 
-        <TextView
-            android:id="@+id/pageText"
-            style="@style/PageWhite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" />
-    </RelativeLayout>
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerPager"
+                    android:entries="@array/pagerArray"
+                    >
 
+                </Spinner>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_number"
+                android:layout_below="@id/llPager"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_number1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:lines="1"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/et_number2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:lines="1"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/et_number3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:lines="1"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/llTitleAttr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_number"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:text="@string/set_attr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <Button
+                    android:id="@+id/btnGameAdd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:background="@drawable/add" >
+                </Button>
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lvGameInfoMain"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/llTitleAttr"
+                android:cacheColorHint="#00000000"
+                android:divider="@null"
+                android:fastScrollEnabled="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:descendantFocusability="afterDescendants"
+                android:scrollingCache="true" >
+            </ListView>
+
+
+
+            <RelativeLayout
+                android:id="@+id/pageVBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:visibility="gone" >
+
+                <TextView
+                    android:id="@+id/pageText"
+                    style="@style/PageWhite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>
