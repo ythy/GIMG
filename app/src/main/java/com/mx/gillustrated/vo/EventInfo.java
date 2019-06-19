@@ -17,6 +17,7 @@ public class EventInfo extends SpinnerInfo  {
     public static final String COLUMN_CONTENT = "content";
     public static final String COLUMN_GAMEID= "gameid";
     public static final String COLUMN_SHOWING = "showFlag";
+    public static final String COLUMN_INDEX = "nid";
 
     @DatabaseField
     private String name = null; //活动名称
@@ -30,6 +31,8 @@ public class EventInfo extends SpinnerInfo  {
     private String content = null;  //活动内容
     @DatabaseField(columnName = COLUMN_SHOWING)
     private String showing = null; //是否是卡片可选项
+    @DatabaseField(columnName = COLUMN_INDEX)
+    private int index;  //排序用ID
 
     public EventInfo(){
     }
@@ -84,5 +87,13 @@ public class EventInfo extends SpinnerInfo  {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

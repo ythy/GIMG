@@ -40,6 +40,7 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * Created by maoxin on 2017/2/22.
@@ -60,6 +61,9 @@ public class EventInfoActivity extends BaseActivity {
     @BindView(R.id.etDetailTime)
     EditText mDuration;
 
+    @BindView(R.id.etIndex)
+    EditText mIndex;
+
     @BindView(R.id.etDetailContent)
     EditText mContent;
 
@@ -74,6 +78,7 @@ public class EventInfoActivity extends BaseActivity {
         request.setDuration(mDuration.getText().toString());
         request.setContent(mContent.getText().toString());
         request.setShowing(mCbShowing.isChecked() ? "Y" : "N");
+        request.setIndex("".equals(mIndex.getText().toString()) ? 0 : Integer.parseInt(mIndex.getText().toString()));
         request.setGameId(mGameId);
         Dao.CreateOrUpdateStatus result = mOrmHelper.getEventInfoDao().createOrUpdate(request);
         if(result.isCreated() || result.isUpdated() ){
@@ -152,6 +157,7 @@ public class EventInfoActivity extends BaseActivity {
         mName.setText(result.getName());
         mDuration.setText(result.getDuration());
         mContent.setText(result.getContent());
+        mIndex.setText(String.valueOf(result.getIndex()));
         if("Y".equals(result.getShowing()))
             mCbShowing.setChecked(true);
         else

@@ -4,17 +4,13 @@ import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import java.io.File
-
 
 
 /**

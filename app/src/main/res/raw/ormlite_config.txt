@@ -1,5 +1,5 @@
 #
-# generated on 2019/02/15 03:54:35
+# generated on 2019/06/19 03:09:07
 #
 # --table-start--
 dataClass=com.mx.gillustrated.vo.GameInfo
@@ -81,6 +81,10 @@ fieldName=content
 # --field-start--
 fieldName=showing
 columnName=showFlag
+# --field-end--
+# --field-start--
+fieldName=index
+columnName=nid
 # --field-end--
 # --table-fields-end--
 # --table-end--

@@ -59,6 +59,23 @@
                     android:layout_height="wrap_content"
                     android:text="SHOW"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:layout_marginLeft="50dp"
+                    android:text="排序" />
+
+                <EditText
+                    android:id="@+id/etIndex"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+
+
             </LinearLayout>
 
 
