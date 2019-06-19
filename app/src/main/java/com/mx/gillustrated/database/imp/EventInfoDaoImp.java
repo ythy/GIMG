@@ -46,7 +46,7 @@ public class EventInfoDaoImp extends RuntimeExceptionDao<EventInfo, Integer> {
     public List<EventInfo> getListByGameId(int gameId, String showFlag ){
         QueryBuilder<EventInfo, Integer> qb = this.queryBuilder();
         Where<EventInfo, Integer> where = qb.where();
-        qb.orderByRaw( EventInfo.COLUMN_INDEX + " desc, " + EventInfo.ID + " desc");
+        qb.orderByRaw( EventInfo.COLUMN_INDEX + " desc, " + EventInfo.ID + " asc");
         try {
             where.eq(EventInfo.COLUMN_GAMEID, gameId);
             if(showFlag != null) {
