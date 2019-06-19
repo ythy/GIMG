@@ -59,6 +59,11 @@
             android:name="com.mx.gillustrated.activity.EventInfoActivity"
             android:screenOrientation="portrait" >
         </activity>
+
+        <activity
+            android:name="com.mx.gillustrated.activity.ImageAdjustActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 	
     

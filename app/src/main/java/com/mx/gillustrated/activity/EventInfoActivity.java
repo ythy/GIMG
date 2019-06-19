@@ -112,9 +112,11 @@ public class EventInfoActivity extends BaseActivity {
         for(int i = 0; i < mImagesView.size(); i++){
             if(mImagesView.valueAt(i).btnDel.getVisibility() == View.GONE){
                 mImagesView.valueAt(i).btnDel.setVisibility(View.VISIBLE);
+                mImagesView.valueAt(i).btnAdjust.setVisibility(View.VISIBLE);
                 mImagesView.valueAt(i).indexEt.setVisibility(View.VISIBLE);
             }else{
                 mImagesView.valueAt(i).btnDel.setVisibility(View.GONE);
+                mImagesView.valueAt(i).btnAdjust.setVisibility(View.GONE);
                 mImagesView.valueAt(i).indexEt.setVisibility(View.GONE);
             }
         }
@@ -198,9 +200,19 @@ public class EventInfoActivity extends BaseActivity {
                         });
                     }
 
+                    final int oldIndex = index;
 
                     boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT +  mGameId, false);
                     imageBox.imageView.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bitmap, 90) : bitmap );
+
+                    imageBox.btnAdjust.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(EventInfoActivity.this, ImageAdjustActivity.class);
+                            intent.putExtra("source", mImagesFiles.get(oldIndex).getAbsolutePath());
+                            startActivity(intent);
+                        }
+                    });
 
                     imageBox.btnDel.setTag(index + "*" + 0);
                     imageBox.btnDel.setOnClickListener(new View.OnClickListener() {
@@ -226,7 +238,6 @@ public class EventInfoActivity extends BaseActivity {
                     });
 
                     imageBox.indexEt.setText(String.valueOf(index));
-                    final int oldIndex = index;
                     imageBox.indexEt.setOnFocusChangeListener(new View.OnFocusChangeListener(){
                         @Override
                         public void onFocusChange(View v, boolean hasFocus) {
@@ -358,8 +369,13 @@ public class EventInfoActivity extends BaseActivity {
     class ImageBox{
         @BindView(R.id.imgDetails)
         ImageView imageView;
+
         @BindView(R.id.btnDel)
         Button btnDel;
+
+        @BindView(R.id.btnAdjust)
+        Button btnAdjust;
+
         @BindView(R.id.etSeq)
         EditText indexEt;
         View view;

@@ -101,8 +101,8 @@
                 <Button android:id="@+id/btnDel2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:background="@drawable/delete"/>
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/set"/>
             </LinearLayout>
 
             <LinearLayout
