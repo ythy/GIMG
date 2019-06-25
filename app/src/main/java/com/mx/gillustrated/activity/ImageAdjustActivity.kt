@@ -4,6 +4,7 @@ import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
@@ -11,6 +12,17 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import java.io.File
+import android.content.res.TypedArray
+import android.graphics.Bitmap
+import android.os.Environment
+import android.widget.Button
+import android.widget.Toast
+import butterknife.OnClick
+import com.mx.gillustrated.common.MConfig
+import com.mx.gillustrated.util.CommonUtil
+import com.mx.gillustrated.vo.MatrixInfo
+import android.content.Intent
+import java.util.*
 
 
 /**
@@ -26,23 +38,58 @@ class ImageAdjustActivity : BaseActivity() {
     val MIN_SCALE_START_WIDTH:Int = 10
 
     val TAG:String = javaClass.name
+    lateinit var originImage:Bitmap
+    lateinit var originImagePath:String
 
     @BindView(R.id.image)
     lateinit var mImage:ImageView
+
+    @BindView(R.id.cut)
+    lateinit var mCut:ImageView
+
+    @OnClick(R.id.btnCutSave)
+    fun onSaveClick() {
+        //Matrix  0 4 缩放   2 5 位移
+        val imageMatrixArray = FloatArray(9)
+        mImage.imageMatrix.getValues(imageMatrixArray)
+        //matrixInfo.x 说明
+        //由于cut缩放导致cutX需要调整回原始X
+        //mImage缩放同样问题，缩放后的X是不变的，需要把x改成目测X
+        //最后除以缩放的倍数
+        val matrixInfo = MatrixInfo()
+        matrixInfo.x = Math.round(( mCut.x - ( mCut.width * mCut.scaleX - mCut.width ) / 2  - ( mImage.x + mImage.width * ( 1 - mImage.scaleX ) / 2 + imageMatrixArray[2] *  mImage.scaleX) ) / mImage.scaleX / imageMatrixArray[0])
+        matrixInfo.y = Math.round(( mCut.y - ( mCut.height * mCut.scaleY - mCut.height ) / 2  - ( mImage.y + mImage.height * ( 1 - mImage.scaleY ) / 2 + imageMatrixArray[5] * mImage.scaleY) ) / mImage.scaleY / imageMatrixArray[4])
+        matrixInfo.width = Math.round( mCut.width * mCut.scaleX / mImage.scaleX / imageMatrixArray[0] )
+        matrixInfo.height = Math.round( mCut.height * mCut.scaleY / mImage.scaleY / imageMatrixArray[4] )
+
+       val bitmap = CommonUtil.cutBitmap(originImage, matrixInfo, false)
+       CommonUtil.exportImgFromBitmap(bitmap,  File(originImagePath))
+
+        val intent = Intent(this, EventInfoActivity::class.java)
+        intent.putExtra("event", getIntent().getIntExtra("id", 0))
+        intent.putExtra("game", getIntent().getIntExtra("game", 0))
+        startActivity(intent)
+        this.finish();
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.activity_image_adjust)
         ButterKnife.bind(this)
-        this.initView(this.intent.getStringExtra("source"))
+        originImagePath = this.intent.getStringExtra("source")
+        this.initView()
     }
 
-    fun initView(filePath:String){
-        val bitmap = MediaStore.Images.Media.getBitmap(
-                this.contentResolver, Uri.fromFile(File(filePath)))
-        mImage.setImageBitmap(bitmap)
+    fun initView(){
+        originImage = MediaStore.Images.Media.getBitmap(
+                this.contentResolver, Uri.fromFile(File(originImagePath)))
+        mImage.setImageBitmap(originImage)
         mImage.post {
             initImageListeners()
+        }
+        mCut.post {
+            initCutImageListeners()
         }
     }
 
@@ -50,7 +97,6 @@ class ImageAdjustActivity : BaseActivity() {
         var lastPointToView: PointF = PointF()
         var lastSpace: Float = Float.MIN_VALUE
         var animateType:AnimateType = AnimateType.NONE
-        val originImageWidth = mImage.width
 
         mImage.setOnTouchListener { v, event ->
             when ( event.action and MotionEvent.ACTION_MASK ) {
@@ -63,9 +109,9 @@ class ImageAdjustActivity : BaseActivity() {
                         AnimateType.MOVE -> move(mImage, event.rawX + lastPointToView.x, event.rawY + lastPointToView.y)
                         AnimateType.RESIZE ->{
                             val space = spacing(event) - lastSpace
-                            val lastWidth:Float = originImageWidth * mImage.scaleX;
+                            val lastWidth:Float = mImage.width * mImage.scaleX;
                             if(Math.abs(space) > MIN_SCALE_START_WIDTH && lastWidth + space < MAX_SCALE_WIDTH && lastWidth + space > MIN_SCALE_WIDTH ){
-                                resize(mImage, (lastWidth + space ) / originImageWidth  )
+                                resize(mImage, (lastWidth + space ) / mImage.width  )
                             }
                         }
                     }
@@ -78,6 +124,48 @@ class ImageAdjustActivity : BaseActivity() {
                     animateType = AnimateType.NONE
                 }
                 MotionEvent.ACTION_POINTER_UP ->{
+                    animateType = AnimateType.NONE
+                }
+                else ->
+                    false
+            }
+            true
+        }
+
+
+    }
+
+    fun initCutImageListeners(){
+        var lastPointToView: PointF = PointF()
+        var lastPoint: PointF = PointF()
+        var animateType:AnimateType = AnimateType.NONE
+
+        mCut.setOnTouchListener { v, event ->
+            when ( event.action and MotionEvent.ACTION_MASK ) {
+                MotionEvent.ACTION_DOWN -> {
+                    val cutX = mCut.x - event.rawX
+                    val cutY = mCut.y - event.rawY
+                    //开始判断点击位置
+                    if(event.x >= mCut.width - 100 && event.y >= mCut.height - 100 ){
+                        lastPoint = PointF(event.rawX, event.rawY)
+                        animateType = AnimateType.RESIZE
+                    }else{
+                        lastPointToView = PointF(cutX, cutY)
+                        animateType = AnimateType.MOVE
+                    }
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    when ( animateType ){
+                        AnimateType.MOVE -> move(mCut, event.rawX + lastPointToView.x, event.rawY + lastPointToView.y)
+                        AnimateType.RESIZE -> {
+                            val scaleX = ( mCut.width * mCut.scaleX  + event.rawX - lastPoint.x ) / mCut.width
+                            val scaleY = ( mCut.height * mCut.scaleY  + event.rawY - lastPoint.y ) / mCut.height
+                            resize(mCut, scaleX, scaleY, mCut.x + (event.rawX - lastPoint.x )/2, mCut.y + (event.rawY - lastPoint.y )/2 )
+                            lastPoint = PointF(event.rawX, event.rawY)
+                        }
+                    }
+                }
+                MotionEvent.ACTION_UP ->{
                     animateType = AnimateType.NONE
                 }
                 else ->
@@ -101,10 +189,20 @@ class ImageAdjustActivity : BaseActivity() {
                 .start();
     }
 
-    fun resize(view: View, scale:Float){
+    fun resize(view: View, scaleX:Float, scaleY: Float = scaleX, x:Float, y:Float){
         view.animate()
-                .scaleX(scale)
-                .scaleY(scale)
+                .x(x)
+                .y(y)
+                .scaleX(scaleX)
+                .scaleY(scaleY)
+                .setDuration(0)
+                .start();
+    }
+
+    fun resize(view: View, scaleX:Float, scaleY: Float = scaleX){
+        view.animate()
+                .scaleX(scaleX)
+                .scaleY(scaleY)
                 .setDuration(0)
                 .start();
     }

@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -619,4 +620,10 @@ public class CommonUtil {
 		File to = new File(file.getParent() + "/", newName);
 		file.renameTo(to);
 	}
+
+	public static String getFileLastModified(File file){
+		Date lastModDate = new Date(file.lastModified());
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModDate);
+	}
+
 }

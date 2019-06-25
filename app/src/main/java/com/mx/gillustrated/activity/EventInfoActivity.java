@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
@@ -210,12 +211,14 @@ public class EventInfoActivity extends BaseActivity {
 
                     boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT +  mGameId, false);
                     imageBox.imageView.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bitmap, 90) : bitmap );
-
+                    imageBox.tvDate.setText(CommonUtil.getFileLastModified(imageFile));
                     imageBox.btnAdjust.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(EventInfoActivity.this, ImageAdjustActivity.class);
                             intent.putExtra("source", mImagesFiles.get(oldIndex).getAbsolutePath());
+                            intent.putExtra("game", mGameId);
+                            intent.putExtra("id", mEventId);
                             startActivity(intent);
                         }
                     });
@@ -381,6 +384,9 @@ public class EventInfoActivity extends BaseActivity {
 
         @BindView(R.id.btnAdjust)
         Button btnAdjust;
+
+        @BindView(R.id.tvDate)
+        TextView tvDate;
 
         @BindView(R.id.etSeq)
         EditText indexEt;

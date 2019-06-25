@@ -22,6 +22,22 @@
             android:layout_height="wrap_content"
             android:background="@drawable/delete"
             android:visibility="gone"/>
+        
+        <FrameLayout
+            android:id="@+id/gap"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tvDate"
+                android:textColor="@color/color_white2"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </FrameLayout>
+
 
     </RelativeLayout>
 
