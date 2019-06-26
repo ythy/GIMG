@@ -148,6 +148,11 @@ public class EventInfoActivity extends BaseActivity {
         mEventId = getIntent().getIntExtra("event", 0);
         mGameId = getIntent().getIntExtra("game", 0);
         mResourceController = new ResourceController(this, mGameId);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if(mEventId > 0)
             mainSearch();
     }
@@ -217,8 +222,6 @@ public class EventInfoActivity extends BaseActivity {
                         public void onClick(View v) {
                             Intent intent = new Intent(EventInfoActivity.this, ImageAdjustActivity.class);
                             intent.putExtra("source", mImagesFiles.get(oldIndex).getAbsolutePath());
-                            intent.putExtra("game", mGameId);
-                            intent.putExtra("id", mEventId);
                             startActivity(intent);
                         }
                     });

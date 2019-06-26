@@ -194,10 +194,13 @@ public class DetailActivity extends BaseActivity {
 				searchCardSide(-1);
 			}
 		});
+	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
 		showEvents();
 		showCardInfo();
-		
 	}
 
 	private void showEvents(){
@@ -371,6 +374,8 @@ public class DetailActivity extends BaseActivity {
 			for(int i = 0; i < mImagesView.size(); i++){
 				Button btnDel = (Button) mImagesView.valueAt(i).findViewById(R.id.btnDel);
 				btnDel.setVisibility(View.VISIBLE);
+				Button btnAjust = (Button) mImagesView.valueAt(i).findViewById(R.id.btnAdjust);
+				btnAjust.setVisibility(View.VISIBLE);
 			}			
 		}
 		
@@ -408,6 +413,16 @@ public class DetailActivity extends BaseActivity {
 					tvDate.setText(CommonUtil.getFileLastModified(imageFile));
 					ImageView image = (ImageView) child.findViewById(R.id.imgDetails);
 					image.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bitmap, 90) : bitmap );
+					final int oldIndex = index;
+					Button btnAdjust = (Button) child.findViewById(R.id.btnAdjust);
+					btnAdjust.setOnClickListener(new View.OnClickListener() {
+													 @Override
+													 public void onClick(View v) {
+														 Intent intent = new Intent(DetailActivity.this, ImageAdjustActivity.class);
+														 intent.putExtra("source", mImagesFiles.get(oldIndex).getAbsolutePath());
+														 startActivity(intent);
+													 }
+												 });
 					Button btnDel = (Button) child.findViewById(R.id.btnDel);
 					btnDel.setTag(index + "*" + 0); 
 					btnDel.setOnClickListener(new View.OnClickListener() {

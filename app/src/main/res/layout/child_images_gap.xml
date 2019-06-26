@@ -22,7 +22,16 @@
             android:layout_height="wrap_content"
             android:background="@drawable/delete"
             android:visibility="gone"/>
-        
+
+        <Button
+            android:id="@+id/btnAdjust"
+            android:layout_toRightOf="@id/btnDel"
+            android:layout_marginLeft="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/set"
+            android:visibility="gone"/>
+
         <FrameLayout
             android:id="@+id/gap"
             android:layout_width="wrap_content"

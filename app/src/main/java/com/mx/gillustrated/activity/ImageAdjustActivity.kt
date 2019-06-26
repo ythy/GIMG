@@ -40,6 +40,7 @@ class ImageAdjustActivity : BaseActivity() {
     val TAG:String = javaClass.name
     lateinit var originImage:Bitmap
     lateinit var originImagePath:String
+    lateinit var cutImageBitMap:Bitmap
 
     @BindView(R.id.image)
     lateinit var mImage:ImageView
@@ -47,30 +48,42 @@ class ImageAdjustActivity : BaseActivity() {
     @BindView(R.id.cut)
     lateinit var mCut:ImageView
 
+    @BindView(R.id.imagePreview)
+    lateinit var mImagePreview:ImageView
+
+    @BindView(R.id.btnCutCancle)
+    lateinit var mCancel:Button
+
+    @OnClick(R.id.btnCutCancle)
+    fun onCancelClick() {
+        mImagePreview.visibility = View.GONE
+        mCancel.visibility =  View.GONE
+        mImage.visibility = View.VISIBLE
+        mCut.visibility = View.VISIBLE
+    }
+
     @OnClick(R.id.btnCutSave)
     fun onSaveClick() {
-        //Matrix  0 4 缩放   2 5 位移
-        val imageMatrixArray = FloatArray(9)
-        mImage.imageMatrix.getValues(imageMatrixArray)
-        //matrixInfo.x 说明
-        //由于cut缩放导致cutX需要调整回原始X
-        //mImage缩放同样问题，缩放后的X是不变的，需要把x改成目测X
-        //最后除以缩放的倍数
-        val matrixInfo = MatrixInfo()
-        matrixInfo.x = Math.round(( mCut.x - ( mCut.width * mCut.scaleX - mCut.width ) / 2  - ( mImage.x + mImage.width * ( 1 - mImage.scaleX ) / 2 + imageMatrixArray[2] *  mImage.scaleX) ) / mImage.scaleX / imageMatrixArray[0])
-        matrixInfo.y = Math.round(( mCut.y - ( mCut.height * mCut.scaleY - mCut.height ) / 2  - ( mImage.y + mImage.height * ( 1 - mImage.scaleY ) / 2 + imageMatrixArray[5] * mImage.scaleY) ) / mImage.scaleY / imageMatrixArray[4])
-        matrixInfo.width = Math.round( mCut.width * mCut.scaleX / mImage.scaleX / imageMatrixArray[0] )
-        matrixInfo.height = Math.round( mCut.height * mCut.scaleY / mImage.scaleY / imageMatrixArray[4] )
+        if(mImagePreview.visibility == View.VISIBLE){
+            CommonUtil.exportImgFromBitmap(cutImageBitMap,  File(originImagePath))
+            this.finish()
+        }else{
+            //Matrix  0 4 缩放   2 5 位移
+            val imageMatrixArray = FloatArray(9)
+            mImage.imageMatrix.getValues(imageMatrixArray)
+            //matrixInfo.x 说明
+            //由于cut缩放导致cutX需要调整回原始X
+            //mImage缩放同样问题，缩放后的X是不变的，需要把x改成目测X
+            //最后除以缩放的倍数
+            val matrixInfo = MatrixInfo()
+            matrixInfo.x = Math.round(( mCut.x - ( mCut.width * mCut.scaleX - mCut.width ) / 2  - ( mImage.x + mImage.width * ( 1 - mImage.scaleX ) / 2 + imageMatrixArray[2] *  mImage.scaleX) ) / mImage.scaleX / imageMatrixArray[0])
+            matrixInfo.y = Math.round(( mCut.y - ( mCut.height * mCut.scaleY - mCut.height ) / 2  - ( mImage.y + mImage.height * ( 1 - mImage.scaleY ) / 2 + imageMatrixArray[5] * mImage.scaleY) ) / mImage.scaleY / imageMatrixArray[4])
+            matrixInfo.width = Math.round( mCut.width * mCut.scaleX / mImage.scaleX / imageMatrixArray[0] )
+            matrixInfo.height = Math.round( mCut.height * mCut.scaleY / mImage.scaleY / imageMatrixArray[4] )
 
-       val bitmap = CommonUtil.cutBitmap(originImage, matrixInfo, false)
-       CommonUtil.exportImgFromBitmap(bitmap,  File(originImagePath))
-
-        val intent = Intent(this, EventInfoActivity::class.java)
-        intent.putExtra("event", getIntent().getIntExtra("id", 0))
-        intent.putExtra("game", getIntent().getIntExtra("game", 0))
-        startActivity(intent)
-        this.finish();
-
+            cutImageBitMap = CommonUtil.cutBitmap(originImage, matrixInfo, false)
+            showCutImage()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +92,15 @@ class ImageAdjustActivity : BaseActivity() {
         ButterKnife.bind(this)
         originImagePath = this.intent.getStringExtra("source")
         this.initView()
+    }
+
+    fun showCutImage(){
+        mImagePreview.setImageBitmap(cutImageBitMap)
+        mImagePreview.visibility = View.VISIBLE
+        mCancel.visibility =  View.VISIBLE
+        mImage.visibility = View.GONE
+        mCut.visibility = View.GONE
+
     }
 
     fun initView(){
