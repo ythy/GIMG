@@ -345,13 +345,16 @@ public class AddCardActivity extends BaseActivity {
 						long newId = card.getId();
 						if (newId != 0) {
 							if (m_BitMapAll != null) {
-								if(type == 0 )
+								if(type == 0 && m_BitMapNumber != null )
 								{
 									createImages((int)newId, m_BitMapNumber, 1);
 								}				
 								if(type == 0 || type == 1)
-								{	
-									createImages((int)newId, m_BitMapAll, type == 0 ? 2 : 1);
+								{
+									if(m_BitMapNumber != null)
+										createImages((int)newId, m_BitMapAll, type == 0 ? 2 : 1);
+									else
+										createImages((int)newId, m_BitMapAll, 1);
 								}
 								
 								CommonUtil.deleteImages(AddCardActivity.this,

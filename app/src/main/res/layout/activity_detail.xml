@@ -56,6 +56,14 @@
 	                    android:layout_height="wrap_content"
 	                    android:layout_marginLeft="10dp"
 	                    android:text="@string/modify" />
+
+                    <CheckBox
+                        android:id="@+id/chkProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/profile" />
+
 	            </LinearLayout>
 	            
 	            <Button

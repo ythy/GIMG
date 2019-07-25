@@ -93,6 +93,8 @@ public class DetailActivity extends BaseActivity {
 	@BindView(R.id.tv_header_D)
 	TextView tvHeaderNumber3;
 
+	@BindView(R.id.chkProfile)
+	CheckBox chkProfile;
 
 	@BindView(R.id.btnSaveEvent)
 	Button btnSaveEvent;
@@ -268,7 +270,9 @@ public class DetailActivity extends BaseActivity {
 
 		etCost.setText(String.valueOf(info.getCost()));
 		tvId.setText(String.valueOf(info.getId()));
-		
+
+		chkProfile.setChecked("Y".equals(info.getProfile()) ? true : false);
+
 		mImagesFiles = new SparseArray<File>();
 		mImagesView = new SparseArray<View>();
 		mLLImages.removeAllViews();
@@ -306,6 +310,7 @@ public class DetailActivity extends BaseActivity {
 			card.setPinyinName(PinyinUtil.convert(card.getName()));
 			card.setFrontName(etFrontName.getText().toString().trim());
 			card.setRemark(etDetail.getText().toString().trim());
+			card.setProfile(chkProfile.isChecked() ? "Y" : "N");
 			card.setMaxHP(etHP.getText().toString().trim().equals("") ? 0
 					: Integer.parseInt(etHP.getText().toString()));
 			card.setMaxAttack(etAttack.getText().toString().trim().equals("") ? 0

@@ -30,7 +30,8 @@
      <string name="hg">HG</string>
     <string name="supplement">补</string> 
     <string name="modify">更正</string>
-     
+    <string name="profile">头像</string>
+
     <string name="arrow">▼</string>
     <string name="arrowLast">▲</string>
     

@@ -199,7 +199,7 @@ public class MainActivity extends BaseActivity {
 				final int index = msg.what;
 				new Thread() {
 					public void run() {
-                    CommonUtil.generateHeaderImg(MainActivity.this, mMainActivityListView.getIdList() , mGameType, index != 2);
+                    CommonUtil.generateHeaderImg(MainActivity.this, mMainActivityListView.getIdListWithProfile() , mGameType, index != 2);
                     mainHandler.sendEmptyMessage(3);
 					}
 				}.start();

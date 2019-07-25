@@ -96,9 +96,11 @@ public class DataListAdapter extends BaseAdapter {
 			component = (Component) convertView.getTag();
 		}
 
+		boolean hasHeader = "Y".equals(list.get(arg0).getProfile());
 		boolean showHeader = mcontext.mSP.getBoolean(BaseActivity.SHARE_SHOW_HEADER_IMAGES + list.get(arg0).getGameId(), false);
-		if(showHeader){
+		if(showHeader && hasHeader){
 			component.tvTotal.setVisibility(View.GONE);
+			component.ivHeader.setVisibility(View.VISIBLE);
 			try {
 				File imageDir = new File(Environment.getExternalStorageDirectory(), MConfig.SD_HEADER_PATH + "/" + list.get(arg0).getGameId());
 				File file = new File(imageDir.getPath(), list.get(arg0).getId() + "_h.png");
@@ -114,8 +116,13 @@ public class DataListAdapter extends BaseAdapter {
 				e.printStackTrace();
 			}
 		}
-		else {
+		else if(showHeader) {
+			component.tvTotal.setVisibility(View.GONE);
+			component.ivHeader.setVisibility(View.GONE);
+
+		}else {
 			component.tvTotal.setVisibility(View.VISIBLE);
+			component.ivHeader.setVisibility(View.GONE);
 			int total = list.get(arg0).getMaxHP() + list.get(arg0).getMaxAttack() + list.get(arg0).getMaxDefense();
 			component.tvTotal.setText( String.valueOf(total));
 		}

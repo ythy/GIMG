@@ -129,12 +129,19 @@ public class MainActivityListView {
         return mSearchCondition;
     }
 
-    public int[] getIdList(){
-        int[] list = new int[mList.size()];
-        for(int i = 0; i < mList.size(); i++)
-            list[i] = mList.get(i).getId();
-        return list;
+    public int[] getIdListWithProfile() {
+        List<Integer> temp = new ArrayList();
+        for (int i = 0; i < mList.size(); i++) {
+            if ("Y".equals(mList.get(i).getProfile()))
+                temp.add(mList.get(i).getId());
+        }
+        int[] result = new int[temp.size()];
+        for (int i = 0; i < temp.size(); i++) {
+            result[i] = temp.get(i);
+        }
+        return result;
     }
+
 
     public  List<CardInfo> getDataList(){
         return mList;

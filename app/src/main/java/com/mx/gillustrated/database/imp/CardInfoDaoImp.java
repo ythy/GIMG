@@ -217,6 +217,9 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
                     case CardInfo.COLUMN_REMARK:
                         info.setRemark(resultColumns[i]);
                         break;
+                    case CardInfo.COLUMN_SHOW_HEAD:
+                        info.setProfile(resultColumns[i]);
+                        break;
                 }
 
             }

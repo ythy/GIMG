@@ -28,6 +28,7 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	public static final String COLUMN_REMARK = "remark";
 	public static final String COLUMN_EVENTTYPE = "event_type";
 	public static final String COLUMN_PINYIN_NAME = "pinyin_name";
+	public static final String COLUMN_SHOW_HEAD = "has_profile";
 
 	public static final String COLUMN_TOTAL = "total_number";
 
@@ -62,6 +63,8 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	private String remark = null; //卡片备注
 	@DatabaseField(columnName = COLUMN_PINYIN_NAME)
 	private String pinyinName;
+	@DatabaseField(columnName = COLUMN_SHOW_HEAD)
+	private String profile; //是否有头像
 
 	private int totalCount;
 
@@ -201,6 +204,14 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 		this.level = level;
 	}
 
+	public String getProfile() {
+		return profile;
+	}
+
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
+
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -224,6 +235,7 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 		dest.writeString(remark);
 		dest.writeInt(eventId);
 		dest.writeInt(imageUpdate);
+		dest.writeString(profile);
 	}
 	
 	 public static final Parcelable.Creator<CardInfo> CREATOR = new Creator<CardInfo>()
@@ -258,6 +270,7 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 			remark = in.readString();
 			eventId = in.readInt();
 			imageUpdate = in.readInt();
+			profile = in.readString();
 	    }
 	    
 	    public CardInfo()
