@@ -1,9 +1,11 @@
 package com.mx.gillustrated.activity;
 
 import java.io.File;
-import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import com.mx.gillustrated.common.DBCall;
+import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.component.MainActivityHeader;
 import com.mx.gillustrated.component.MainActivityListView;
 import com.mx.gillustrated.component.MainActivityTop;
@@ -15,6 +17,8 @@ import com.mx.gillustrated.util.ServiceUtils;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,6 +45,7 @@ public class MainActivity extends BaseActivity {
     private MainActivityHeader mMainActivityHeader;
     private MainActivityTop mMainActivityTop;
     private MainActivityListView mMainActivityListView;
+    Handler mainHandler = new MainHandler(this);
 
     @BindView(R.id.etPinyin) EditText etPinyin;
     @BindView(R.id.btnShowEvents) Button btnEvents;
@@ -187,31 +192,6 @@ public class MainActivity extends BaseActivity {
         }).subscribe();
 	}
 
-	Handler mainHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			if (msg.what == 1) {
-				setGameList();
-			}
-			else if(msg.what == 2 || msg.what == 4)
-			{
-				final int index = msg.what;
-				new Thread() {
-					public void run() {
-                    CommonUtil.generateHeaderImg(MainActivity.this, mMainActivityListView.getIdListWithProfile() , mGameType, index != 2);
-                    mainHandler.sendEmptyMessage(3);
-					}
-				}.start();
-			}
-			else if (msg.what == 3) {
-				Toast.makeText(MainActivity.this, "生成头像完成", Toast.LENGTH_SHORT).show();
-			}
-		}
-	};
-
-
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -237,8 +217,102 @@ public class MainActivity extends BaseActivity {
             case  R.id.menu_eventlist :
                 onBtnShowEventsClick();
                 break;
+            case  R.id.menu_delete :
+                onDeleteListData();
+                break;
         }
         return true;
+    }
+
+    private void onDeleteListData(){
+        new AlertDialog.Builder(this)
+                .setMessage("确定要删除吗?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new Thread(new DeleteRunnable()).start();
+                    }
+                })
+                .show();
+    }
+
+    private class DeleteRunnable implements Runnable{
+
+        @Override
+        public void run() {
+            List<CardInfo> list = mMainActivityListView.getDataList();
+            List<Integer> idList = new ArrayList<>();
+            for(CardInfo info:list)
+                idList.add(info.getId());
+
+            File imagesFileDir = new File(
+                    Environment.getExternalStorageDirectory(),
+                    MConfig.SD_PATH + "/" + mGameType);
+            if (imagesFileDir.exists()) {
+                File[] child = imagesFileDir.listFiles();
+                for (int i = 0; i < child.length; i++) {
+                    String name = child[i].getName();
+                    int id = Integer.parseInt(name.split("_")[0].substring(2));
+                    if(idList.contains(id))
+                        CommonUtil.deleteImage(MainActivity.this, child[i]);
+                }
+            }
+
+            File imagesHeaderFileDir = new File(
+                    Environment.getExternalStorageDirectory(),
+                    MConfig.SD_HEADER_PATH + "/" + mGameType);
+            if (imagesHeaderFileDir.exists()) {
+                File[] child = imagesHeaderFileDir.listFiles();
+                for (int i = 0; i < child.length; i++) {
+                    String name = child[i].getName();
+                    int id = Integer.parseInt(name.split("_")[0]);
+                    if(idList.contains(id))
+                        CommonUtil.deleteImage(MainActivity.this, child[i]);
+                }
+            }
+            mOrmHelper.getCardInfoDao().delCardsById(idList);
+            mainHandler.sendEmptyMessage(5);
+        }
+
+    }
+
+
+
+    private static class MainHandler extends Handler{
+
+	    private final WeakReference<MainActivity> weakReference;
+
+	    public MainHandler(MainActivity activity){
+            weakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            final MainActivity mainActivity = weakReference.get();
+            if (msg.what == 1) {
+                mainActivity.setGameList();
+            }
+            else if(msg.what == 2 || msg.what == 4)
+            {
+                final int index = msg.what;
+                new Thread() {
+                    public void run() {
+                        CommonUtil.generateHeaderImg(mainActivity, mainActivity.mMainActivityListView.getIdListWithProfile() , mainActivity.mGameType, index != 2);
+                        mainActivity.mainHandler.sendEmptyMessage(3);
+                    }
+                }.start();
+            }
+            else if (msg.what == 3) {
+                Toast.makeText(mainActivity, "生成头像完成", Toast.LENGTH_SHORT).show();
+            }
+            else if (msg.what == 5) {
+                Toast.makeText(mainActivity, "删除完成", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+
     }
 
 }
