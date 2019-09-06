@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -35,6 +36,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -317,6 +319,7 @@ public class AddCardActivity extends BaseActivity {
 					card.setName(etName.getText().toString().trim());
 					card.setPinyinName(PinyinUtil.convert(card.getName()));
 					card.setFrontName(etFrontName.getText().toString().trim());
+					card.setProfile("Y");
 					if (!etCost.getText().toString().trim().equals(""))
 						card.setCost(Integer.parseInt(etCost.getText()
 								.toString()));
@@ -363,7 +366,10 @@ public class AddCardActivity extends BaseActivity {
 									CommonUtil.deleteImages(AddCardActivity.this,
 											m_fileNumber);
 							}
-							addHandler.sendEmptyMessage(1);
+							Message msg = Message.obtain();
+							msg.what = 1;
+							msg.arg1 = (int) newId;
+							addHandler.sendMessage(msg);
 						}
 					}else{
 						// 更新数值图  更新附加图
@@ -431,21 +437,29 @@ public class AddCardActivity extends BaseActivity {
 		return checknum;
 	}
 	
-	
-	Handler addHandler = new Handler() {
+
+	private static class AddHandler extends Handler{
+
+		private final WeakReference<AddCardActivity> mActivity;
+
+		AddHandler( AddCardActivity activity){
+			mActivity = new WeakReference<>(activity);
+		}
 
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			if (msg.what == 1) {
-				forwardBack();
+				Toast.makeText(mActivity.get(), "id: " + msg.arg1, Toast.LENGTH_SHORT).show();
+				mActivity.get().forwardBack();
 			} else if (msg.what == 2) {
-				forwardBack();
+				mActivity.get().forwardBack();
 			}
-			
 		}
+	}
 
-	};
+	Handler addHandler = new AddHandler(this);
+
 	
 	private void forwardBack()
 	{
