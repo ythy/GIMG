@@ -30,7 +30,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
     // name of the database file for your application
     private static final String DATABASE_NAME = "GIMG.db";
     // any time you make changes to your database objects, you may have to increase the database version
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 15;
 
     private static final Class[] CONFIG_CLASSES = {
             GameInfo.class, CardTypeInfo.class, CardEventInfo.class, EventInfo.class, CardInfo.class,
@@ -75,6 +75,13 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
             getGameInfoDao().executeRaw("ALTER TABLE " + EventInfo.TABLE_NAME + " ADD COLUMN  " + EventInfo.COLUMN_INDEX + " INTEGER DEFAULT 0 ; ");
         }if(oldVersion < 14){
             getCardInfoDao().executeRaw("ALTER TABLE " + CardInfo.TABLE_NAME + " ADD COLUMN  " + CardInfo.COLUMN_SHOW_HEAD + " VARCHAR DEFAULT Y ; ");
+        }if(oldVersion < 15){
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_COST + " = ? WHERE "
+                    + CardInfo.COLUMN_COST + " =? AND " + CardInfo.COLUMN_GAMETYPE + " =? ", "2", "1", "1");
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_COST + " = ? WHERE "
+                    + CardInfo.COLUMN_COST + " =? AND " + CardInfo.COLUMN_GAMETYPE + " =? ", "1", "0", "1");
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_COST + " = ? WHERE "
+                    + CardInfo.COLUMN_COST + " =? AND " + CardInfo.COLUMN_GAMETYPE + " =? ", "0", "4", "1");
         }
     }
 

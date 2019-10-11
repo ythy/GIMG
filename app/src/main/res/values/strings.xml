@@ -38,6 +38,7 @@
     <string name="set_attr">属性设置</string>
     <string name="set_Defense">防御显示与否</string>E
     <string name="menu_event_list">活动列表</string>
+    <string name="menu_event_delete">删除数据</string>
 
     <string name="gameinfo_orientation">横版图</string>
     <string name="gameinfo_orientation_e">横版活动图</string>

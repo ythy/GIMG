@@ -70,7 +70,10 @@ public class SpinnerCommonAdapter<T extends SpinnerInfo> extends BaseAdapter {
         text = (TextView) view;
 
         T items = getItem(position);
-        text.setText(items.getName());
+        if(items.getNid() > 0)
+            text.setText(items.getName() + " (" + items.getNid() + ")");
+        else
+            text.setText(items.getName());
         return view;
 
     }

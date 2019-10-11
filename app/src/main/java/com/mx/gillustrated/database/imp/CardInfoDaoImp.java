@@ -50,6 +50,12 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
         }
     }
 
+    public void delCardsById(List<Integer> list){
+        for(int id:list){
+            this.deleteById(id);
+        }
+    }
+
     public int delCardInfoByGameId(int gameId){
         DeleteBuilder<CardInfo, Integer> db = this.deleteBuilder();
         Where<CardInfo, Integer> where = db.where();

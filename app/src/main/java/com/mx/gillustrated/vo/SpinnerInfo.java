@@ -5,6 +5,7 @@ package com.mx.gillustrated.vo;
  */
 
 public class SpinnerInfo {
+    private int nid;
     private String name;
     private int id;
 
@@ -22,5 +23,13 @@ public class SpinnerInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getNid() {
+        return nid;
+    }
+
+    public void setNid(int nid) {
+        this.nid = nid;
     }
 }
