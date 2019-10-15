@@ -51,12 +51,12 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	private String level;
 	@DatabaseField
 	private int cost = -1;
-	@DatabaseField(columnName = COLUMN_MAXHP)
-	private int maxHP;
-	@DatabaseField(columnName = COLUMN_MAXATTACK)
-	private int maxAttack;
-	@DatabaseField(columnName = COLUMN_MAXDEFENSE)
-	private int maxDefense;
+	@DatabaseField(columnName = COLUMN_MAXHP, defaultValue = "")
+	private String maxHP;
+	@DatabaseField(columnName = COLUMN_MAXATTACK, defaultValue = "")
+	private String maxAttack;
+	@DatabaseField(columnName = COLUMN_MAXDEFENSE, defaultValue = "")
+	private String maxDefense;
 	@DatabaseField(columnName = COLUMN_IMGUPDATE, defaultValue = "0")
 	private int imageUpdate;
 	@DatabaseField
@@ -172,27 +172,27 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 		this.cost = cost;
 	}
 
-	public int getMaxHP() {
+	public String getMaxHP() {
 		return maxHP;
 	}
 
-	public void setMaxHP(int maxHP) {
+	public void setMaxHP(String maxHP) {
 		this.maxHP = maxHP;
 	}
 
-	public int getMaxAttack() {
+	public String getMaxAttack() {
 		return maxAttack;
 	}
 
-	public void setMaxAttack(int maxAttack) {
+	public void setMaxAttack(String maxAttack) {
 		this.maxAttack = maxAttack;
 	}
 
-	public int getMaxDefense() {
+	public String getMaxDefense() {
 		return maxDefense;
 	}
 
-	public void setMaxDefense(int maxDefense) {
+	public void setMaxDefense(String maxDefense) {
 		this.maxDefense = maxDefense;
 	}
 
@@ -229,9 +229,9 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 		dest.writeInt(nid);
 		dest.writeString(level);
 		dest.writeInt(cost);
-		dest.writeInt(maxHP);
-		dest.writeInt(maxAttack);
-		dest.writeInt(maxDefense);
+		dest.writeString(maxHP);
+		dest.writeString(maxAttack);
+		dest.writeString(maxDefense);
 		dest.writeString(remark);
 		dest.writeInt(eventId);
 		dest.writeInt(imageUpdate);
@@ -264,9 +264,9 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 			nid = in.readInt();
 			level = in.readString();
 			cost = in.readInt();
-			maxHP = in.readInt();
-			maxAttack = in.readInt();
-			maxDefense = in.readInt();
+			maxHP = in.readString();
+			maxAttack = in.readString();
+			maxDefense = in.readString();
 			remark = in.readString();
 			eventId = in.readInt();
 			imageUpdate = in.readInt();

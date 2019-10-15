@@ -56,9 +56,9 @@ public class JsonFileReader {
 				cardinfo.setAttrId(object.getInt("attr"));
 				cardinfo.setLevel(object.getString("level"));
 				cardinfo.setCost(object.getInt("cost"));
-				cardinfo.setMaxHP(object.getInt("maxHP"));
-				cardinfo.setMaxAttack(object.getInt("maxAttack"));
-				cardinfo.setMaxDefense(object.getInt("maxDefense"));
+				cardinfo.setMaxHP(object.getString("maxHP"));
+				cardinfo.setMaxAttack(object.getString("maxAttack"));
+				cardinfo.setMaxDefense(object.getString("maxDefense"));
 				result.add(cardinfo);
 			}
 

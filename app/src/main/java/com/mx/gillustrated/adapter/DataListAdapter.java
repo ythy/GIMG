@@ -123,8 +123,16 @@ public class DataListAdapter extends BaseAdapter {
 		}else {
 			component.tvTotal.setVisibility(View.VISIBLE);
 			component.ivHeader.setVisibility(View.GONE);
-			int total = list.get(arg0).getMaxHP() + list.get(arg0).getMaxAttack() + list.get(arg0).getMaxDefense();
-			component.tvTotal.setText( String.valueOf(total));
+			if( !Double.isNaN(Double.valueOf(list.get(arg0).getMaxHP())) &&
+					!Double.isNaN(Double.valueOf(list.get(arg0).getMaxAttack())) &&
+					!Double.isNaN(Double.valueOf(list.get(arg0).getMaxDefense()))){
+				int total = Integer.parseInt(list.get(arg0).getMaxHP()) +
+						Integer.parseInt(list.get(arg0).getMaxAttack()) +
+						Integer.parseInt(list.get(arg0).getMaxDefense());
+				component.tvTotal.setText( String.valueOf(total));
+			}
+
+
 		}
 
 		component.tvName.setText(list.get(arg0).getName());

@@ -252,12 +252,9 @@ public class DetailActivity extends BaseActivity {
 	
 	private void showCardInfo(){
 		CardInfo info = mCardInfo;
-		etHP.setText(info.getMaxHP() == 0 ? ""
-				: String.valueOf(info.getMaxHP()));
-		etAttack.setText(info.getMaxAttack() == 0 ? "" : String.valueOf(info
-				.getMaxAttack()));
-		etDefense.setText(info.getMaxDefense() == 0 ? "" : String.valueOf(info
-				.getMaxDefense()));
+		etHP.setText(info.getMaxHP());
+		etAttack.setText(info.getMaxAttack());
+		etDefense.setText(info.getMaxDefense());
 		etName.setText(info.getName());
 		etFrontName.setText(info.getFrontName());
 		etDetail.setText(info.getRemark());
@@ -311,12 +308,9 @@ public class DetailActivity extends BaseActivity {
 			card.setFrontName(etFrontName.getText().toString().trim());
 			card.setRemark(etDetail.getText().toString().trim());
 			card.setProfile(chkProfile.isChecked() ? "Y" : "N");
-			card.setMaxHP(etHP.getText().toString().trim().equals("") ? 0
-					: Integer.parseInt(etHP.getText().toString()));
-			card.setMaxAttack(etAttack.getText().toString().trim().equals("") ? 0
-					: Integer.parseInt(etAttack.getText().toString()));
-			card.setMaxDefense(etDefense.getText().toString().trim().equals("") ? 0
-					: Integer.parseInt(etDefense.getText().toString()));
+			card.setMaxHP(etHP.getText().toString().trim());
+			card.setMaxAttack(etAttack.getText().toString().trim());
+			card.setMaxDefense(etDefense.getText().toString().trim());
 			result += mOrmHelper.getCardInfoDao().update(card);
 
 			if (result > 0) {

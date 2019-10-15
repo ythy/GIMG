@@ -30,7 +30,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
     // name of the database file for your application
     private static final String DATABASE_NAME = "GIMG.db";
     // any time you make changes to your database objects, you may have to increase the database version
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 17;
 
     private static final Class[] CONFIG_CLASSES = {
             GameInfo.class, CardTypeInfo.class, CardEventInfo.class, EventInfo.class, CardInfo.class,
@@ -82,6 +82,27 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
                     + CardInfo.COLUMN_COST + " =? AND " + CardInfo.COLUMN_GAMETYPE + " =? ", "1", "0", "1");
             getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_COST + " = ? WHERE "
                     + CardInfo.COLUMN_COST + " =? AND " + CardInfo.COLUMN_GAMETYPE + " =? ", "0", "4", "1");
+        }if(oldVersion < 16){
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_MAXHP + " = ? WHERE "
+                    + CardInfo.COLUMN_MAXHP + " =? ", "", "0");
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_MAXATTACK + " = ? WHERE "
+                    + CardInfo.COLUMN_MAXATTACK + " =? ", "", "0");
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_MAXDEFENSE + " = ? WHERE "
+                    + CardInfo.COLUMN_MAXDEFENSE + " =? ", "", "0");
+        }if(oldVersion < 17){
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_GAMETYPE + " = ? WHERE "
+                    + CardInfo.COLUMN_GAMETYPE + " =? AND " + CardInfo.COLUMN_COST + " in( ?, ? ) ", "4", "1", "1", "2");
+
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_ATTR + " = ? WHERE "
+                    + CardInfo.COLUMN_GAMETYPE + " =? AND " + CardInfo.COLUMN_ATTR + " =? ", "16", "4", "1");
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_ATTR + " = ? WHERE "
+                    + CardInfo.COLUMN_GAMETYPE + " =? AND " + CardInfo.COLUMN_ATTR + " =? ", "17", "4", "11");
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_ATTR + " = ? WHERE "
+                    + CardInfo.COLUMN_GAMETYPE + " =? AND " + CardInfo.COLUMN_ATTR + " =? ", "18", "4", "12");
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_ATTR + " = ? WHERE "
+                    + CardInfo.COLUMN_GAMETYPE + " =? AND " + CardInfo.COLUMN_ATTR + " =? ", "19", "4", "13");
+            getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_ATTR + " = ? WHERE "
+                    + CardInfo.COLUMN_GAMETYPE + " =? AND " + CardInfo.COLUMN_ATTR + " =? ", "20", "4", "14");
         }
     }
 

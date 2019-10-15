@@ -326,14 +326,14 @@ public class AddCardActivity extends BaseActivity {
 					else
 						card.setCost(0);
 					if (!etHP.getText().toString().trim().equals(""))
-						card.setMaxHP(Integer.parseInt(etHP.getText()
-								.toString()));
+						card.setMaxHP(etHP.getText()
+								.toString().trim());
 					if (!etAttack.getText().toString().trim().equals(""))
-						card.setMaxAttack(Integer.parseInt(etAttack.getText()
-								.toString()));
+						card.setMaxAttack(etAttack.getText()
+								.toString().trim());
 					if (!etDefense.getText().toString().trim().equals(""))
-						card.setMaxDefense(Integer.parseInt(etDefense.getText()
-								.toString()));
+						card.setMaxDefense(etDefense.getText()
+								.toString().trim());
 					int type = spinnerType.getSelectedItemPosition();
 					
 					mImagesFileDir = new File(
@@ -386,7 +386,7 @@ public class AddCardActivity extends BaseActivity {
 							card.setLevel(null);
 							card.setFrontName(null);
 							card.setName(null);
-							if(card.getCost() > 0 || card.getMaxHP() > 0 || card.getMaxAttack() > 0 || card.getMaxDefense() > 0)
+							if(card.getCost() > 0 || !"".equals(card.getMaxHP()) || !"".equals(card.getMaxAttack()) || !"".equals(card.getMaxDefense()))
 								mOrmHelper.getCardInfoDao().update(card);
 						}
 						else if(type == 3)

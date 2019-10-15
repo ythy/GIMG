@@ -1,5 +1,5 @@
 #
-# generated on 2019/07/25 01:59:36
+# generated on 2019/10/15 10:23:41
 #
 # --table-start--
 dataClass=com.mx.gillustrated.vo.GameInfo
@@ -130,14 +130,17 @@ fieldName=cost
 # --field-start--
 fieldName=maxHP
 columnName=max_hp
+defaultValue=
 # --field-end--
 # --field-start--
 fieldName=maxAttack
 columnName=max_attack
+defaultValue=
 # --field-end--
 # --field-start--
 fieldName=maxDefense
 columnName=max_defense
+defaultValue=
 # --field-end--
 # --field-start--
 fieldName=imageUpdate

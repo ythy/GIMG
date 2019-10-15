@@ -203,13 +203,13 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
                         info.setLevel(resultColumns[i]);
                         break;
                     case CardInfo.COLUMN_MAXATTACK:
-                        info.setMaxAttack(Integer.parseInt(resultColumns[i]));
+                        info.setMaxAttack(resultColumns[i]);
                         break;
                     case CardInfo.COLUMN_MAXDEFENSE:
-                        info.setMaxDefense(Integer.parseInt(resultColumns[i]));
+                        info.setMaxDefense(resultColumns[i]);
                         break;
                     case CardInfo.COLUMN_MAXHP:
-                        info.setMaxHP(Integer.parseInt(resultColumns[i]));
+                        info.setMaxHP(resultColumns[i]);
                         break;
                     case CardInfo.COLUMN_NAME:
                         info.setName(resultColumns[i]);

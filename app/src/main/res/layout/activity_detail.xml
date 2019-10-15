@@ -231,7 +231,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:gravity="left"
-                    android:inputType="number"
                     android:singleLine="true" />
 
                 <LinearLayout
@@ -261,7 +260,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:gravity="left"
-                    android:inputType="number"
                     android:singleLine="true" />
 
                 <LinearLayout
@@ -291,7 +289,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:gravity="left"
-                    android:inputType="number"
                     android:singleLine="true" />
 
                 <LinearLayout

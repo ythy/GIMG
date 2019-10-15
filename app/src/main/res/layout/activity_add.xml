@@ -280,7 +280,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="left"
-                    android:inputType="number"
                     android:singleLine="true" />
                 <EditText
                     android:id="@+id/etDetailAttack"
@@ -288,7 +287,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="left"
-                    android:inputType="number"
                     android:singleLine="true" />
                 <EditText
                     android:id="@+id/etDetailDefense"
@@ -296,7 +294,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="left"
-                    android:inputType="number"
                     android:singleLine="true" />
                 
             </LinearLayout>
