@@ -61,6 +61,12 @@ public class GameInfoActivity extends BaseActivity {
     @BindView(R.id.et_number3)
     EditText mEtNumber3;
 
+    @BindView(R.id.et_number4)
+    EditText mEtNumber4;
+
+    @BindView(R.id.et_number5)
+    EditText mEtNumber5;
+
 
     @BindView(R.id.etGameDetail)
     EditText mEtGameDetail;
@@ -92,6 +98,16 @@ public class GameInfoActivity extends BaseActivity {
         mResourceController.setNumber3(text.toString());
     }
 
+    @OnTextChanged(R.id.et_number4)
+    void onNumber4TextChanged(CharSequence text){
+        mResourceController.setNumber4(text.toString());
+    }
+
+    @OnTextChanged(R.id.et_number5)
+    void onNumber5TextChanged(CharSequence text){
+        mResourceController.setNumber5(text.toString());
+    }
+
     @OnCheckedChanged(R.id.chkOrientation)
     void onOrientationCheckedChanged(CheckBox checkBox) {
         mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION + mGameType, checkBox.isChecked()).commit();
@@ -114,6 +130,15 @@ public class GameInfoActivity extends BaseActivity {
     void onHeaderCheckedChanged(CheckBox checkBox) {
         mSP.edit().putBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, checkBox.isChecked()).commit();
     }
+
+    @BindView(R.id.chkCost)
+    CheckBox chkCost;
+
+    @OnCheckedChanged(R.id.chkCost)
+    void onCostCheckedChanged(CheckBox checkBox) {
+        mSP.edit().putBoolean(SHARE_SHOW_COST_COLUMN + mGameType, checkBox.isChecked()).commit();
+    }
+
 
     @BindView(R.id.spinnerPager)
     Spinner spinnerPager;
@@ -202,11 +227,15 @@ public class GameInfoActivity extends BaseActivity {
         mEtNumber1.setText(mResourceController.getNumber1());
         mEtNumber2.setText(mResourceController.getNumber2());
         mEtNumber3.setText(mResourceController.getNumber3());
+        mEtNumber4.setText(mResourceController.getNumber4());
+        mEtNumber5.setText(mResourceController.getNumber5());
 
         chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false));
         chkOrientationE.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, false));
         chkEventGap.setChecked(mResourceController.getEventImagesGap());
         chkHeader.setChecked(mSP.getBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, false));
+        chkCost.setChecked(mSP.getBoolean(SHARE_SHOW_COST_COLUMN + mGameType, false));
+
         int pagerSize = mSP.getInt(SHARE_PAGE_SIZE + mGameType, 50);
         String[] pagerArray = getResources().getStringArray(R.array.pagerArray);
         int position = 1;

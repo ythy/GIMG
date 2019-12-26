@@ -84,6 +84,12 @@ public class DetailActivity extends BaseActivity {
 	private SparseArray<View> mEventView = new SparseArray<View>();
 	private ResourceController mResourceController;
 
+	@BindView(R.id.etDetailExtra1)
+	EditText etExtra1;
+
+	@BindView(R.id.etDetailExtra2)
+	EditText etExtra2;
+
 	@BindView(R.id.tv_header_hp)
 	TextView tvHeaderNumber1;
 
@@ -92,6 +98,12 @@ public class DetailActivity extends BaseActivity {
 
 	@BindView(R.id.tv_header_D)
 	TextView tvHeaderNumber3;
+
+	@BindView(R.id.tv_header_E1)
+	TextView tvHeaderNumber4;
+
+	@BindView(R.id.tv_header_E2)
+	TextView tvHeaderNumber5;
 
 	@BindView(R.id.chkProfile)
 	CheckBox chkProfile;
@@ -168,6 +180,8 @@ public class DetailActivity extends BaseActivity {
 		tvHeaderNumber1.setText(mResourceController.getNumber1());
 		tvHeaderNumber2.setText(mResourceController.getNumber2());
 		tvHeaderNumber3.setText(mResourceController.getNumber3());
+		tvHeaderNumber4.setText(mResourceController.getNumber4());
+		tvHeaderNumber5.setText(mResourceController.getNumber5());
 
 		tvId = (TextView) findViewById(R.id.tvId);
 		mLLImages = (LinearLayout) findViewById(R.id.llImages);
@@ -255,6 +269,8 @@ public class DetailActivity extends BaseActivity {
 		etHP.setText(info.getMaxHP());
 		etAttack.setText(info.getMaxAttack());
 		etDefense.setText(info.getMaxDefense());
+		etExtra1.setText(info.getExtraValue1());
+		etExtra2.setText(info.getExtraValue2());
 		etName.setText(info.getName());
 		etFrontName.setText(info.getFrontName());
 		etDetail.setText(info.getRemark());
@@ -311,6 +327,8 @@ public class DetailActivity extends BaseActivity {
 			card.setMaxHP(etHP.getText().toString().trim());
 			card.setMaxAttack(etAttack.getText().toString().trim());
 			card.setMaxDefense(etDefense.getText().toString().trim());
+			card.setExtraValue1(etExtra1.getText().toString().trim());
+			card.setExtraValue2(etExtra2.getText().toString().trim());
 			result += mOrmHelper.getCardInfoDao().update(card);
 
 			if (result > 0) {

@@ -59,6 +59,8 @@ public class JsonFileReader {
 				cardinfo.setMaxHP(object.getString("maxHP"));
 				cardinfo.setMaxAttack(object.getString("maxAttack"));
 				cardinfo.setMaxDefense(object.getString("maxDefense"));
+				cardinfo.setExtraValue1(object.getString("extraValue1"));
+				cardinfo.setExtraValue2(object.getString("extraValue2"));
 				result.add(cardinfo);
 			}
 

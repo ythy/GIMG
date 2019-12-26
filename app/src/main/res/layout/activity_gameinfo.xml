@@ -96,6 +96,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
+                <CheckBox
+                    android:id="@+id/chkCost"
+                    android:text="@string/gameinfo_cost_show"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
             </LinearLayout>
 
 
@@ -159,6 +167,22 @@
 
                 <EditText
                     android:id="@+id/et_number3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:lines="1"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/et_number4"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:lines="1"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/et_number5"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginLeft="10dp"

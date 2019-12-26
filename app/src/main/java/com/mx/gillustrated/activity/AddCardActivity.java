@@ -68,6 +68,13 @@ public class AddCardActivity extends BaseActivity {
 	private Button btnDelNumber;
 	private Button btnDelAll;
 
+	@BindView(R.id.etDetailExtra1)
+	EditText etExtra1;
+
+	@BindView(R.id.etDetailExtra2)
+	EditText etExtra2;
+
+
 	@BindView(R.id.chkAdjustImg)
 	CheckBox chkAdjustImg;
 
@@ -334,6 +341,13 @@ public class AddCardActivity extends BaseActivity {
 					if (!etDefense.getText().toString().trim().equals(""))
 						card.setMaxDefense(etDefense.getText()
 								.toString().trim());
+					if (!etExtra1.getText().toString().trim().equals(""))
+						card.setExtraValue1(etExtra1.getText()
+								.toString().trim());
+					if (!etExtra2.getText().toString().trim().equals(""))
+						card.setExtraValue2(etExtra2.getText()
+								.toString().trim());
+
 					int type = spinnerType.getSelectedItemPosition();
 					
 					mImagesFileDir = new File(

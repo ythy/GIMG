@@ -7,6 +7,7 @@ import com.mx.gillustrated.R;
 import com.mx.gillustrated.activity.BaseActivity;
 import com.mx.gillustrated.activity.MainActivity;
 import com.mx.gillustrated.common.MConfig;
+import com.mx.gillustrated.component.ResourceController;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.vo.CardInfo;
 
@@ -80,16 +81,41 @@ public class DataListAdapter extends BaseAdapter {
 					.findViewById(R.id.tvAttack);
 			component.tvDefense = (TextView) convertView
 					.findViewById(R.id.tvDefense);
+			component.tvExtra1 = (TextView) convertView
+					.findViewById(R.id.tvExtra1);
+			component.tvExtra2 = (TextView) convertView
+					.findViewById(R.id.tvExtra2);
 			component.tvNid = (TextView) convertView
 					.findViewById(R.id.tvNid);
 			component.tvTotal = (TextView) convertView
 					.findViewById(R.id.tvTotal);
+			component.ivExtraGap1 = (ImageView) convertView
+					.findViewById(R.id.ivExtra1Gap);
+			component.ivExtraGap2 = (ImageView) convertView
+					.findViewById(R.id.ivExtra2Gap);
+			component.ivCostGap = (ImageView) convertView
+					.findViewById(R.id.ivCostGap);
 			convertView.setTag(component);
 
 			if( list.get(arg0).getNid() > 0)
 				component.tvNid.setVisibility(View.VISIBLE);
 			else
 				component.tvNid.setVisibility(View.GONE);
+
+			ResourceController resourceController = new ResourceController(mcontext, list.get(arg0).getGameId());
+			if( "E1".equals(resourceController.getNumber4())){
+				component.ivExtraGap1.setVisibility(View.GONE);
+				component.tvExtra1.setVisibility(View.GONE);
+			}
+			if( "E2".equals(resourceController.getNumber5())){
+				component.ivExtraGap2.setVisibility(View.GONE);
+				component.tvExtra2.setVisibility(View.GONE);
+			}
+			if(!mcontext.mSP.getBoolean(mcontext.SHARE_SHOW_COST_COLUMN + list.get(arg0).getGameId(), false)){
+				component.ivCostGap.setVisibility(View.GONE);
+				component.tvCost.setVisibility(View.GONE);
+			}
+
 		}
 		else
 		{
@@ -125,10 +151,14 @@ public class DataListAdapter extends BaseAdapter {
 			component.ivHeader.setVisibility(View.GONE);
 			if( !Double.isNaN(Double.valueOf(list.get(arg0).getMaxHP())) &&
 					!Double.isNaN(Double.valueOf(list.get(arg0).getMaxAttack())) &&
-					!Double.isNaN(Double.valueOf(list.get(arg0).getMaxDefense()))){
+					!Double.isNaN(Double.valueOf(list.get(arg0).getMaxDefense())) &&
+					!Double.isNaN(Double.valueOf(list.get(arg0).getExtraValue1())) &&
+					!Double.isNaN(Double.valueOf(list.get(arg0).getExtraValue2()))){
 				int total = Integer.parseInt(list.get(arg0).getMaxHP()) +
 						Integer.parseInt(list.get(arg0).getMaxAttack()) +
-						Integer.parseInt(list.get(arg0).getMaxDefense());
+						Integer.parseInt(list.get(arg0).getMaxDefense()) +
+						Integer.parseInt(list.get(arg0).getExtraValue1()) +
+						Integer.parseInt(list.get(arg0).getExtraValue2());
 				component.tvTotal.setText( String.valueOf(total));
 			}
 
@@ -143,6 +173,14 @@ public class DataListAdapter extends BaseAdapter {
 		component.tvHP.setText(String.valueOf(list.get(arg0).getMaxHP()));
 		component.tvAttack.setText(String.valueOf(list.get(arg0).getMaxAttack()));
 		component.tvDefense.setText(String.valueOf(list.get(arg0).getMaxDefense()));
+		if(list.get(arg0).getExtraValue1() != null)
+			component.tvExtra1.setText(String.valueOf(list.get(arg0).getExtraValue1()));
+		else
+			component.tvExtra1.setText("");
+		if(list.get(arg0).getExtraValue2() != null)
+			component.tvExtra2.setText(String.valueOf(list.get(arg0).getExtraValue2()));
+		else
+			component.tvExtra2.setText("");
 		component.tvNid.setText(String.valueOf(list.get(arg0).getNid()));
 
 		return convertView;
@@ -157,8 +195,12 @@ public class DataListAdapter extends BaseAdapter {
 		 public TextView tvHP;
 		 public TextView tvAttack;
 		 public TextView tvDefense;
+		 public TextView tvExtra1;
+		 public TextView tvExtra2;
 		 public TextView tvNid;
 		 public TextView tvTotal;
-
+		 public ImageView ivExtraGap1;
+		 public ImageView ivExtraGap2;
+		 public ImageView ivCostGap;
 	}
 }

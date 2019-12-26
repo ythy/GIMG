@@ -1,5 +1,5 @@
 #
-# generated on 2019/10/15 10:23:41
+# generated on 2019/12/26 03:43:21
 #
 # --table-start--
 dataClass=com.mx.gillustrated.vo.GameInfo
@@ -140,6 +140,16 @@ defaultValue=
 # --field-start--
 fieldName=maxDefense
 columnName=max_defense
+defaultValue=
+# --field-end--
+# --field-start--
+fieldName=extraValue1
+columnName=extra_value_1
+defaultValue=
+# --field-end--
+# --field-start--
+fieldName=extraValue2
+columnName=extra_value_2
 defaultValue=
 # --field-end--
 # --field-start--

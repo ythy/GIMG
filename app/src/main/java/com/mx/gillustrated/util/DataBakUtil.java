@@ -77,6 +77,8 @@ public class DataBakUtil {
             line.put("maxHP", data.get(i).getMaxHP());
             line.put("maxAttack", data.get(i).getMaxAttack());
             line.put("maxDefense", data.get(i).getMaxDefense());
+            line.put("extraValue1", data.get(i).getExtraValue1());
+            line.put("extraValue2", data.get(i).getExtraValue2());
             rows.put(line);
         }
 

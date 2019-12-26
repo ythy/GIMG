@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 28
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "com.mx.gillustrated"

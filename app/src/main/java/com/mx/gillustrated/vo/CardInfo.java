@@ -23,6 +23,8 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	public static final String COLUMN_MAXHP = "max_hp";
 	public static final String COLUMN_MAXATTACK = "max_attack";
 	public static final String COLUMN_MAXDEFENSE = "max_defense";
+	public static final String COLUMN_EXTRA_VALUE1 = "extra_value_1";
+	public static final String COLUMN_EXTRA_VALUE2 = "extra_value_2";
 	public static final String COLUMN_GAMETYPE = "game_type";
 	public static final String COLUMN_IMGUPDATE = "img_update";
 	public static final String COLUMN_REMARK = "remark";
@@ -57,6 +59,11 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 	private String maxAttack;
 	@DatabaseField(columnName = COLUMN_MAXDEFENSE, defaultValue = "")
 	private String maxDefense;
+	@DatabaseField(columnName = COLUMN_EXTRA_VALUE1, defaultValue = "")
+	private String extraValue1;
+	@DatabaseField(columnName = COLUMN_EXTRA_VALUE2, defaultValue = "")
+	private String extraValue2;
+
 	@DatabaseField(columnName = COLUMN_IMGUPDATE, defaultValue = "0")
 	private int imageUpdate;
 	@DatabaseField
@@ -212,6 +219,22 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 		this.profile = profile;
 	}
 
+	public String getExtraValue1() {
+		return extraValue1;
+	}
+
+	public void setExtraValue1(String extraValue1) {
+		this.extraValue1 = extraValue1;
+	}
+
+	public String getExtraValue2() {
+		return extraValue2;
+	}
+
+	public void setExtraValue2(String extraValue2) {
+		this.extraValue2 = extraValue2;
+	}
+
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -236,6 +259,8 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 		dest.writeInt(eventId);
 		dest.writeInt(imageUpdate);
 		dest.writeString(profile);
+		dest.writeString(extraValue1);
+		dest.writeString(extraValue2);
 	}
 	
 	 public static final Parcelable.Creator<CardInfo> CREATOR = new Creator<CardInfo>()
@@ -271,6 +296,8 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 			eventId = in.readInt();
 			imageUpdate = in.readInt();
 			profile = in.readString();
+			extraValue1 = in.readString();
+			extraValue2 = in.readString();
 	    }
 	    
 	    public CardInfo()
