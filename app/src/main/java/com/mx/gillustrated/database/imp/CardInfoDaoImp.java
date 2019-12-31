@@ -77,7 +77,8 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
         //qb.orderBy(orderBy, isAsc);
         qb.orderByRaw(orderBy + " " + ( isAsc ? "ASC" : "DESC") );
         //qb.selectRaw("*");
-        qb.selectRaw("*," + CardInfo.COLUMN_MAXATTACK + "+" +  CardInfo.COLUMN_MAXDEFENSE + "+" + CardInfo.COLUMN_MAXHP + " " + CardInfo.COLUMN_TOTAL);
+        qb.selectRaw("*," + CardInfo.COLUMN_MAXATTACK + "+" +  CardInfo.COLUMN_MAXDEFENSE + "+" + CardInfo.COLUMN_MAXHP + "+" + CardInfo.COLUMN_EXTRA_VALUE1
+                + "+" + CardInfo.COLUMN_EXTRA_VALUE2 + " " + CardInfo.COLUMN_TOTAL);
 //        qb.selectRaw("(SELECT " + CardTypeInfo.COLUMN_NAME + " FROM " + CardTypeInfo.TABLE_NAME + " where " +
 //                CardTypeInfo.TABLE_NAME +  "." + CardTypeInfo.ID + " = " + CardInfo.TABLE_NAME + "." + CardInfo.COLUMN_ATTR + ") ATTRNAME" );
         try {
