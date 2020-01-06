@@ -16,13 +16,14 @@ import android.os.Message;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class GameListActivity extends BaseActivity {
 	
-	private Button mBtnAdd;
+	private ImageButton mBtnAdd;
 	private ListView mLvDespairMain;
 	private GameListAdapter mAdapter;
 	private List<GameInfo> mList;
@@ -34,7 +35,7 @@ public class GameListActivity extends BaseActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_game);
 			
-		mBtnAdd = (Button) findViewById(R.id.btnDespairAdd);
+		mBtnAdd = (ImageButton) findViewById(R.id.btnDespairAdd);
 		mBtnAdd.setOnClickListener(onAddBtnClickListerner);
 		
 		mLvDespairMain = (ListView) findViewById(R.id.lvDespairMain);

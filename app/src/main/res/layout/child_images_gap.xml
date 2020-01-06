@@ -16,14 +16,14 @@
             android:layout_marginBottom="20dp"
             android:scaleType="fitCenter" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnDel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/delete"
             android:visibility="gone"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/btnAdjust"
             android:layout_toRightOf="@id/btnDel"
             android:layout_marginLeft="20dp"

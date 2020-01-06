@@ -29,8 +29,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.inputmethod.BaseInputConnection;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import butterknife.BindView;
 
@@ -48,7 +48,8 @@ public class MainActivity extends BaseActivity {
     Handler mainHandler = new MainHandler(this);
 
     @BindView(R.id.etPinyin) EditText etPinyin;
-    @BindView(R.id.btnShowEvents) Button btnEvents;
+    @BindView(R.id.btnShowEvents)
+    ImageButton btnEvents;
 
     @OnClick(R.id.btnShowEvents)
     void onBtnShowEventsClick(){
@@ -57,7 +58,7 @@ public class MainActivity extends BaseActivity {
         startActivity(intentEvent);
     }
 
-    @BindView(R.id.btnShowMenu) Button btnMenu;
+    @BindView(R.id.btnShowMenu) ImageButton btnMenu;
 
     @OnClick(R.id.btnShowMenu)
     void onBtnShowMenuClick(){

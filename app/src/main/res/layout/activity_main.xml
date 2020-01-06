@@ -143,20 +143,20 @@
             android:layout_weight="4"
             android:gravity="right"
             android:orientation="horizontal" >
-            <Button
+            <ImageButton
                 android:id="@+id/btnRefresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/refresh" >
-            </Button>
+                android:background="@drawable/refresh">
+            </ImageButton>
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/add" >
-            </Button>
+                android:background="@drawable/add"
+                android:layout_marginLeft="10dp">
+            </ImageButton>
         </LinearLayout>
     </LinearLayout>
 
@@ -260,14 +260,14 @@
             android:layout_marginBottom="2dp"
             android:layout_height="wrap_content" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnShowEvents"
             android:layout_marginLeft="20dp"
             android:background="@drawable/events"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnShowMenu"
             android:layout_marginLeft="20dp"
             android:background="@drawable/menu"

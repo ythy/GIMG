@@ -27,22 +27,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" 
                 android:layout_marginBottom="5dp">
-				
-                <Button
-                    android:id="@+id/btnSet"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/set" />
-                
+
                <Spinner
                     android:id="@+id/spinnerType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:entries="@array/addType" />
                
-                <Button
+                <ImageButton
                     android:id="@+id/btnSave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -97,7 +89,7 @@
                      android:text="0"
                      android:id="@+id/tvAdjustImgRight"/>
 
-                 <Button
+                 <ImageButton
                      android:id="@+id/btnSaveMatrix"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
@@ -319,7 +311,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scaleType="centerInside" />
-                <Button
+                <ImageButton
                     android:id="@+id/btnDelNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -335,7 +327,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scaleType="centerInside" />
-                <Button
+                <ImageButton
                     android:id="@+id/btnDelAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

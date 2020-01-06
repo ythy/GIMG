@@ -12,6 +12,7 @@ import com.mx.gillustrated.activity.BaseActivity;
 import com.mx.gillustrated.database.DataBaseHelper;
 import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
+import com.mx.gillustrated.vo.CardTypeInfo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -132,7 +133,8 @@ public class CardInfoDaoImp  extends RuntimeExceptionDao<CardInfo, Integer> {
     }
 
     private String getAttrName(int id){
-        return this.mOrm.getCardTypeInfoDao().queryForId(id).getName();
+        CardTypeInfo result = this.mOrm.getCardTypeInfoDao().queryForId(id);
+        return result == null ? "" : result.getName();
     }
 
     public List<CardInfo> queryCardDropList(String type, int gametype) {

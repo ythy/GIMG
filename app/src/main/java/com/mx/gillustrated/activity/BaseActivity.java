@@ -4,14 +4,14 @@ import com.mx.gillustrated.MyApplication;
 import com.mx.gillustrated.database.DataBaseHelper;
 import com.mx.gillustrated.di.components.DaggerBaseActivityComponent;
 import com.mx.gillustrated.di.modules.BaseActivityModule;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 
 import javax.inject.Inject;
 
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends AppCompatActivity {
 
     @Inject
     DataBaseHelper mOrmHelper;

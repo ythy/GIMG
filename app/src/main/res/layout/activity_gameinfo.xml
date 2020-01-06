@@ -34,11 +34,12 @@
                     android:maxLines="1"
                     android:layout_height="wrap_content"
                     />
+
                 <Button
                     android:id="@+id/btnDelAll"
-                    android:text="删除所有数据"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="删除所有数据" />
                 <Button
                     android:id="@+id/btnSaveAll"
                     android:layout_marginLeft="5dp"
@@ -208,13 +209,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     />
-                <Button
+                <ImageButton
                     android:id="@+id/btnGameAdd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
                     android:background="@drawable/add" >
-                </Button>
+                </ImageButton>
 
             </LinearLayout>
 

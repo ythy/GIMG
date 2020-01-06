@@ -20,15 +20,15 @@ import java.util.List;
 public class SpinnerCommonAdapter<T extends SpinnerInfo> extends BaseAdapter {
 
     private Context mcontext;
-    private LayoutInflater layoutInflator;
-    private static int mResource = android.R.layout.simple_gallery_item;
+    private LayoutInflater layoutInflater;
+    private static int mResource = android.R.layout.simple_spinner_item;
     private static int mDropDownResource = android.R.layout.simple_spinner_dropdown_item;
     private List<T> list;
 
 
     public SpinnerCommonAdapter(Context context, List<T> items) {
         mcontext = context;
-        layoutInflator = LayoutInflater.from(mcontext);
+        layoutInflater = LayoutInflater.from(mcontext);
         list = items;
     }
 
@@ -47,11 +47,13 @@ public class SpinnerCommonAdapter<T extends SpinnerInfo> extends BaseAdapter {
         return position;
     }
 
+    //Dropdown Item Style
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         return createViewFromResource(position, convertView, parent, mDropDownResource);
     }
 
+    //Select Item Style
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return createViewFromResource(position, convertView, parent, mResource);
@@ -63,7 +65,7 @@ public class SpinnerCommonAdapter<T extends SpinnerInfo> extends BaseAdapter {
         TextView text;
 
         if (convertView == null) {
-            view = layoutInflator.inflate(resource, parent, false);
+            view = layoutInflater.inflate(resource, parent, false);
         } else {
             view = convertView;
         }

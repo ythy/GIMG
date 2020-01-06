@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -128,10 +129,10 @@ public class CardTypeListAdapter extends BaseAdapter {
         public EditText etName;
 
         @BindView(R.id.btnCardTypeModify)
-        public Button btnSave;
+        public ImageButton btnSave;
 
         @BindView(R.id.btnCardTypeDel)
-        public Button btnDel;
+        public ImageButton btnDel;
 
         public Component(View view){
             ButterKnife.bind(this, view);

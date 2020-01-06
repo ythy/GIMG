@@ -31,12 +31,12 @@
             android:gravity="right"
             android:text="@string/arrow" />
     </LinearLayout>
-	<Button android:id="@+id/btnDel"
+	<ImageButton android:id="@+id/btnDel"
 	    android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/delete" 
          />
-    <Button android:id="@+id/btnDetail"
+    <ImageButton android:id="@+id/btnDetail"
         android:layout_marginLeft="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

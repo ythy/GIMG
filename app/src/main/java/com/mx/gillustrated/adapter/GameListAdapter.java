@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class GameListAdapter extends BaseAdapter {
@@ -60,9 +61,9 @@ public class GameListAdapter extends BaseAdapter {
 			component= new Component();
 			component.tvName = (EditText) convertView
 					.findViewById(R.id.etGameName);
-			component.btnSave = (Button) convertView
+			component.btnSave = (ImageButton) convertView
 					.findViewById(R.id.btnDespairModify);
-			component.btnDetail = (Button) convertView
+			component.btnDetail = (ImageButton) convertView
 					.findViewById(R.id.btnGameDetail);
 			convertView.setTag(component);
 		}
@@ -123,7 +124,7 @@ public class GameListAdapter extends BaseAdapter {
 	
 	private static class Component{
 		 public EditText tvName;  
-		 public Button btnSave;
-		 public Button btnDetail;  
+		 public ImageButton btnSave;
+		 public ImageButton btnDetail;
 	}
 }

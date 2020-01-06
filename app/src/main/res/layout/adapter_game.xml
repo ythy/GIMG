@@ -13,12 +13,12 @@
 	    android:layout_height="wrap_content"
 	    android:orientation="horizontal" 
 	    android:layout_weight="3">
-		 <Button
+		 <ImageButton
           android:id="@+id/btnDespairModify"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/save" />
-		 <Button
+		 <ImageButton
           android:id="@+id/btnGameDetail"
           android:layout_marginLeft="3dp"
           android:layout_width="wrap_content"

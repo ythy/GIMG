@@ -24,26 +24,24 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import butterknife.OnFocusChange;
 import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 
 public class GameInfoActivity extends BaseActivity {
 
-    private Button btnAdd;
+    private ImageButton btnAdd;
     private ListView mLvGameMain;
     private RelativeLayout pageVboxLayout;
 
@@ -215,7 +213,7 @@ public class GameInfoActivity extends BaseActivity {
 
         mGameType = getIntent().getIntExtra("game", 0);
         mResourceController = new ResourceController(this, mGameType);
-        btnAdd = (Button) findViewById(R.id.btnGameAdd);
+        btnAdd = (ImageButton) findViewById(R.id.btnGameAdd);
         btnAdd.setOnClickListener(onAddBtnClickListerner);
         mLvGameMain = (ListView) findViewById(R.id.lvGameInfoMain);
         GameInfo gameinfoList = mOrmHelper.getGameInfoDao().queryForId(mGameType);

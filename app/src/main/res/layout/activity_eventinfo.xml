@@ -27,13 +27,13 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/tvId"/>
 
-                <Button
+                <ImageButton
                     android:id="@+id/btnSave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/save" />
 
-                <Button android:id="@+id/btnDel"
+                <ImageButton android:id="@+id/btnDel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
@@ -109,13 +109,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Button
+                <ImageButton
                     android:id="@+id/btnAdd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/add" />
 
-                <Button android:id="@+id/btnDel2"
+                <ImageButton android:id="@+id/btnDel2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"

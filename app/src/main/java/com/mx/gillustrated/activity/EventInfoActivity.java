@@ -2,7 +2,6 @@ package com.mx.gillustrated.activity;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -11,17 +10,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +37,6 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 
 /**
  * Created by maoxin on 2017/2/22.
@@ -93,7 +88,7 @@ public class EventInfoActivity extends BaseActivity {
     }
 
     @BindView(R.id.btnDel)
-    Button mBtnDel;
+    ImageButton mBtnDel;
 
     @BindView(R.id.llImages)
     LinearLayout mLLImages;
@@ -383,10 +378,10 @@ public class EventInfoActivity extends BaseActivity {
         ImageView imageView;
 
         @BindView(R.id.btnDel)
-        Button btnDel;
+        ImageButton btnDel;
 
         @BindView(R.id.btnAdjust)
-        Button btnAdjust;
+        ImageButton btnAdjust;
 
         @BindView(R.id.tvDate)
         TextView tvDate;

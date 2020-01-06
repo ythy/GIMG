@@ -37,13 +37,13 @@
 	                    android:layout_height="wrap_content"
 	                    android:id="@+id/tvId"/>
 	                
-	                <Button
+	                <ImageButton
 	                    android:id="@+id/btnDel"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:background="@drawable/delete" />
 	
-	                <Button
+	                <ImageButton
 	                    android:id="@+id/btnSave"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
 
 	            </LinearLayout>
 	            
-	            <Button
+	            <ImageButton
 	                    android:id="@+id/btnLast"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
 	                    android:layout_marginRight="10dp"
 	                    android:layout_marginTop="10dp"
 	                    android:layout_toLeftOf="@+id/btnNext" /> 
-	            <Button
+	            <ImageButton
 	                    android:id="@id/btnNext"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
@@ -157,14 +157,14 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal" >
 
-                <Button
+                <ImageButton
                     android:id="@+id/btnSave2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/save" />
                 
-                <Button
+                <ImageButton
                     android:id="@+id/btnDel2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -452,13 +452,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"/>
-                <Button
+                <ImageButton
                     android:id="@+id/btnSaveEvent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/save" />
-                <Button
+                <ImageButton
                     android:id="@+id/btnAddEvent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

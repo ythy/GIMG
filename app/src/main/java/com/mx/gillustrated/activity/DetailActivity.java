@@ -3,17 +3,11 @@ package com.mx.gillustrated.activity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.StatementBuilder;
-import com.j256.ormlite.support.CompiledStatement;
-import com.j256.ormlite.support.DatabaseConnection;
-import com.j256.ormlite.support.DatabaseResults;
+
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
@@ -37,13 +31,12 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -109,10 +102,10 @@ public class DetailActivity extends BaseActivity {
 	CheckBox chkProfile;
 
 	@BindView(R.id.btnSaveEvent)
-	Button btnSaveEvent;
+	ImageButton btnSaveEvent;
 
 	@BindView(R.id.btnAddEvent)
-	Button btnAddEvent;
+	ImageButton btnAddEvent;
 
 	@BindView(R.id.llShowEvent)
 	LinearLayout llShowEvent;
@@ -168,13 +161,13 @@ public class DetailActivity extends BaseActivity {
 		etNid = (EditText) findViewById(R.id.etDetailNid);
 		etDetail = (EditText) findViewById(R.id.etDetail);
 
-		Button btnSave = (Button) findViewById(R.id.btnSave);
-		Button btnSave2 = (Button) findViewById(R.id.btnSave2);
+		ImageButton btnSave = (ImageButton) findViewById(R.id.btnSave);
+		ImageButton btnSave2 = (ImageButton) findViewById(R.id.btnSave2);
 		btnSave.setOnClickListener(btnSaveClickListener);
 		btnSave2.setOnClickListener(btnSaveClickListener);
-		Button btnDel = (Button) findViewById(R.id.btnDel);
+		ImageButton btnDel = (ImageButton) findViewById(R.id.btnDel);
 		btnDel.setOnClickListener(btnDelClickListener);
-		Button btnDel2 = (Button) findViewById(R.id.btnDel2);
+		ImageButton btnDel2 = (ImageButton) findViewById(R.id.btnDel2);
 		btnDel2.setOnClickListener(btnDel2ClickListener);
 
 		tvHeaderNumber1.setText(mResourceController.getNumber1());
@@ -195,14 +188,14 @@ public class DetailActivity extends BaseActivity {
 		spinnerLevel = (Spinner) findViewById(R.id.spinnerLevel);
 		etCost = (EditText) findViewById(R.id.etDetailCost);
 
-		Button mBtnNext = (Button) findViewById(R.id.btnNext);
+		ImageButton mBtnNext = (ImageButton) findViewById(R.id.btnNext);
 		mBtnNext.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				searchCardSide(1);
 			}
 		});
-		Button mBtnLast = (Button) findViewById(R.id.btnLast);
+		ImageButton mBtnLast = (ImageButton) findViewById(R.id.btnLast);
 		mBtnLast.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -389,9 +382,9 @@ public class DetailActivity extends BaseActivity {
 		@Override 
 		public void onClick(View v) {
 			for(int i = 0; i < mImagesView.size(); i++){
-				Button btnDel = (Button) mImagesView.valueAt(i).findViewById(R.id.btnDel);
+				ImageButton btnDel = (ImageButton) mImagesView.valueAt(i).findViewById(R.id.btnDel);
 				btnDel.setVisibility(View.VISIBLE);
-				Button btnAjust = (Button) mImagesView.valueAt(i).findViewById(R.id.btnAdjust);
+				ImageButton btnAjust = (ImageButton) mImagesView.valueAt(i).findViewById(R.id.btnAdjust);
 				btnAjust.setVisibility(View.VISIBLE);
 			}			
 		}
@@ -431,7 +424,7 @@ public class DetailActivity extends BaseActivity {
 					ImageView image = (ImageView) child.findViewById(R.id.imgDetails);
 					image.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bitmap, 90) : bitmap );
 					final int oldIndex = index;
-					Button btnAdjust = (Button) child.findViewById(R.id.btnAdjust);
+					ImageButton btnAdjust = (ImageButton) child.findViewById(R.id.btnAdjust);
 					btnAdjust.setOnClickListener(new View.OnClickListener() {
 													 @Override
 													 public void onClick(View v) {
@@ -440,7 +433,7 @@ public class DetailActivity extends BaseActivity {
 														 startActivity(intent);
 													 }
 												 });
-					Button btnDel = (Button) child.findViewById(R.id.btnDel);
+					ImageButton btnDel = (ImageButton) child.findViewById(R.id.btnDel);
 					btnDel.setTag(index + "*" + 0); 
 					btnDel.setOnClickListener(new View.OnClickListener() {
 						@Override
@@ -492,7 +485,7 @@ public class DetailActivity extends BaseActivity {
 				new SpinnerCommonAdapter( DetailActivity.this, mEventList);
 		event.spinner.setAdapter(adapter);
 
-		event.btnDetail.setOnClickListener(new Button.OnClickListener(
+		event.btnDetail.setOnClickListener(new ImageButton.OnClickListener(
 		) {
 			@Override
 			public void onClick(View v) {
@@ -545,10 +538,10 @@ public class DetailActivity extends BaseActivity {
 		Spinner spinner;
 
 		@BindView(R.id.btnDetail)
-		Button btnDetail;
+		ImageButton btnDetail;
 
 		@BindView(R.id.btnDel)
-		Button btnDel;
+		ImageButton btnDel;
 
 
 		public InlineEvent(View view){

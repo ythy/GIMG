@@ -20,22 +20,19 @@ import com.mx.gillustrated.vo.MatrixInfo;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -45,7 +42,7 @@ import butterknife.OnClick;
 
 public class AddCardActivity extends BaseActivity {
 
-	private Button btnSave;
+	private ImageButton btnSave;
 	private Spinner spinnerAttr;
 	private Spinner spinnerLevel;
 	private Spinner spinnerType;
@@ -65,8 +62,8 @@ public class AddCardActivity extends BaseActivity {
 	private Bitmap m_BitMapAll;
 	private int mGameType;
 	private File mImagesFileDir;
-	private Button btnDelNumber;
-	private Button btnDelAll;
+	private ImageButton btnDelNumber;
+	private ImageButton btnDelAll;
 
 	@BindView(R.id.etDetailExtra1)
 	EditText etExtra1;
@@ -130,12 +127,12 @@ public class AddCardActivity extends BaseActivity {
 
 		mGameType = getIntent().getIntExtra("game", 0);
 				
-		btnSave = (Button) findViewById(R.id.btnSave);
+		btnSave = (ImageButton) findViewById(R.id.btnSave);
 		btnSave.setOnClickListener(btnSaveClickListener);
 
-		btnDelNumber = (Button) findViewById(R.id.btnDelNumber);
+		btnDelNumber = (ImageButton) findViewById(R.id.btnDelNumber);
 		btnDelNumber.setOnClickListener(btnDelNumberClickListener);
-		btnDelAll = (Button) findViewById(R.id.btnDelAll);
+		btnDelAll = (ImageButton) findViewById(R.id.btnDelAll);
 		btnDelAll.setOnClickListener(btnDelAllClickListener);
 
 		spinnerAttr = (Spinner) findViewById(R.id.spinnerAttr);
