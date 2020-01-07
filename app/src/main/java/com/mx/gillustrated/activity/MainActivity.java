@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -87,6 +88,13 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
+   /* test call jni method
+
+    static {
+        System.loadLibrary("hello-jni");
+    }
+    public native String  stringFromJNI();*/
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,6 +102,8 @@ public class MainActivity extends BaseActivity {
 		setContentView(R.layout.activity_main);
         mGameType = getIntent().getIntExtra("game", CommonUtil.getGameType(this));
         ButterKnife.bind(this);
+
+        //Log.d("NATIVE ",  stringFromJNI());
 
         mMainActivityHeader = new MainActivityHeader(this, new MainActivityHeader.HeaderHandle(){
             @Override
