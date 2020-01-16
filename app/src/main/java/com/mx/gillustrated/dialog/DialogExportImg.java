@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.mx.gillustrated.R;
@@ -69,7 +70,7 @@ public class DialogExportImg {
 		}
 		final ImageView imageView = (ImageView) window
 				.findViewById(R.id.imgHeader);
-		Button btnSave = (Button) window.findViewById(R.id.btnSave);
+		ImageButton btnSave = (ImageButton) window.findViewById(R.id.btnSave);
 		if (compress != null) {
 			final Bitmap compressfinal = compress;
 			float scaleNum = getScale(context,gameId);
@@ -107,7 +108,7 @@ public class DialogExportImg {
 			btnSave.setVisibility(View.GONE);
 		}
 
-		
+
 		Button btnOk = (Button) window.findViewById(R.id.btnOk);
 		btnOk.setOnClickListener(new View.OnClickListener() {
 
@@ -116,7 +117,7 @@ public class DialogExportImg {
 				dlg.dismiss();
 			}
 		});
-		
+
 		Button btnExport = (Button) window.findViewById(R.id.btnExport);
 		btnExport.setOnClickListener(new View.OnClickListener() {
 
@@ -127,7 +128,7 @@ public class DialogExportImg {
 			}
 			
 		});
-		
+
 		Button btnClear = (Button) window.findViewById(R.id.btnCover);
 		btnClear.setOnClickListener(new View.OnClickListener() {
 

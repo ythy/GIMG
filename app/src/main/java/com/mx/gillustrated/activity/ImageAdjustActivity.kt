@@ -22,6 +22,7 @@ import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.util.CommonUtil
 import com.mx.gillustrated.vo.MatrixInfo
 import android.content.Intent
+import android.widget.ImageButton
 import java.util.*
 
 
@@ -52,7 +53,7 @@ class ImageAdjustActivity : BaseActivity() {
     lateinit var mImagePreview:ImageView
 
     @BindView(R.id.btnCutCancle)
-    lateinit var mCancel:Button
+    lateinit var mCancel: ImageButton
 
     @OnClick(R.id.btnCutCancle)
     fun onCancelClick() {

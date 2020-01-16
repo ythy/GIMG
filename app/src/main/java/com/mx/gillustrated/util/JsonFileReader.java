@@ -56,11 +56,12 @@ public class JsonFileReader {
 				cardinfo.setAttrId(object.getInt("attr"));
 				cardinfo.setLevel(object.getString("level"));
 				cardinfo.setCost(object.getInt("cost"));
-				cardinfo.setMaxHP(object.getString("maxHP"));
-				cardinfo.setMaxAttack(object.getString("maxAttack"));
-				cardinfo.setMaxDefense(object.getString("maxDefense"));
-				cardinfo.setExtraValue1(object.getString("extraValue1"));
-				cardinfo.setExtraValue2(object.getString("extraValue2"));
+				cardinfo.setProfile(object.getString("profile"));
+				cardinfo.setMaxHP(object.has("maxHP") ? object.getString("maxHP") : "");
+				cardinfo.setMaxAttack(object.has("maxAttack") ? object.getString("maxAttack") : "");
+				cardinfo.setMaxDefense(object.has("maxDefense") ? object.getString("maxDefense") : "");
+				cardinfo.setExtraValue1(object.has("extraValue1") ? object.getString("extraValue1") : "");
+				cardinfo.setExtraValue2(object.has("extraValue2") ? object.getString("extraValue2") : "");
 				result.add(cardinfo);
 			}
 
@@ -79,7 +80,7 @@ public class JsonFileReader {
 				GameInfo gameinfo = new GameInfo();
 				gameinfo.setId(object.getInt("id")); 
 				gameinfo.setName(object.getString("name"));
-				gameinfo.setDetail(object.getString("detail"));
+				gameinfo.setDetail(object.has("detail") ? object.getString("detail") : "");
 				result.add(gameinfo);
 			}
 

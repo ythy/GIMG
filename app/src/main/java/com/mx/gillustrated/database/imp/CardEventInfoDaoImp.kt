@@ -16,6 +16,8 @@ import java.sql.SQLException
 class CardEventInfoDaoImp(orm: OrmLiteSqliteOpenHelper) : RuntimeExceptionDao<CardEventInfo, Int>(getDao(orm)) {
 
     fun addCardEvents(infos: List<CardEventInfo>) {
+        if(infos.isEmpty())
+            return
         for (event in infos) {
             val matching = this.queryForMatching(event)
             // 0 是空白行

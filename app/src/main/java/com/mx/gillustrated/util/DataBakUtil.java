@@ -48,6 +48,7 @@ public class DataBakUtil {
                 mOrmHelper.getGameInfoDao().addGameInfos(JsonFileReader.setGameListData(jsonObj.getJSONArray("rowsGame")));
                 mOrmHelper.getCardTypeInfoDao().addCardTypes(JsonFileReader.setCardTypeListData(jsonObj.getJSONArray("rowsCardType")));
                 mOrmHelper.getEventInfoDao().addEventInfos(JsonFileReader.setEventListData(jsonObj.getJSONArray("rowsEvents")));
+
                 mOrmHelper.getCardEventInfoDao().addCardEvents(JsonFileReader.setCardEventListData(jsonObj.getJSONArray("rowsCardEvents")));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -73,6 +74,7 @@ public class DataBakUtil {
             line.put("pinyinName", data.get(i).getPinyinName());
             line.put("attr", data.get(i).getAttrId());
             line.put("cost", data.get(i).getCost());
+            line.put("profile", data.get(i).getProfile());
             line.put("level", data.get(i).getLevel());
             line.put("maxHP", data.get(i).getMaxHP());
             line.put("maxAttack", data.get(i).getMaxAttack());

@@ -12,7 +12,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -93,21 +93,18 @@
             android:id="@+id/btnOk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_normal"
             android:text="@android:string/ok" />
         <Button
             android:layout_marginLeft="20dp"
             android:id="@+id/btnExport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_normal"
             android:text="@string/create" />
         <Button
             android:layout_marginLeft="20dp"
             android:id="@+id/btnCover"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_normal"
             android:text="@string/cover" />
     </LinearLayout>
 

@@ -19,8 +19,11 @@ android {
     }
 
     externalNativeBuild {
+        // Encapsulates your CMake build configurations.
         cmake {
             version '3.10.2'
+            // Specifies a path to your CMake build script that's
+            // relative to the build.gradle file.
             path "src/main/cpp/CMakeLists.txt"
         }
     }
@@ -54,5 +57,5 @@ dependencies {
     implementation 'com.j256.ormlite:ormlite-core:4.48'
     implementation 'com.belerweb:pinyin4j:2.5.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-//    implementation "com.google.android.material:material:$material_version"
+    implementation "com.google.android.material:material:$material_version"
 }
