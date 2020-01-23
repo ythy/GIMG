@@ -23,33 +23,45 @@
         android:orientation="horizontal"
         android:layout_weight="10">
         <Spinner
-            android:id="@+id/spinnerNational"
+            android:id="@+id/spinnerChar"
+            style="@style/spinnerStyleWithoutArrow"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:entries="@array/char_character"
+            android:layout_weight="2" />
+        <Spinner
+            android:id="@+id/spinnerNational"
+            style="@style/spinnerStyleWithoutArrow"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:entries="@array/char_nationality"
             android:layout_weight="1" />
         <Spinner
             android:id="@+id/spinnerDomain"
+            style="@style/spinnerStyleWithoutArrow"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:entries="@array/char_domain"
             android:layout_weight="1" />
         <Spinner
             android:id="@+id/spinnerAge"
+            style="@style/spinnerStyleWithoutArrow"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:entries="@array/char_age"
             android:layout_weight="1" />
         <Spinner
             android:id="@+id/spinnerSkilled"
+            style="@style/spinnerStyleWithoutArrow"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:entries="@array/char_skilled"
             android:layout_weight="1" />
         <ImageButton
             android:id="@+id/btnCharModify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:background="@drawable/save" />
         <ImageButton
             android:id="@+id/btnCharDel"

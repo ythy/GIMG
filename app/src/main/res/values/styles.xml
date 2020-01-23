@@ -24,6 +24,11 @@
         <item name="android:background">@drawable/spinner_bg_common</item>
     </style>
 
+    <style name="spinnerStyleWithoutArrow" parent="Widget.AppCompat.Spinner">
+        <item name="overlapAnchor">false</item>
+        <item name="android:background">@drawable/spinner_bg_without_arrow</item>
+    </style>
+
     <style name="CSEditTextStyle">
         <!--<item name="android:background">@drawable/edit_default_background</item>-->
     </style>

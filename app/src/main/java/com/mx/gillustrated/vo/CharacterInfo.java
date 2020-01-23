@@ -10,6 +10,7 @@ public class CharacterInfo {
     public static final String ID = "_id";
     public static final String COLUMN_GAMEID = "game_id";
     public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_CHARACTER= "character";
     public static final String COLUMN_NATIONALITY = "nationality";
     public static final String COLUMN_DOMAIN = "domain";
     public static final String COLUMN_AGE= "age";
@@ -30,7 +31,16 @@ public class CharacterInfo {
     private int age;
     @DatabaseField
     private int skilled;
+    @DatabaseField
+    private int character;
 
+    public int getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(int character) {
+        this.character = character;
+    }
 
     public int getId() {
         return id;

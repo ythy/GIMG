@@ -25,6 +25,19 @@
         <item>更新附加图</item>
     </string-array>
 
+    <string-array name="char_character">
+        <item>无</item>
+        <item>主角</item>
+        <item>男主角</item>
+        <item>女主角</item>
+        <item>配角</item>
+        <item>男配角</item>
+        <item>女配角</item>
+        <item>反派</item>
+        <item>男反派</item>
+        <item>女反派</item>
+    </string-array>
+
     <string-array name="char_nationality">
         <item>无</item>
         <item>中</item>

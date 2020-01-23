@@ -71,6 +71,7 @@ public class CharacterListAdapter  extends BaseAdapter {
             component.spinnerDomain.setSelection(list.get(arg0).getDomain());
             component.spinnerAge.setSelection(list.get(arg0).getAge());
             component.spinnerSkilled.setSelection(list.get(arg0).getSkilled());
+            component.spinnerChar.setSelection(list.get(arg0).getCharacter());
             final Component finalComponent = component;
             component.btnModify.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,6 +87,7 @@ public class CharacterListAdapter  extends BaseAdapter {
                     characterInfo.setDomain(finalComponent.spinnerDomain.getSelectedItemPosition());
                     characterInfo.setAge(finalComponent.spinnerAge.getSelectedItemPosition());
                     characterInfo.setSkilled(finalComponent.spinnerSkilled.getSelectedItemPosition());
+                    characterInfo.setCharacter(finalComponent.spinnerChar.getSelectedItemPosition());
                     mListener.onSaveBtnClickListener(characterInfo, position);
                 }
             });
@@ -128,6 +130,10 @@ public class CharacterListAdapter  extends BaseAdapter {
 
         @BindView(R.id.etCharName)
         public EditText etName;
+
+
+        @BindView(R.id.spinnerChar)
+        public Spinner spinnerChar;
 
         @BindView(R.id.spinnerNational)
         public Spinner spinnerNational;
