@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import android.app.AlertDialog;
-import android.content.Context;
+import androidx.appcompat.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;

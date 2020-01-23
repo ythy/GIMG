@@ -9,19 +9,21 @@ import java.util.List;
 
 
 import com.mx.gillustrated.R;
+import com.mx.gillustrated.adapter.CharacterListAdapter;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.component.ResourceController;
 import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.util.PinyinUtil;
 import com.mx.gillustrated.util.UIUtils;
+import com.mx.gillustrated.vo.CardCharacterInfo;
 import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
+import com.mx.gillustrated.vo.CharacterInfo;
 import com.mx.gillustrated.vo.EventInfo;
 
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,15 +36,19 @@ import android.provider.MediaStore;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,6 +82,9 @@ public class DetailActivity extends BaseActivity {
 	private List<EventInfo> mEventList;
 	private SparseArray<View> mEventView = new SparseArray<View>();
 	private ResourceController mResourceController;
+
+	private CharacterListAdapter mCharListAdapter;
+	private List<CharacterInfo> mCharListData;
 
 	@BindView(R.id.etDetailExtra1)
 	EditText etExtra1;
@@ -112,6 +121,21 @@ public class DetailActivity extends BaseActivity {
 
 	@BindView(R.id.scrollView)
 	ScrollView mScrollView;
+
+	@BindView(R.id.lvChar)
+	ListView mListChar;
+
+	@OnClick(R.id.btnAddChar)
+	void onAddCharClickHandler(){
+		addChar();
+		mScrollView.post(new Runnable() {
+			@Override
+			public void run() {
+				mScrollView.smoothScrollTo(0, 5000);
+			}
+		});
+	}
+
 
 	@OnClick(R.id.btnAddEvent)
 	void onAddEventClickHandler(){
@@ -208,8 +232,91 @@ public class DetailActivity extends BaseActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		initChar();
 		showEvents();
 		showCardInfo();
+	}
+
+	private void initCharDataAdapter(){
+		mCharListData = new ArrayList<>();
+		List<CardCharacterInfo> list = mOrmHelper.getCardCharacterInfoDao().getListByCardId(mId);
+		for(int i = 0; i < list.size(); i++){
+			CharacterInfo info = mOrmHelper.getCharacterInfoDao().queryForId(list.get(i).getCharId());
+			mCharListData.add(info);
+		}
+		this.mCharListAdapter = new CharacterListAdapter(this, mCharListData);
+		mCharListAdapter.setCharacterTouchListener(new CharacterListAdapter.CharacterTouchListener() {
+			@Override
+			public void onSaveBtnClickListener(CharacterInfo info, int index) {
+				mOrmHelper.getCharacterInfoDao().createOrUpdate(info);
+				boolean result = mOrmHelper.getCardCharacterInfoDao().addCardCharacter(new CardCharacterInfo(mId, info.getId()));
+				if(result)
+					Toast.makeText(getApplicationContext(), "新增角色成功", Toast.LENGTH_SHORT).show();
+				else
+					Toast.makeText(getApplicationContext(), "修改角色成功", Toast.LENGTH_SHORT).show();
+
+				initCharDataAdapter();
+			}
+
+			@Override
+			public void onDelBtnClickListener(final CharacterInfo info, final int index) {
+				new AlertDialog.Builder(DetailActivity.this)
+						.setMessage("确定要删除吗")
+						.setPositiveButton("Ok",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+														int which) {
+										mCharListData.remove(index);
+										if(info.getId() > 0){
+											mOrmHelper.getCardCharacterInfoDao().delCardChar(new CardCharacterInfo(mId, info.getId()));
+										}
+										Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+										mCharListAdapter.notifyDataSetChanged();
+										setListViewHeightBasedOnItems();
+									}
+								}).setNegativeButton("Cancel", null).show();
+			}
+		});
+		mListChar.setAdapter(mCharListAdapter);
+		setListViewHeightBasedOnItems();
+	}
+
+	private void initChar(){
+		initCharDataAdapter();
+	}
+
+	private void addChar(){
+		CharacterInfo characterInfo = new CharacterInfo();
+		characterInfo.setGameId(this.mCardInfo.getGameId());
+		mCharListData.add(characterInfo);
+		mCharListAdapter.notifyDataSetChanged();
+		setListViewHeightBasedOnItems();
+	}
+
+	public void setListViewHeightBasedOnItems() {
+
+		int numberOfItems = mCharListAdapter.getCount();
+		// Get total height of all items.
+		int totalItemsHeight = 0;
+		for (int itemPos = 0; itemPos < numberOfItems; itemPos++) {
+			View item = mCharListAdapter.getView(itemPos, null, mListChar);
+			float px = 500 * (mListChar.getResources().getDisplayMetrics().density);
+			item.measure(View.MeasureSpec.makeMeasureSpec((int)px, View.MeasureSpec.AT_MOST), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+			totalItemsHeight += item.getMeasuredHeight();
+		}
+
+		// Get total height of all item dividers.
+		int totalDividersHeight = mListChar.getDividerHeight() *
+				(numberOfItems - 1);
+		// Get padding
+		int totalPadding = mListChar.getPaddingTop() + mListChar.getPaddingBottom();
+
+		// Set list height.
+		ViewGroup.LayoutParams params = mListChar.getLayoutParams();
+		params.height = totalItemsHeight + totalDividersHeight + totalPadding;
+		mListChar.setLayoutParams(params);
+		mListChar.requestLayout();
 	}
 
 	private void showEvents(){

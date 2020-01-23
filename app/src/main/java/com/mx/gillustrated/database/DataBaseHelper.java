@@ -6,15 +6,19 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.mx.gillustrated.R;
+import com.mx.gillustrated.database.imp.CardCharacterInfoDaoImp;
 import com.mx.gillustrated.database.imp.CardEventInfoDaoImp;
 import com.mx.gillustrated.database.imp.CardInfoDaoImp;
 import com.mx.gillustrated.database.imp.CardTypeInfoDaoImp;
+import com.mx.gillustrated.database.imp.CharacterInfoDaoImp;
 import com.mx.gillustrated.database.imp.EventInfoDaoImp;
 import com.mx.gillustrated.database.imp.GameInfoDaoImp;
 import com.mx.gillustrated.util.PinyinUtil;
+import com.mx.gillustrated.vo.CardCharacterInfo;
 import com.mx.gillustrated.vo.CardEventInfo;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
+import com.mx.gillustrated.vo.CharacterInfo;
 import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
@@ -30,10 +34,10 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
     // name of the database file for your application
     private static final String DATABASE_NAME = "GIMG.db";
     // any time you make changes to your database objects, you may have to increase the database version
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 20;
 
     private static final Class[] CONFIG_CLASSES = {
-            GameInfo.class, CardTypeInfo.class, CardEventInfo.class, EventInfo.class, CardInfo.class,
+            GameInfo.class, CardTypeInfo.class, CardEventInfo.class, EventInfo.class, CardInfo.class,CharacterInfo.class, CardCharacterInfo.class
     };
 
     public Context mContext;
@@ -109,7 +113,23 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
         }else if(oldVersion < 19){
             getCardInfoDao().executeRaw("UPDATE " + CardInfo.TABLE_NAME + " SET " + CardInfo.COLUMN_ATTR + " = ? WHERE "
                     + CardInfo.COLUMN_GAMETYPE + " =? AND " + CardInfo.COLUMN_ATTR + " > ? ", "22", "5", "24");
+        }else if(oldVersion < 20){
+            getCharacterInfoDao().executeRaw(" CREATE TABLE " + CharacterInfo.TABLE_NAME + " ( "
+                    + CharacterInfo.ID  +  " INTEGER PRIMARY KEY , "
+                    + CharacterInfo.COLUMN_NAME  +  " VARCHAR , "
+                    + CharacterInfo.COLUMN_GAMEID  +  " INTEGER , "
+                    + CharacterInfo.COLUMN_NATIONALITY  +  " INTEGER , "
+                    + CharacterInfo.COLUMN_DOMAIN  +  " INTEGER , "
+                    + CharacterInfo.COLUMN_SKILLED  +  " INTEGER , "
+                    + CharacterInfo.COLUMN_AGE  +  " INTEGER )");
+
+            getCardCharacterInfoDao().executeRaw(" CREATE TABLE " + CardCharacterInfo.TABLE_NAME + " ( "
+                    + CardCharacterInfo.COLUMN_CARD_NID  +  " INTEGER , "
+                    + CardCharacterInfo.COLUMN_CHARACTER_ID  +  " INTEGER,"
+                    + "PRIMARY KEY ( " +  CardCharacterInfo.COLUMN_CARD_NID + " , "
+                    + CardCharacterInfo.COLUMN_CHARACTER_ID + " ) " +  " )" );
         }
+
     }
 
     public GameInfoDaoImp getGameInfoDao(){
@@ -130,5 +150,13 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 
     public CardInfoDaoImp getCardInfoDao(){
         return new CardInfoDaoImp(this);
+    }
+
+    public CharacterInfoDaoImp getCharacterInfoDao(){
+        return new CharacterInfoDaoImp(this);
+    }
+
+    public CardCharacterInfoDaoImp getCardCharacterInfoDao(){
+        return new CardCharacterInfoDaoImp(this);
     }
 }

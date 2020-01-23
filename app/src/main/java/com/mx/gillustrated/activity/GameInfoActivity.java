@@ -15,7 +15,7 @@ import com.mx.gillustrated.util.CommonUtil;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;

@@ -24,5 +24,30 @@
         <item>更新数值图</item>
         <item>更新附加图</item>
     </string-array>
+
+    <string-array name="char_nationality">
+        <item>无</item>
+        <item>中</item>
+        <item>韩</item>
+        <item>美</item>
+    </string-array>
+
+    <string-array name="char_domain">
+        <item>无</item>
+        <item>娱</item>
+        <item>艺</item>
+    </string-array>
+
+    <string-array name="char_age">
+        <item>无</item>
+        <item>青</item>
+        <item>成</item>
+    </string-array>
+
+    <string-array name="char_skilled">
+        <item>无</item>
+        <item>偶</item>
+        <item>演</item>
+    </string-array>
     
 </resources>

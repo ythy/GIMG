@@ -17,14 +17,13 @@ import com.mx.gillustrated.util.ServiceUtils;
 import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
