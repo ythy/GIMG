@@ -45,10 +45,20 @@
         <item>美</item>
     </string-array>
 
+    <string-array name="char_prop">
+        <item>无</item>
+        <item><![CDATA[<font color="red">场面</font>]]></item>
+        <item><![CDATA[<font color="#B6C347">剧情</font>]]></item>
+        <item><![CDATA[<font color="blue">表演</font>]]></item>
+        <item><![CDATA[<font color="red">场</font><font color="#B6C347">剧</font>]]></item>
+        <item><![CDATA[<font color="red">场</font><font color="blue">表</font>]]></item>
+        <item><![CDATA[<font color="blue">表</font><font color="#B6C347">剧</font>]]></item>
+    </string-array>
+
     <string-array name="char_domain">
         <item>无</item>
-        <item>娱</item>
-        <item>艺</item>
+        <item><![CDATA[<font color="#CD44D6">娱</font>]]></item>
+        <item><![CDATA[<font color="#BB941E">艺</font>]]></item>
     </string-array>
 
     <string-array name="char_age">

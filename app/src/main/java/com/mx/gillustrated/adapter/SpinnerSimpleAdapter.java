@@ -1,6 +1,9 @@
 package com.mx.gillustrated.adapter;
 
 import android.content.Context;
+import android.os.Build;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +24,10 @@ public class SpinnerSimpleAdapter extends BaseAdapter{
     private LayoutInflater layoutInflator;
     private static int mResource = android.R.layout.simple_gallery_item;
     private static int mDropDownResource = android.R.layout.simple_spinner_dropdown_item;
-    private List<EventInfo> list;
+    private List<String> list;
 
 
-    public SpinnerSimpleAdapter(Context context, List<EventInfo> items) {
+    public SpinnerSimpleAdapter(Context context, List<String> items) {
         mcontext = context;
         layoutInflator = LayoutInflater.from(mcontext);
         list = items;
@@ -36,7 +39,7 @@ public class SpinnerSimpleAdapter extends BaseAdapter{
     }
 
     @Override
-    public EventInfo getItem(int position) {
+    public String getItem(int position) {
         return list.get(position);
     }
 
@@ -45,13 +48,6 @@ public class SpinnerSimpleAdapter extends BaseAdapter{
         return position;
     }
 
-    public int getPosition(int id) {
-        for(int i = 0; i < list.size(); i++){
-            if(list.get(i).getId() == id)
-                return i;
-        }
-        return 0;
-    }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -75,8 +71,11 @@ public class SpinnerSimpleAdapter extends BaseAdapter{
         }
         text = (TextView) view;
 
-        EventInfo items = getItem(position);
-        text.setText(items.getName());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            text.setText(Html.fromHtml(getItem(position),  Html.FROM_HTML_MODE_LEGACY), TextView.BufferType.SPANNABLE);
+        } else {
+            text.setText(Html.fromHtml(getItem(position)), TextView.BufferType.SPANNABLE);
+        }
         return view;
 
     }

@@ -11,6 +11,9 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.vo.CharacterInfo;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,6 +23,8 @@ public class CharacterListAdapter  extends BaseAdapter {
     private Context mcontext;
     private LayoutInflater layoutInflator;
     private List<CharacterInfo> list;
+    private List<String> charPropDatas;
+    private List<String> charDomainDatas;
     private CharacterListAdapter.CharacterTouchListener mListener;
 
     public CharacterListAdapter() {
@@ -29,6 +34,8 @@ public class CharacterListAdapter  extends BaseAdapter {
         mcontext = context;
         layoutInflator = LayoutInflater.from(mcontext);
         list = items;
+        charPropDatas = Arrays.asList(mcontext.getResources().getStringArray(R.array.char_prop));
+        charDomainDatas = Arrays.asList(mcontext.getResources().getStringArray(R.array.char_domain));
     }
 
     public void setCharacterTouchListener(CharacterListAdapter.CharacterTouchListener listener) {
@@ -68,10 +75,17 @@ public class CharacterListAdapter  extends BaseAdapter {
 
             component.etName.setText(list.get(arg0).getName());
             component.spinnerNational.setSelection(list.get(arg0).getNationality());
-            component.spinnerDomain.setSelection(list.get(arg0).getDomain());
             component.spinnerAge.setSelection(list.get(arg0).getAge());
             component.spinnerSkilled.setSelection(list.get(arg0).getSkilled());
             component.spinnerChar.setSelection(list.get(arg0).getCharacter());
+
+            component.spinnerProp.setAdapter(new SpinnerSimpleAdapter(mcontext, charPropDatas));
+            component.spinnerProp.setSelection(list.get(arg0).getProp());
+            component.spinnerDomain.setAdapter(new SpinnerSimpleAdapter(mcontext, charDomainDatas));
+            component.spinnerDomain.setSelection(list.get(arg0).getDomain());
+
+
+
             final Component finalComponent = component;
             component.btnModify.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -88,6 +102,7 @@ public class CharacterListAdapter  extends BaseAdapter {
                     characterInfo.setAge(finalComponent.spinnerAge.getSelectedItemPosition());
                     characterInfo.setSkilled(finalComponent.spinnerSkilled.getSelectedItemPosition());
                     characterInfo.setCharacter(finalComponent.spinnerChar.getSelectedItemPosition());
+                    characterInfo.setProp(finalComponent.spinnerProp.getSelectedItemPosition());
                     mListener.onSaveBtnClickListener(characterInfo, position);
                 }
             });
@@ -146,6 +161,9 @@ public class CharacterListAdapter  extends BaseAdapter {
 
         @BindView(R.id.spinnerSkilled)
         public Spinner spinnerSkilled;
+
+        @BindView(R.id.spinnerProp)
+        public Spinner spinnerProp;
 
         @BindView(R.id.btnCharModify)
         public ImageButton btnModify;

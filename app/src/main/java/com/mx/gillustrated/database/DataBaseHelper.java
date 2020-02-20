@@ -34,7 +34,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
     // name of the database file for your application
     private static final String DATABASE_NAME = "GIMG.db";
     // any time you make changes to your database objects, you may have to increase the database version
-    private static final int DATABASE_VERSION = 21;
+    private static final int DATABASE_VERSION = 22;
 
     private static final Class[] CONFIG_CLASSES = {
             GameInfo.class, CardTypeInfo.class, CardEventInfo.class, EventInfo.class, CardInfo.class,CharacterInfo.class, CardCharacterInfo.class
@@ -130,6 +130,8 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
                     + CardCharacterInfo.COLUMN_CHARACTER_ID + " ) " +  " )" );
         }else if(oldVersion < 21){
             getCharacterInfoDao().executeRaw("ALTER TABLE " + CharacterInfo.TABLE_NAME + " ADD COLUMN  " + CharacterInfo.COLUMN_CHARACTER + " INTEGER ; ");
+        }else if(oldVersion < 22){
+            getCharacterInfoDao().executeRaw("ALTER TABLE " + CharacterInfo.TABLE_NAME + " ADD COLUMN  " + CharacterInfo.COLUMN_PROP + " INTEGER ; ");
         }
 
     }

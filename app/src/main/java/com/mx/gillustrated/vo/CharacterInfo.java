@@ -15,7 +15,7 @@ public class CharacterInfo {
     public static final String COLUMN_DOMAIN = "domain";
     public static final String COLUMN_AGE= "age";
     public static final String COLUMN_SKILLED= "skilled";
-
+    public static final String COLUMN_PROP= "prop";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName=ID)
     private int id;
@@ -33,6 +33,17 @@ public class CharacterInfo {
     private int skilled;
     @DatabaseField
     private int character;
+    @DatabaseField
+    private int prop;
+
+
+    public int getProp() {
+        return prop;
+    }
+
+    public void setProp(int prop) {
+        this.prop = prop;
+    }
 
     public int getCharacter() {
         return character;
