@@ -526,8 +526,10 @@ public class DetailActivity extends BaseActivity {
 					mImagesView.append(index, child);
 
 					boolean isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mCardInfo.getGameId(), false);
+					boolean isShowImageDate = mSP.getBoolean(SHARE_IMAGE_DATE + mCardInfo.getGameId(), true);
 					TextView tvDate = (TextView) child.findViewById(R.id.tvDate);
-					tvDate.setText(CommonUtil.getFileLastModified(imageFile));
+					if(isShowImageDate)
+						tvDate.setText(CommonUtil.getFileLastModified(imageFile));
 					ImageView image = (ImageView) child.findViewById(R.id.imgDetails);
 					image.setImageBitmap(isOrientation ? CommonUtil.rotatePic(bitmap, 90) : bitmap );
 					final int oldIndex = index;

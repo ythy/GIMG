@@ -1,6 +1,7 @@
 package com.mx.gillustrated.activity;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +82,9 @@ public class GameInfoActivity extends BaseActivity {
     @BindView(R.id.chkEventGap)
     CheckBox chkEventGap;
 
+    @BindView(R.id.chkImgDate)
+    CheckBox chkImgDate;
+
     @OnTextChanged(R.id.et_number1)
     void onNumber1TextChanged(CharSequence text){
         mResourceController.setNumber1(text.toString());
@@ -108,12 +112,12 @@ public class GameInfoActivity extends BaseActivity {
 
     @OnCheckedChanged(R.id.chkOrientation)
     void onOrientationCheckedChanged(CheckBox checkBox) {
-        mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION + mGameType, checkBox.isChecked()).commit();
+        mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION + mGameType, checkBox.isChecked()).apply();
     }
 
     @OnCheckedChanged(R.id.chkOrientationEvent)
     void onOrientationECheckedChanged(CheckBox checkBox) {
-        mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, checkBox.isChecked()).commit();
+        mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, checkBox.isChecked()).apply();
     }
 
     @OnCheckedChanged(R.id.chkEventGap)
@@ -121,12 +125,20 @@ public class GameInfoActivity extends BaseActivity {
         mResourceController.setEventImagesGap(checkBox.isChecked());
     }
 
+    @OnCheckedChanged(R.id.chkImgDate)
+    void onImageDateCheckedChanged(CheckBox checkBox) {
+        mSP.edit().putBoolean(SHARE_IMAGE_DATE + mGameType, checkBox.isChecked()).apply();
+    }
+
+
+
+
     @BindView(R.id.chkHeader)
     CheckBox chkHeader;
 
     @OnCheckedChanged(R.id.chkHeader)
     void onHeaderCheckedChanged(CheckBox checkBox) {
-        mSP.edit().putBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, checkBox.isChecked()).commit();
+        mSP.edit().putBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, checkBox.isChecked()).apply();
     }
 
     @BindView(R.id.chkCost)
@@ -134,7 +146,7 @@ public class GameInfoActivity extends BaseActivity {
 
     @OnCheckedChanged(R.id.chkCost)
     void onCostCheckedChanged(CheckBox checkBox) {
-        mSP.edit().putBoolean(SHARE_SHOW_COST_COLUMN + mGameType, checkBox.isChecked()).commit();
+        mSP.edit().putBoolean(SHARE_SHOW_COST_COLUMN + mGameType, checkBox.isChecked()).apply();
     }
 
 
@@ -144,7 +156,7 @@ public class GameInfoActivity extends BaseActivity {
     @OnItemSelected(R.id.spinnerPager)
     void onPagerChanged(int position) {
         String[] array = getResources().getStringArray(R.array.pagerArray);
-        mSP.edit().putInt(SHARE_PAGE_SIZE + mGameType, Integer.parseInt(array[position])).commit();
+        mSP.edit().putInt(SHARE_PAGE_SIZE + mGameType, Integer.parseInt(array[position])).apply();
     }
 
     @OnClick(R.id.btnSaveAll)
@@ -230,6 +242,7 @@ public class GameInfoActivity extends BaseActivity {
 
         chkOrientation.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false));
         chkOrientationE.setChecked(mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, false));
+        chkImgDate.setChecked(mSP.getBoolean(SHARE_IMAGE_DATE + mGameType, true));
         chkEventGap.setChecked(mResourceController.getEventImagesGap());
         chkHeader.setChecked(mSP.getBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, false));
         chkCost.setChecked(mSP.getBoolean(SHARE_SHOW_COST_COLUMN + mGameType, false));
@@ -264,18 +277,27 @@ public class GameInfoActivity extends BaseActivity {
         });
     }
 
-    Handler mainHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                mList.clear();
-                List<CardTypeInfo> result = (List<CardTypeInfo>) msg.obj;
-                mList.addAll(result);
-                updateList(true);
-            }
+    Handler mainHandler = new MainHandler(this);
+
+    static class MainHandler extends Handler {
+
+        private WeakReference<GameInfoActivity> weakReference;
+
+        MainHandler(GameInfoActivity activity){
+            weakReference = new WeakReference<>(activity);
         }
 
-    };
+        @Override
+        public void handleMessage(Message msg) {
+            GameInfoActivity activity = weakReference.get();
+            if (msg.what == 1) {
+                activity.mList.clear();
+                List<CardTypeInfo> result = (List<CardTypeInfo>) msg.obj;
+                activity.mList.addAll(result);
+                activity.updateList(true);
+            }
+        }
+    }
 
     DespairTouchListener despairTouchListener = new DespairTouchListener() {
 

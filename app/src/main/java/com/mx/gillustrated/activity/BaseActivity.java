@@ -23,6 +23,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public SharedPreferences mSP;
 
     public static final String SHARE_IMAGE_ORIENTATION = "gameinfo_image_orientation";
+    public static final String SHARE_IMAGE_DATE = "gameinfo_image_date";
     public static final String SHARE_IMAGE_ORIENTATION_EVENT = "gameinfo_image_orientation_event";
     public static final String SHARE_IMAGES_MATRIX = "add_images_matrix";
     public static final String SHARE_IMAGES_MATRIX_NUMBER = "add_images_matrix_number";
