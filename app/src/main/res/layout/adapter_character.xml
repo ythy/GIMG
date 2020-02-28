@@ -9,9 +9,10 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="bottom"
-        android:layout_marginRight="2dp"
-        android:layout_weight="3">
+        android:layout_weight="3"
+        android:layout_marginRight="2dp">
         <EditText  android:id="@+id/etCharName"
+            android:textSize="12sp"
             android:layout_width="match_parent"  android:layout_height="match_parent"
             android:background="@drawable/edit_default_background"
             android:singleLine="true" />
@@ -23,12 +24,18 @@
         android:orientation="horizontal"
         android:layout_weight="13">
         <Spinner
+            android:id="@+id/spinnerMatching"
+            style="@style/spinnerStyleWithoutArrow"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3" />
+        <Spinner
             android:id="@+id/spinnerChar"
             style="@style/spinnerStyleWithoutArrow"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:entries="@array/char_character"
-            android:layout_weight="4" />
+            android:layout_weight="3" />
         <Spinner
             android:id="@+id/spinnerNational"
             style="@style/spinnerStyleWithoutArrow"
@@ -55,7 +62,7 @@
             style="@style/spinnerStyleWithoutArrow"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:entries="@array/char_skilled"
+            android:entries="@array/char_line"
             android:layout_weight="2" />
         <Spinner
             android:id="@+id/spinnerAge"

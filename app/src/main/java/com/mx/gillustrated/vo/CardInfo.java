@@ -310,6 +310,17 @@ public class CardInfo extends SpinnerInfo implements Parcelable{
 			this.name = name;
 		}
 
+		public CardInfo(int gameId)
+	{
+		this.gameId = gameId;
+	}
+
+		public CardInfo(int id, String name)
+		{
+			this.id = id;
+			this.name = name;
+		}
+
 		public CardInfo(String[] searchParams){
 			this.name = searchParams[0];
 			this.cost = Integer.parseInt(searchParams[1]);

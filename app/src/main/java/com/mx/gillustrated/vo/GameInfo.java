@@ -27,6 +27,10 @@ public class GameInfo extends SpinnerInfo {
 	public GameInfo( int id){
 		this.id = id;
 	}
+	public GameInfo( int id, String name){
+		this.id = id;
+		this.name = name;
+	}
 
 	public String getDetail() {
 		return detail;

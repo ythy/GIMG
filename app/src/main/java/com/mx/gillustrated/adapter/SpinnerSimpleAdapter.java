@@ -3,16 +3,13 @@ package com.mx.gillustrated.adapter;
 import android.content.Context;
 import android.os.Build;
 import android.text.Html;
-import android.util.Log;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.mx.gillustrated.vo.EventInfo;
-
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by maoxin on 2017/2/23.
@@ -25,12 +22,13 @@ public class SpinnerSimpleAdapter extends BaseAdapter{
     private static int mResource = android.R.layout.simple_gallery_item;
     private static int mDropDownResource = android.R.layout.simple_spinner_dropdown_item;
     private List<String> list;
+    private int mFontSize = 0;
 
-
-    public SpinnerSimpleAdapter(Context context, List<String> items) {
+    public SpinnerSimpleAdapter(Context context, List<String> items, int fontSize) {
         mcontext = context;
         layoutInflator = LayoutInflater.from(mcontext);
         list = items;
+        mFontSize = fontSize;
     }
 
     @Override
@@ -51,16 +49,17 @@ public class SpinnerSimpleAdapter extends BaseAdapter{
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return createViewFromResource(position, convertView, parent, mDropDownResource);
+        return createViewFromResource(position, convertView, parent, mDropDownResource, false);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return createViewFromResource(position, convertView, parent, mResource);
+        return createViewFromResource(position, convertView, parent, mResource, true);
     }
 
+    // defaultView : view or dropdown view
     private View createViewFromResource(int position, View convertView,
-                                        ViewGroup parent, int resource) {
+                                        ViewGroup parent, int resource, boolean defaultView) {
         View view;
         TextView text;
 
@@ -70,12 +69,17 @@ public class SpinnerSimpleAdapter extends BaseAdapter{
             view = convertView;
         }
         text = (TextView) view;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            text.setText(Html.fromHtml(getItem(position),  Html.FROM_HTML_MODE_LEGACY), TextView.BufferType.SPANNABLE);
-        } else {
-            text.setText(Html.fromHtml(getItem(position)), TextView.BufferType.SPANNABLE);
+        if(mFontSize > 0) {
+            text.setTextSize(mFontSize);
+            if(defaultView)
+                text.setPadding(0,0,0,0);
         }
+
+        Spanned spanned = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                ? Html.fromHtml(getItem(position), Html.FROM_HTML_MODE_LEGACY)
+                : Html.fromHtml(getItem(position));
+        text.setText(spanned, TextView.BufferType.SPANNABLE);
+
         return view;
 
     }

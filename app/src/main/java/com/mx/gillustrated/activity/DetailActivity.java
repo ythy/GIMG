@@ -22,6 +22,7 @@ import com.mx.gillustrated.vo.CardInfo;
 import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.CharacterInfo;
 import com.mx.gillustrated.vo.EventInfo;
+import com.mx.gillustrated.vo.GameInfo;
 
 
 import android.content.DialogInterface;
@@ -244,7 +245,14 @@ public class DetailActivity extends BaseActivity {
 			CharacterInfo info = mOrmHelper.getCharacterInfoDao().queryForId(list.get(i).getCharId());
 			mCharListData.add(info);
 		}
-		this.mCharListAdapter = new CharacterListAdapter(this, mCharListData);
+
+		int associationId = mSP.getInt(SHARE_ASSOCIATION_GAME_ID  + this.mCardInfo.getGameId(), 0);
+		List<CardInfo> cardLists = null;
+		if(associationId > 0){
+			cardLists = mOrmHelper.getCardInfoDao().queryCards(new CardInfo(associationId), CardInfo.ID, true, 0, 1000);
+		}
+
+		this.mCharListAdapter = new CharacterListAdapter(this, mCharListData, cardLists);
 		mCharListAdapter.setCharacterTouchListener(new CharacterListAdapter.CharacterTouchListener() {
 			@Override
 			public void onSaveBtnClickListener(CharacterInfo info, int index) {
@@ -557,7 +565,7 @@ public class DetailActivity extends BaseActivity {
 								v.setTag(key + "*" + timenow);
 							}else{
 								v.setTag(key + "*" + 0);
-								CommonUtil.deleteImage(DetailActivity.this, mImagesFiles.get(key)); 
+								CommonUtil.deleteImage(DetailActivity.this, mImagesFiles.get(key));
 								mLLImages.removeView(line);
 								mImagesView.remove(key);
 								mImagesFiles.remove(key);

@@ -16,6 +16,7 @@ public class CharacterInfo {
     public static final String COLUMN_AGE= "age";
     public static final String COLUMN_SKILLED= "skilled";
     public static final String COLUMN_PROP= "prop";
+    public static final String COLUMN_ASSOCIATION_NAME= "association";
 
     @DatabaseField(generatedId = true, allowGeneratedIdInsert = true, columnName=ID)
     private int id;
@@ -35,7 +36,16 @@ public class CharacterInfo {
     private int character;
     @DatabaseField
     private int prop;
+    @DatabaseField
+    private String association = "";
 
+    public String getAssociation() {
+        return association;
+    }
+
+    public void setAssociation(String association) {
+        this.association = association;
+    }
 
     public int getProp() {
         return prop;

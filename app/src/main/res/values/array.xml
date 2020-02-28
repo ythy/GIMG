@@ -23,19 +23,20 @@
         <item>新增单张图</item>
         <item>更新数值图</item>
         <item>更新附加图</item>
+        <item>新增无图</item>
     </string-array>
 
     <string-array name="char_character">
         <item>无</item>
         <item>主角</item>
-        <item>男主角</item>
-        <item>女主角</item>
+        <item>男主</item>
+        <item>女主</item>
         <item>配角</item>
-        <item>男配角</item>
-        <item>女配角</item>
+        <item>男配</item>
+        <item>女配</item>
         <item>反派</item>
-        <item>男反派</item>
-        <item>女反派</item>
+        <item>男反</item>
+        <item>女反</item>
     </string-array>
 
     <string-array name="char_nationality">
@@ -67,7 +68,7 @@
         <item>成</item>
     </string-array>
 
-    <string-array name="char_skilled">
+    <string-array name="char_line">
         <item>无</item>
         <item>偶</item>
         <item>演</item>

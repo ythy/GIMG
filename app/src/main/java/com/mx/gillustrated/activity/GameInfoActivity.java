@@ -9,6 +9,7 @@ import com.j256.ormlite.dao.Dao;
 import com.mx.gillustrated.R;
 import com.mx.gillustrated.adapter.CardTypeListAdapter;
 import com.mx.gillustrated.adapter.CardTypeListAdapter.DespairTouchListener;
+import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.component.ResourceController;
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler;
@@ -50,6 +51,7 @@ public class GameInfoActivity extends BaseActivity {
     private int mGameType;
     private CardTypeListAdapter mAdapter;
     private ResourceController mResourceController;
+    private List<GameInfo> mGameList = null;
 
     @BindView(R.id.et_number1)
     EditText mEtNumber1;
@@ -159,6 +161,15 @@ public class GameInfoActivity extends BaseActivity {
         mSP.edit().putInt(SHARE_PAGE_SIZE + mGameType, Integer.parseInt(array[position])).apply();
     }
 
+    @BindView(R.id.spinnerAssociation)
+    Spinner spinnerAssociation;
+
+    @OnItemSelected(R.id.spinnerAssociation)
+    void onAssociationChanged(int position) {
+        mSP.edit().putInt(SHARE_ASSOCIATION_GAME_ID + mGameType, this.mGameList.get(position).getId() ).apply();
+    }
+
+
     @OnClick(R.id.btnSaveAll)
     void onSaveClickHandler() {
         GameInfo gameInfo = new GameInfo();
@@ -260,8 +271,8 @@ public class GameInfoActivity extends BaseActivity {
         mAdapter = new CardTypeListAdapter(this, mList);
         mAdapter.setDespairTouchListener(despairTouchListener);
 
+        searchGameList();
         searchMain();
-
     }
 
     private void searchMain() {
@@ -271,6 +282,19 @@ public class GameInfoActivity extends BaseActivity {
                 List<CardTypeInfo> list = mOrmHelper.getCardTypeInfoDao().queryForEq(CardTypeInfo.COLUMN_GAMETYPE, mGameType);
                 Message msg = mainHandler.obtainMessage();
                 msg.what = 1;
+                msg.obj = list;
+                mainHandler.sendMessage(msg);
+            }
+        });
+    }
+
+    private void searchGameList() {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                List<GameInfo> list = mOrmHelper.getGameInfoDao().queryForAll();
+                Message msg = mainHandler.obtainMessage();
+                msg.what = 2;
                 msg.obj = list;
                 mainHandler.sendMessage(msg);
             }
@@ -295,9 +319,26 @@ public class GameInfoActivity extends BaseActivity {
                 List<CardTypeInfo> result = (List<CardTypeInfo>) msg.obj;
                 activity.mList.addAll(result);
                 activity.updateList(true);
+            }else if (msg.what == 2) {
+                activity.mGameList = (List<GameInfo>) msg.obj;
+                activity.mGameList.add(0, new GameInfo(0, "关联"));
+                activity.spinnerAssociation.setAdapter(new SpinnerCommonAdapter<>(activity, activity.mGameList));
+                int index = activity.mSP.getInt(SHARE_ASSOCIATION_GAME_ID + activity.mGameType, 0);
+                activity.spinnerAssociation.setSelection(activity.getGameSelection(index));
             }
         }
     }
+
+    private int getGameSelection(int id){
+        if(mGameList != null && mGameList.size() > 0){
+            for(int i = 0; i < mGameList.size(); i++){
+                if(mGameList.get(i).getId() == id)
+                    return i;
+            }
+        }
+        return 0;
+    }
+
 
     DespairTouchListener despairTouchListener = new DespairTouchListener() {
 

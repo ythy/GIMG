@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.mx.gillustrated.activity.BaseActivity;
@@ -624,6 +625,15 @@ public class CommonUtil {
 	public static String getFileLastModified(File file){
 		Date lastModDate = new Date(file.lastModified());
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastModDate);
+	}
+
+	public static boolean isNumeric2(String str){
+		Pattern pattern = Pattern.compile("-?[0-9]+.?[0-9]+");
+		Matcher isNum = pattern.matcher(str);
+		if( !isNum.matches() ){
+			return false;
+		}
+		return true;
 	}
 
 }

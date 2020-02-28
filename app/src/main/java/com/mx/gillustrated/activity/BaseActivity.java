@@ -29,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public static final String SHARE_IMAGES_MATRIX_NUMBER = "add_images_matrix_number";
     public static final String SHARE_SHOW_HEADER_IMAGES = "show_header_images";
     public static final String SHARE_PAGE_SIZE = "list_page_size";
+    public static final String SHARE_ASSOCIATION_GAME_ID = "association_game_id";
     public static final String SHARE_IMAGES_HEADER_SCALE_NUMBER = "header_images_scale_float_number";
     public static final String SHARE_SHOW_COST_COLUMN = "gameinfo_show_cost_column";
 

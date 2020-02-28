@@ -154,11 +154,12 @@ public class DataListAdapter extends BaseAdapter {
 					!"".equals(list.get(arg0).getMaxDefense()) &&
 					!"".equals(list.get(arg0).getExtraValue1()) &&
 					!"".equals(list.get(arg0).getExtraValue2()) &&
-					!Double.isNaN(Double.valueOf(list.get(arg0).getMaxHP())) &&
-					!Double.isNaN(Double.valueOf(list.get(arg0).getMaxAttack())) &&
-					!Double.isNaN(Double.valueOf(list.get(arg0).getMaxDefense())) &&
-					!Double.isNaN(Double.valueOf(list.get(arg0).getExtraValue1())) &&
-					!Double.isNaN(Double.valueOf(list.get(arg0).getExtraValue2()))){
+					CommonUtil.isNumeric2(list.get(arg0).getMaxHP()) &&
+					CommonUtil.isNumeric2(list.get(arg0).getMaxAttack()) &&
+					CommonUtil.isNumeric2(list.get(arg0).getMaxDefense()) &&
+					CommonUtil.isNumeric2(list.get(arg0).getExtraValue1()) &&
+					CommonUtil.isNumeric2(list.get(arg0).getExtraValue2())
+					){
 				int total = Integer.parseInt(list.get(arg0).getMaxHP()) +
 						Integer.parseInt(list.get(arg0).getMaxAttack()) +
 						Integer.parseInt(list.get(arg0).getMaxDefense()) +

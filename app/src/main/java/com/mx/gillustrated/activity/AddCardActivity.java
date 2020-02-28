@@ -265,10 +265,16 @@ public class AddCardActivity extends BaseActivity {
 				long arg3) {
 
 			String[] array = getResources().getStringArray(R.array.addType);
-			if( array[index].equals("更新附加图") || array[index].equals("更新数值图") ||  array[index].equals("新增单张图"))
+			if( array[index].equals("更新附加图") || array[index].equals("更新数值图") ||  array[index].equals("新增单张图") || array[index].equals("新增无图"))
 			{
 				ivNumber.setImageDrawable(null);
 				btnDelNumber.setVisibility(View.GONE);
+				m_BitMapNumber = null;
+			}
+			if( array[index].equals("新增无图")){
+				ivAll.setImageDrawable(null);
+				btnDelAll.setVisibility(View.GONE);
+				m_BitMapAll = null;
 			}
 		}
 
@@ -354,7 +360,7 @@ public class AddCardActivity extends BaseActivity {
 						mImagesFileDir.mkdirs();
 			        }
 					
-					if(type == 0 || type == 1){
+					if(type == 0 || type == 1 || type == 4){ // type=4 && m_BitMapAll=null
 						mOrmHelper.getCardInfoDao().create(card);
 						long newId = card.getId();
 						if (newId != 0) {

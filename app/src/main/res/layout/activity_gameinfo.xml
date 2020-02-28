@@ -135,7 +135,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="分页设置"
+                    android:text="分页"
                     />
 
                 <Spinner
@@ -143,9 +143,13 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/spinnerPager"
                     android:entries="@array/pagerArray"
-                    >
+                    />
 
-                </Spinner>
+                <Spinner
+                    android:id="@+id/spinnerAssociation"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"/>
 
             </LinearLayout>
 
