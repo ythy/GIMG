@@ -1,6 +1,7 @@
 package com.mx.gillustrated.activity;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -167,9 +168,9 @@ public class MainActivity extends BaseActivity {
 		//temp
 //		File fileDirTemp = new File(Environment.getExternalStorageDirectory(),
 //				"backup");
-//		File fileTemp = new File(fileDirTemp.getPath(), "qingdao.xlsx");
+//		File fileTemp = new File(fileDirTemp.getPath(), "all1.docx");
 //		 try {
-//			CommonUtil.copyBigDataToSD(this, "qingdao.xlsx", fileTemp.getPath());
+//			CommonUtil.copyBigDataToSD(this, "all1.docx", fileTemp.getPath());
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
