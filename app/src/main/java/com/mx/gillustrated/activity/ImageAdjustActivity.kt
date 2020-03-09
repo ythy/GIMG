@@ -1,10 +1,10 @@
 package com.mx.gillustrated.activity
 
+import android.annotation.SuppressLint
 import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
@@ -12,18 +12,12 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import java.io.File
-import android.content.res.TypedArray
 import android.graphics.Bitmap
-import android.os.Environment
-import android.widget.Button
-import android.widget.Toast
+import android.view.View.OnTouchListener
 import butterknife.OnClick
-import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.util.CommonUtil
 import com.mx.gillustrated.vo.MatrixInfo
-import android.content.Intent
 import android.widget.ImageButton
-import java.util.*
 
 
 /**
@@ -34,14 +28,17 @@ class ImageAdjustActivity : BaseActivity() {
     enum class AnimateType{
         MOVE, RESIZE, NONE
     }
-    val MAX_SCALE_WIDTH:Int = 8000
-    val MIN_SCALE_WIDTH:Int = 500
-    val MIN_SCALE_START_WIDTH:Int = 10
 
-    val TAG:String = javaClass.name
-    lateinit var originImage:Bitmap
-    lateinit var originImagePath:String
-    lateinit var cutImageBitMap:Bitmap
+    companion object {
+        const val MAX_SCALE_WIDTH:Int = 8000
+        const val MIN_SCALE_WIDTH:Int = 500
+        const val MIN_SCALE_START_WIDTH:Int = 10
+        //val TAG:String = ImageAdjustActivity::class.java.name
+    }
+
+    private lateinit var originImage:Bitmap
+    private lateinit var originImagePath:String
+    private lateinit var cutImageBitMap:Bitmap
 
     @BindView(R.id.image)
     lateinit var mImage:ImageView
@@ -95,7 +92,7 @@ class ImageAdjustActivity : BaseActivity() {
         this.initView()
     }
 
-    fun showCutImage(){
+    private fun showCutImage(){
         mImagePreview.setImageBitmap(cutImageBitMap)
         mImagePreview.visibility = View.VISIBLE
         mCancel.visibility =  View.VISIBLE
@@ -104,35 +101,39 @@ class ImageAdjustActivity : BaseActivity() {
 
     }
 
-    fun initView(){
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initView(){
         originImage = MediaStore.Images.Media.getBitmap(
                 this.contentResolver, Uri.fromFile(File(originImagePath)))
         mImage.setImageBitmap(originImage)
         mImage.post {
-            initImageListeners()
+            mImage.setOnTouchListener(mImagesOnTouchListener)
         }
         mCut.post {
-            initCutImageListeners()
+            mCut.setOnTouchListener(mCutImagesOnTouchListener)
         }
     }
 
-    fun initImageListeners(){
-        var lastPointToView: PointF = PointF()
+    private val mImagesOnTouchListener = object : OnTouchListener{
+
+        var lastPointToView = PointF()
         var lastSpace: Float = Float.MIN_VALUE
         var animateType:AnimateType = AnimateType.NONE
 
-        mImage.setOnTouchListener { v, event ->
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
             when ( event.action and MotionEvent.ACTION_MASK ) {
                 MotionEvent.ACTION_DOWN -> {
                     lastPointToView = PointF( mImage.x - event.rawX , mImage.y - event.rawY)
                     animateType = AnimateType.MOVE
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    @Suppress("NON_EXHAUSTIVE_WHEN")
                     when ( animateType ){
                         AnimateType.MOVE -> move(mImage, event.rawX + lastPointToView.x, event.rawY + lastPointToView.y)
                         AnimateType.RESIZE ->{
                             val space = spacing(event) - lastSpace
-                            val lastWidth:Float = mImage.width * mImage.scaleX;
+                            val lastWidth:Float = mImage.width * mImage.scaleX
                             if(Math.abs(space) > MIN_SCALE_START_WIDTH && lastWidth + space < MAX_SCALE_WIDTH && lastWidth + space > MIN_SCALE_WIDTH ){
                                 resize(mImage, (lastWidth + space ) / mImage.width  )
                             }
@@ -149,21 +150,19 @@ class ImageAdjustActivity : BaseActivity() {
                 MotionEvent.ACTION_POINTER_UP ->{
                     animateType = AnimateType.NONE
                 }
-                else ->
-                    false
             }
-            true
+            return true
         }
-
-
     }
 
-    fun initCutImageListeners(){
-        var lastPointToView: PointF = PointF()
-        var lastPoint: PointF = PointF()
+
+    private val mCutImagesOnTouchListener = object : OnTouchListener {
+        var lastPointToView = PointF()
+        var lastPoint = PointF()
         var animateType:AnimateType = AnimateType.NONE
 
-        mCut.setOnTouchListener { v, event ->
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
             when ( event.action and MotionEvent.ACTION_MASK ) {
                 MotionEvent.ACTION_DOWN -> {
                     val cutX = mCut.x - event.rawX
@@ -178,6 +177,7 @@ class ImageAdjustActivity : BaseActivity() {
                     }
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    @Suppress("NON_EXHAUSTIVE_WHEN")
                     when ( animateType ){
                         AnimateType.MOVE -> move(mCut, event.rawX + lastPointToView.x, event.rawY + lastPointToView.y)
                         AnimateType.RESIZE -> {
@@ -192,11 +192,12 @@ class ImageAdjustActivity : BaseActivity() {
                     animateType = AnimateType.NONE
                 }
                 else ->
-                    false
+                    return false
             }
-            true
+            return true
         }
     }
+
 
     private fun spacing(event: MotionEvent): Float {
         val x = event.getX(0) - event.getX(1)
@@ -204,30 +205,30 @@ class ImageAdjustActivity : BaseActivity() {
         return Math.sqrt(x.toDouble() * x.toDouble() + y * y).toFloat()
     }
 
-    fun move(view: View, x:Float, y:Float){
+    private fun move(view: View, x:Float, y:Float){
         view.animate()
                 .x(x)
                 .y(y)
                 .setDuration(0)
-                .start();
+                .start()
     }
 
-    fun resize(view: View, scaleX:Float, scaleY: Float = scaleX, x:Float, y:Float){
+    private fun resize(view: View, scaleX:Float, scaleY: Float = scaleX, x:Float, y:Float){
         view.animate()
                 .x(x)
                 .y(y)
                 .scaleX(scaleX)
                 .scaleY(scaleY)
                 .setDuration(0)
-                .start();
+                .start()
     }
 
-    fun resize(view: View, scaleX:Float, scaleY: Float = scaleX){
+    private fun resize(view: View, scaleX:Float, scaleY: Float = scaleX){
         view.animate()
                 .scaleX(scaleX)
                 .scaleY(scaleY)
                 .setDuration(0)
-                .start();
+                .start()
     }
 
 

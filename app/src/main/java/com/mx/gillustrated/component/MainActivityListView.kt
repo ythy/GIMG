@@ -14,7 +14,7 @@ import com.mx.gillustrated.vo.CardInfo
 import java.util.ArrayList
 import butterknife.BindView
 import butterknife.ButterKnife
-import com.mx.gillustrated.activity.BaseActivity.SHARE_PAGE_SIZE
+import com.mx.gillustrated.activity.BaseActivity.Companion.SHARE_PAGE_SIZE
 import java.lang.ref.WeakReference
 
 /**

@@ -3,17 +3,14 @@ package com.mx.gillustrated.component
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.MainActivity
 import com.mx.gillustrated.vo.CardInfo
-
 import java.util.HashMap
-
 import butterknife.BindColor
 import butterknife.BindView
 import butterknife.ButterKnife
-import com.mx.gillustrated.activity.BaseActivity.SHARE_SHOW_COST_COLUMN
+import com.mx.gillustrated.activity.BaseActivity.Companion.SHARE_SHOW_COST_COLUMN
 
 /**
  * Created by maoxin on 2018/7/31.

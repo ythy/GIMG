@@ -233,6 +233,28 @@ class AddCardActivity : BaseActivity() {
 
     internal var addHandler: Handler = AddHandler(this)
 
+
+    companion object {
+
+        private class AddHandler internal constructor(activity: AddCardActivity) : Handler() {
+
+            private val mActivity: WeakReference<AddCardActivity> = WeakReference(activity)
+
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+                if (msg.what == 1) {
+                    Toast.makeText(mActivity.get(), "id: " + msg.arg1, Toast.LENGTH_SHORT).show()
+                    mActivity.get()?.forwardBack()
+                } else if (msg.what == 2) {
+                    mActivity.get()?.forwardBack()
+                }
+            }
+        }
+
+    }
+
+
+
     @OnClick(R.id.btnSaveMatrix)
     internal fun onSaveMatrixBtnClick() {
         val top = Integer.parseInt(this.tvAdjustImgTop.text.toString())
@@ -430,23 +452,6 @@ class AddCardActivity : BaseActivity() {
         }
         return checkNum
     }
-
-
-    private class AddHandler internal constructor(activity: AddCardActivity) : Handler() {
-
-        private val mActivity: WeakReference<AddCardActivity> = WeakReference(activity)
-
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            if (msg.what == 1) {
-                Toast.makeText(mActivity.get(), "id: " + msg.arg1, Toast.LENGTH_SHORT).show()
-                mActivity.get()?.forwardBack()
-            } else if (msg.what == 2) {
-                mActivity.get()?.forwardBack()
-            }
-        }
-    }
-
 
     private fun forwardBack() {
         val intent = Intent(this@AddCardActivity,

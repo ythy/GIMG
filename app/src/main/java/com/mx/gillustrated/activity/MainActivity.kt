@@ -43,6 +43,38 @@ class MainActivity : BaseActivity() {
     private lateinit var mMainActivityListView: MainActivityListView
     internal var mainHandler: Handler = MainHandler(this)
 
+    companion object {
+
+        private class MainHandler(activity: MainActivity) : Handler() {
+
+            private val weakReference: WeakReference<MainActivity> = WeakReference(activity)
+
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+                val mainActivity:MainActivity = weakReference.get()!!
+                if (msg.what == 1) {
+                    mainActivity.setGameList()
+                } else if (msg.what == 2 || msg.what == 4) {
+                    val index = msg.what
+                    object : Thread() {
+                        override fun run() {
+                            CommonUtil.generateHeaderImg(mainActivity, mainActivity.mMainActivityListView.idListWithProfile, mainActivity.mGameType, index != 2)
+                            mainActivity.mainHandler.sendEmptyMessage(3)
+                        }
+                    }.start()
+                } else if (msg.what == 3) {
+                    Toast.makeText(mainActivity, "生成头像完成", Toast.LENGTH_SHORT).show()
+                } else if (msg.what == 5) {
+                    Toast.makeText(mainActivity, "删除完成", Toast.LENGTH_SHORT).show()
+
+                }
+            }
+
+        }
+    }
+
+
+
     @JvmField
     @BindView(R.id.etPinyin)
     internal var etPinyin: EditText? = null
@@ -142,7 +174,7 @@ class MainActivity : BaseActivity() {
                 intent.putExtra("positon", position)
                 intent.putExtra("totalCount", totalCount)
                 intent.putExtra("currentPage", currentPage)
-                intent.putExtra("spinnerIndexs", mMainActivityTop.spinnerSelectedIndexs)
+                intent.putExtra("spinnerIndexs", mMainActivityTop.spinnerSelectedIndexes)
                 startActivity(intent)
             }
 
@@ -256,34 +288,6 @@ class MainActivity : BaseActivity() {
             }
             mOrmHelper.cardInfoDao.delCardsById(idList)
             mainHandler.sendEmptyMessage(5)
-        }
-
-    }
-
-
-    private class MainHandler(activity: MainActivity) : Handler() {
-
-        private val weakReference: WeakReference<MainActivity> = WeakReference(activity)
-
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            val mainActivity:MainActivity = weakReference.get()!!
-            if (msg.what == 1) {
-                mainActivity.setGameList()
-            } else if (msg.what == 2 || msg.what == 4) {
-                val index = msg.what
-                object : Thread() {
-                    override fun run() {
-                        CommonUtil.generateHeaderImg(mainActivity, mainActivity.mMainActivityListView.idListWithProfile, mainActivity.mGameType, index != 2)
-                        mainActivity.mainHandler.sendEmptyMessage(3)
-                    }
-                }.start()
-            } else if (msg.what == 3) {
-                Toast.makeText(mainActivity, "生成头像完成", Toast.LENGTH_SHORT).show()
-            } else if (msg.what == 5) {
-                Toast.makeText(mainActivity, "删除完成", Toast.LENGTH_SHORT).show()
-
-            }
         }
 
     }
