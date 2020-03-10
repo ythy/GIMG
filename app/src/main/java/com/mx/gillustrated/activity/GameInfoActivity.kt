@@ -41,7 +41,7 @@ class GameInfoActivity : BaseActivity() {
     private var mLvGameMain: ListView? = null
     private var pageVboxLayout: RelativeLayout? = null
 
-    private var mList: MutableList<CardTypeInfo>? = null
+    private var mList: MutableList<CardTypeInfo> = mutableListOf()
     private var mGameType: Int = 0
     private var mAdapter: CardTypeListAdapter? = null
     private var mResourceController: ResourceController? = null
@@ -57,14 +57,14 @@ class GameInfoActivity : BaseActivity() {
             override fun handleMessage(msg: Message) {
                 val activity = weakReference.get()!!
                 if (msg.what == 1) {
-                    activity.mList!!.clear()
+                    activity.mList.clear()
                     val result = msg.obj as List<CardTypeInfo>
-                    activity.mList!!.addAll(result)
+                    activity.mList.addAll(result)
                     activity.updateList(true)
                 } else if (msg.what == 2) {
                     activity.mGameList = msg.obj as MutableList<GameInfo>
                     activity.mGameList!!.add(0, GameInfo(0, "关联"))
-                    activity.spinnerAssociation.adapter = SpinnerCommonAdapter(activity, activity.mGameList)
+                    activity.spinnerAssociation.adapter = SpinnerCommonAdapter(activity, activity.mGameList!!)
                     val index = activity.mSP.getInt(SHARE_ASSOCIATION_GAME_ID + activity.mGameType, 0)
                     activity.spinnerAssociation.setSelection(activity.getGameSelection(index))
                 }
@@ -149,7 +149,7 @@ class GameInfoActivity : BaseActivity() {
     }
 
     private var onAddBtnClickListerner: View.OnClickListener = View.OnClickListener {
-        mList!!.add(0, CardTypeInfo(mGameType))
+        mList.add(0, CardTypeInfo(mGameType))
         updateList(false)
     }
 
@@ -312,7 +312,6 @@ class GameInfoActivity : BaseActivity() {
         spinnerPager.setSelection(position)
 
         mLvGameMain!!.setOnScrollListener(ListenerListViewScrollHandler(mLvGameMain, pageVboxLayout))
-        mList = ArrayList()
         mAdapter = CardTypeListAdapter(this, mList)
         mAdapter!!.setDespairTouchListener(despairTouchListener)
 

@@ -15,37 +15,23 @@ import java.util.Arrays
 import butterknife.BindView
 import butterknife.ButterKnife
 
-class CharacterListAdapter(context: Context, items: List<CharacterInfo>, associationList: List<CardInfo>?) : BaseAdapter() {
+class CharacterListAdapter(private val context: Context, items: List<CharacterInfo>, private val associationList: List<CardInfo>?) : BaseAdapter() {
 
-    private val mcontext: Context = context
-    private val layoutInflator: LayoutInflater
+    private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
     private val list: List<CharacterInfo> = items
-    private val associationList: List<CardInfo>? = associationList
-    private val charPropDatas: List<String>
-    private val charDomainDatas: List<String>
-    private val charNationalDatas: List<String>
-    private val charAgeDatas: List<String>
-    private val charLineDatas: List<String>
-    private val charCharDatas: List<String>
-    private var mListener: CharacterListAdapter.CharacterTouchListener? = null
+    private val charPropData: List<String> = Arrays.asList(*context.resources.getStringArray(R.array.char_prop))
+    private val charDomainData: List<String> = Arrays.asList(*context.resources.getStringArray(R.array.char_domain))
+    private val charNationalData: List<String> = Arrays.asList(*context.resources.getStringArray(R.array.char_nationality))
+    private val charAgeData: List<String> = Arrays.asList(*context.resources.getStringArray(R.array.char_age))
+    private val charLineData: List<String> = Arrays.asList(*context.resources.getStringArray(R.array.char_line))
+    private val charCharData: List<String> = Arrays.asList(*context.resources.getStringArray(R.array.char_character))
+    private var mListener: CharacterTouchListener? = null
 
     companion object{
        const val FONT_SIZE = 12
     }
 
-
-    init {
-        layoutInflator = LayoutInflater.from(mcontext)
-        charPropDatas = Arrays.asList(*mcontext.resources.getStringArray(R.array.char_prop))
-        charDomainDatas = Arrays.asList(*mcontext.resources.getStringArray(R.array.char_domain))
-        charNationalDatas = Arrays.asList(*mcontext.resources.getStringArray(R.array.char_nationality))
-        charAgeDatas = Arrays.asList(*mcontext.resources.getStringArray(R.array.char_age))
-        charLineDatas = Arrays.asList(*mcontext.resources.getStringArray(R.array.char_line))
-        charCharDatas = Arrays.asList(*mcontext.resources.getStringArray(R.array.char_character))
-    }
-
-
-    fun setCharacterTouchListener(listener: CharacterListAdapter.CharacterTouchListener) {
+    fun setCharacterTouchListener(listener: CharacterTouchListener) {
         mListener = listener
     }
 
@@ -62,44 +48,43 @@ class CharacterListAdapter(context: Context, items: List<CharacterInfo>, associa
     }
 
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
-        var convertView = convertViews
-        var component: Component? = null
+        var convertView = convertViews //目的可修改
+        lateinit var component: Component
 
         if (convertView == null) {
-            convertView = layoutInflator.inflate(
-                    R.layout.adapter_character, null)
+            convertView = layoutInflater.inflate(
+                    R.layout.adapter_character, arg2, false)
             component = Component(convertView)
-            convertView!!.tag = component
+            convertView.tag = component
         } else
             component = convertView.tag as Component
 
-        val currentComponent = component
         try {
 
-            component.etName!!.setText(list[arg0].name)
-            component.spinnerNational!!.adapter = SpinnerSimpleAdapter(mcontext, charNationalDatas, FONT_SIZE)
-            component.spinnerNational!!.setSelection(list[arg0].nationality)
-            component.spinnerAge!!.adapter = SpinnerSimpleAdapter(mcontext, charAgeDatas, FONT_SIZE)
-            component.spinnerAge!!.setSelection(list[arg0].age)
-            component.spinnerLine!!.adapter = SpinnerSimpleAdapter(mcontext, charLineDatas, FONT_SIZE)
-            component.spinnerLine!!.setSelection(list[arg0].skilled)
-            component.spinnerChar!!.adapter = SpinnerSimpleAdapter(mcontext, charCharDatas, FONT_SIZE)
-            component.spinnerChar!!.setSelection(list[arg0].character)
+            component.etName.setText(list[arg0].name)
+            component.spinnerNational.adapter = SpinnerSimpleAdapter(context, charNationalData, FONT_SIZE)
+            component.spinnerNational.setSelection(list[arg0].nationality)
+            component.spinnerAge.adapter = SpinnerSimpleAdapter(context, charAgeData, FONT_SIZE)
+            component.spinnerAge.setSelection(list[arg0].age)
+            component.spinnerLine.adapter = SpinnerSimpleAdapter(context, charLineData, FONT_SIZE)
+            component.spinnerLine.setSelection(list[arg0].skilled)
+            component.spinnerChar.adapter = SpinnerSimpleAdapter(context, charCharData, FONT_SIZE)
+            component.spinnerChar.setSelection(list[arg0].character)
 
-            component.spinnerProp!!.adapter = SpinnerSimpleAdapter(mcontext, charPropDatas, FONT_SIZE)
-            component.spinnerProp!!.setSelection(list[arg0].prop)
-            component.spinnerDomain!!.adapter = SpinnerSimpleAdapter(mcontext, charDomainDatas, FONT_SIZE)
-            component.spinnerDomain!!.setSelection(list[arg0].domain)
+            component.spinnerProp.adapter = SpinnerSimpleAdapter(context, charPropData, FONT_SIZE)
+            component.spinnerProp.setSelection(list[arg0].prop)
+            component.spinnerDomain.adapter = SpinnerSimpleAdapter(context, charDomainData, FONT_SIZE)
+            component.spinnerDomain.setSelection(list[arg0].domain)
 
             var newAssociationList:MutableList<CardInfo>? = null
             if (associationList != null) {
                 newAssociationList = mutableListOf(CardInfo(0,""))
                 associationList.forEach {
-                    val national = charNationalDatas[list[arg0].nationality]
-                    val sexuality = charCharDatas[list[arg0].character]
-                    val line = charLineDatas[list[arg0].skilled]
-                    val age = charAgeDatas[list[arg0].age]
-                    val domain = charDomainDatas[list[arg0].domain]
+                    val national = charNationalData[list[arg0].nationality]
+                    val sexuality = charCharData[list[arg0].character]
+                    val line = charLineData[list[arg0].skilled]
+                    val age = charAgeData[list[arg0].age]
+                    val domain = charDomainData[list[arg0].domain]
 
                     if(national != "无" && national != it.attr)
                         return@forEach
@@ -118,34 +103,34 @@ class CharacterListAdapter(context: Context, items: List<CharacterInfo>, associa
                     newAssociationList.add(CardInfo(it.id, newName))
                 }
 
-                component.spinnerMatching!!.adapter = SpinnerCommonAdapter(mcontext, newAssociationList, false, FONT_SIZE)
-                component.spinnerMatching!!.setSelection(getAssociationSelection(newAssociationList, list[arg0].association))
+                component.spinnerMatching.adapter = SpinnerCommonAdapter(context, newAssociationList, false, FONT_SIZE)
+                component.spinnerMatching.setSelection(getAssociationSelection(newAssociationList, list[arg0].association))
             }
 
 
             val finalComponent = component
-            component.btnModify!!.setOnClickListener {
-                val name = currentComponent.etName!!.text.toString()
+            component.btnModify.setOnClickListener {
+                val name = component.etName.text.toString()
                 val id = list[arg0].id
                 val gid = list[arg0].gameId
                 val characterInfo = CharacterInfo()
                 characterInfo.gameId = gid
                 characterInfo.id = id
                 characterInfo.name = name
-                characterInfo.nationality = finalComponent.spinnerNational!!.selectedItemPosition
-                characterInfo.domain = finalComponent.spinnerDomain!!.selectedItemPosition
-                characterInfo.age = finalComponent.spinnerAge!!.selectedItemPosition
-                characterInfo.skilled = finalComponent.spinnerLine!!.selectedItemPosition
-                characterInfo.character = finalComponent.spinnerChar!!.selectedItemPosition
-                characterInfo.prop = finalComponent.spinnerProp!!.selectedItemPosition
+                characterInfo.nationality = finalComponent.spinnerNational.selectedItemPosition
+                characterInfo.domain = finalComponent.spinnerDomain.selectedItemPosition
+                characterInfo.age = finalComponent.spinnerAge.selectedItemPosition
+                characterInfo.skilled = finalComponent.spinnerLine.selectedItemPosition
+                characterInfo.character = finalComponent.spinnerChar.selectedItemPosition
+                characterInfo.prop = finalComponent.spinnerProp.selectedItemPosition
                 if(newAssociationList != null){
-                    val associationIndex = finalComponent.spinnerMatching!!.selectedItemPosition
+                    val associationIndex = finalComponent.spinnerMatching.selectedItemPosition
                     characterInfo.association = newAssociationList[associationIndex].name
                 }
                 mListener!!.onSaveBtnClickListener(characterInfo, arg0)
             }
 
-            component.btnDel!!.setOnClickListener {
+            component.btnDel.setOnClickListener {
                 val id = list[arg0].id
                 val gid = list[arg0].gameId
                 val cardTypeInfo = CharacterInfo()
@@ -158,7 +143,7 @@ class CharacterListAdapter(context: Context, items: List<CharacterInfo>, associa
             e.printStackTrace()
         }
 
-        return convertView
+        return convertView!!
     }
 
     private fun getAssociationSelection(list:List<CardInfo>, input: String?): Int {
@@ -177,45 +162,35 @@ class CharacterListAdapter(context: Context, items: List<CharacterInfo>, associa
 
     inner class Component(view: View) {
 
-        @JvmField
         @BindView(R.id.etCharName)
-        var etName: EditText? = null
+        lateinit var etName: EditText
 
-        @JvmField
         @BindView(R.id.spinnerChar)
-        var spinnerChar: Spinner? = null
+        lateinit var spinnerChar: Spinner
 
-        @JvmField
         @BindView(R.id.spinnerNational)
-        var spinnerNational: Spinner? = null
+        lateinit var spinnerNational: Spinner
 
-        @JvmField
         @BindView(R.id.spinnerDomain)
-        var spinnerDomain: Spinner? = null
+        lateinit var spinnerDomain: Spinner
 
-        @JvmField
         @BindView(R.id.spinnerAge)
-        var spinnerAge: Spinner? = null
+        lateinit var spinnerAge: Spinner
 
-        @JvmField
         @BindView(R.id.spinnerSkilled)
-        var spinnerLine: Spinner? = null
+        lateinit var spinnerLine: Spinner
 
-        @JvmField
         @BindView(R.id.spinnerProp)
-        var spinnerProp: Spinner? = null
+        lateinit var spinnerProp: Spinner
 
-        @JvmField
         @BindView(R.id.spinnerMatching)
-        var spinnerMatching: Spinner? = null
+        lateinit var spinnerMatching: Spinner
 
-        @JvmField
         @BindView(R.id.btnCharModify)
-        var btnModify: ImageButton? = null
+        lateinit var btnModify: ImageButton
 
-        @JvmField
         @BindView(R.id.btnCharDel)
-        var btnDel: ImageButton? = null
+        lateinit var btnDel: ImageButton
 
         init {
             ButterKnife.bind(this, view)

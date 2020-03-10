@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = '1.2.51'
-    ext.material_version = '1.2.0-alpha03'
+    ext.material_version = '1.2.0-alpha05'
 
     repositories {
         maven{ url 'https://maven.aliyun.com/repository/google'}

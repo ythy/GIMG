@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "com.mx.gillustrated"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 26
     }
 
     buildTypes {
@@ -29,6 +29,7 @@ android {
     }
 
     lintOptions {
+        disable 'ClickableViewAccessibility'
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:

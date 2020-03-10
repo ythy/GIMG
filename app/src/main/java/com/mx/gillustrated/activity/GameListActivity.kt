@@ -1,7 +1,5 @@
 package com.mx.gillustrated.activity
 
-import java.util.ArrayList
-
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.GameListAdapter
 import com.mx.gillustrated.adapter.GameListAdapter.DespairTouchListener
@@ -24,7 +22,7 @@ class GameListActivity : BaseActivity() {
     private var mBtnAdd: ImageButton? = null
     private var mLvDespairMain: ListView? = null
     private var mAdapter: GameListAdapter? = null
-    private var mList: MutableList<GameInfo>? = null
+    private var mList: MutableList<GameInfo> = mutableListOf()
     private var pageVboxLayout: RelativeLayout? = null
     private var mainHandler: MainHandler = MainHandler(this)
 
@@ -38,8 +36,8 @@ class GameListActivity : BaseActivity() {
             override fun handleMessage(msg: Message) {
                 val activity = weakReference.get()!!
                 if (msg.what == 1) {
-                    activity.mList!!.clear()
-                    activity.mList!!.addAll(msg.obj as List<GameInfo>)
+                    activity.mList.clear()
+                    activity.mList.addAll(msg.obj as List<GameInfo>)
                     activity.updateList(true)
                 }
             }
@@ -68,7 +66,7 @@ class GameListActivity : BaseActivity() {
     }
 
     private var onAddBtnClickListerner: View.OnClickListener = View.OnClickListener {
-        mList!!.add(0, GameInfo())
+        mList.add(0, GameInfo())
         updateList(false)
     }
 
@@ -86,7 +84,6 @@ class GameListActivity : BaseActivity() {
         pageVboxLayout!!.visibility = View.GONE
 
         mLvDespairMain!!.setOnScrollListener(ListenerListViewScrollHandler(mLvDespairMain, pageVboxLayout))
-        mList = ArrayList()
         mAdapter = GameListAdapter(this, mList)
         mAdapter!!.setDespairTouchListener(despairTouchListener)
 

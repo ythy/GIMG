@@ -1,7 +1,5 @@
 package com.mx.gillustrated.activity
 
-import java.util.ArrayList
-
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.EventsAdapter
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler
@@ -14,7 +12,6 @@ import android.view.View
 import android.view.Window
 import android.widget.ListView
 import android.widget.RelativeLayout
-
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -30,7 +27,7 @@ class EventsActivity : BaseActivity() {
     internal lateinit var pageVboxLayout: RelativeLayout
 
     private var mAdapter: EventsAdapter? = null
-    private var mList: MutableList<EventInfo>? = null
+    private var mList: MutableList<EventInfo> = mutableListOf()
     private var mGameId: Int = 0
     private val mainHandler = ManiHandler(this)
 
@@ -46,7 +43,7 @@ class EventsActivity : BaseActivity() {
     @OnItemClick(R.id.lvDespairMain)
     internal fun listItemClickHandler(position: Int) {
         val intent = Intent(this@EventsActivity, EventInfoActivity::class.java)
-        intent.putExtra("event", mList!![position].id)
+        intent.putExtra("event", mList[position].id)
         intent.putExtra("game", mGameId)
         startActivity(intent)
     }
@@ -60,7 +57,6 @@ class EventsActivity : BaseActivity() {
         mGameId = intent.getIntExtra("game", 0)
         pageVboxLayout.visibility = View.GONE
         mLvDespairMain.setOnScrollListener(ListenerListViewScrollHandler(mLvDespairMain, pageVboxLayout))
-        mList = ArrayList()
         mAdapter = EventsAdapter(this, mList)
 
         searchMain()
@@ -95,8 +91,8 @@ class EventsActivity : BaseActivity() {
             override fun handleMessage(msg: Message) {
                 val activity = weakReference.get()!!
                 if (msg.what == 1) {
-                    activity.mList!!.clear()
-                    activity.mList!!.addAll(msg.obj as List<EventInfo>)
+                    activity.mList.clear()
+                    activity.mList.addAll(msg.obj as List<EventInfo>)
                     activity.updateList(true)
                 }
             }

@@ -1,6 +1,5 @@
 package com.mx.gillustrated.activity
 
-import android.annotation.SuppressLint
 import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
@@ -18,7 +17,6 @@ import butterknife.OnClick
 import com.mx.gillustrated.util.CommonUtil
 import com.mx.gillustrated.vo.MatrixInfo
 import android.widget.ImageButton
-
 
 /**
  * Created by maoxin on 2019/6/18.
@@ -101,7 +99,6 @@ class ImageAdjustActivity : BaseActivity() {
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun initView(){
         originImage = MediaStore.Images.Media.getBitmap(
                 this.contentResolver, Uri.fromFile(File(originImagePath)))
@@ -120,7 +117,6 @@ class ImageAdjustActivity : BaseActivity() {
         var lastSpace: Float = Float.MIN_VALUE
         var animateType:AnimateType = AnimateType.NONE
 
-        @SuppressLint("ClickableViewAccessibility")
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             when ( event.action and MotionEvent.ACTION_MASK ) {
                 MotionEvent.ACTION_DOWN -> {
@@ -161,7 +157,6 @@ class ImageAdjustActivity : BaseActivity() {
         var lastPoint = PointF()
         var animateType:AnimateType = AnimateType.NONE
 
-        @SuppressLint("ClickableViewAccessibility")
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             when ( event.action and MotionEvent.ACTION_MASK ) {
                 MotionEvent.ACTION_DOWN -> {

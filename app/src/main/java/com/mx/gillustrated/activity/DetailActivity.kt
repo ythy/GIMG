@@ -70,7 +70,7 @@ class DetailActivity : BaseActivity() {
     private var mImagesFiles: SparseArray<File>? = null
     private var mImagesView: SparseArray<View>? = null
     private var mLLImages: LinearLayout? = null
-    private var mEventList: MutableList<EventInfo>? = null
+    private var mEventList: MutableList<EventInfo> = mutableListOf()
     private val mEventView = SparseArray<View>()
     private var mResourceController: ResourceController? = null
 
@@ -372,7 +372,7 @@ class DetailActivity : BaseActivity() {
     private fun showEvents() {
         llShowEvent.removeAllViews()
         mEventList = mOrmHelper.eventInfoDao.getListByGameId(mCardInfo!!.gameId, "Y")
-        mEventList!!.add(0, EventInfo(""))
+        mEventList.add(0, EventInfo(""))
 
         val events = mOrmHelper.cardEventInfoDao.getListByCardId(mCardInfo!!.id)
         for (i in events!!.indices) {
@@ -384,10 +384,8 @@ class DetailActivity : BaseActivity() {
     }
 
     private fun isExistInEvent(id: Int): Boolean {
-        if (mEventList == null)
-            return false
-        for (i in mEventList!!.indices) {
-            if (mEventList!![i].id == id)
+        for (i in mEventList.indices) {
+            if (mEventList[i].id == id)
                 return true
         }
         return false
