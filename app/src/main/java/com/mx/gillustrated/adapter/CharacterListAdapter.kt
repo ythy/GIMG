@@ -92,13 +92,13 @@ class CharacterListAdapter(private val context: Context, items: List<CharacterIn
                         if(sexuality.substring(0, 1) != it.maxHP)
                             return@forEach
                     }
-                    if( line != "无" && line != it.maxAttack.substring(0, 1))
+                    if( line != "无" && line != it.maxAttack?.substring(0, 1))
                         return@forEach
-                    if( age != "无" && age != it.maxDefense.substring(0, 1))
+                    if( age != "无" && age != it.maxDefense?.substring(0, 1))
                         return@forEach
 
                     var newName = it.name
-                    if( domain != "无" && it.extraValue1.substring(0,1) != domain.substring(20, 21))
+                    if( domain != "无" && it.extraValue1?.substring(0,1) != domain.substring(20, 21))
                         newName = "<font color=\"red\">$newName</font>"
                     newAssociationList.add(CardInfo(it.id, newName))
                 }
@@ -125,7 +125,7 @@ class CharacterListAdapter(private val context: Context, items: List<CharacterIn
                 characterInfo.prop = finalComponent.spinnerProp.selectedItemPosition
                 if(newAssociationList != null){
                     val associationIndex = finalComponent.spinnerMatching.selectedItemPosition
-                    characterInfo.association = newAssociationList[associationIndex].name
+                    characterInfo.association = newAssociationList[associationIndex].name ?: ""
                 }
                 mListener!!.onSaveBtnClickListener(characterInfo, arg0)
             }

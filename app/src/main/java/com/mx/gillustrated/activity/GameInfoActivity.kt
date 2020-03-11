@@ -2,7 +2,6 @@ package com.mx.gillustrated.activity
 
 import java.io.File
 import java.lang.ref.WeakReference
-import java.util.ArrayList
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CardTypeListAdapter
 import com.mx.gillustrated.adapter.CardTypeListAdapter.DespairTouchListener
