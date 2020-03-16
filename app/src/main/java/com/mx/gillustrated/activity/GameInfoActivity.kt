@@ -37,9 +37,6 @@ import butterknife.OnTextChanged
 class GameInfoActivity : BaseActivity() {
 
     private var btnAdd: ImageButton? = null
-    private var mLvGameMain: ListView? = null
-    private var pageVboxLayout: RelativeLayout? = null
-
     private var mList: MutableList<CardTypeInfo> = mutableListOf()
     private var mGameType: Int = 0
     private var mAdapter: CardTypeListAdapter? = null
@@ -117,6 +114,13 @@ class GameInfoActivity : BaseActivity() {
 
     @BindView(R.id.spinnerAssociation)
     internal lateinit var spinnerAssociation: Spinner
+
+    @BindView(R.id.lvGameInfoMain)
+    internal lateinit var mLvGameMain: ListView
+
+    @BindView(R.id.pageVBox)
+    internal lateinit var pageVBoxLayout: RelativeLayout
+
 
     private var mainHandler: Handler = MainHandler(this)
 
@@ -282,12 +286,10 @@ class GameInfoActivity : BaseActivity() {
         mResourceController = ResourceController(this, mGameType)
         btnAdd = findViewById<View>(R.id.btnGameAdd) as ImageButton
         btnAdd!!.setOnClickListener(onAddBtnClickListerner)
-        mLvGameMain = findViewById<View>(R.id.lvGameInfoMain) as ListView
         val gameinfoList = mOrmHelper.gameInfoDao.queryForId(mGameType)
         mEtGameName.setText(gameinfoList.name)
         mEtGameDetail.setText(gameinfoList.detail)
-        pageVboxLayout = findViewById<View>(R.id.pageVBox) as RelativeLayout
-        pageVboxLayout!!.visibility = View.GONE
+        pageVBoxLayout.visibility = View.GONE
 
         mEtNumber1.setText(mResourceController!!.number1)
         mEtNumber2.setText(mResourceController!!.number2)
@@ -310,7 +312,7 @@ class GameInfoActivity : BaseActivity() {
                 position = i
         spinnerPager.setSelection(position)
 
-        mLvGameMain!!.setOnScrollListener(ListenerListViewScrollHandler(mLvGameMain, pageVboxLayout))
+        mLvGameMain.setOnScrollListener(ListenerListViewScrollHandler(mLvGameMain, pageVBoxLayout))
         mAdapter = CardTypeListAdapter(this, mList)
         mAdapter!!.setDespairTouchListener(despairTouchListener)
 
@@ -350,7 +352,7 @@ class GameInfoActivity : BaseActivity() {
 
     private fun updateList(flag: Boolean) {
         if (flag)
-            mLvGameMain!!.adapter = mAdapter
+            mLvGameMain.adapter = mAdapter
         else
             mAdapter!!.notifyDataSetChanged()
     }

@@ -101,12 +101,14 @@ class MainActivityListView(private val mContext: MainActivity, private val mOrmH
 
         mDataView.pageVBoxLayout!!.visibility = android.view.View.GONE
         mDataView.listViewMain!!.onItemClickListener = itemClickListener
-        mDataView.listViewMain!!.setOnScrollListener(ListenerListViewScrollHandler(mDataView.listViewMain, mDataView.pageVBoxLayout, 0,
-                ListenerListViewScrollHandler.ScrollHandle { totalCount ->
-                    if (totalCount == totalItemCount)
-                        return@ScrollHandle
-                    currentPage++
-                    search()
+        mDataView.listViewMain!!.setOnScrollListener(ListenerListViewScrollHandler(mDataView.listViewMain!!, mDataView.pageVBoxLayout!!, 0,
+                object : ListenerListViewScrollHandler.ScrollHandle {
+                    override fun scrollLastRow(totalCount: Int) {
+                        if (totalCount == totalItemCount)
+                            return
+                        currentPage++
+                        search()
+                    }
                 }))
         mAdapter = DataListAdapter(mContext, mList)
     }

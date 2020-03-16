@@ -83,7 +83,7 @@ class GameListActivity : BaseActivity() {
         pageVboxLayout = findViewById<View>(R.id.pageVBox) as RelativeLayout
         pageVboxLayout!!.visibility = View.GONE
 
-        mLvDespairMain!!.setOnScrollListener(ListenerListViewScrollHandler(mLvDespairMain, pageVboxLayout))
+        mLvDespairMain!!.setOnScrollListener(ListenerListViewScrollHandler(mLvDespairMain!!, pageVboxLayout!!))
         mAdapter = GameListAdapter(this, mList)
         mAdapter!!.setDespairTouchListener(despairTouchListener)
 

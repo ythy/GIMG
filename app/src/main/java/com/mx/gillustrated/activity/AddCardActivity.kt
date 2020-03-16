@@ -140,7 +140,7 @@ class AddCardActivity : BaseActivity() {
                 card.gameId = mGameType
                 card.level = spinnerLevel!!.selectedItem.toString()
                 card.name = etName!!.text.toString().trim { it <= ' ' }
-                card.pinyinName = PinyinUtil.convert(card.name)
+                card.pinyinName = PinyinUtil.convert(card.name!!)
                 card.frontName = etFrontName!!.text.toString().trim { it <= ' ' }
                 card.profile = "Y"
                 if (etCost!!.text.toString().trim { it <= ' ' } != "")

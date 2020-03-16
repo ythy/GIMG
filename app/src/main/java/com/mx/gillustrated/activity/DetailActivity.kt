@@ -121,7 +121,7 @@ class DetailActivity : BaseActivity() {
             val cardOld = mCardInfo
             card = CardInfo()
             card.name = etName!!.text.toString().trim { it <= ' ' }
-            card.pinyinName = PinyinUtil.convert(card.name)
+            card.pinyinName = PinyinUtil.convert(card.name!!)
             result = mOrmHelper.cardInfoDao.updateCardName(card, cardOld)
         }
 
@@ -138,7 +138,7 @@ class DetailActivity : BaseActivity() {
         else
             Integer.parseInt(etCost!!.text.toString())
         card.name = etName!!.text.toString().trim { it <= ' ' }
-        card.pinyinName = PinyinUtil.convert(card.name)
+        card.pinyinName = PinyinUtil.convert(card.name!!)
         card.frontName = etFrontName!!.text.toString().trim { it <= ' ' }
         card.remark = etDetail!!.text.toString().trim { it <= ' ' }
         card.profile = if (chkProfile.isChecked) "Y" else "N"
