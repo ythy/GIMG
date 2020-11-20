@@ -1,5 +1,6 @@
 package com.mx.gillustrated.activity
 
+import android.app.Activity
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -23,6 +24,7 @@ import com.mx.gillustrated.vo.CharacterInfo
 import com.mx.gillustrated.vo.EventInfo
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -44,8 +46,14 @@ import androidx.appcompat.app.AlertDialog
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import java.io.FileOutputStream
 
 class DetailActivity : BaseActivity() {
+
+    companion object {
+        private const val SELECT_PIC_PROFILE = 30
+        private const val SELECT_PIC_LIST = 40
+    }
 
     private var etHP: EditText? = null
     private var etAttack: EditText? = null
@@ -224,6 +232,21 @@ class DetailActivity : BaseActivity() {
         mOrmHelper.cardEventInfoDao.addCardEvents(events)
         Toast.makeText(this@DetailActivity, "保存成功", Toast.LENGTH_SHORT).show()
     }
+
+    @OnClick(R.id.btnSetProfile)
+    internal fun onSetProfileClickHandler() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        this.startActivityForResult(intent, SELECT_PIC_PROFILE)
+    }
+
+    @OnClick(R.id.btnAddImage)
+    internal fun onAddImageClickHandler() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        this.startActivityForResult(intent, SELECT_PIC_LIST)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -428,7 +451,7 @@ class DetailActivity : BaseActivity() {
         CommonUtil.setSpinnerItemSelectedByValue(spinnerLevel!!,
                 info.level.toString())
 
-        etCost!!.setText(info.cost.toString())
+        etCost!!.setText(info.cost?.toString())
         tvId!!.text = info.id.toString()
 
         chkProfile.isChecked = "Y" == info.profile
@@ -551,6 +574,90 @@ class DetailActivity : BaseActivity() {
         mEventView.append(roundTag, child)
         return event.spinner
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == SELECT_PIC_LIST || requestCode == SELECT_PIC_PROFILE) {
+              if (resultCode == Activity.RESULT_OK) {
+                val uri = data!!.data
+                val projections = arrayOf(MediaStore.Images.Media.DATA)
+                val cursor = contentResolver.query(uri!!,
+                        projections, null, null, null)
+                try {
+                    if (cursor != null) {
+                        val cr = contentResolver
+                        val colIndex = cursor
+                                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                        cursor.moveToFirst()
+                        val path = cursor.getString(colIndex)
+
+                        if (path.toLowerCase().endsWith("jpg") || path.toLowerCase().endsWith("png") ||
+                                path.toLowerCase().endsWith("jpeg")) {
+                            val bitmap = BitmapFactory.decodeStream(cr
+                                    .openInputStream(uri))
+                            if(requestCode == SELECT_PIC_LIST){
+                                createImages(bitmap, false)
+                                showImages()
+                             }else
+                                createImages(bitmap, true)
+                        } else {
+                            alert()
+                        }
+                    } else {
+                        alert()
+                    }
+
+                } catch (e: Exception) {
+                }finally {
+                    cursor?.close()
+                }
+
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun alert() {
+        Toast.makeText(this, "您选择的不是有效的图片", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun createImages(bitmap: Bitmap, isHeader:Boolean) {
+        val mImagesFileDir = File(
+                Environment.getExternalStorageDirectory(),
+                ( if (isHeader)  MConfig.SD_HEADER_PATH else MConfig.SD_PATH) + "/" + mCardInfo?.gameId)
+        if (!mImagesFileDir.exists()) {
+            mImagesFileDir.mkdirs()
+        }
+        var imageFile: File
+        val bos: FileOutputStream
+        if(isHeader){
+            imageFile = File(mImagesFileDir.path, mId.toString() + "_h.png")
+        }else{
+            var checknum = 1
+            while (true) {
+                imageFile = File(mImagesFileDir.path,
+                        CommonUtil.getImageFrontName(mId, checknum))
+                if (!imageFile.exists())
+                    break
+                else
+                    checknum++
+            }
+        }
+        try {
+            bos = FileOutputStream(imageFile)
+            bitmap.compress(Bitmap.CompressFormat.PNG,
+                    100, bos)
+            bos.flush()
+            bos.close()
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }finally {
+            Toast.makeText(this,"图片创建完成", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     internal class InlineEvent(view: View) {
 

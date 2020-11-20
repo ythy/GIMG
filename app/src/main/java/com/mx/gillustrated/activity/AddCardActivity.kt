@@ -214,7 +214,8 @@ class AddCardActivity : BaseActivity() {
                         card.level = null
                         card.frontName = null
                         card.name = null
-                        if (card.cost > 0 || "" != card.maxHP || "" != card.maxAttack || "" != card.maxDefense)
+                        if (card.cost > 0 || card.maxHP != null || card.maxAttack != null
+                                || card.maxDefense != null || card.extraValue1 != null || card.extraValue2 != null )
                             mOrmHelper.cardInfoDao.update(card)
                     } else if (type == 3)
                         try {
