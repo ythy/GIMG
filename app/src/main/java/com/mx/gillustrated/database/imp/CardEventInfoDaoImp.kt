@@ -52,6 +52,7 @@ class CardEventInfoDaoImp(orm: OrmLiteSqliteOpenHelper) : RuntimeExceptionDao<Ca
 
     fun getListByCardId(cardId: Int): List<CardEventInfo>? {
         val qb = this.queryBuilder()
+        qb.orderByRaw("rowid ASC")
         try {
             qb.where().eq(CardEventInfo.COLUMN_CARD_NID, cardId)
             return this.query(qb.prepare())

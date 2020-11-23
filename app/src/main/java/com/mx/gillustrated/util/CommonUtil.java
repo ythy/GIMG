@@ -1,8 +1,6 @@
 package com.mx.gillustrated.util;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,19 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.mx.gillustrated.activity.BaseActivity;
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter;
 import com.mx.gillustrated.common.MConfig;
-import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.MatrixInfo;
 import com.mx.gillustrated.vo.SpinnerInfo;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,7 +35,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Paint;
 import android.media.ExifInterface;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -192,15 +184,15 @@ public class CommonUtil {
 			MatrixInfo matrixInfo, int gameType) {
 		SharedPreferences sp = context.getSharedPreferences("matrixSet" + type + "-" + gameType,
 				Context.MODE_PRIVATE);
-		sp.edit().putInt("x", matrixInfo.getX()).commit();
-		sp.edit().putInt("y", matrixInfo.getY()).commit();
-		sp.edit().putInt("width", matrixInfo.getWidth()).commit();
-		sp.edit().putInt("height", matrixInfo.getHeight()).commit();
+		sp.edit().putInt("x", matrixInfo.getX()).apply();
+		sp.edit().putInt("y", matrixInfo.getY()).apply();
+		sp.edit().putInt("width", matrixInfo.getWidth()).apply();
+		sp.edit().putInt("height", matrixInfo.getHeight()).apply();
 	}
 
 	public static void setGameType(Context context, int gameType) {
 		SharedPreferences sp = context.getSharedPreferences("commonset", Context.MODE_PRIVATE);
-		sp.edit().putInt("gameType", gameType).commit();
+		sp.edit().putInt("gameType", gameType).apply();
 	}
 
 	public static int getGameType(Context context) {
@@ -498,7 +490,6 @@ public class CommonUtil {
 	 * @param value
 	 */
 	public static void setSpinnerItemSelectedByValue2(Spinner spinner, String value){
-
 		SpinnerCommonAdapter<SpinnerInfo> apsAdapter= (SpinnerCommonAdapter<SpinnerInfo>) spinner.getAdapter(); //得到SpinnerAdapter对象
 		int k= apsAdapter.getCount();
 		for(int i = 0; i < k; i++){

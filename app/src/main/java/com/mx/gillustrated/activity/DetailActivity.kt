@@ -29,6 +29,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
@@ -68,8 +69,8 @@ class DetailActivity : BaseActivity() {
     private var etCost: EditText? = null
     private var chkModify: CheckBox? = null
     private var tvId: TextView? = null
-    private var mId: Int = 0
 
+    private var mId: Int = 0
     private var mMainSearchInfo: Array<String>? = null
     private var mMainSearchOrderBy: String? = null
     private var mCurrentPosition: Int = 0
@@ -118,6 +119,31 @@ class DetailActivity : BaseActivity() {
 
     @BindView(R.id.lvChar)
     lateinit var mListChar: ListView
+
+    @OnClick(R.id.btnRead)
+    fun onBtnReadHandler(){
+        if(mId > 1){
+            val preCard  = mOrmHelper.cardInfoDao.queryForId(mId - 1)
+            etFrontName!!.setText(preCard.frontName)
+            etDetail!!.setText(preCard.remark)
+            etHP!!.setText(preCard.maxHP)
+            etAttack!!.setText(preCard.maxAttack)
+            etDefense!!.setText(preCard.maxDefense)
+            etExtra1.setText(preCard.extraValue1)
+            etExtra2.setText(preCard.extraValue2)
+            CommonUtil.setSpinnerItemSelectedByValue2(spinnerAttr!!, preCard.attrId.toString())
+            val preEvents = mOrmHelper.cardEventInfoDao.getListByCardId(mId - 1)
+            if(preEvents != null &&  preEvents.isNotEmpty()){
+                llShowEvent.removeAllViews()
+                for (i in preEvents.indices) {
+                    if (isExistInEvent(preEvents[i].eventId)) {
+                        val spinner = addEvent()
+                        CommonUtil.setSpinnerItemSelectedByValue2(spinner!!, preEvents[i].eventId.toString())
+                    }
+                }
+            }
+        }
+    }
 
     private var btnSaveClickListener: View.OnClickListener = View.OnClickListener {
         var card: CardInfo
@@ -451,7 +477,7 @@ class DetailActivity : BaseActivity() {
         CommonUtil.setSpinnerItemSelectedByValue(spinnerLevel!!,
                 info.level.toString())
 
-        etCost!!.setText(info.cost?.toString())
+        etCost!!.setText(info.cost.toString())
         tvId!!.text = info.id.toString()
 
         chkProfile.isChecked = "Y" == info.profile
