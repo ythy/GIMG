@@ -35,6 +35,7 @@ class CardCharacterInfoDaoImp(orm: OrmLiteSqliteOpenHelper) : RuntimeExceptionDa
 
     fun getListByCardId(cardId: Int): List<CardCharacterInfo>? {
         val qb = this.queryBuilder()
+        qb.orderByRaw("rowid")
         try {
             qb.where().eq(CardCharacterInfo.COLUMN_CARD_NID, cardId)
             return this.query(qb.prepare())

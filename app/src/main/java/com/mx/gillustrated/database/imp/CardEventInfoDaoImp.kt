@@ -1,10 +1,10 @@
 package com.mx.gillustrated.database.imp
 
+import android.util.Log
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.RuntimeExceptionDao
-import com.j256.ormlite.stmt.DeleteBuilder
-import com.j256.ormlite.stmt.QueryBuilder
+import com.j256.ormlite.field.DataType
 import com.mx.gillustrated.vo.CardEventInfo
 
 import java.sql.SQLException
@@ -53,13 +53,22 @@ class CardEventInfoDaoImp(orm: OrmLiteSqliteOpenHelper) : RuntimeExceptionDao<Ca
     fun getListByCardId(cardId: Int): List<CardEventInfo>? {
         val qb = this.queryBuilder()
         qb.orderByRaw("rowid ASC")
+        qb.selectRaw(CardEventInfo.COLUMN_ROW_ID + ", " + CardEventInfo.COLUMN_CARD_NID + ", " + CardEventInfo.COLUMN_EVENT_ID)
         try {
             qb.where().eq(CardEventInfo.COLUMN_CARD_NID, cardId)
-            return this.query(qb.prepare())
+            val rawResults = this.queryRaw(qb.prepareStatementString(), arrayOf(DataType.INTEGER, DataType.INTEGER, DataType.INTEGER))
+            val result = mutableListOf<CardEventInfo>()
+            for (resultArray in rawResults) {
+                val cardEventInfo = CardEventInfo()
+                cardEventInfo.rowid = resultArray[0] as Int
+                cardEventInfo.cardNid = resultArray[1] as Int
+                cardEventInfo.eventId = resultArray[2] as Int
+                result.add(cardEventInfo)
+            }
+            return result
         } catch (e: SQLException) {
             e.printStackTrace()
         }
-
         return null
     }
 

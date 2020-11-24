@@ -6,8 +6,6 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.ArrayList
 import java.util.Calendar
-
-
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CharacterListAdapter
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter
@@ -48,6 +46,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import java.io.FileOutputStream
+import java.lang.ref.WeakReference
 
 class DetailActivity : BaseActivity() {
 
@@ -56,223 +55,21 @@ class DetailActivity : BaseActivity() {
         private const val SELECT_PIC_LIST = 40
     }
 
-    private var etHP: EditText? = null
-    private var etAttack: EditText? = null
-    private var etDefense: EditText? = null
-    private var etName: EditText? = null
-    private var etFrontName: EditText? = null
-    private var etDetail: EditText? = null
-    private var etNid: EditText? = null
+    private lateinit var mUI: UI
     private var mCardInfo: CardInfo? = null
-    private var spinnerAttr: Spinner? = null
-    private var spinnerLevel: Spinner? = null
-    private var etCost: EditText? = null
-    private var chkModify: CheckBox? = null
-    private var tvId: TextView? = null
-
     private var mId: Int = 0
     private var mMainSearchInfo: Array<String>? = null
     private var mMainSearchOrderBy: String? = null
     private var mCurrentPosition: Int = 0
     private var mMainTotalCount: Int = 0
 
-    private var mImagesFiles: SparseArray<File>? = null
-    private var mImagesView: SparseArray<View>? = null
-    private var mLLImages: LinearLayout? = null
+    private lateinit var mImagesFiles: SparseArray<File>
+    private lateinit var mImagesView: SparseArray<View>
     private var mEventList: MutableList<EventInfo> = mutableListOf()
     private val mEventView = SparseArray<View>()
     private var mResourceController: ResourceController? = null
-
     private var mCharListAdapter: CharacterListAdapter? = null
     private var mCharListData: MutableList<CharacterInfo>? = null
-
-
-    @BindView(R.id.etDetailExtra1)
-    lateinit var etExtra1: EditText
-
-    @BindView(R.id.etDetailExtra2)
-    lateinit var etExtra2: EditText
-
-    @BindView(R.id.tv_header_hp)
-    lateinit var tvHeaderNumber1: TextView
-
-    @BindView(R.id.tv_header_A)
-    lateinit var tvHeaderNumber2: TextView
-
-    @BindView(R.id.tv_header_D)
-    lateinit var tvHeaderNumber3: TextView
-
-    @BindView(R.id.tv_header_E1)
-    lateinit var tvHeaderNumber4: TextView
-
-    @BindView(R.id.tv_header_E2)
-    lateinit var tvHeaderNumber5: TextView
-
-    @BindView(R.id.chkProfile)
-    lateinit var chkProfile: CheckBox
-
-    @BindView(R.id.llShowEvent)
-    lateinit var llShowEvent: LinearLayout
-
-    @BindView(R.id.scrollView)
-    lateinit var mScrollView: ScrollView
-
-    @BindView(R.id.lvChar)
-    lateinit var mListChar: ListView
-
-    @OnClick(R.id.btnRead)
-    fun onBtnReadHandler(){
-        if(mId > 1){
-            val preCard  = mOrmHelper.cardInfoDao.queryForId(mId - 1)
-            etFrontName!!.setText(preCard.frontName)
-            etDetail!!.setText(preCard.remark)
-            etHP!!.setText(preCard.maxHP)
-            etAttack!!.setText(preCard.maxAttack)
-            etDefense!!.setText(preCard.maxDefense)
-            etExtra1.setText(preCard.extraValue1)
-            etExtra2.setText(preCard.extraValue2)
-            CommonUtil.setSpinnerItemSelectedByValue2(spinnerAttr!!, preCard.attrId.toString())
-            val preEvents = mOrmHelper.cardEventInfoDao.getListByCardId(mId - 1)
-            if(preEvents != null &&  preEvents.isNotEmpty()){
-                llShowEvent.removeAllViews()
-                for (i in preEvents.indices) {
-                    if (isExistInEvent(preEvents[i].eventId)) {
-                        val spinner = addEvent()
-                        CommonUtil.setSpinnerItemSelectedByValue2(spinner!!, preEvents[i].eventId.toString())
-                    }
-                }
-            }
-        }
-    }
-
-    private var btnSaveClickListener: View.OnClickListener = View.OnClickListener {
-        var card: CardInfo
-        var result: Long = 0
-        // 名称优先批量更新
-        if (!chkModify!!.isChecked
-                && mCardInfo!!.name != ""
-                && mCardInfo!!.name != etName!!.text.toString().trim { it <= ' ' }) {
-            val cardOld = mCardInfo
-            card = CardInfo()
-            card.name = etName!!.text.toString().trim { it <= ' ' }
-            card.pinyinName = PinyinUtil.convert(card.name!!)
-            result = mOrmHelper.cardInfoDao.updateCardName(card, cardOld)
-        }
-
-        card = CardInfo()
-        card.id = mId
-        card.nid = Integer.parseInt(etNid!!.text.toString())
-        card.gameId = mCardInfo!!.gameId
-        val cardTypeInfo = spinnerAttr!!.selectedItem as CardTypeInfo
-        card.attrId = cardTypeInfo.id
-        card.level = spinnerLevel!!.selectedItem.toString()
-
-        card.cost = if (etCost!!.text.toString().trim { it <= ' ' } == "")
-            0
-        else
-            Integer.parseInt(etCost!!.text.toString())
-        card.name = etName!!.text.toString().trim { it <= ' ' }
-        card.pinyinName = PinyinUtil.convert(card.name!!)
-        card.frontName = etFrontName!!.text.toString().trim { it <= ' ' }
-        card.remark = etDetail!!.text.toString().trim { it <= ' ' }
-        card.profile = if (chkProfile.isChecked) "Y" else "N"
-        card.maxHP = etHP!!.text.toString().trim { it <= ' ' }
-        card.maxAttack = etAttack!!.text.toString().trim { it <= ' ' }
-        card.maxDefense = etDefense!!.text.toString().trim { it <= ' ' }
-        card.extraValue1 = etExtra1.text.toString().trim { it <= ' ' }
-        card.extraValue2 = etExtra2.text.toString().trim { it <= ' ' }
-        result += mOrmHelper.cardInfoDao.update(card).toLong()
-
-        if (result > 0) {
-            val intent = Intent(this@DetailActivity,
-                    MainActivity::class.java)
-            intent.putExtra("game", mCardInfo!!.gameId)
-            intent.putExtra("orderBy", mMainSearchOrderBy)
-            intent.putExtra("spinnerIndexs", getIntent().getStringExtra("spinnerIndexs"))
-            intent.putExtra("position", mCurrentPosition)
-            intent.putExtra("currentPage", getIntent().getIntExtra("currentPage", 1))
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
-            this@DetailActivity.finish()
-        } else
-            Toast.makeText(this@DetailActivity, "保存失败", Toast.LENGTH_SHORT)
-                    .show()
-    }
-
-    private var btnDelClickListener: View.OnClickListener = View.OnClickListener {
-        AlertDialog.Builder(this@DetailActivity)
-                .setMessage("确定要删除吗")
-                .setPositiveButton("Ok"
-                ) { _, _ ->
-                    val result = mOrmHelper.cardInfoDao.deleteById(mCardInfo!!.id).toLong()
-                    if (result != -1L) {
-
-                        for (i in 0 until mImagesFiles!!.size()) {
-                            CommonUtil.deleteImage(this@DetailActivity,
-                                    mImagesFiles!!.get(mImagesFiles!!.keyAt(i)))
-                        }
-
-                        val intent = Intent(
-                                this@DetailActivity,
-                                MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        startActivity(intent)
-                        this@DetailActivity.finish()
-                    } else
-                        Toast.makeText(this@DetailActivity,
-                                "删除失败", Toast.LENGTH_SHORT)
-                                .show()
-                }.setNegativeButton("Cancel", null).show()
-    }
-
-    private var btnDel2ClickListener: View.OnClickListener = View.OnClickListener {
-        for (i in 0 until mImagesView!!.size()) {
-            val btnDel = mImagesView!!.valueAt(i).findViewById<View>(R.id.btnDel) as ImageButton
-            btnDel.visibility = View.VISIBLE
-            val btnAjust = mImagesView!!.valueAt(i).findViewById<View>(R.id.btnAdjust) as ImageButton
-            btnAjust.visibility = View.VISIBLE
-        }
-    }
-
-    @OnClick(R.id.btnAddChar)
-    internal fun onAddCharClickHandler() {
-        addChar()
-        mScrollView.post { mScrollView.smoothScrollTo(0, 5000) }
-    }
-
-
-    @OnClick(R.id.btnAddEvent)
-    internal fun onAddEventClickHandler() {
-        addEvent()
-        mScrollView.post { mScrollView.smoothScrollTo(0, 5000) }
-    }
-
-    @OnClick(R.id.btnSaveEvent)
-    internal fun onSaveEvnetClickHandler() {
-        val events = ArrayList<CardEventInfo>()
-        for (i in 0 until mEventView.size()) {
-            val spinner = mEventView.get(mEventView.keyAt(i)).findViewById<View>(R.id.spinnerEvent) as Spinner
-            val info = spinner.selectedItem as EventInfo
-            events.add(CardEventInfo(mCardInfo!!.id, info.id))
-        }
-        mOrmHelper.cardEventInfoDao.addCardEvents(events)
-        Toast.makeText(this@DetailActivity, "保存成功", Toast.LENGTH_SHORT).show()
-    }
-
-    @OnClick(R.id.btnSetProfile)
-    internal fun onSetProfileClickHandler() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
-        this.startActivityForResult(intent, SELECT_PIC_PROFILE)
-    }
-
-    @OnClick(R.id.btnAddImage)
-    internal fun onAddImageClickHandler() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
-        this.startActivityForResult(intent, SELECT_PIC_LIST)
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -287,41 +84,18 @@ class DetailActivity : BaseActivity() {
         mMainTotalCount = intent.getIntExtra("totalCount", 0)
         mCardInfo = mOrmHelper.cardInfoDao.queryForId(mId)
         mResourceController = ResourceController(this, mCardInfo!!.gameId)
+        mUI = UI(this)
+        UIEvent(this)
 
-        chkModify = findViewById<View>(R.id.chkModify) as CheckBox
-        etHP = findViewById<View>(R.id.etDetailHP) as EditText
-        etAttack = findViewById<View>(R.id.etDetailAttack) as EditText
-        etDefense = findViewById<View>(R.id.etDetailDefense) as EditText
-        etName = findViewById<View>(R.id.etDetailName) as EditText
-        etFrontName = findViewById<View>(R.id.etDetailFrontName) as EditText
-        etNid = findViewById<View>(R.id.etDetailNid) as EditText
-        etDetail = findViewById<View>(R.id.etDetail) as EditText
+        mUI.tvHeaderNumber1.text = mResourceController!!.number1
+        mUI.tvHeaderNumber2.text = mResourceController!!.number2
+        mUI.tvHeaderNumber3.text = mResourceController!!.number3
+        mUI.tvHeaderNumber4.text = mResourceController!!.number4
+        mUI.tvHeaderNumber5.text = mResourceController!!.number5
 
-        val btnSave = findViewById<View>(R.id.btnSave) as ImageButton
-        val btnSave2 = findViewById<View>(R.id.btnSave2) as ImageButton
-        btnSave.setOnClickListener(btnSaveClickListener)
-        btnSave2.setOnClickListener(btnSaveClickListener)
-        val btnDel = findViewById<View>(R.id.btnDel) as ImageButton
-        btnDel.setOnClickListener(btnDelClickListener)
-        val btnDel2 = findViewById<View>(R.id.btnDel2) as ImageButton
-        btnDel2.setOnClickListener(btnDel2ClickListener)
-
-        tvHeaderNumber1.text = mResourceController!!.number1
-        tvHeaderNumber2.text = mResourceController!!.number2
-        tvHeaderNumber3.text = mResourceController!!.number3
-        tvHeaderNumber4.text = mResourceController!!.number4
-        tvHeaderNumber5.text = mResourceController!!.number5
-
-        tvId = findViewById<View>(R.id.tvId) as TextView
-        mLLImages = findViewById<View>(R.id.llImages) as LinearLayout
-
-        spinnerAttr = findViewById<View>(R.id.spinnerAttr) as Spinner
         val cardTypes = mOrmHelper.cardTypeInfoDao.queryForEq(CardInfo.COLUMN_GAMETYPE, mCardInfo!!.gameId)
         val adapterName = SpinnerCommonAdapter(this, cardTypes)
-        spinnerAttr!!.adapter = adapterName
-
-        spinnerLevel = findViewById<View>(R.id.spinnerLevel) as Spinner
-        etCost = findViewById<View>(R.id.etDetailCost) as EditText
+        mUI.spinnerAttr.adapter = adapterName
 
         val mBtnNext = findViewById<View>(R.id.btnNext) as ImageButton
         mBtnNext.setOnClickListener { searchCardSide(1) }
@@ -378,7 +152,7 @@ class DetailActivity : BaseActivity() {
                         }.setNegativeButton("Cancel", null).show()
             }
         })
-        mListChar.adapter = mCharListAdapter
+        mUI.mListChar.adapter = mCharListAdapter
         setListViewHeightBasedOnItems()
     }
 
@@ -400,31 +174,33 @@ class DetailActivity : BaseActivity() {
         // Get total height of all items.
         var totalItemsHeight = 0
         for (itemPos in 0 until numberOfItems) {
-            val item = mCharListAdapter!!.getView(itemPos, null, mListChar)
-            val px = 500 * mListChar.resources.displayMetrics.density
+            val item = mCharListAdapter!!.getView(itemPos, null, mUI.mListChar)
+            val px = 500 * mUI.mListChar.resources.displayMetrics.density
             item.measure(View.MeasureSpec.makeMeasureSpec(px.toInt(), View.MeasureSpec.AT_MOST), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
             totalItemsHeight += item.measuredHeight
         }
 
         // Get total height of all item dividers.
-        val totalDividersHeight = mListChar.dividerHeight * (numberOfItems - 1)
+        val totalDividersHeight = mUI.mListChar.dividerHeight * (numberOfItems - 1)
         // Get padding
-        val totalPadding = mListChar.paddingTop + mListChar.paddingBottom
+        val totalPadding = mUI.mListChar.paddingTop + mUI.mListChar.paddingBottom
 
         // Set list height.
-        val params = mListChar.layoutParams
+        val params = mUI.mListChar.layoutParams
         params.height = totalItemsHeight + totalDividersHeight + totalPadding
-        mListChar.layoutParams = params
-        mListChar.requestLayout()
+        mUI.mListChar.layoutParams = params
+        mUI.mListChar.requestLayout()
     }
 
     private fun showEvents() {
-        llShowEvent.removeAllViews()
+        mUI.llShowEvent.removeAllViews()
         mEventList = mOrmHelper.eventInfoDao.getListByGameId(mCardInfo!!.gameId, "Y")
         mEventList.add(0, EventInfo(""))
 
         val events = mOrmHelper.cardEventInfoDao.getListByCardId(mCardInfo!!.id)
         for (i in events!!.indices) {
+            val e = mOrmHelper.eventInfoDao.queryForId(events[i].eventId)
+            Log.e("DDDDDDDDDD", events[i].rowid.toString() + " --- " + e.id.toString() + " " + e.name)
             if (isExistInEvent(events[i].eventId)) {
                 val spinner = addEvent()
                 CommonUtil.setSpinnerItemSelectedByValue2(spinner!!, events[i].eventId.toString())
@@ -455,6 +231,7 @@ class DetailActivity : BaseActivity() {
             mCurrentPosition = newPositon
             mCardInfo = result
             mId = mCardInfo!!.id
+            initChar()
             showEvents()
             showCardInfo()
         }
@@ -462,29 +239,29 @@ class DetailActivity : BaseActivity() {
 
     private fun showCardInfo() {
         val info = mCardInfo
-        etHP!!.setText(info!!.maxHP)
-        etAttack!!.setText(info.maxAttack)
-        etDefense!!.setText(info.maxDefense)
-        etExtra1.setText(info.extraValue1)
-        etExtra2.setText(info.extraValue2)
-        etName!!.setText(info.name)
-        etFrontName!!.setText(info.frontName)
-        etDetail!!.setText(info.remark)
-        etNid!!.setText(info.nid.toString())
+        mUI.etHP.setText(info!!.maxHP)
+        mUI.etAttack.setText(info.maxAttack)
+        mUI.etDefense.setText(info.maxDefense)
+        mUI.etExtra1.setText(info.extraValue1)
+        mUI.etExtra2.setText(info.extraValue2)
+        mUI.etName.setText(info.name)
+        mUI.etFrontName.setText(info.frontName)
+        mUI.etDetail.setText(info.remark)
+        mUI.etNid.setText(info.nid.toString())
         val attr = info.attrId.toString()
-        CommonUtil.setSpinnerItemSelectedByValue2(spinnerAttr!!, attr)
+        CommonUtil.setSpinnerItemSelectedByValue2(mUI.spinnerAttr, attr)
 
-        CommonUtil.setSpinnerItemSelectedByValue(spinnerLevel!!,
+        CommonUtil.setSpinnerItemSelectedByValue(mUI.spinnerLevel,
                 info.level.toString())
 
-        etCost!!.setText(info.cost.toString())
-        tvId!!.text = info.id.toString()
+        mUI.etCost.setText(info.cost.toString())
+        mUI.tvId.text = info.id.toString()
 
-        chkProfile.isChecked = "Y" == info.profile
+        mUI.chkProfile.isChecked = "Y" == info.profile
 
         mImagesFiles = SparseArray()
         mImagesView = SparseArray()
-        mLLImages!!.removeAllViews()
+        mUI.mLLImages.removeAllViews()
         showImages()
     }
 
@@ -497,7 +274,7 @@ class DetailActivity : BaseActivity() {
                 val imageFile = File(fileDir.path, CommonUtil.getImageFrontName(mId, index))
                 var bitmap: Bitmap? = null
                 if (imageFile.exists()) {
-                    mImagesFiles!!.append(index, imageFile)
+                    mImagesFiles.append(index, imageFile)
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(
                                 this.contentResolver, Uri.fromFile(imageFile))
@@ -508,9 +285,9 @@ class DetailActivity : BaseActivity() {
                     }
 
                     val child = LayoutInflater.from(this@DetailActivity).inflate(
-                            R.layout.child_images_gap, mLLImages, false)
-                    mLLImages!!.addView(child)
-                    mImagesView!!.append(index, child)
+                            R.layout.child_images_gap, mUI.mLLImages, false)
+                    mUI.mLLImages.addView(child)
+                    mImagesView.append(index, child)
 
                     val isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mCardInfo!!.gameId, false)
                     val isShowImageDate = mSP.getBoolean(SHARE_IMAGE_DATE + mCardInfo!!.gameId, true)
@@ -523,7 +300,7 @@ class DetailActivity : BaseActivity() {
                     val btnAdjust = child.findViewById<View>(R.id.btnAdjust) as ImageButton
                     btnAdjust.setOnClickListener {
                         val intent = Intent(this@DetailActivity, ImageAdjustActivity::class.java)
-                        intent.putExtra("source", mImagesFiles!!.get(oldIndex).absolutePath)
+                        intent.putExtra("source", mImagesFiles.get(oldIndex).absolutePath)
                         startActivity(intent)
                     }
                     val btnDel = child.findViewById<View>(R.id.btnDel) as ImageButton
@@ -531,17 +308,17 @@ class DetailActivity : BaseActivity() {
                     btnDel.setOnClickListener { v ->
                         val tag = v.tag.toString().split("\\*".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                         val key = Integer.parseInt(tag[0])
-                        val line = mImagesView!!.get(key)
+                        val line = mImagesView.get(key)
                         val timenow = Calendar.getInstance().time.time
                         if (Math.abs(timenow - java.lang.Long.valueOf(tag[1])) > 5000) {
                             Toast.makeText(this@DetailActivity, "请再次点击删除", Toast.LENGTH_SHORT).show()
                             v.tag = "$key*$timenow"
                         } else {
                             v.tag = "$key*0"
-                            CommonUtil.deleteImage(this@DetailActivity, mImagesFiles!!.get(key))
-                            mLLImages!!.removeView(line)
-                            mImagesView!!.remove(key)
-                            mImagesFiles!!.remove(key)
+                            CommonUtil.deleteImage(this@DetailActivity, mImagesFiles.get(key))
+                            mUI.mLLImages.removeView(line)
+                            mImagesView.remove(key)
+                            mImagesFiles.remove(key)
                             Toast.makeText(this@DetailActivity, "删除成功", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -552,8 +329,8 @@ class DetailActivity : BaseActivity() {
 
     private fun addEvent(): Spinner? {
         val child = LayoutInflater.from(this@DetailActivity).inflate(
-                R.layout.child_event, llShowEvent, false)
-        llShowEvent.addView(child)
+                R.layout.child_event, mUI.llShowEvent, false)
+        mUI.llShowEvent.addView(child)
 
         val event = InlineEvent(child)
         UIUtils.setSpinnerSingleClick(event.spinner!!)
@@ -577,7 +354,7 @@ class DetailActivity : BaseActivity() {
                 val info = event.spinner!!.selectedItem as EventInfo
                 val id = info.id
                 if (id == 0) {
-                    llShowEvent.removeView(child)
+                    mUI.llShowEvent.removeView(child)
                     mEventView.remove(Integer.parseInt(tag[0]))
                 } else {
                     val timeNow = Calendar.getInstance().time.time
@@ -588,7 +365,7 @@ class DetailActivity : BaseActivity() {
                         v.tag = tag[0] + "*" + 0
                         mOrmHelper.cardEventInfoDao.delCardEvents(CardEventInfo(mCardInfo!!.id, id)).toLong()
                         run {
-                            llShowEvent.removeView(child)
+                            mUI.llShowEvent.removeView(child)
                             mEventView.remove(Integer.parseInt(tag[0]))
                             Toast.makeText(this@DetailActivity, "删除成功", Toast.LENGTH_SHORT).show()
                         }
@@ -603,7 +380,7 @@ class DetailActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == SELECT_PIC_LIST || requestCode == SELECT_PIC_PROFILE) {
-              if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 val uri = data!!.data
                 val projections = arrayOf(MediaStore.Images.Media.DATA)
                 val cursor = contentResolver.query(uri!!,
@@ -620,10 +397,10 @@ class DetailActivity : BaseActivity() {
                                 path.toLowerCase().endsWith("jpeg")) {
                             val bitmap = BitmapFactory.decodeStream(cr
                                     .openInputStream(uri))
-                            if(requestCode == SELECT_PIC_LIST){
+                            if (requestCode == SELECT_PIC_LIST) {
                                 createImages(bitmap, false)
                                 showImages()
-                             }else
+                            } else
                                 createImages(bitmap, true)
                         } else {
                             alert()
@@ -633,7 +410,7 @@ class DetailActivity : BaseActivity() {
                     }
 
                 } catch (e: Exception) {
-                }finally {
+                } finally {
                     cursor?.close()
                 }
 
@@ -647,18 +424,18 @@ class DetailActivity : BaseActivity() {
         Toast.makeText(this, "您选择的不是有效的图片", Toast.LENGTH_SHORT).show()
     }
 
-    private fun createImages(bitmap: Bitmap, isHeader:Boolean) {
+    private fun createImages(bitmap: Bitmap, isHeader: Boolean) {
         val mImagesFileDir = File(
                 Environment.getExternalStorageDirectory(),
-                ( if (isHeader)  MConfig.SD_HEADER_PATH else MConfig.SD_PATH) + "/" + mCardInfo?.gameId)
+                (if (isHeader) MConfig.SD_HEADER_PATH else MConfig.SD_PATH) + "/" + mCardInfo?.gameId)
         if (!mImagesFileDir.exists()) {
             mImagesFileDir.mkdirs()
         }
         var imageFile: File
         val bos: FileOutputStream
-        if(isHeader){
+        if (isHeader) {
             imageFile = File(mImagesFileDir.path, mId.toString() + "_h.png")
-        }else{
+        } else {
             var checknum = 1
             while (true) {
                 imageFile = File(mImagesFileDir.path,
@@ -679,11 +456,114 @@ class DetailActivity : BaseActivity() {
             e.printStackTrace()
         } catch (e: IOException) {
             e.printStackTrace()
-        }finally {
-            Toast.makeText(this,"图片创建完成", Toast.LENGTH_SHORT).show()
+        } finally {
+            Toast.makeText(this, "图片创建完成", Toast.LENGTH_SHORT).show()
         }
     }
 
+    fun setCardInfoFromPreviousCard() {
+        if (mId > 1) {
+            val preCard = mOrmHelper.cardInfoDao.queryForId(mId - 1)
+            mUI.etFrontName.setText(preCard.frontName)
+            mUI.etDetail.setText(preCard.remark)
+            mUI.etHP.setText(preCard.maxHP)
+            mUI.etAttack.setText(preCard.maxAttack)
+            mUI.etDefense.setText(preCard.maxDefense)
+            mUI.etExtra1.setText(preCard.extraValue1)
+            mUI.etExtra2.setText(preCard.extraValue2)
+            CommonUtil.setSpinnerItemSelectedByValue2(mUI.spinnerAttr, preCard.attrId.toString())
+            val preEvents = mOrmHelper.cardEventInfoDao.getListByCardId(mId - 1)
+            if (preEvents != null && preEvents.isNotEmpty()) {
+                mUI.llShowEvent.removeAllViews()
+                for (i in preEvents.indices) {
+                    if (isExistInEvent(preEvents[i].eventId)) {
+                        val spinner = addEvent()
+                        CommonUtil.setSpinnerItemSelectedByValue2(spinner!!, preEvents[i].eventId.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    fun saveCard() {
+        var card: CardInfo
+        var result: Long = 0
+        // 名称优先批量更新
+        if (!mUI.chkModify.isChecked
+                && mCardInfo!!.name != ""
+                && mCardInfo!!.name != mUI.etName.text.toString().trim { it <= ' ' }) {
+            val cardOld = mCardInfo
+            card = CardInfo()
+            card.name = mUI.etName.text.toString().trim { it <= ' ' }
+            card.pinyinName = PinyinUtil.convert(card.name!!)
+            result = mOrmHelper.cardInfoDao.updateCardName(card, cardOld)
+        }
+
+        card = CardInfo()
+        card.id = mId
+        card.nid = Integer.parseInt(mUI.etNid.text.toString())
+        card.gameId = mCardInfo!!.gameId
+        val cardTypeInfo = mUI.spinnerAttr.selectedItem as CardTypeInfo
+        card.attrId = cardTypeInfo.id
+        card.level = mUI.spinnerLevel.selectedItem.toString()
+
+        card.cost = if (mUI.etCost.text.toString().trim { it <= ' ' } == "")
+            0
+        else
+            Integer.parseInt(mUI.etCost.text.toString())
+        card.name = mUI.etName.text.toString().trim { it <= ' ' }
+        card.pinyinName = PinyinUtil.convert(card.name!!)
+        card.frontName = mUI.etFrontName.text.toString().trim { it <= ' ' }
+        card.remark = mUI.etDetail.text.toString().trim { it <= ' ' }
+        card.profile = if (mUI.chkProfile.isChecked) "Y" else "N"
+        card.maxHP = mUI.etHP.text.toString().trim { it <= ' ' }
+        card.maxAttack = mUI.etAttack.text.toString().trim { it <= ' ' }
+        card.maxDefense = mUI.etDefense.text.toString().trim { it <= ' ' }
+        card.extraValue1 = mUI.etExtra1.text.toString().trim { it <= ' ' }
+        card.extraValue2 = mUI.etExtra2.text.toString().trim { it <= ' ' }
+        result += mOrmHelper.cardInfoDao.update(card).toLong()
+
+        if (result > 0) {
+            val intent = Intent(this,
+                    MainActivity::class.java)
+            intent.putExtra("game", mCardInfo!!.gameId)
+            intent.putExtra("orderBy", mMainSearchOrderBy)
+            intent.putExtra("spinnerIndexs", intent.getStringExtra("spinnerIndexs"))
+            intent.putExtra("position", mCurrentPosition)
+            intent.putExtra("currentPage", intent.getIntExtra("currentPage", 1))
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            this.startActivity(intent)
+            this.finish()
+        } else
+            Toast.makeText(this, "保存失败", Toast.LENGTH_SHORT)
+                    .show()
+    }
+
+    fun removeCard() {
+        AlertDialog.Builder(this)
+                .setMessage("确定要删除吗")
+                .setPositiveButton("Ok"
+                ) { _, _ ->
+                    val result = mOrmHelper.cardInfoDao.deleteById(mCardInfo!!.id).toLong()
+                    if (result != -1L) {
+
+                        for (i in 0 until mImagesFiles.size()) {
+                            CommonUtil.deleteImage(this,
+                                    mImagesFiles.get(mImagesFiles.keyAt(i)))
+                        }
+
+                        val intent = Intent(
+                                this,
+                                MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        this.startActivity(intent)
+                        this.finish()
+                    } else
+                        Toast.makeText(this,
+                                "删除失败", Toast.LENGTH_SHORT)
+                                .show()
+                }.setNegativeButton("Cancel", null).show()
+    }
 
     internal class InlineEvent(view: View) {
 
@@ -705,5 +585,164 @@ class DetailActivity : BaseActivity() {
 
     }
 
+    class UI(view: BaseActivity) {
+        init {
+            ButterKnife.bind(this, view)
+        }
+
+        @BindView(R.id.etDetailExtra1)
+        lateinit var etExtra1: EditText
+
+        @BindView(R.id.etDetailExtra2)
+        lateinit var etExtra2: EditText
+
+        @BindView(R.id.tv_header_hp)
+        lateinit var tvHeaderNumber1: TextView
+
+        @BindView(R.id.tv_header_A)
+        lateinit var tvHeaderNumber2: TextView
+
+        @BindView(R.id.tv_header_D)
+        lateinit var tvHeaderNumber3: TextView
+
+        @BindView(R.id.tv_header_E1)
+        lateinit var tvHeaderNumber4: TextView
+
+        @BindView(R.id.tv_header_E2)
+        lateinit var tvHeaderNumber5: TextView
+
+        @BindView(R.id.chkProfile)
+        lateinit var chkProfile: CheckBox
+
+        @BindView(R.id.llShowEvent)
+        lateinit var llShowEvent: LinearLayout
+
+        @BindView(R.id.scrollView)
+        lateinit var mScrollView: ScrollView
+
+        @BindView(R.id.lvChar)
+        lateinit var mListChar: ListView
+
+        @BindView(R.id.etDetailHP)
+        lateinit var etHP: EditText
+
+        @BindView(R.id.etDetailAttack)
+        lateinit var etAttack: EditText
+
+        @BindView(R.id.etDetailDefense)
+        lateinit var etDefense: EditText
+
+        @BindView(R.id.etDetailName)
+        lateinit var etName: EditText
+
+        @BindView(R.id.etDetailFrontName)
+        lateinit var etFrontName: EditText
+
+        @BindView(R.id.etDetail)
+        lateinit var etDetail: EditText
+
+        @BindView(R.id.etDetailNid)
+        lateinit var etNid: EditText
+
+        @BindView(R.id.tvId)
+        lateinit var tvId: TextView
+
+        @BindView(R.id.spinnerAttr)
+        lateinit var spinnerAttr: Spinner
+
+        @BindView(R.id.spinnerLevel)
+        lateinit var spinnerLevel: Spinner
+
+        @BindView(R.id.etDetailCost)
+        lateinit var etCost: EditText
+
+        @BindView(R.id.chkModify)
+        lateinit var chkModify: CheckBox
+
+        @BindView(R.id.llImages)
+        lateinit var mLLImages: LinearLayout
+
+
+    }
+
+    class UIEvent(activity: DetailActivity) {
+
+        init {
+            ButterKnife.bind(this, activity)
+        }
+
+        private val weak: WeakReference<DetailActivity> = WeakReference(activity)
+
+        @OnClick(R.id.btnRead)
+        fun onBtnReadHandler() {
+            weak.get()!!.setCardInfoFromPreviousCard()
+        }
+
+        @OnClick(R.id.btnSave, R.id.btnSave2)
+        fun onBtnSaveHandler() {
+            weak.get()!!.saveCard()
+        }
+
+        @OnClick(R.id.btnDel)
+        fun btnDelClickListener() {
+            weak.get()!!.removeCard()
+        }
+
+        @OnClick(R.id.btnDel2)
+        fun btnDel2ClickListener() {
+            val activity = weak.get()!!
+            for (i in 0 until activity.mImagesView.size()) {
+                val btnDel = activity.mImagesView.valueAt(i)?.findViewById<View>(R.id.btnDel) as ImageButton
+                btnDel.visibility = View.VISIBLE
+                val btnAjust = activity.mImagesView.valueAt(i)?.findViewById<View>(R.id.btnAdjust) as ImageButton
+                btnAjust.visibility = View.VISIBLE
+            }
+        }
+
+        @OnClick(R.id.btnAddChar)
+        internal fun onAddCharClickHandler() {
+            val activity = weak.get()!!
+            activity.addChar()
+            activity.mUI.mScrollView.post { activity.mUI.mScrollView.smoothScrollTo(0, 5000) }
+        }
+
+
+        @OnClick(R.id.btnAddEvent)
+        internal fun onAddEventClickHandler() {
+            val activity = weak.get()!!
+            activity.addEvent()
+            activity.mUI.mScrollView.post { activity.mUI.mScrollView.smoothScrollTo(0, 5000) }
+        }
+
+        @OnClick(R.id.btnSaveEvent)
+        internal fun onSaveEvnetClickHandler() {
+            val activity = weak.get()!!
+            val events = ArrayList<CardEventInfo>()
+            for (i in 0 until activity.mEventView.size()) {
+                val spinner =  activity.mUI.llShowEvent.getChildAt(i).findViewById<View>(R.id.spinnerEvent) as Spinner
+                val info = spinner.selectedItem as EventInfo
+                events.add(CardEventInfo(activity.mCardInfo!!.id, info.id))
+            }
+            activity.mOrmHelper.cardEventInfoDao.addCardEvents(events)
+            Toast.makeText(activity, "保存成功", Toast.LENGTH_SHORT).show()
+        }
+
+        @OnClick(R.id.btnSetProfile)
+        internal fun onSetProfileClickHandler() {
+            val activity = weak.get()!!
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+            activity.startActivityForResult(intent, SELECT_PIC_PROFILE)
+        }
+
+        @OnClick(R.id.btnAddImage)
+        internal fun onAddImageClickHandler() {
+            val activity = weak.get()!!
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+            activity.startActivityForResult(intent, SELECT_PIC_LIST)
+        }
+
+    }
 
 }

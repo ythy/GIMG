@@ -16,6 +16,8 @@ class CardEventInfo {
     @DatabaseField(uniqueCombo = true)
     var eventId: Int = 0
 
+    var rowid:Int = 0
+
     constructor()
 
     constructor(cardNid: Int, eventId: Int) {
@@ -27,5 +29,6 @@ class CardEventInfo {
         const val TABLE_NAME = "event_chain"
         const val COLUMN_CARD_NID = "cardNid"
         const val COLUMN_EVENT_ID = "eventId"
+        const val COLUMN_ROW_ID = "rowid"
     }
 }
