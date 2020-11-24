@@ -10,6 +10,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -65,22 +66,6 @@
                         android:text="@string/profile" />
 
 	            </LinearLayout>
-	            
-	            <ImageButton
-	                    android:id="@+id/btnLast"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="wrap_content"
-	                    android:background="@drawable/up"
-	                    android:layout_marginRight="10dp"
-	                    android:layout_marginTop="10dp"
-	                    android:layout_toLeftOf="@+id/btnNext" /> 
-	            <ImageButton
-	                    android:id="@id/btnNext"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="wrap_content"
-	                    android:layout_marginTop="10dp"
-	                    android:background="@drawable/down"
-	                    android:layout_alignParentRight="true"/>               
 			</RelativeLayout>
 
             <LinearLayout
@@ -526,5 +511,28 @@
 
         </LinearLayout>
     </ScrollView>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        >
+        <ImageButton
+            android:id="@+id/btnLast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/up"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp" />
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/down" />
+    </LinearLayout>
 
 </RelativeLayout>
