@@ -1,6 +1,5 @@
 package com.mx.gillustrated.database.imp
 
-import android.util.Log
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.RuntimeExceptionDao

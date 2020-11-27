@@ -18,12 +18,9 @@ import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
-import android.content.Context;
-import android.content.res.AssetManager;
+class JsonFileReader {
 
-public class JsonFileReader {
-
-	public static String getJson(File fileName) {
+	static String getJson(File fileName) {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		try {
@@ -38,7 +35,7 @@ public class JsonFileReader {
 		return stringBuilder.toString();
 	}
 	
-	public static List<CardInfo> setListData(JSONArray array) {
+	static List<CardInfo> setListData(JSONArray array) {
 		List<CardInfo> result = new ArrayList<CardInfo>();
 		try {
 			int len = array.length();
@@ -71,7 +68,7 @@ public class JsonFileReader {
 		return result;
 	}
 	
-	public static List<GameInfo> setGameListData(JSONArray array) {
+	static List<GameInfo> setGameListData(JSONArray array) {
 		List<GameInfo> result = new ArrayList<GameInfo>();
 		try {
 			int len = array.length();
@@ -90,7 +87,7 @@ public class JsonFileReader {
 		return result;
 	}
 	
-	public static List<CardTypeInfo> setCardTypeListData(JSONArray array) {
+	static List<CardTypeInfo> setCardTypeListData(JSONArray array) {
 		List<CardTypeInfo> result = new ArrayList<CardTypeInfo>();
 		try {
 			int len = array.length();
@@ -109,7 +106,7 @@ public class JsonFileReader {
 		return result;
 	}
 
-	public static List<EventInfo> setEventListData(JSONArray array) {
+	static List<EventInfo> setEventListData(JSONArray array) {
 		List<EventInfo> result = new ArrayList<EventInfo>();
 		try {
 			int len = array.length();
@@ -130,7 +127,7 @@ public class JsonFileReader {
 		return result;
 	}
 
-	public static List<CardEventInfo> setCardEventListData(JSONArray array) {
+	static List<CardEventInfo> setCardEventListData(JSONArray array) {
 		List<CardEventInfo> result = new ArrayList<CardEventInfo>();
 		try {
 			int len = array.length();

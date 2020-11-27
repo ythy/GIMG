@@ -46,6 +46,7 @@ import android.widget.SpinnerAdapter;
 
 public class CommonUtil {
 
+	@SuppressWarnings("unused")
 	public static Bitmap compressImageFromFile(String srcPath) {
 		BitmapFactory.Options newOpts = new BitmapFactory.Options();
 		newOpts.inJustDecodeBounds = true;// 只读边,不读内容
@@ -79,7 +80,7 @@ public class CommonUtil {
 	 * @param path
 	 *            图片的路径
 	 */
-	public static Bitmap reviewPicRotate(Bitmap bitmap, String path) {
+	private static Bitmap reviewPicRotate(Bitmap bitmap, String path) {
 		int degree = getPicRotate(path);
 		if (degree != 0) {
 			Matrix m = new Matrix();
@@ -108,7 +109,7 @@ public class CommonUtil {
 	 *            图片绝对路径
 	 * @return 图片旋转的角度
 	 */
-	public static int getPicRotate(String path) {
+	private static int getPicRotate(String path) {
 		int degree = 0;
 		try {
 			ExifInterface exifInterface = new ExifInterface(path);

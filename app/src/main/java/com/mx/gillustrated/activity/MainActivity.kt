@@ -34,7 +34,6 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import butterknife.OnTextChanged
 
-
 class MainActivity : BaseActivity() {
 
     var mGameType = 0 //游戏类别
