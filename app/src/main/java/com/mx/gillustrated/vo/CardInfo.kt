@@ -150,6 +150,8 @@ class CardInfo : SpinnerInfo, Parcelable {
         const val COLUMN_SHOW_HEAD = "has_profile"
 
         const val COLUMN_TOTAL = "total_number"
+        const val COLUMN_TOTAL_COUNT = "total_count"
+        const val COLUMN_ATTR_NAME = "attr_name"
 
         @Suppress("unused")
         @JvmField

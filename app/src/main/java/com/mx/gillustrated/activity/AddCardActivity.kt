@@ -88,6 +88,12 @@ class AddCardActivity : BaseActivity() {
         override fun onItemSelected(arg0: AdapterView<*>, arg1: View, index: Int,
                                     arg3: Long) {
 
+            try {
+                showPicture()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
             val array = resources.getStringArray(R.array.addType)
             if (array[index] == "更新附加图" || array[index] == "更新数值图" || array[index] == "新增单张图" || array[index] == "新增无图") {
                 ivNumber!!.setImageDrawable(null)
@@ -314,27 +320,17 @@ class AddCardActivity : BaseActivity() {
         etHP = findViewById<View>(R.id.etDetailHP) as EditText
         etAttack = findViewById<View>(R.id.etDetailAttack) as EditText
         etDefense = findViewById<View>(R.id.etDetailDefense) as EditText
-        spinnerType = findViewById<View>(R.id.spinnerType) as Spinner
-        spinnerType!!.setSelection(0)
-        spinnerType!!.onItemSelectedListener = onTypeSelectListener
-
         ivNumber = findViewById<View>(R.id.imgWithNumber) as ImageView
         ivAll = findViewById<View>(R.id.imgAll) as ImageView
 
         val cardTypes = mOrmHelper.cardTypeInfoDao.queryForEq("game_type", mGameType)
         val adapterName = SpinnerCommonAdapter(this, cardTypes)
         spinnerAttr!!.adapter = adapterName
-
         setImagesMatrixConfig()
 
-        try {
-            showPicture()
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
+        spinnerType = findViewById<View>(R.id.spinnerType) as Spinner
+        spinnerType!!.onItemSelectedListener = onTypeSelectListener
+        spinnerType!!.setSelection(4)
     }
 
     private fun setImagesMatrixConfig() {

@@ -31,10 +31,10 @@ class MainActivityListView(private val mContext: MainActivity, private val mOrmH
     private var initPage: Int = 0 //初始页数，默认是1  如果从详细页面返回，可能为1+
     private var totalItemCount: Int = 0
     private val listHandler:ListHandler = ListHandler(this)
-    var searchCondition: CardInfo? = null
+    var searchCondition: CardInfo = CardInfo()
         private set
-    private var mOrderBy: String? = null
-    private var mIsAsc: String? = null
+    private lateinit var mOrderBy: String
+    private lateinit var mIsAsc: String
     val orderBy: String
         get() = "$mOrderBy*$mIsAsc"
 
@@ -133,8 +133,7 @@ class MainActivityListView(private val mContext: MainActivity, private val mOrmH
     }
 
     fun searchData(pinyin: String) {
-        if (searchCondition != null)
-            searchCondition!!.pinyinName = pinyin
+        searchCondition.pinyinName = pinyin
         currentPage = 1
         search()
     }

@@ -622,10 +622,22 @@ public class CommonUtil {
 	public static boolean isNumeric2(String str){
 		Pattern pattern = Pattern.compile("-?[0-9]+.?[0-9]+");
 		Matcher isNum = pattern.matcher(str);
-		if( !isNum.matches() ){
-			return false;
-		}
-		return true;
+		return isNum.matches();
 	}
+
+	public static boolean isNumericOrBlank(String str){
+		Pattern pattern = Pattern.compile("-?[0-9]+.?[0-9]+");
+		Matcher isNum = pattern.matcher(str);
+		return isNum.matches() || "".equals(str);
+	}
+
+	public static Integer convertToNumeric(String str){
+		if("".equals(str))
+			return 0;
+		else
+			return Integer.valueOf(str);
+
+	}
+
 
 }
