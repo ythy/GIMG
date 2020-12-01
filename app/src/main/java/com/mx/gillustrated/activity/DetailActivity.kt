@@ -225,14 +225,13 @@ class DetailActivity : BaseActivity() {
         val isDesc = mMainSearchOrderBy!!.split("\\*".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1] == CardInfo.SORT_ASC
         val result = mOrmHelper.cardInfoDao.queryCards(CardInfo(mMainSearchInfo!!), order, isDesc, newPositon.toLong(), 1L)!![0]
 
-        if (result != null) {
-            mCurrentPosition = newPositon
-            mCardInfo = result
-            mId = mCardInfo.id
-            initChar()
-            showEvents()
-            showCardInfo()
-        }
+        mCurrentPosition = newPositon
+        mCardInfo = mOrmHelper.cardInfoDao.queryForId(result.id)
+        mId = mCardInfo.id
+        initChar()
+        showEvents()
+        showCardInfo()
+
     }
 
     private fun showCardInfo() {

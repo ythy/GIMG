@@ -47,11 +47,6 @@ class DataListAdapter constructor(private val mContext: MainActivity, private va
             component = Component(convertView)
             convertView.tag = component
 
-            if (list[arg0].nid > 0)
-                component.tvNid.visibility = View.VISIBLE
-            else
-                component.tvNid.visibility = View.GONE
-
             val resourceController = ResourceController(mContext, list[arg0].gameId)
             if ("E1" == resourceController.number4) {
                 component.ivExtraGap1.visibility = View.GONE
@@ -104,11 +99,11 @@ class DataListAdapter constructor(private val mContext: MainActivity, private va
                     CommonUtil.isNumeric2(list[arg0].maxDefense) &&
                     CommonUtil.isNumeric2(list[arg0].extraValue1) &&
                     CommonUtil.isNumeric2(list[arg0].extraValue2)) {
-                val total = Integer.parseInt(list[arg0].maxHP) +
-                        Integer.parseInt(list[arg0].maxAttack) +
-                        Integer.parseInt(list[arg0].maxDefense) +
-                        Integer.parseInt(list[arg0].extraValue1) +
-                        Integer.parseInt(list[arg0].extraValue2)
+                val total = Integer.parseInt(list[arg0].maxHP!!) +
+                        Integer.parseInt(list[arg0].maxAttack!!) +
+                        Integer.parseInt(list[arg0].maxDefense!!) +
+                        Integer.parseInt(list[arg0].extraValue1!!) +
+                        Integer.parseInt(list[arg0].extraValue2!!)
                 component.tvTotal.text = total.toString()
             }
 
@@ -131,7 +126,12 @@ class DataListAdapter constructor(private val mContext: MainActivity, private va
             component.tvExtra2.text = list[arg0].extraValue2.toString()
         else
             component.tvExtra2.text = ""
+
         component.tvNid.text = list[arg0].nid.toString()
+        if (list[arg0].nid > 0)
+            component.tvNid.visibility = View.VISIBLE
+        else
+            component.tvNid.visibility = View.GONE
 
         return convertView!!
     }

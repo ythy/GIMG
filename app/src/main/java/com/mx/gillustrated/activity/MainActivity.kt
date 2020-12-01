@@ -168,7 +168,7 @@ class MainActivity : BaseActivity() {
                 val intent = Intent(this@MainActivity,
                         DetailActivity::class.java)
                 intent.putExtra("card", info.id)
-                intent.putExtra("cardSearchCondition", mMainActivityListView.searchCondition?.cardSearchParam)
+                intent.putExtra("cardSearchCondition", mMainActivityListView.searchCondition.cardSearchParam)
                 intent.putExtra("orderBy", mMainActivityListView.orderBy)
                 intent.putExtra("positon", position)
                 intent.putExtra("totalCount", totalCount)
