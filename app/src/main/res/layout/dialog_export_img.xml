@@ -14,11 +14,10 @@
 
     <ImageButton
         android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/CSImageButtonStyle"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/save" />
+        android:background="@drawable/material_done" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -125,7 +125,7 @@ class CardInfoDaoImp(orm: DataBaseHelper) : RuntimeExceptionDao<CardInfo, Int>(g
         return if (result == null) "" else result.name
     }
 
-    fun queryCardDropList(type: String, gametype: Int): List<CardInfo> {
+    fun queryCardDropList(type: String, gametype: Int): MutableList<CardInfo> {
         var result: List<Array<String>> = ArrayList()
         val qb = this.queryBuilder()
         qb.selectRaw("DISTINCT ( $type) ")

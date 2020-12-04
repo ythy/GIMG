@@ -15,14 +15,12 @@
 	    android:layout_weight="3">
 		 <ImageButton
           android:id="@+id/btnCardTypeModify"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/save" />
+          style="@style/CSImageButtonStyle"
+          android:background="@drawable/material_done" />
 		 <ImageButton
 			 android:id="@+id/btnCardTypeDel"
 			 android:layout_marginLeft="2dp"
-			 android:layout_width="wrap_content"
-			 android:layout_height="wrap_content"
-			 android:background="@drawable/delete" />
+			 style="@style/CSImageButtonStyle"
+			 android:background="@drawable/material_delete" />
       </LinearLayout>
 </LinearLayout>

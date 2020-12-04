@@ -28,9 +28,8 @@
 
     <ImageButton
         android:id="@+id/btnCutSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/save"
+        style="@style/CSImageButtonStyle"
+        android:background="@drawable/material_done"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
@@ -38,14 +37,13 @@
 
     <ImageButton
         android:id="@+id/btnCutCancle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/CSImageButtonStyle"
         android:layout_alignBottom="@+id/imagePreview"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="0dp"
         android:layout_toLeftOf="@id/btnCutSave"
-        android:background="@drawable/delete"
+        android:background="@drawable/material_delete"
         android:visibility="gone" />
 
 

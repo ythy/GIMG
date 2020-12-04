@@ -26,9 +26,8 @@
             android:id="@+id/btnAdjust"
             android:layout_toRightOf="@id/btnDel"
             android:layout_marginLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/set"
+            style="@style/CSImageButtonStyle"
+            android:background="@drawable/material_info"
             android:visibility="gone"/>
 
         <EditText

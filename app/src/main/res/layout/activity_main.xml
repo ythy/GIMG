@@ -145,17 +145,15 @@
             android:orientation="horizontal" >
             <ImageButton
                 android:id="@+id/btnRefresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/refresh">
+                style="@style/CSImageButtonStyle"
+                android:background="@drawable/material_refresh">
             </ImageButton>
-
             <ImageButton
                 android:id="@+id/btnAdd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/add"
-                android:layout_marginLeft="10dp">
+                style="@style/CSImageButtonStyle"
+                android:background="@drawable/material_add"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp">
             </ImageButton>
         </LinearLayout>
     </LinearLayout>
@@ -262,17 +260,17 @@
 
         <ImageButton
             android:id="@+id/btnShowEvents"
+            style="@style/CSImageButtonStyle"
+            android:background="@drawable/material_event"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/events"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_marginStart="20dp" />
 
         <ImageButton
             android:id="@+id/btnShowMenu"
+            style="@style/CSImageButtonStyle"
+            android:background="@drawable/material_menu"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_marginStart="20dp" />
     </LinearLayout>
 
     <!-- android:listSelector="@android:color/transparent" -->

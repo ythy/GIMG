@@ -40,16 +40,14 @@
 	                
 	                <ImageButton
 	                    android:id="@+id/btnDel"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="wrap_content"
-	                    android:background="@drawable/delete" />
+	                    style="@style/CSImageButtonStyle"
+	                    android:background="@drawable/material_delete" />
 	
 	                <ImageButton
 	                    android:id="@+id/btnSave"
-	                    android:layout_width="wrap_content"
-	                    android:layout_height="wrap_content"
+                        style="@style/CSImageButtonStyle"
 	                    android:layout_marginLeft="10dp"
-	                    android:background="@drawable/save" />
+	                    android:background="@drawable/material_done" />
 	
 	                <CheckBox
 	                    android:id="@+id/chkModify"
@@ -144,38 +142,33 @@
 
                 <ImageButton
                     android:id="@+id/btnAddImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="10dp"
-                    android:background="@drawable/add" />
+                    android:background="@drawable/material_image" />
 
                 <ImageButton
                     android:id="@+id/btnSetProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="20dp"
-                    android:background="@drawable/set" />
+                    android:background="@drawable/material_profile" />
 
                 <ImageButton
                     android:id="@+id/btnSave2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="20dp"
-                    android:background="@drawable/save" />
+                    android:background="@drawable/material_done" />
                 
                 <ImageButton
                     android:id="@+id/btnDel2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="20dp"
-                    android:background="@drawable/delete" />
+                    android:background="@drawable/material_delete" />
 
                 <ImageButton
                     android:id="@+id/btnRead"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="20dp"
-                    android:background="@drawable/read"/>
+                    android:background="@drawable/material_copy"/>
 
             </LinearLayout>
 
@@ -461,10 +454,9 @@
                     android:layout_marginRight="5dp"/>
                 <ImageButton
                     android:id="@+id/btnAddChar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="10dp"
-                    android:background="@drawable/add" />
+                    android:background="@drawable/material_add" />
             </LinearLayout>
 
             <ListView
@@ -487,16 +479,14 @@
                     android:layout_marginRight="5dp"/>
                 <ImageButton
                     android:id="@+id/btnSaveEvent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="10dp"
-                    android:background="@drawable/save" />
+                    android:background="@drawable/material_done" />
                 <ImageButton
                     android:id="@+id/btnAddEvent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="10dp"
-                    android:background="@drawable/add" />
+                    android:background="@drawable/material_add" />
             </LinearLayout>
 
             <LinearLayout
@@ -522,17 +512,15 @@
         >
         <ImageButton
             android:id="@+id/btnLast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/up"
+            style="@style/CSImageButtonStyle"
+            android:background="@drawable/material_up"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp" />
         <ImageButton
             android:id="@+id/btnNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/CSImageButtonStyle"
             android:layout_marginTop="10dp"
-            android:background="@drawable/down" />
+            android:background="@drawable/material_down" />
     </LinearLayout>
 
 </RelativeLayout>

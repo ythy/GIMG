@@ -29,15 +29,13 @@
 
                 <ImageButton
                     android:id="@+id/btnSave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/save" />
+                    style="@style/CSImageButtonStyle"
+                    android:background="@drawable/material_done" />
 
                 <ImageButton android:id="@+id/btnDel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                   style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="30dp"
-                    android:background="@drawable/delete"/>
+                    android:background="@drawable/material_delete"/>
             </LinearLayout>
 
             <LinearLayout
@@ -111,15 +109,13 @@
 
                 <ImageButton
                     android:id="@+id/btnAdd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/add" />
+                    style="@style/CSImageButtonStyle"
+                    android:background="@drawable/material_add" />
 
                 <ImageButton android:id="@+id/btnDel2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="20dp"
-                    android:background="@drawable/set"/>
+                    android:background="@drawable/material_info"/>
             </LinearLayout>
 
             <LinearLayout

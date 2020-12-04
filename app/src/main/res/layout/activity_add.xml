@@ -37,11 +37,10 @@
                
                 <ImageButton
                     android:id="@+id/btnSave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/save" />
+                    android:background="@drawable/material_done" />
                  
             </LinearLayout>
 
@@ -92,11 +91,10 @@
 
                  <ImageButton
                      android:id="@+id/btnSaveMatrix"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
+                     style="@style/CSImageButtonStyle"
                      android:layout_marginLeft="5dp"
                      android:layout_marginRight="5dp"
-                     android:background="@drawable/save" />
+                     android:background="@drawable/material_done" />
            </LinearLayout>
 
             <LinearLayout
@@ -314,9 +312,8 @@
                     android:scaleType="centerInside" />
                 <ImageButton
                     android:id="@+id/btnDelNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/delete"
+                    style="@style/CSImageButtonStyle"
+                    android:background="@drawable/material_delete"
                     android:visibility="gone"/>
             </RelativeLayout>
 
@@ -330,9 +327,8 @@
                     android:scaleType="centerInside" />
                 <ImageButton
                     android:id="@+id/btnDelAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/delete"
+                    style="@style/CSImageButtonStyle"
+                    android:background="@drawable/material_delete"
                     android:visibility="gone"/>
             </RelativeLayout>
         </LinearLayout>
