@@ -168,7 +168,7 @@
                     android:id="@+id/btnRead"
                     style="@style/CSImageButtonStyle"
                     android:layout_marginLeft="20dp"
-                    android:background="@drawable/material_copy"/>
+                    android:background="@drawable/material_download"/>
 
             </LinearLayout>
 
