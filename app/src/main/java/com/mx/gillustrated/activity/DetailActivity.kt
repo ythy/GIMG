@@ -101,14 +101,12 @@ class DetailActivity : BaseActivity() {
         mBtnNext.setOnClickListener { searchCardSide(1) }
         val mBtnLast = findViewById<View>(R.id.btnLast) as ImageButton
         mBtnLast.setOnClickListener { searchCardSide(-1) }
-    }
 
-    override fun onResume() {
-        super.onResume()
         initChar()
         showEvents()
         showCardInfo()
     }
+
 
     private fun initCharDataAdapter() {
         mCharListData = ArrayList()
