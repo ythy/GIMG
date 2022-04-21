@@ -29,11 +29,11 @@
 
                 <ImageButton
                     android:id="@+id/btnSave"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:background="@drawable/material_done" />
 
                 <ImageButton android:id="@+id/btnDel"
-                   style="@style/CSImageButtonStyle"
+                   style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="30dp"
                     android:background="@drawable/material_delete"/>
             </LinearLayout>
@@ -109,11 +109,11 @@
 
                 <ImageButton
                     android:id="@+id/btnAdd"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:background="@drawable/material_add" />
 
                 <ImageButton android:id="@+id/btnDel2"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/material_info"/>
             </LinearLayout>

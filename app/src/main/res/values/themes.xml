@@ -1,0 +1,15 @@
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:spinnerStyle">@style/BaseSpinnerStyle</item>
+        <item name="android:textViewStyle">@style/BaseTextViewStyle</item>
+        <item name="android:checkboxStyle">@style/BaseCheckBoxStyle</item>
+        <item name="editTextStyle">@style/BaseEditTextStyle</item>
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme.Default" >
+        <item name="colorPrimary">@android:color/holo_green_dark</item>
+        <item name="colorGridPrimary">@android:color/holo_green_light</item>
+    </style>
+
+</resources>

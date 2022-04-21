@@ -49,4 +49,7 @@
   <color name="viewfinder_laser_trs">#7f86f60e</color>
   <color name="viewfinder_mask">#60000000</color>
 
+ <color name="colorDiff">#D75151</color>
+ <color name="colorBoxBorder">#4fa5d5</color>
+ <color name="colorTitle">#067765</color>
 </resources>

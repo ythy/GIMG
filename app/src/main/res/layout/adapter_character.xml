@@ -14,7 +14,7 @@
         <EditText  android:id="@+id/etCharName"
             android:textSize="12sp"
             android:layout_width="match_parent"  android:layout_height="match_parent"
-            android:background="@drawable/edit_default_background"
+            style="@style/EditTextGrid"
             android:singleLine="true" />
     </LinearLayout>
 
@@ -73,12 +73,12 @@
             android:layout_weight="2" />
         <ImageButton
             android:id="@+id/btnCharModify"
-            style="@style/CSImageButtonStyle"
+            style="@style/CommonImageButtonStyle"
             android:layout_marginLeft="1dp"
             android:background="@drawable/material_done" />
         <ImageButton
             android:id="@+id/btnCharDel"
-            style="@style/CSImageButtonStyle"
+            style="@style/CommonImageButtonStyle"
             android:layout_marginLeft="1dp"
             android:background="@drawable/material_delete" />
     </LinearLayout>

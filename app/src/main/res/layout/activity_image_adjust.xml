@@ -28,7 +28,7 @@
 
     <ImageButton
         android:id="@+id/btnCutSave"
-        style="@style/CSImageButtonStyle"
+        style="@style/CommonImageButtonStyle"
         android:background="@drawable/material_done"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
@@ -37,7 +37,7 @@
 
     <ImageButton
         android:id="@+id/btnCutCancle"
-        style="@style/CSImageButtonStyle"
+        style="@style/CommonImageButtonStyle"
         android:layout_alignBottom="@+id/imagePreview"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"

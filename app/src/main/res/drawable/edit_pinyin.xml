@@ -3,7 +3,7 @@
 
     <item>
         <shape>
-            <solid android:color="#c2c2c2" />
+            <solid android:color="?attr/colorPrimary" />
         </shape>
     </item>
 
@@ -18,7 +18,7 @@
     </item>
 
     <!-- draw another block to cut-off the left and right bars -->
-    <item android:bottom="5.0dp">
+    <item android:bottom="3.0dp">
         <shape>
             <solid android:color="#fff" />
         </shape>

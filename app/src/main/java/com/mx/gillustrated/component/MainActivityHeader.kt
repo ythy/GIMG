@@ -1,5 +1,6 @@
 package com.mx.gillustrated.component
 
+import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -21,6 +22,7 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
     private lateinit var mTextViewMap: Map<String, TextView>
     private lateinit var mListHeaderView: ListHeaderView
     private lateinit var mResourceController: ResourceController
+    private var mHeaderPressColor:Int = Color.TRANSPARENT
 
     init {
         initialize()
@@ -58,6 +60,11 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
     }
 
     private fun initialize() {
+        val attribute = intArrayOf(R.attr.colorGridPrimary)
+        val array = mContext.theme.obtainStyledAttributes(attribute)
+        mHeaderPressColor = array.getColor(0, Color.TRANSPARENT)
+        array.recycle()
+
         mListHeaderView = ListHeaderView()
         setHeaderClickHandler(mListHeaderView.tvHP, CardInfo.COLUMN_MAXHP)
         setHeaderClickHandler(mListHeaderView.tvAttack, CardInfo.COLUMN_MAXATTACK)
@@ -68,8 +75,6 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
         setHeaderClickHandler(mListHeaderView.tvAttr, CardInfo.COLUMN_ATTR)
         setHeaderClickHandler(mListHeaderView.tvCost, CardInfo.COLUMN_COST)
         setHeaderClickHandler(mListHeaderView.tvImg, CardInfo.COLUMN_NID)
-
-
 
         mTextViewMap = object : HashMap<String, TextView>() {
             init {
@@ -95,10 +100,10 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
 
     fun setHeaderColor(orderby: String) {
         for ((_, value) in mTextViewMap) {
-            value.setBackgroundColor(mListHeaderView.colorWhite2)
+            value.setBackgroundColor(mHeaderPressColor)
         }
         if (mTextViewMap[orderby] != null)
-            mTextViewMap[orderby]?.setBackgroundColor(mListHeaderView.colorWhite)
+            mTextViewMap[orderby]?.setBackgroundColor(mContext.resources.getColor(R.color.color_white))
     }
 
     internal inner class ListHeaderView {
@@ -138,7 +143,7 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
 
         @BindView(R.id.ivCostGap)
         lateinit var ivCostGap: ImageView
-
+/*
         @JvmField
         @BindColor(R.color.color_white2)
         var colorWhite2: Int = 0
@@ -146,6 +151,7 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
         @JvmField
         @BindColor(R.color.color_white)
         var colorWhite: Int = 0
+*/
 
         init {
             val view = mContext.findViewById<View>(R.id.ll_header)

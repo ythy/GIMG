@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.mx.gillustrated"
-        minSdkVersion 14
+        minSdkVersion 17
         targetSdkVersion 26
     }
 
@@ -18,15 +18,24 @@ android {
         }
     }
 
-    externalNativeBuild {
-        // Encapsulates your CMake build configurations.
-        cmake {
-            version '3.10.2'
-            // Specifies a path to your CMake build script that's
-            // relative to the build.gradle file.
-            path "src/main/cpp/CMakeLists.txt"
+    signingConfigs {
+        debug {
+            storeFile rootProject.file('sign/debug.keystore')
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
         }
     }
+    //测试CMAKE用，平时注掉
+//    externalNativeBuild {
+//        // Encapsulates your CMake build configurations.
+//        cmake {
+//            version '3.10.2'
+//            // Specifies a path to your CMake build script that's
+//            // relative to the build.gradle file.
+//            path "src/main/cpp/CMakeLists.txt"
+//        }
+//    }
 
     lintOptions {
         disable 'ClickableViewAccessibility'
@@ -58,5 +67,5 @@ dependencies {
     implementation 'com.j256.ormlite:ormlite-core:4.48'
     implementation 'com.belerweb:pinyin4j:2.5.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "com.google.android.material:material:$material_version"
+    implementation "com.google.android.material:material:$material_version" //暂不使用
 }

@@ -222,7 +222,7 @@
                     />
                 <ImageButton
                     android:id="@+id/btnGameAdd"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="30dp"
                     android:background="@drawable/material_add" >
                 </ImageButton>

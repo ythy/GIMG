@@ -32,12 +32,12 @@
             android:text="@string/arrow" />
     </LinearLayout>
 	<ImageButton android:id="@+id/btnDel"
-	    style="@style/CSImageButtonStyle"
+	    style="@style/CommonImageButtonStyle"
         android:background="@drawable/material_delete"
          />
     <ImageButton android:id="@+id/btnDetail"
         android:layout_marginLeft="5dp"
-        style="@style/CSImageButtonStyle"
+        style="@style/CommonImageButtonStyle"
         android:background="@drawable/material_info"
         />
 </LinearLayout>

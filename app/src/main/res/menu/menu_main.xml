@@ -23,4 +23,9 @@
 		android:id="@+id/menu_delete"
 		android:orderInCategory="500"
 		android:title="@string/menu_event_delete"/>
+
+	<item
+		android:id="@+id/action_h5"
+		android:orderInCategory="800"
+		android:title="@string/menu_web_view"/>
 </menu>

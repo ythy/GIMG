@@ -14,7 +14,7 @@
 
     <ImageButton
         android:id="@+id/btnSave"
-        style="@style/CSImageButtonStyle"
+        style="@style/CommonImageButtonStyle"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/material_done" />

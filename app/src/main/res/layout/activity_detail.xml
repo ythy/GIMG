@@ -40,12 +40,12 @@
 	                
 	                <ImageButton
 	                    android:id="@+id/btnDel"
-	                    style="@style/CSImageButtonStyle"
+	                    style="@style/CommonImageButtonStyle"
 	                    android:background="@drawable/material_delete" />
 	
 	                <ImageButton
 	                    android:id="@+id/btnSave"
-                        style="@style/CSImageButtonStyle"
+                        style="@style/CommonImageButtonStyle"
 	                    android:layout_marginLeft="10dp"
 	                    android:background="@drawable/material_done" />
 	
@@ -54,6 +54,7 @@
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:layout_marginLeft="10dp"
+                        android:checked="true"
 	                    android:text="@string/modify" />
 
                     <CheckBox
@@ -142,31 +143,31 @@
 
                 <ImageButton
                     android:id="@+id/btnAddImage"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/material_image" />
 
                 <ImageButton
                     android:id="@+id/btnSetProfile"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/material_profile" />
 
                 <ImageButton
                     android:id="@+id/btnSave2"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/material_done" />
                 
                 <ImageButton
                     android:id="@+id/btnDel2"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/material_delete" />
 
                 <ImageButton
                     android:id="@+id/btnRead"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/material_download"/>
 
@@ -454,7 +455,7 @@
                     android:layout_marginRight="5dp"/>
                 <ImageButton
                     android:id="@+id/btnAddChar"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/material_add" />
             </LinearLayout>
@@ -479,12 +480,12 @@
                     android:layout_marginRight="5dp"/>
                 <ImageButton
                     android:id="@+id/btnSaveEvent"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/material_done" />
                 <ImageButton
                     android:id="@+id/btnAddEvent"
-                    style="@style/CSImageButtonStyle"
+                    style="@style/CommonImageButtonStyle"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/material_add" />
             </LinearLayout>
@@ -512,13 +513,13 @@
         >
         <ImageButton
             android:id="@+id/btnLast"
-            style="@style/CSImageButtonStyle"
+            style="@style/CommonImageButtonStyle"
             android:background="@drawable/material_up"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp" />
         <ImageButton
             android:id="@+id/btnNext"
-            style="@style/CSImageButtonStyle"
+            style="@style/CommonImageButtonStyle"
             android:layout_marginTop="10dp"
             android:background="@drawable/material_down" />
     </LinearLayout>

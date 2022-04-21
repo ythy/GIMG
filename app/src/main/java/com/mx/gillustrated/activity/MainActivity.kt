@@ -240,6 +240,10 @@ class MainActivity : BaseActivity() {
             R.id.menu_header -> DialogExportImg.show(this, mMainActivityListView.dataList[0].id, mGameType, mainHandler)
             R.id.menu_eventlist -> onBtnShowEventsClick()
             R.id.menu_delete -> onDeleteListData()
+            R.id.action_h5-> {
+                val intent = Intent(this, WebActivity::class.java)
+                startActivity(intent)
+            }
         }
         return true
     }

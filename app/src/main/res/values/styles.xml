@@ -1,52 +1,26 @@
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    <style name="BaseTextViewStyle" >
+        <item name="android:textSize">14sp</item>
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <item name="android:textViewStyle">@style/CSTextViewStyle</item>
-        <item name="spinnerStyle">@style/CSSpinnerStyle</item>
-        <item name="imageButtonStyle">@style/CSImageButtonStyle</item>
-        <!--<item name="editTextStyle">@style/CSEditTextStyle</item>-->
+    <style name="TextViewSpinner" >
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
-    <style name="CSSpinnerStyle" parent="Widget.AppCompat.Spinner">
+    <style name="CommonImageButtonStyle">
+        <item name="android:layout_width">@dimen/image_button_normal</item>
+        <item name="android:layout_height">@dimen/image_button_normal</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
+    <style name="BaseSpinnerStyle" parent="Widget.AppCompat.Spinner">
         <item name="overlapAnchor">false</item>
         <item name="android:background">@drawable/spinner_bg_common</item>
     </style>
 
-    <style name="spinnerStyleWithoutArrow" parent="Widget.AppCompat.Spinner">
-        <item name="overlapAnchor">false</item>
+    <style name="spinnerStyleWithoutArrow" parent="BaseSpinnerStyle">
         <item name="android:background">@drawable/spinner_bg_without_arrow</item>
-    </style>
-
-    <style name="CSEditTextStyle">
-        <!--<item name="android:background">@drawable/edit_default_background</item>-->
-    </style>
-
-    <style name="CSTextViewStyle">
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <!--<style name="CSButtonStyle" parent="@style/Widget.MaterialComponents.Button">-->
-        <!--<item name="android:layout_width">10dp</item>-->
-        <!--<item name="android:layout_height">10dp</item>-->
-    <!--</style>-->
-
-    <style name="CSImageButtonStyle" parent="Widget.AppCompat.ImageButton">
-        <item name="android:layout_width">@dimen/image_button_normal</item>
-        <item name="android:layout_height">@dimen/image_button_normal</item>
-        <item name="android:scaleType">fitXY</item>
     </style>
 
     <style name="PageWhite" >
@@ -57,5 +31,48 @@
 		<item name="android:paddingBottom">1dip</item>
 	</style>
 
+
+    <!-- 布局类样式 -->
+    <style name="LayoutRounding">
+        <item name="android:background">@drawable/box_back</item>
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
+    <style name="LayoutRoundingWithPadding" parent="LayoutRounding">
+        <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="LayoutRowInRounding">
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
+    <style name="LayoutRowInRoundingTop" parent="LayoutRowInRounding">
+        <item name="android:background">@drawable/box_top</item>
+    </style>
+
+    <style name="LayoutRowInRoundingTopDash" parent="LayoutRowInRounding">
+        <item name="android:background">@drawable/box_top_dash</item>
+    </style>
+
+    <!-- TextView样式 -->
+    <style name="TextViewTitle">
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@color/colorTitle</item>
+    </style>
+
+    <!-- ListView 样式 -->
+    <style name="ListViewSummary">
+        <item name="android:background">@drawable/box_left</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:layout_marginStart">2dp</item>
+    </style>
+
+    <style name="ListViewMain">
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
 
 </resources>

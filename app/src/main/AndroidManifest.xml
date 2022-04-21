@@ -16,7 +16,7 @@
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.Default"
         android:name=".MyApplication"
         tools:ignore="GoogleAppIndexingWarning,HardcodedDebugMode">
         
@@ -62,6 +62,11 @@
         <activity
             android:name="com.mx.gillustrated.activity.ImageAdjustActivity"
             android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:name=".activity.WebActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 	

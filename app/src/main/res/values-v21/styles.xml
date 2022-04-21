@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CommonImageButtonStyle">
+        <item name="android:layout_width">@dimen/image_button_normal</item>
+        <item name="android:layout_height">@dimen/image_button_normal</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="BaseCheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:buttonTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="BaseEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="EditTextPinYin" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/edit_pinyin</item>
+        <item name="android:backgroundTint">@null</item>
+    </style>
+
+    <style name="EditTextGrid" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/edit_default_background</item>
+        <item name="android:backgroundTint">@null</item>
+    </style>
+
+</resources>

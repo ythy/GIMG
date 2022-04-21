@@ -26,7 +26,7 @@
             android:id="@+id/btnAdjust"
             android:layout_toRightOf="@id/btnDel"
             android:layout_marginLeft="20dp"
-            style="@style/CSImageButtonStyle"
+            style="@style/CommonImageButtonStyle"
             android:background="@drawable/material_info"
             android:visibility="gone"/>
 

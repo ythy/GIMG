@@ -1,0 +1,11 @@
+<resources>
+    <declare-styleable name="AppTheme">
+        <!-- ============== -->
+        <!-- Generic styles -->
+        <!-- ============== -->
+        <eat-comment />
+        <attr name="colorPrimary" format="color" />
+        <attr name="colorSecondary" format="color" />
+        <attr name="colorGridPrimary" format="color" />
+    </declare-styleable>
+</resources>

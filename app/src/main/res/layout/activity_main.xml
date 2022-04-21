@@ -51,6 +51,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:gravity="right"
+                    style="@style/TextViewSpinner"
                     android:text="@string/arrow" />
             </LinearLayout>
 
@@ -76,6 +77,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:gravity="right"
+                    style="@style/TextViewSpinner"
                     android:text="@string/arrow" />
             </LinearLayout>
 
@@ -102,6 +104,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:gravity="right"
+                    style="@style/TextViewSpinner"
                     android:text="@string/arrow" />
             </LinearLayout>
 
@@ -130,6 +133,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:gravity="right"
+                    style="@style/TextViewSpinner"
                     android:text="@string/arrow" />
             </LinearLayout>
 
@@ -145,12 +149,12 @@
             android:orientation="horizontal" >
             <ImageButton
                 android:id="@+id/btnRefresh"
-                style="@style/CSImageButtonStyle"
+                style="@style/CommonImageButtonStyle"
                 android:background="@drawable/material_refresh">
             </ImageButton>
             <ImageButton
                 android:id="@+id/btnAdd"
-                style="@style/CSImageButtonStyle"
+                style="@style/CommonImageButtonStyle"
                 android:background="@drawable/material_add"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp">
@@ -187,6 +191,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:gravity="right"
+                style="@style/TextViewSpinner"
                 android:text="@string/arrow" />
         </LinearLayout>
 
@@ -213,6 +218,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:gravity="right"
+                style="@style/TextViewSpinner"
                 android:text="@string/arrow" />
         </LinearLayout>
 
@@ -239,6 +245,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:gravity="right"
+                style="@style/TextViewSpinner"
                 android:text="@string/arrow" />
         </LinearLayout>
 
@@ -251,8 +258,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:background="@drawable/edit_pinyin"
             android:id="@+id/etPinyin"
+            style="@style/EditTextPinYin"
             android:maxLines="1"
             android:layout_width="200dp"
             android:layout_marginBottom="2dp"
@@ -260,14 +267,14 @@
 
         <ImageButton
             android:id="@+id/btnShowEvents"
-            style="@style/CSImageButtonStyle"
+            style="@style/CommonImageButtonStyle"
             android:background="@drawable/material_event"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp" />
 
         <ImageButton
             android:id="@+id/btnShowMenu"
-            style="@style/CSImageButtonStyle"
+            style="@style/CommonImageButtonStyle"
             android:background="@drawable/material_menu"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp" />

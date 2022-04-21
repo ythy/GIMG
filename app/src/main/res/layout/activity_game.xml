@@ -16,7 +16,7 @@
 		
         <ImageButton
              android:id="@+id/btnDespairAdd"
-             style="@style/CSImageButtonStyle"
+             style="@style/CommonImageButtonStyle"
              android:layout_marginLeft="10dp"
              android:background="@drawable/material_add" >
          </ImageButton>
