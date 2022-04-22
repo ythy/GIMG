@@ -17,6 +17,7 @@ import com.mx.gillustrated.vo.CardInfo
 import com.mx.gillustrated.vo.GameInfo
 import androidx.appcompat.app.AlertDialog
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -33,6 +34,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import butterknife.OnTextChanged
+import com.mx.gillustrated.dialog.FragmentDialogTheme
 
 class MainActivity : BaseActivity() {
 
@@ -122,6 +124,7 @@ class MainActivity : BaseActivity() {
         System.loadLibrary("hello-jni");
     }
     public native String  stringFromJNI();*/
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -243,6 +246,19 @@ class MainActivity : BaseActivity() {
             R.id.action_h5-> {
                 val intent = Intent(this, WebActivity::class.java)
                 startActivity(intent)
+            }
+            R.id.action_theme-> {
+                val ft = supportFragmentManager.beginTransaction()
+                val prev = supportFragmentManager.findFragmentByTag("dialog_theme")
+                if (prev != null) {
+                    ft.remove(prev)
+                }
+                ft.addToBackStack(null)
+
+                // Create and show the dialog.
+                val newFragment = FragmentDialogTheme.newInstance()
+                val bundle = Bundle()
+                newFragment.show(ft, "dialog_theme")
             }
         }
         return true

@@ -22,7 +22,6 @@ public class MyApplication extends Application {
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
-
     }
 
     public AppComponent getAppComponent(){

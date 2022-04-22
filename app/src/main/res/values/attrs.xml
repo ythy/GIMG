@@ -7,5 +7,6 @@
         <attr name="colorPrimary" format="color" />
         <attr name="colorSecondary" format="color" />
         <attr name="colorGridPrimary" format="color" />
+        <attr name="colorGridSecondary" format="color" />
     </declare-styleable>
 </resources>

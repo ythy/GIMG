@@ -7,9 +7,22 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme.Default" >
+    <style name="AppTheme.Green" >
         <item name="colorPrimary">@android:color/holo_green_dark</item>
         <item name="colorGridPrimary">@android:color/holo_green_light</item>
+        <item name="colorGridSecondary">#D7D544</item>
+    </style>
+
+    <style name="AppTheme.Blue" >
+        <item name="colorPrimary">@android:color/holo_blue_dark</item>
+        <item name="colorGridPrimary">@android:color/holo_blue_light</item>
+        <item name="colorGridSecondary">#CE7676</item>
+    </style>
+
+    <style name="AppTheme.Orange" >
+        <item name="colorPrimary">@android:color/holo_orange_dark</item>
+        <item name="colorGridPrimary">@android:color/holo_orange_light</item>
+        <item name="colorGridSecondary">#5B5E91</item>
     </style>
 
 </resources>

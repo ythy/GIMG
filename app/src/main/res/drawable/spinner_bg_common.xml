@@ -7,7 +7,7 @@
             <item >
                 <shape>
                     <corners android:radius="0dp" />
-                    <solid android:color="#000000" />
+                    <solid android:color="?attr/colorPrimary" />
                 </shape>
             </item>
 
@@ -18,7 +18,7 @@
             </item>
 
             <item android:right="5dp">
-                <bitmap android:gravity="center_vertical|right" android:src="@drawable/ic_spinner_bg_common" />
+                <bitmap android:gravity="center_vertical|right"  android:tint="?attr/colorPrimary" android:src="@drawable/ic_spinner_bg_common" />
             </item>
         </layer-list>
     </item>

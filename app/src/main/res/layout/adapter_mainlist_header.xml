@@ -19,7 +19,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine"/>
 	
     <TextView
          android:id="@+id/tvHeaderName"
@@ -36,7 +36,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvHeaderAttr"
@@ -53,7 +53,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 	
      <TextView
         android:id="@+id/tvHeaderCost"
@@ -69,7 +69,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
     
     <TextView
         android:id="@+id/tvHeaderHP"
@@ -85,7 +85,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvHeaderAttack"
@@ -101,7 +101,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvHeaderDefense"
@@ -118,7 +118,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvHeaderExtra1"
@@ -135,7 +135,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvHeaderExtra2"

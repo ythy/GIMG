@@ -26,4 +26,8 @@
         <item name="android:backgroundTint">@null</item>
     </style>
 
+    <style name="GridDividedLine">
+        <item name="android:background">@drawable/divide_line_ver</item>
+        <item name="android:backgroundTint">?attr/colorGridSecondary</item>
+    </style>
 </resources>

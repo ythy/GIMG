@@ -36,7 +36,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -65,7 +65,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvAttr"
@@ -80,7 +80,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 	
     <TextView
         android:id="@+id/tvCost"
@@ -94,7 +94,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
     
     <TextView
         android:id="@+id/tvHP"
@@ -108,7 +108,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvAttack"
@@ -122,7 +122,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvDefense"
@@ -137,7 +137,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvExtra1"
@@ -152,7 +152,7 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/divline" />
+        style="@style/GridDividedLine" />
 
     <TextView
         android:id="@+id/tvExtra2"

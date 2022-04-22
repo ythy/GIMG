@@ -9,10 +9,11 @@ import android.app.ProgressDialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.mx.gillustrated.R
 
 import javax.inject.Inject
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity constructor(): AppCompatActivity() {
 
     @Inject
     lateinit var mOrmHelper: DataBaseHelper
@@ -24,9 +25,13 @@ abstract class BaseActivity : AppCompatActivity() {
     lateinit var mSP: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         doInject()
-
+        when (mSP.getString("theme", "Green")){
+            "Green"-> theme.applyStyle(R.style.AppTheme_Green, true)
+            "Blue"-> theme.applyStyle(R.style.AppTheme_Blue, true)
+            "Orange"-> theme.applyStyle(R.style.AppTheme_Orange, true)
+        }
+        super.onCreate(savedInstanceState)
     }
 
     private fun doInject() {

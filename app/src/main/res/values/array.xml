@@ -73,5 +73,11 @@
         <item>偶</item>
         <item>演</item>
     </string-array>
-    
+
+    <string-array name="themes">
+        <item>绿</item>
+        <item>蓝</item>
+        <item>橙</item>
+    </string-array>
+
 </resources>
