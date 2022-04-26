@@ -1,7 +1,12 @@
 <resources>
 
+    <style name="BaseActivityStyle" >
+        <item name="android:background">@drawable/main_content_bg_normal</item>
+    </style>
+
     <style name="BaseTextViewStyle" >
         <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?attr/colorFontPrimary</item>
     </style>
 
     <style name="TextViewSpinner" >
@@ -14,6 +19,20 @@
         <item name="android:scaleType">fitXY</item>
     </style>
 
+    <style name="BaseButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">?attr/colorFontPrimary</item>
+    </style>
+
+    <style name="BaseSpinnerItemStyle" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="android:background">?attr/colorBackPrimary</item>
+        <item name="android:textColor">?attr/colorFontPrimary</item> <!-- 此处如果不设置，会适用BaseTextViewStyle中的颜色 -->
+    </style>
+
+    <style name="BaseSpinnerDropDownItemStyle" parent="Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textColor">?attr/colorFontPrimary</item>
+        <item name="android:background">?attr/colorBackPrimary</item>
+    </style>
+
     <style name="BaseSpinnerStyle" parent="Widget.AppCompat.Spinner">
         <item name="overlapAnchor">false</item>
         <item name="android:background">@drawable/spinner_bg_common</item>
@@ -21,6 +40,23 @@
 
     <style name="spinnerStyleWithoutArrow" parent="BaseSpinnerStyle">
         <item name="android:background">@drawable/spinner_bg_without_arrow</item>
+    </style>
+
+    <style name="BoxSpinnerCombined" >
+        <item name="android:background">@drawable/spinner_background</item>
+    </style>
+
+    <style name="BaseEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">?attr/colorFontPrimary</item>
+    </style>
+
+    <style name="BaseCheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textColor">?attr/colorFontPrimary</item>
+    </style>
+
+    <style name="EditTextPinYin" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">?attr/colorFontPrimary</item>
+        <item name="android:background">@drawable/edit_pinyin</item>
     </style>
 
     <style name="PageWhite" >

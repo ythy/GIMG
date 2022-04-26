@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_content_bg_normal"
+    style="@style/BaseActivityStyle"
     android:padding="5dp">
 
     <LinearLayout
@@ -37,7 +38,9 @@
         android:focusableInTouchMode="true"
         android:descendantFocusability="afterDescendants"
         android:scrollingCache="true"
-        android:background="@drawable/view_yuan_morelist">
+        android:background="@drawable/view_yuan_morelist"
+        android:backgroundTint="?attr/colorBackPrimary"
+        tools:targetApi="lollipop">
     </ListView>
 
     <RelativeLayout

@@ -23,6 +23,7 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
     private lateinit var mListHeaderView: ListHeaderView
     private lateinit var mResourceController: ResourceController
     private var mHeaderPressColor:Int = Color.TRANSPARENT
+    private var mHeaderDefaultColor:Int = Color.WHITE
 
     init {
         initialize()
@@ -58,11 +59,11 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
             mListHeaderView.tvCost.visibility = View.VISIBLE
         }
     }
-
     private fun initialize() {
-        val attribute = intArrayOf(R.attr.colorGridPrimary)
+        val attribute = intArrayOf(R.attr.colorGridPrimary, R.attr.colorBackPrimary)
         val array = mContext.theme.obtainStyledAttributes(attribute)
         mHeaderPressColor = array.getColor(0, Color.TRANSPARENT)
+        mHeaderDefaultColor = array.getColor(1, Color.WHITE)
         array.recycle()
 
         mListHeaderView = ListHeaderView()
@@ -103,7 +104,7 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
             value.setBackgroundColor(mHeaderPressColor)
         }
         if (mTextViewMap[orderby] != null)
-            mTextViewMap[orderby]?.setBackgroundColor(mContext.resources.getColor(R.color.color_white))
+            mTextViewMap[orderby]?.setBackgroundColor(mHeaderDefaultColor)
     }
 
     internal inner class ListHeaderView {

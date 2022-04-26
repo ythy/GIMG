@@ -4,25 +4,39 @@
         <item name="android:textViewStyle">@style/BaseTextViewStyle</item>
         <item name="android:checkboxStyle">@style/BaseCheckBoxStyle</item>
         <item name="editTextStyle">@style/BaseEditTextStyle</item>
+        <item name="android:buttonStyle">@style/BaseButtonStyle</item>
+
+        <item name="android:spinnerItemStyle">@style/BaseSpinnerItemStyle</item>
+        <item name="android:spinnerDropDownItemStyle">@style/BaseSpinnerDropDownItemStyle</item> <!-- 适用自定义Adapter的样式 -->
+        <item name="spinnerDropDownItemStyle">@style/BaseSpinnerDropDownItemStyle</item> <!-- 适用不设置adapter的简单样式 -->
     </style>
+
+
 
     <!-- Application theme. -->
     <style name="AppTheme.Green" >
         <item name="colorPrimary">@android:color/holo_green_dark</item>
         <item name="colorGridPrimary">@android:color/holo_green_light</item>
         <item name="colorGridSecondary">#D7D544</item>
+        <item name="colorBackPrimary">#FFFFFF</item>
+        <item name="colorFontPrimary">#413E3E</item>
     </style>
 
     <style name="AppTheme.Blue" >
-        <item name="colorPrimary">@android:color/holo_blue_dark</item>
-        <item name="colorGridPrimary">@android:color/holo_blue_light</item>
-        <item name="colorGridSecondary">#CE7676</item>
+        <item name="colorPrimary">#3E839C</item>
+        <item name="colorGridPrimary">#0A569C</item>
+        <item name="colorGridSecondary">#22619B</item>
+        <item name="colorBackPrimary">#2B2B2B</item>
+        <item name="colorFontPrimary">#BBBBBB</item>
     </style>
+
 
     <style name="AppTheme.Orange" >
         <item name="colorPrimary">@android:color/holo_orange_dark</item>
         <item name="colorGridPrimary">@android:color/holo_orange_light</item>
         <item name="colorGridSecondary">#5B5E91</item>
+        <item name="colorBackPrimary">#FFFFFF</item>
+        <item name="colorFontPrimary">#413E3E</item>
     </style>
 
 </resources>

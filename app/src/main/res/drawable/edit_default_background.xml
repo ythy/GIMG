@@ -10,7 +10,7 @@
     <item
         android:bottom="1dp">
         <shape>
-            <solid android:color="#FAFAFA" />
+            <solid android:color="?attr/colorBackPrimary" />
         </shape>
     </item>
 

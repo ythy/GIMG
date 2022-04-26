@@ -62,7 +62,7 @@ class SpinnerSimpleAdapter(mContext: Context, private val list: List<String>, pr
     }
 
     companion object {
-        private const val mResource = android.R.layout.simple_gallery_item
+        private const val mResource = android.R.layout.simple_spinner_item
         private const val mDropDownResource = android.R.layout.simple_spinner_dropdown_item
     }
 }

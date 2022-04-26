@@ -13,14 +13,14 @@
         android:left="1.5dp"
         android:right="1.5dp">
         <shape>
-            <solid android:color="#fff" />
+            <solid android:color="?attr/colorBackPrimary" />
         </shape>
     </item>
 
     <!-- draw another block to cut-off the left and right bars -->
     <item android:bottom="3.0dp">
         <shape>
-            <solid android:color="#fff" />
+            <solid android:color="?attr/colorBackPrimary" />
         </shape>
     </item>
 

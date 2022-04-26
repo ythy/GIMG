@@ -17,7 +17,6 @@ import com.mx.gillustrated.vo.CardInfo
 import com.mx.gillustrated.vo.GameInfo
 import androidx.appcompat.app.AlertDialog
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -254,10 +253,8 @@ class MainActivity : BaseActivity() {
                     ft.remove(prev)
                 }
                 ft.addToBackStack(null)
-
                 // Create and show the dialog.
                 val newFragment = FragmentDialogTheme.newInstance()
-                val bundle = Bundle()
                 newFragment.show(ft, "dialog_theme")
             }
         }

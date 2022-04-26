@@ -9,16 +9,16 @@
     <LinearLayout
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/spinner_background"
+        style="@style/BoxSpinnerCombined"
         android:orientation="horizontal" 
-        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
        >
 
         <Spinner
             android:id="@+id/spinnerEvent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_weight="4"
             android:background="@null" />
 
@@ -26,9 +26,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:gravity="right"
+            style="@style/TextViewSpinner"
             android:text="@string/arrow" />
     </LinearLayout>
 	<ImageButton android:id="@+id/btnDel"
@@ -36,7 +37,7 @@
         android:background="@drawable/material_delete"
          />
     <ImageButton android:id="@+id/btnDetail"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         style="@style/CommonImageButtonStyle"
         android:background="@drawable/material_info"
         />

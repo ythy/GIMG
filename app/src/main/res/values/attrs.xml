@@ -4,9 +4,12 @@
         <!-- Generic styles -->
         <!-- ============== -->
         <eat-comment />
-        <attr name="colorPrimary" format="color" />
+        <attr name="colorPrimary" format="color" /> <!-- 主色调：按钮 -->
         <attr name="colorSecondary" format="color" />
-        <attr name="colorGridPrimary" format="color" />
-        <attr name="colorGridSecondary" format="color" />
+        <attr name="colorGridPrimary" format="color" /> <!-- Grid主色调：表头颜色 -->
+        <attr name="colorGridSecondary" format="color" /> <!-- Grid主色调：表格分割线颜色 -->
+        <attr name="colorBackPrimary" format="color" /> <!-- 主色调：背景色 -->
+        <attr name="colorBackSecondary" format="color" />
+        <attr name="colorFontPrimary" format="color" /> <!-- 主色调：文字颜色 -->
     </declare-styleable>
 </resources>

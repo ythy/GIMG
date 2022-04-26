@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="BaseActivityStyle" >
+        <item name="android:background">@drawable/main_content_bg_normal</item>
+        <item name="android:backgroundTint">?attr/colorBackPrimary</item>
+    </style>
 
     <style name="CommonImageButtonStyle">
         <item name="android:layout_width">@dimen/image_button_normal</item>
@@ -10,18 +14,27 @@
 
     <style name="BaseCheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:buttonTint">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorFontPrimary</item>
+    </style>
+
+    <style name="BaseButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorFontPrimary</item>
     </style>
 
     <style name="BaseEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">?attr/colorFontPrimary</item>
         <item name="android:backgroundTint">?attr/colorPrimary</item>
     </style>
 
     <style name="EditTextPinYin" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">?attr/colorFontPrimary</item>
         <item name="android:background">@drawable/edit_pinyin</item>
         <item name="android:backgroundTint">@null</item>
     </style>
 
     <style name="EditTextGrid" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">?attr/colorFontPrimary</item>
         <item name="android:background">@drawable/edit_default_background</item>
         <item name="android:backgroundTint">@null</item>
     </style>
@@ -29,5 +42,10 @@
     <style name="GridDividedLine">
         <item name="android:background">@drawable/divide_line_ver</item>
         <item name="android:backgroundTint">?attr/colorGridSecondary</item>
+    </style>
+
+    <style name="BoxSpinnerCombined" >
+        <item name="android:background">@drawable/spinner_background</item>
+        <item name="android:backgroundTint">?attr/colorBackPrimary</item>
     </style>
 </resources>
