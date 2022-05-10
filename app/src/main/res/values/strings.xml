@@ -49,5 +49,6 @@
     <string name="gameinfo_cost_show">Cost</string>
 
     <string name="menu_web_view">H5</string>
+    <string name="menu_game">Xian</string>
     <string name="menu_theme">主题</string>
 </resources>

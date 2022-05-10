@@ -1,5 +1,7 @@
 package com.mx.gillustrated.util;
 
+import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,13 +20,28 @@ import com.mx.gillustrated.vo.CardTypeInfo;
 import com.mx.gillustrated.vo.EventInfo;
 import com.mx.gillustrated.vo.GameInfo;
 
-class JsonFileReader {
+public class JsonFileReader {
 
-	static String getJson(File fileName) {
+	public static String getJson(File fileName) {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		try {
 			BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+			String line;
+			while ((line = bf.readLine()) != null) {
+				stringBuilder.append(line);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return stringBuilder.toString();
+	}
+
+	public static String getJsonFromAssets(Context context, String fileName) {
+
+		StringBuilder stringBuilder = new StringBuilder();
+		try {
+			BufferedReader bf = new BufferedReader(new InputStreamReader(context.getAssets().open(fileName)));
 			String line;
 			while ((line = bf.readLine()) != null) {
 				stringBuilder.append(line);

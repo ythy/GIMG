@@ -1,0 +1,358 @@
+{
+  "lingGenType": [
+    {
+      "id": "1000001",
+      "name": "单",
+      "randomBasic": 50,
+      "qiBasic": 50,
+      "color": "#D22E59",
+      "jinBonus": [30, 20, 10, 5, 0]
+    },
+    {
+      "id": "1000002",
+      "name": "双",
+      "randomBasic": 150,
+      "qiBasic": 35,
+      "color": "#7435C1",
+      "jinBonus": [20, 15, 5, 0, 0]
+    },
+    {
+      "id": "1000003",
+      "name": "三",
+      "randomBasic": 300,
+      "qiBasic": 25,
+      "color": "#367CC4",
+      "jinBonus": [15, 10, 0, 0, 0]
+    },
+    {
+      "id": "1000004",
+      "name": "四",
+      "randomBasic": 700,
+      "qiBasic": 20,
+      "color": "#417B29",
+      "jinBonus": []
+    },
+    {
+      "id": "1000005",
+      "name": "五",
+      "randomBasic": 1000,
+      "qiBasic": 15,
+      "color": "#EAEFE8",
+      "jinBonus": []
+    },
+    {
+      "id": "1000006",
+      "name": "天",
+      "randomBasic": 20,
+      "qiBasic": 60,
+      "color": "#FB23B7",
+      "jinBonus": [40, 30, 20, 10, 5]
+    }
+  ],
+
+  "jingJieType": [
+    {
+      "id": "2000001",
+      "name": "LianQi-1",
+      "max": 200,
+      "success": 80,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000002",
+      "name": "LianQi-2",
+      "max": 300,
+      "success": 75,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000003",
+      "name": "LianQi-3",
+      "max": 500,
+      "success": 70,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000004",
+      "name": "LianQi-4",
+      "max": 800,
+      "success": 65,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000005",
+      "name": "LianQi-5",
+      "max": 1000,
+      "success": 60,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000006",
+      "name": "LianQi-6",
+      "max": 1500,
+      "success": 55,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000007",
+      "name": "LianQi-7",
+      "max": 2000,
+      "success": 50,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000008",
+      "name": "LianQi-8",
+      "max": 2500,
+      "success": 45,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000009",
+      "name": "LianQi-9",
+      "max": 3000,
+      "success": 30,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000010",
+      "name": "LianQi-10",
+      "max": 3500,
+      "success": 10,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 1
+    },
+    {
+      "id": "2000011",
+      "name": "ZhuJi-1",
+      "max": 4000,
+      "success": 20,
+      "fault": 3,
+      "lifetime": 200,
+      "bonus": 0
+    },
+    {
+      "id": "2000012",
+      "name": "ZhuJi-2",
+      "max": 4500,
+      "success": 20,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000013",
+      "name": "ZhuJi-3",
+      "max": 5000,
+      "success": 20,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000014",
+      "name": "ZhuJi-4",
+      "max": 6000,
+      "success": 20,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 2
+    },
+    {
+      "id": "2000021",
+      "name": "JieDan-1",
+      "max": 6000,
+      "success": 20,
+      "fault": 3,
+      "lifetime": 300,
+      "bonus": 0
+    },
+    {
+      "id": "2000022",
+      "name": "JieDan-2",
+      "max": 8000,
+      "success": 20,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000023",
+      "name": "JieDan-3",
+      "max": 10000,
+      "success": 20,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 0
+    },
+    {
+      "id": "2000024",
+      "name": "JieDan-4",
+      "max": 15000,
+      "success": 10,
+      "fault": 3,
+      "lifetime": 0,
+      "bonus": 3
+    },
+    {
+      "id": "2000031",
+      "name": "YuanYing-1",
+      "max": 20000,
+      "success": 10,
+      "fault": 3,
+      "lifetime": 400,
+      "bonus": 0
+    },
+    {
+      "id": "2000032",
+      "name": "YuanYing-2",
+      "max": 20000,
+      "success": 10,
+      "fault": 3,
+      "lifetime": 400,
+      "bonus": 0
+    },
+    {
+      "id": "2000033",
+      "name": "YuanYing-3",
+      "max": 20000,
+      "success": 10,
+      "fault": 3,
+      "lifetime": 400,
+      "bonus": 0
+    },
+    {
+      "id": "2000034",
+      "name": "YuanYing-4",
+      "max": 30000,
+      "success": 10,
+      "fault": 3,
+      "lifetime": 400,
+      "bonus": 4
+    },
+    {
+      "id": "2000041",
+      "name": "HuaShen-1",
+      "max": 40000,
+      "success": 5,
+      "fault": 2,
+      "lifetime": 600,
+      "bonus": 0
+    },
+    {
+      "id": "2000042",
+      "name": "HuaShen-2",
+      "max": 40000,
+      "success": 5,
+      "fault": 2,
+      "lifetime": 600,
+      "bonus": 0
+    },
+    {
+      "id": "2000043",
+      "name": "HuaShen-3",
+      "max": 40000,
+      "success": 5,
+      "fault": 1,
+      "lifetime": 600,
+      "bonus": 0
+    },
+    {
+      "id": "2000044",
+      "name": "HuaShen-4",
+      "max": 40000,
+      "success": 2,
+      "fault": 1,
+      "lifetime": 600,
+      "bonus": 5
+    },
+    {
+      "id": "2000051",
+      "name": "LianXu-1",
+      "max": 50000,
+      "success": 2,
+      "fault": 1,
+      "lifetime": 1000,
+      "bonus": 0
+    },
+    {
+      "id": "2000052",
+      "name": "LianXu-2",
+      "max": 50000,
+      "success": 2,
+      "fault": 1,
+      "lifetime": 1000,
+      "bonus": 0
+    }
+  ],
+
+  "lingGenTian": [
+    {
+      "id": "1010001",
+      "name": "冰天灵根"
+    },
+    {
+      "id": "1010002",
+      "name": "殛雷灵根"
+    },
+    {
+      "id": "1010003",
+      "name": "蓝银草灵根"
+    },
+    {
+      "id": "1010004",
+      "name": "苍月灵根"
+    }
+  ],
+
+  "events": [
+    {
+      "id": "3000001",
+      "name": "天降，P修为增加B",
+      "type": 1,
+      "bonus": 5000,
+      "weight": 50
+    },
+    {
+      "id": "3000002",
+      "name": "天降，P修为增加B",
+      "type": 1,
+      "bonus": 10000,
+      "weight": 100
+    },
+    {
+      "id": "3000011",
+      "name": "发现神秘，P突破增加B%",
+      "type": 2,
+      "bonus": 10,
+      "weight": 50
+    },
+    {
+      "id": "3000012",
+      "name": "发现神秘，P突破增加B%",
+      "type": 2,
+      "bonus": 20,
+      "weight": 100
+    }
+  ]
+
+}

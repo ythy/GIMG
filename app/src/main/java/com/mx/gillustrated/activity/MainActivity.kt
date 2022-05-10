@@ -246,6 +246,10 @@ class MainActivity : BaseActivity() {
                 val intent = Intent(this, WebActivity::class.java)
                 startActivity(intent)
             }
+            R.id.action_game-> {
+                val intent = Intent(this, CultivationActivity::class.java)
+                startActivity(intent)
+            }
             R.id.action_theme-> {
                 val ft = supportFragmentManager.beginTransaction()
                 val prev = supportFragmentManager.findFragmentByTag("dialog_theme")

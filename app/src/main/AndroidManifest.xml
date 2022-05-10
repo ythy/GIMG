@@ -67,6 +67,12 @@
             android:name=".activity.WebActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".activity.CultivationActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
     </application>
 	
     

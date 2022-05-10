@@ -30,7 +30,12 @@
 		android:title="@string/menu_web_view"/>
 
 	<item
-		android:id="@+id/action_theme"
+		android:id="@+id/action_game"
 		android:orderInCategory="900"
+		android:title="@string/menu_game"/>
+
+	<item
+		android:id="@+id/action_theme"
+		android:orderInCategory="1500"
 		android:title="@string/menu_theme"/>
 </menu>
