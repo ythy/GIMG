@@ -1,5 +1,6 @@
 package com.mx.gillustrated.adapter
 
+import android.content.Context
 import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableString
@@ -15,9 +16,9 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.dialog.FragmentDialogPersonList
 import com.mx.gillustrated.vo.cultivation.Person
 
-class CultivationPersonListAdapter constructor(mFragment: FragmentDialogPersonList, private val list: MutableList<Person>) : BaseAdapter() {
+class CultivationPersonListAdapter constructor(context: Context, private val list: MutableList<Person>) : BaseAdapter() {
 
-    private val layoutInflater: LayoutInflater = LayoutInflater.from(mFragment.context)
+    private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun getCount(): Int {
         return list.size

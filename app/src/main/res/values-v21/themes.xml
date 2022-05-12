@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:spinnerStyle">@style/BaseSpinnerStyle</item>
+        <item name="android:textViewStyle">@style/BaseTextViewStyle</item>
+        <item name="android:checkboxStyle">@style/BaseCheckBoxStyle</item>
+        <item name="editTextStyle">@style/BaseEditTextStyle</item>
+        <item name="android:buttonStyle">@style/BaseButtonStyle</item>
+        <item name="switchStyle">@style/BaseSwitchStyle</item>
+
+        <item name="android:spinnerItemStyle">@style/BaseSpinnerItemStyle</item>
+        <item name="android:spinnerDropDownItemStyle">@style/BaseSpinnerDropDownItemStyle
+        </item> <!-- 适用自定义Adapter的样式 -->
+        <item name="spinnerDropDownItemStyle">@style/BaseSpinnerDropDownItemStyle
+        </item> <!-- 适用不设置adapter的简单样式 -->
+    </style>
+
+
 </resources>

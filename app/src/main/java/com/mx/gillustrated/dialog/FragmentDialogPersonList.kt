@@ -1,5 +1,6 @@
 package com.mx.gillustrated.dialog
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.os.Build
 import android.os.Bundle
@@ -8,9 +9,10 @@ import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.ListView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import butterknife.BindView
@@ -23,6 +25,8 @@ import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 
+@RequiresApi(Build.VERSION_CODES.N)
+@SuppressLint("SetTextI18n")
 class FragmentDialogPersonList  : DialogFragment() {
 
     companion object{
@@ -40,7 +44,7 @@ class FragmentDialogPersonList  : DialogFragment() {
                 super.handleMessage(msg)
                 val dialog = reference.get()
                 if(msg?.what == 1 && dialog != null ){
-                    dialog.updateList()
+                    dialog.updateOnlineList()
                 }
             }
         }
@@ -49,11 +53,36 @@ class FragmentDialogPersonList  : DialogFragment() {
     @BindView(R.id.lv_person)
     lateinit var mListView: ListView
 
+    @BindView(R.id.tv_total)
+    lateinit var mTotalText: TextView
+
+    @BindView(R.id.btn_switch)
+    lateinit var mSwitchBtn: Button
+
     @OnClick(R.id.btn_close)
     fun onCloseHandler(){
         mThreadRunnable = false
         this.dismiss()
     }
+
+
+    @OnClick(R.id.btn_switch)
+    fun onSwitchClickHandler(){
+        val tag = mSwitchBtn.tag
+        if(tag == "ON"){
+            mThreadRunnable = false
+            mSwitchBtn.text = "offline"
+            mSwitchBtn.tag = "OFF"
+            setOfflineList()
+        }else{
+            setOnlineList()
+            mThreadRunnable = true
+            mSwitchBtn.text = "online"
+            mSwitchBtn.tag = "ON"
+        }
+    }
+
+
 
     @OnItemClick(R.id.lv_person)
     fun onItemClick(position:Int){
@@ -80,7 +109,6 @@ class FragmentDialogPersonList  : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        dialog!!.window.requestFeature(Window.FEATURE_NO_TITLE)
         val v = inflater.inflate(R.layout.fragment_dialog_persion_list, container, false)
         mContext = activity as CultivationActivity
         ButterKnife.bind(this, v)
@@ -93,9 +121,7 @@ class FragmentDialogPersonList  : DialogFragment() {
     }
 
     private fun init(){
-        mPersonData.addAll(mContext.mPersons)
-        mPersonData.sortByDescending {  it.jingJieId.toInt() * 1000000 + it.xiuXei }
-        mListView.adapter = CultivationPersonListAdapter(this, mPersonData)
+        setOnlineList()
         registerTimeLooper()
     }
 
@@ -112,21 +138,35 @@ class FragmentDialogPersonList  : DialogFragment() {
         }).start()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun updateList(){
-        val newDada = mContext.mPersons
+    private fun updateOnlineList(){
         val dead = mutableListOf<String>()
-        mPersonData.forEachIndexed { index, old ->
-            val new = newDada.find { it.id ==  old.id}
-            if(new != null){
-                mPersonData[index] = new
-            }else{
-                dead.add(old.id)
+        mPersonData.forEach {
+            if(it.isDead ){
+                dead.add(it.id)
             }
         }
         mPersonData.removeIf { dead.contains(it.id) }
         mPersonData.sortByDescending { it.jingJieId.toInt() * 1000000 + it.xiuXei }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
+        mTotalText.text = mPersonData.size.toString()
     }
+
+    private fun setOfflineList(){
+        mPersonData = mutableListOf()
+        val dead = mContext.mDeadPersons
+        dead.sortByDescending { it.birthDay.last().second }
+        mPersonData.addAll(dead)
+        mListView.adapter =  CultivationPersonListAdapter(this.context!!, mPersonData)
+        mTotalText.text = mPersonData.size.toString()
+    }
+
+    private fun setOnlineList(){
+        mPersonData = mutableListOf()
+        mPersonData.addAll(mContext.mPersons)
+        mPersonData.sortByDescending {  it.jingJieId.toInt() * 1000000 + it.xiuXei }
+        mListView.adapter = CultivationPersonListAdapter(this.context!!, mPersonData)
+        mTotalText.text = mPersonData.size.toString()
+    }
+
 }
