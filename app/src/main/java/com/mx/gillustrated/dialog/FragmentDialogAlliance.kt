@@ -123,12 +123,12 @@ class FragmentDialogAlliance : DialogFragment() {
         mDialogView.zhu.text = mAlliance.zhu?.name
         var speedString = ""
         mAlliance.speedG1List.forEach {
-            speedString += it.name + " "
+            speedString += mContext.getPersonDetail(it).name + " "
         }
         mDialogView.speeds.text = speedString
 
         mPersonList.clear()
-        mPersonList.addAll(mAlliance.persons)
+        mPersonList.addAll(mAlliance.persons.map { mContext.getPersonDetail(it) })
         mPersonList.sortByDescending { it.maxXiuWei }
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()

@@ -115,13 +115,8 @@ class FragmentDialogPerson : DialogFragment() {
         }).start()
     }
 
-    private fun getPerson():Person{
-        val person = mContext.mPersons.find { it.id == mId }
-        return person ?: mContext.mDeadPersons.find { it.id == mId }!!
-    }
-
     private fun setTianfu(){
-        val person = getPerson()
+        val person = mContext.getPersonDetail(mId)
         val tianFus = person.tianfus
         if(tianFus.isNotEmpty()){
             tianFus.forEach {
@@ -149,7 +144,7 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun updateView(){
-        mPerson = getPerson()
+        mPerson = mContext.getPersonDetail(mId)
         if(mPerson.isDead){
             mThreadRunnable = false
             mBtnRevive.visibility = View.VISIBLE

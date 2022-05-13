@@ -435,7 +435,7 @@
       "max": 100000,
       "success": 1,
       "fault": 1,
-      "lifetime": 20000,
+      "lifetime": 10000,
       "bonus": 0
     },
     {
@@ -471,7 +471,7 @@
       "max": 200000,
       "success": 1,
       "fault": 1,
-      "lifetime": 20000,
+      "lifetime": 10000,
       "bonus": 0
     },
     {
@@ -507,7 +507,7 @@
       "max": 300000,
       "success": 1,
       "fault": 1,
-      "lifetime": 30000,
+      "lifetime": 10000,
       "bonus": 0
     },
     {
@@ -543,7 +543,7 @@
       "max": 400000,
       "success": 1,
       "fault": 1,
-      "lifetime": 40000,
+      "lifetime": 20000,
       "bonus": 0
     },
     {
@@ -570,7 +570,7 @@
       "max": 400000,
       "success": 1,
       "fault": 0,
-      "lifetime": 0,
+      "lifetime": 10000000,
       "bonus": 0
     }
   ],
@@ -941,6 +941,7 @@
       "name": "隐",
       "level": 10,
       "lifetime": 0,
+      "maxPerson": 50,
       "xiuwei": 20,
       "speedG1": 20
     },
@@ -949,6 +950,7 @@
       "name": "魔",
       "level": 10,
       "lifetime": -35,
+      "maxPerson": 50,
       "xiuwei": 60,
       "speedG1": 20
     },
@@ -957,6 +959,7 @@
       "name": "天",
       "level": 50,
       "lifetime": 50,
+      "maxPerson": 10,
       "xiuwei": 40,
       "speedG1": 30
     }
