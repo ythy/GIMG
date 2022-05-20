@@ -87,11 +87,6 @@ class FragmentDialogPersonList  : DialogFragment() {
     @OnItemClick(R.id.lv_person)
     fun onItemClick(position:Int){
         val ft = mContext.supportFragmentManager.beginTransaction()
-        val prev = mContext.supportFragmentManager.findFragmentByTag("dialog_person_info")
-        if (prev != null) {
-            ft.remove(prev)
-        }
-        ft.addToBackStack(null)
         // Create and show the dialog.
         val newFragment = FragmentDialogPerson.newInstance()
         newFragment.isCancelable = false

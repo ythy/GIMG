@@ -19,25 +19,23 @@ import butterknife.OnClick
 import butterknife.OnItemClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
-import com.mx.gillustrated.adapter.AllianceListAdapter
-import com.mx.gillustrated.adapter.CultivationPersonListAdapter
-import com.mx.gillustrated.vo.cultivation.Alliance
-import com.mx.gillustrated.vo.cultivation.Person
+import com.mx.gillustrated.adapter.CultivationClanListAdapter
+import com.mx.gillustrated.vo.cultivation.Clan
 import java.lang.ref.WeakReference
 
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
-class FragmentDialogAllianceList  : DialogFragment() {
+class FragmentDialogClanList  : DialogFragment() {
 
     companion object{
 
-        fun newInstance(): FragmentDialogAllianceList {
-            return FragmentDialogAllianceList()
+        fun newInstance(): FragmentDialogClanList {
+            return FragmentDialogClanList()
         }
 
-        class TimeHandler constructor(val context: FragmentDialogAllianceList): Handler(){
+        class TimeHandler constructor(val context: FragmentDialogClanList): Handler(){
 
-            private val reference: WeakReference<FragmentDialogAllianceList> = WeakReference(context)
+            private val reference: WeakReference<FragmentDialogClanList> = WeakReference(context)
 
             override fun handleMessage(msg: Message?) {
                 super.handleMessage(msg)
@@ -50,7 +48,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
 
     }
 
-    @BindView(R.id.lv_alliance)
+    @BindView(R.id.lv_clan)
     lateinit var mListView: ListView
 
     @BindView(R.id.tv_total)
@@ -62,27 +60,27 @@ class FragmentDialogAllianceList  : DialogFragment() {
         this.dismiss()
     }
 
-    @OnItemClick(R.id.lv_alliance)
+    @OnItemClick(R.id.lv_clan)
     fun onItemClick(position:Int){
         val ft = mContext.supportFragmentManager.beginTransaction()
         // Create and show the dialog.
-        val newFragment = FragmentDialogAlliance.newInstance()
+        val newFragment = FragmentDialogClan.newInstance()
         newFragment.isCancelable = false
 
         val bundle = Bundle()
-        bundle.putString("id", mAllianceListData[position].id)
+        bundle.putString("id", mClanListData[position].id)
         newFragment.arguments = bundle
-        newFragment.show(ft, "dialog_alliance_info")
+        newFragment.show(ft, "dialog_clan_info")
     }
 
     lateinit var mContext: CultivationActivity
-    var mAllianceListData: MutableList<Alliance> = mutableListOf()
+    var mClanListData: MutableList<Clan> = mutableListOf()
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_dialog_alliance_list, container, false)
+        val v = inflater.inflate(R.layout.fragment_dialog_clan_list, container, false)
         mContext = activity as CultivationActivity
         ButterKnife.bind(this, v)
         return v
@@ -108,18 +106,17 @@ class FragmentDialogAllianceList  : DialogFragment() {
     }
 
     private fun setList(){
-        mAllianceListData.clear()
-        mAllianceListData.addAll(mContext.mAlliance)
-        mAllianceListData.forEach { it.isPinyinMode = mContext.pinyinMode }
-        mAllianceListData.sortByDescending { it.totalXiuwei }
-        mListView.adapter = AllianceListAdapter(this.context!!, mAllianceListData)
-        mTotalText.text = mAllianceListData.sumBy { it.persons.size }.toString()
+        mClanListData.clear()
+        mClanListData.addAll(mContext.mClans)
+        mClanListData.sortByDescending { it.totalXiuwei }
+        mListView.adapter = CultivationClanListAdapter(this.context!!, mContext.mPersons, mClanListData)
+        mTotalText.text = mClanListData.size.toString()
     }
 
     fun updateView(){
-        mAllianceListData.sortByDescending { it.totalXiuwei }
+        mClanListData.sortByDescending { it.totalXiuwei }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
-        mTotalText.text = mAllianceListData.sumBy { it.persons.size }.toString()
+        mTotalText.text = mClanListData.size.toString()
     }
 }

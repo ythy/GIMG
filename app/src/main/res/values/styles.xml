@@ -19,6 +19,12 @@
         <item name="android:scaleType">fitXY</item>
     </style>
 
+    <style name="ImageButtonSmall">
+        <item name="android:layout_width">@dimen/image_button_small</item>
+        <item name="android:layout_height">@dimen/image_button_small</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
     <style name="BaseButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:textColor">?attr/colorFontPrimary</item>
     </style>

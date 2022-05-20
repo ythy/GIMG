@@ -13,8 +13,10 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationHelper.CommonColors
 
-class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, private val list: List<CultivationActivity.HistoryInfo>) : BaseAdapter() {
+class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, private val list: List<CultivationHelper.HistoryInfo>) : BaseAdapter() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
 
@@ -44,15 +46,20 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
         }
         val history = list[arg0].content
         val person = list[arg0].person
-        if(person != null){
+        if(person != null && person.jinJieName.indexOf("-") == -1){
             var lingGen = person.lingGenName
-            if(person.lingGenType.id == "1000006"){
+            if(person.lingGenType.id == "1000006" || person.lingGenType.id == "1000007"){
                 lingGen = mContext.getTianName(person.lingGenId)
             }
-            val lingGenColor = person.lingGenType.color
+            val lingGenColor = CommonColors[person.lingGenType.color]
             val index = history.indexOf(lingGen)
             val spannable = SpannableString(history)
             spannable.setSpan(ForegroundColorSpan(Color.parseColor(lingGenColor)), index, index + lingGen.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//            if(history.indexOf(person.jinJieName) > -1){
+//                val jingJieColor = CommonColors[person.jinJieColor]
+//                val jingJieIndex = history.indexOf(person.jinJieName)
+//                spannable.setSpan(ForegroundColorSpan(Color.parseColor(jingJieColor)), jingJieIndex, jingJieIndex + person.jinJieName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//            }
             component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
 
         }else{

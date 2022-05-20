@@ -62,9 +62,9 @@
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
-            android:id="@+id/btn_add"
+            android:id="@+id/btn_menu"
             style="@style/ButtonSmall"
-            android:text="ADD"/>
+            android:text="MENU"/>
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
@@ -78,27 +78,24 @@
             android:id="@+id/btn_list"
             style="@style/ButtonSmall"
             android:text="List"/>
-
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:id="@+id/btn_clan"
+            style="@style/ButtonSmall"
+            android:text="Clan"/>
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:id="@+id/btn_alliance"
             style="@style/ButtonSmall"
             android:text="Bang"/>
-
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:id="@+id/btn_save"
             style="@style/ButtonSmall"
             android:text="Save"/>
-
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:id="@+id/btn_reset"
-            style="@style/ButtonSmall"
-            android:text="Reset"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

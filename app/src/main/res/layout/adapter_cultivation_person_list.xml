@@ -27,12 +27,17 @@
         <TextView
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="6"
             android:id="@+id/tv_jingjie"/>
         <TextView
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:id="@+id/tv_alliance"/>
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
             android:gravity="right"
             android:id="@+id/tv_xiuwei"/>
     </LinearLayout>

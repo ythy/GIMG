@@ -17,20 +17,21 @@ import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Alliance
+import com.mx.gillustrated.vo.cultivation.Clan
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
-class FragmentDialogAlliance : DialogFragment() {
+class FragmentDialogClan : DialogFragment() {
 
     companion object{
-        fun newInstance(): FragmentDialogAlliance {
-            return FragmentDialogAlliance()
+        fun newInstance(): FragmentDialogClan {
+            return FragmentDialogClan()
         }
-        class TimeHandler constructor(val context: FragmentDialogAlliance): Handler(){
+        class TimeHandler constructor(val context: FragmentDialogClan): Handler(){
 
-            private val reference: WeakReference<FragmentDialogAlliance> = WeakReference(context)
+            private val reference: WeakReference<FragmentDialogClan> = WeakReference(context)
 
             override fun handleMessage(msg: Message?) {
                 super.handleMessage(msg)
@@ -48,10 +49,6 @@ class FragmentDialogAlliance : DialogFragment() {
         this.dismiss()
     }
 
-    @OnClick(R.id.btn_speed)
-    fun onSpeedHandler(){
-
-    }
 
     @OnItemClick(R.id.lv_person)
     fun onItemClick(position:Int){
@@ -66,7 +63,7 @@ class FragmentDialogAlliance : DialogFragment() {
         newFragment.show(ft, "dialog_person_info")
     }
 
-    lateinit var mAlliance: Alliance
+    lateinit var mClan: Clan
     lateinit var mId:String
     lateinit var mContext:CultivationActivity
     lateinit var mDialogView:DialogView
@@ -77,7 +74,7 @@ class FragmentDialogAlliance : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_dialog_alliance, container, false)
+        val v = inflater.inflate(R.layout.fragment_dialog_clan, container, false)
         ButterKnife.bind(this, v)
         mDialogView = DialogView(v)
         return v
@@ -91,10 +88,8 @@ class FragmentDialogAlliance : DialogFragment() {
     fun init(){
         mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
-        mAlliance = mContext.mAlliance.find { it.id == mId }!!
-        mDialogView.name.text = if(mContext.pinyinMode) PinyinUtil.convert(mAlliance.name) else mAlliance.name
-        mDialogView.lifetime.text = "life: ${mAlliance.lifetime}"
-        mDialogView.xiuwei.text = "xiuwei: ${mAlliance.xiuwei}(${mAlliance.xiuweiMulti})  ↑${mAlliance.success}"
+        mClan = mContext.mClans.find { it.id == mId }!!
+        mDialogView.name.text = if(mContext.pinyinMode) PinyinUtil.convert(mClan.name) else mClan.name
         mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
         updateView()
         registerTimeLooper()
@@ -114,24 +109,16 @@ class FragmentDialogAlliance : DialogFragment() {
     }
 
     private fun updateView(){
-        mDialogView.total.text = mAlliance.persons.size.toString()
-        val zhu = mContext.getOnlinePersonDetail(mAlliance.zhu)
+        mDialogView.total.text = mClan.persons.size.toString()
+        val zhu = if(mClan.persons.isEmpty()) null else mContext.getOnlinePersonDetail(mClan.persons[0])
         if(zhu == null){
             mDialogView.zhu.text = ""
         }else{
             val zhuName = if(mContext.pinyinMode) zhu.pinyinName else zhu.name
             mDialogView.zhu.text = zhuName
         }
-        var speedString = ""
-        mAlliance.speedG1List.forEach {
-            val person =  mContext.getPersonDetail(it)
-            speedString += (if(mContext.pinyinMode) person.pinyinName else person.name) + " "
-        }
-        mDialogView.speeds.text = speedString
-
         mPersonList.clear()
-        mPersonList.addAll(mAlliance.persons.map { mContext.getPersonDetail(it) })
-        mPersonList.sortByDescending { it.maxXiuWei }
+        mPersonList.addAll(mClan.persons.map { mContext.getPersonDetail(it) })
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
 
@@ -142,12 +129,6 @@ class FragmentDialogAlliance : DialogFragment() {
         @BindView(R.id.tv_name)
         lateinit var name:TextView
 
-        @BindView(R.id.tv_lifetime)
-        lateinit var lifetime:TextView
-
-        @BindView(R.id.tv_xiuwei)
-        lateinit var xiuwei:TextView
-
         @BindView(R.id.tv_total)
         lateinit var total:TextView
 
@@ -157,8 +138,6 @@ class FragmentDialogAlliance : DialogFragment() {
         @BindView(R.id.lv_person)
         lateinit var persons:ListView
 
-        @BindView(R.id.tv_speed_persons)
-        lateinit var speeds:TextView
 
         init {
             ButterKnife.bind(this, view)

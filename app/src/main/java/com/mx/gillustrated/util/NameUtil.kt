@@ -22,7 +22,7 @@ object NameUtil {
         Female("女"),
     }
 
-    fun getChineseName(lastName:String?, gender:Gender = Gender.Default):String{
+    fun getChineseName(lastName:String?, gender:Gender = Gender.Default):Pair<String, String>{
         val random = Random().nextInt(20)
         return when {
             random < 9 -> randomTwoName(lastName, gender)
@@ -60,21 +60,20 @@ object NameUtil {
         }
     }
 
-    private fun randomTwoName(lastName:String?, gender:Gender = Gender.Default):String{
-        return (lastName ?: NameCorpus.LAST_NAME1[ Random().nextInt(NameCorpus.LAST_NAME1.size)]) + getFirstName1(gender)
-
+    private fun randomTwoName(lastName:String?, gender:Gender = Gender.Default):Pair<String, String>{
+        return Pair(lastName ?: NameCorpus.LAST_NAME1[ Random().nextInt(NameCorpus.LAST_NAME1.size)], getFirstName1(gender))
     }
 
-    private fun randomThreeName(lastName:String?, gender:Gender = Gender.Default):String{
-        return  (lastName ?: NameCorpus.LAST_NAME1[ Random().nextInt(NameCorpus.LAST_NAME1.size)]) + getFirstName2(gender)
+    private fun randomThreeName(lastName:String?, gender:Gender = Gender.Default):Pair<String, String>{
+        return Pair(lastName ?: NameCorpus.LAST_NAME1[ Random().nextInt(NameCorpus.LAST_NAME1.size)], getFirstName2(gender))
     }
 
-    private fun randomThreeNames(lastName:String?, gender:Gender = Gender.Default):String{
-        return  (lastName ?: NameCorpus.LAST_NAME2[ Random().nextInt(NameCorpus.LAST_NAME2.size)]) + getFirstName1(gender)
+    private fun randomThreeNames(lastName:String?, gender:Gender = Gender.Default):Pair<String, String>{
+        return  Pair(lastName ?: NameCorpus.LAST_NAME2[ Random().nextInt(NameCorpus.LAST_NAME2.size)], getFirstName1(gender))
     }
 
-    private fun randomFourName(lastName:String?, gender:Gender = Gender.Default):String{
-        return  (lastName ?: NameCorpus.LAST_NAME2[ Random().nextInt(NameCorpus.LAST_NAME2.size)]) + getFirstName2(gender)
+    private fun randomFourName(lastName:String?, gender:Gender = Gender.Default):Pair<String, String>{
+        return  Pair(lastName ?: NameCorpus.LAST_NAME2[ Random().nextInt(NameCorpus.LAST_NAME2.size)], getFirstName2(gender))
     }
 
 }

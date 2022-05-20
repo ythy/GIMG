@@ -12,6 +12,13 @@
         <item name="android:backgroundTint">?attr/colorPrimary</item>
     </style>
 
+    <style name="ImageButtonSmall">
+        <item name="android:layout_width">@dimen/image_button_small</item>
+        <item name="android:layout_height">@dimen/image_button_small</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+    </style>
+
     <style name="BaseCheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:buttonTint">?attr/colorPrimary</item>
         <item name="android:textColor">?attr/colorFontPrimary</item>

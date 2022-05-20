@@ -8,8 +8,11 @@ class Alliance {
     var maxPerson:Int = 0//最大人数
     var lifetime:Int = 0
     var xiuwei:Int = 0
+    var xiuweiMulti:Int = 0
     var lingGen:String? = null
-    var zhu:Person? = null
+    var tianfu:Int = 0 //要求的tianfu number
+    var success:Int = 0//突破率
+    var zhu:String? = null
     var hu:MutableList<String> = mutableListOf()
     var persons:MutableList<String> = mutableListOf()
     var speedG1:Int = 0
@@ -17,4 +20,6 @@ class Alliance {
     var speedG2:Int = 0
     var speedG2List:MutableList<String> = mutableListOf()
 
+    var totalXiuwei:Long = 0// extra props
+    var isPinyinMode:Boolean = false// extra props
 }
