@@ -236,7 +236,7 @@
       "color": 2,
       "success": 10,
       "fault": 3,
-      "lifetime": 500,
+      "lifetime": 400,
       "bonus": 0
     },
     {
@@ -276,7 +276,7 @@
       "color": 3,
       "success": 5,
       "fault": 2,
-      "lifetime": 1500,
+      "lifetime": 1000,
       "bonus": 0
     },
     {
@@ -316,7 +316,7 @@
       "color": 3,
       "success": 2,
       "fault": 1,
-      "lifetime": 2000,
+      "lifetime": 1500,
       "bonus": 0
     },
     {
@@ -356,7 +356,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 2500,
+      "lifetime": 2000,
       "bonus": 0
     },
     {
@@ -396,7 +396,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 3000,
+      "lifetime": 2500,
       "bonus": 0
     },
     {
@@ -436,7 +436,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 5000,
+      "lifetime": 4000,
       "bonus": 0
     },
     {
@@ -476,7 +476,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 6000,
+      "lifetime": 4000,
       "bonus": 0
     },
     {
@@ -516,7 +516,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 10000,
+      "lifetime": 6000,
       "bonus": 0
     },
     {
@@ -556,7 +556,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 15000,
+      "lifetime": 8000,
       "bonus": 0
     },
     {
@@ -596,7 +596,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 20000,
+      "lifetime": 8000,
       "bonus": 0
     },
     {
@@ -636,7 +636,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 25000,
+      "lifetime": 10000,
       "bonus": 0
     },
     {
@@ -676,7 +676,7 @@
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 30000,
+      "lifetime": 12000,
       "bonus": 0
     },
     {
@@ -716,7 +716,7 @@
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 50000,
+      "lifetime": 15000,
       "bonus": 0
     },
     {
@@ -756,7 +756,7 @@
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 60000,
+      "lifetime": 20000,
       "bonus": 0
     },
     {
@@ -796,7 +796,7 @@
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 60000,
+      "lifetime": 20000,
       "bonus": 0
     },
     {
@@ -836,7 +836,7 @@
       "color": 8,
       "success": 1,
       "fault": 1,
-      "lifetime": 80000,
+      "lifetime": 20000,
       "bonus": 0
     },
     {
@@ -1322,7 +1322,7 @@
       "id": "6000111",
       "name": "神",
       "tianfu": 3,
-      "level": 40,
+      "level": 50,
       "lifetime": 50,
       "success": 10,
       "maxPerson": 5,

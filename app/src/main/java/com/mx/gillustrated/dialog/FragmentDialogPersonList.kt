@@ -44,7 +44,7 @@ class FragmentDialogPersonList  : DialogFragment() {
                 super.handleMessage(msg)
                 val dialog = reference.get()
                 if(msg?.what == 1 && dialog != null ){
-                    dialog.updateOnlineList()
+                    dialog.updateList()
                 }
             }
         }
@@ -70,15 +70,13 @@ class FragmentDialogPersonList  : DialogFragment() {
     fun onSwitchClickHandler(){
         val tag = mSwitchBtn.tag
         if(tag == "ON"){
-            mThreadRunnable = false
             mSwitchBtn.text = "offline"
             mSwitchBtn.tag = "OFF"
             setOfflineList()
         }else{
-            setOnlineList()
-            mThreadRunnable = true
             mSwitchBtn.text = "online"
             mSwitchBtn.tag = "ON"
+            setOnlineList()
         }
     }
 
@@ -116,14 +114,15 @@ class FragmentDialogPersonList  : DialogFragment() {
     }
 
     private fun init(){
-        setOnlineList()
+        mListView.adapter =  CultivationPersonListAdapter(this.context!!, mPersonData)
+        updateList()
         registerTimeLooper()
     }
 
     private fun registerTimeLooper(){
         Thread(Runnable {
             while (true){
-                Thread.sleep(2000)
+                Thread.sleep(5000)
                 if(mThreadRunnable){
                     val message = Message.obtain()
                     message.what = 1
@@ -133,34 +132,29 @@ class FragmentDialogPersonList  : DialogFragment() {
         }).start()
     }
 
-    private fun updateOnlineList(){
-        val dead = mutableListOf<String>()
-        mPersonData.forEach {
-            if(it.isDead ){
-                dead.add(it.id)
-            }
+    private fun updateList(){
+        if(mSwitchBtn.tag == "ON"){
+            setOnlineList()
+        }else{
+            setOfflineList()
         }
-        mPersonData.removeIf { dead.contains(it.id) }
-        mPersonData.sortByDescending { it.jingJieId.toInt() * 1000000 + it.xiuXei }
+    }
+
+    private fun setOfflineList(){
+        mPersonData.clear()
+        mPersonData.addAll(mContext.mDeadPersons)
+        mPersonData.sortByDescending { it.birthDay.last().second }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
         mTotalText.text = mPersonData.size.toString()
     }
 
-    private fun setOfflineList(){
-        mPersonData = mutableListOf()
-        val dead = mContext.mDeadPersons
-        dead.sortByDescending { it.birthDay.last().second }
-        mPersonData.addAll(dead)
-        mListView.adapter =  CultivationPersonListAdapter(this.context!!, mPersonData)
-        mTotalText.text = mPersonData.size.toString()
-    }
-
     private fun setOnlineList(){
-        mPersonData = mutableListOf()
+        mPersonData.clear()
         mPersonData.addAll(mContext.mPersons)
         mPersonData.sortByDescending {  it.jingJieId.toInt() * 1000000 + it.xiuXei }
-        mListView.adapter = CultivationPersonListAdapter(this.context!!, mPersonData)
+        (mListView.adapter as BaseAdapter).notifyDataSetChanged()
+        mListView.invalidateViews()
         mTotalText.text = mPersonData.size.toString()
     }
 

@@ -25,6 +25,13 @@ android {
             keyPassword 'android'
             storePassword 'android'
         }
+
+        release {
+            storeFile rootProject.file('sign/debug.keystore')
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
+        }
     }
     //测试CMAKE用，平时注掉
 //    externalNativeBuild {

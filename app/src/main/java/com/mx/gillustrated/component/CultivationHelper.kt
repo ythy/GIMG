@@ -145,11 +145,23 @@ object CultivationHelper {
     }
 
     private fun getLingGen(config:Config, parent: Pair<Person, Person>?):Triple<LingGen, String, String>{
-        val selectNumber = Random().nextInt(4)
+        var firestNumber = 10
+        var secondNumber = 10
+        if(parent != null){
+            if(parent.first.lingGenType.id == "1000006")
+                firestNumber = 5
+            else if(parent.first.lingGenType.id == "1000007")
+                firestNumber = 1
+            if(parent.second.lingGenType.id == "1000006")
+                secondNumber = 5
+            else if(parent.second.lingGenType.id == "1000007")
+                secondNumber = 1
+        }
+        val selectNumber = Random().nextInt(20 + firestNumber + secondNumber)
         var lingGenName = ""
         var lingGenId = ""
         var lingGen: LingGen? = null
-        if(parent == null || selectNumber < 2){
+        if(parent == null || selectNumber < 20){
             val lingGenList = config.lingGenType
             lingGenList.sortedBy { it.randomBasic }
             val sum = lingGenList.sumBy { it.randomBasic }
@@ -187,9 +199,10 @@ object CultivationHelper {
                 }
             }
         }else{
-            var maxPerson:Person = parent.first
-            if(selectNumber == 3){
-                maxPerson = parent.second
+            val maxPerson:Person = if(selectNumber in 20 until 20 + firestNumber){
+                parent.first
+            }else{
+                parent.second
             }
             lingGen = maxPerson.lingGenType
             lingGenId = maxPerson.lingGenId

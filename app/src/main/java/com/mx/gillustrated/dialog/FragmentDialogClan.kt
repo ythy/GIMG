@@ -118,7 +118,7 @@ class FragmentDialogClan : DialogFragment() {
             mDialogView.zhu.text = zhuName
         }
         mPersonList.clear()
-        mPersonList.addAll(mClan.persons.map { mContext.getPersonDetail(it) })
+        mPersonList.addAll(mClan.persons.mapNotNull { mContext.getOnlinePersonDetail(it) })
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
 

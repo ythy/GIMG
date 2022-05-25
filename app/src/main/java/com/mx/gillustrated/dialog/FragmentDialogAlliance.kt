@@ -124,13 +124,14 @@ class FragmentDialogAlliance : DialogFragment() {
         }
         var speedString = ""
         mAlliance.speedG1List.forEach {
-            val person =  mContext.getPersonDetail(it)
-            speedString += (if(mContext.pinyinMode) person.pinyinName else person.name) + " "
+            val person =  mContext.getOnlinePersonDetail(it)
+            if(person != null)
+                speedString += (if(mContext.pinyinMode) person.pinyinName else person.name) + " "
         }
         mDialogView.speeds.text = speedString
 
         mPersonList.clear()
-        mPersonList.addAll(mAlliance.persons.map { mContext.getPersonDetail(it) })
+        mPersonList.addAll(mAlliance.persons.mapNotNull { mContext.getOnlinePersonDetail(it) })
         mPersonList.sortByDescending { it.maxXiuWei }
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()

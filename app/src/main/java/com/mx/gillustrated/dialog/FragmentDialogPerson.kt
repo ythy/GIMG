@@ -89,7 +89,7 @@ class FragmentDialogPerson : DialogFragment() {
             val tag = mDialogView.be.tag
             val calendar = Calendar.getInstance()
             val timestamp = calendar.timeInMillis
-            if(tag == null || timestamp - tag.toString().toLong() > 1000){
+            if(tag == null || timestamp - tag.toString().toLong() > 3000){
                 Toast.makeText(mContext, "再次点击", Toast.LENGTH_SHORT).show()
                 mDialogView.be.tag = timestamp
             }else{
@@ -108,11 +108,8 @@ class FragmentDialogPerson : DialogFragment() {
                 Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
             }
         }else{
-            val success = mContext.revivePerson(mId)
-            if(success){
-                mThreadRunnable = true
-                Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
-            }
+            mContext.revivePerson(mId)
+            mThreadRunnable = true
         }
     }
 
@@ -154,6 +151,12 @@ class FragmentDialogPerson : DialogFragment() {
     fun init(){
         mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
+        val person = mContext.getPersonDetail(mId)
+        if(person == null){
+            onCloseHandler()
+            return
+        }
+        mPerson = person
         mPinyinMode = mContext.pinyinMode
         mDialogView.events.adapter = ArrayAdapter(this.context!!,
                 android.R.layout.simple_list_item_1, android.R.id.text1, mEventDataString)
@@ -177,11 +180,14 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun setProfile(){
-        val person = mContext.getPersonDetail(mId)
+        val person = mPerson
         try {
-           val imageDir = File(Environment.getExternalStorageDirectory(),
+            val imageDir = File(Environment.getExternalStorageDirectory(),
                    MConfig.SD_CULTIVATION_HEADER_PATH + "/" + person.gender)
-           val file = File(imageDir.path, person.profile.toString() + ".png")
+            var file = File(imageDir.path, person.profile.toString() + ".png")
+            if (!file.exists()) {
+                file = File(imageDir.path, person.profile.toString() + ".jpg")
+            }
            if (file.exists()) {
                val bmp = MediaStore.Images.Media.getBitmap(mContext.contentResolver, Uri.fromFile(file))
                mDialogView.profile.setImageBitmap(bmp)
@@ -194,8 +200,7 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun setTianfu(){
-        val person = mContext.getPersonDetail(mId)
-        val tianFus = person.tianfus
+        val tianFus = mPerson.tianfus
         if(tianFus.isNotEmpty()){
             tianFus.forEach {
                 val data = it
@@ -223,7 +228,12 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun updateView(){
-        mPerson = mContext.getPersonDetail(mId)
+        val person = mContext.getPersonDetail(mId)
+        if(person == null){
+            onCloseHandler()
+            return
+        }
+        mPerson = person
         if(mPerson.isDead){
             mThreadRunnable = false
             mBtnRevive.text = "Revive"
@@ -236,6 +246,7 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.alliance.text = mPerson.allianceName
         mDialogView.age.text = "${mPerson.age}/${mPerson.lifetime}"
         mDialogView.neigong.text = mPerson.maxXiuWei.toString()
+        mDialogView.clan.text = mContext.mClans.find { it.persons.contains(mPerson.id) }?.name ?: ""
         mDialogView.jingjie.text = mPerson.jinJieName
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"
@@ -364,6 +375,9 @@ class FragmentDialogPerson : DialogFragment() {
 
         @BindView(R.id.tv_neigong)
         lateinit var neigong:TextView
+
+        @BindView(R.id.tv_clan)
+        lateinit var clan:TextView
 
         @BindView(R.id.btn_be)
         lateinit var be:ImageButton
