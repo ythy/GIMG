@@ -658,7 +658,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleClanHandler(){
-        val clans = mClans.filter { it.persons.size > 0 }
+        val clans = mClans.filter { it.persons.size > 4 }
         if(clans.isEmpty() || clans.size < 4){
             Toast.makeText(this, "Clan less than 4", Toast.LENGTH_SHORT).show()
             return
@@ -679,13 +679,12 @@ class CultivationActivity : BaseActivity() {
             while (restClans.size > 1){
                 writeHistory("Clan Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
-                restClans = roundClanHandler(restClans, 10, 100000)
+                restClans = roundClanHandler(restClans, 5, 40000)
             }
             restClans[0].persons.forEach {
                 val person = getOnlinePersonDetail(it)
                 if(person != null){
-                    person.xiuXei += 100000
-                    addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} ${restClans[0].name} Clan Battle Winner")
+                    person.xiuXei += 200000
                 }
             }
             writeHistory("Clan Battle Winner: ${restClans[0].name}", null, 0)
@@ -717,14 +716,7 @@ class CultivationActivity : BaseActivity() {
             while (restAlliances.size > 1){
                 writeHistory("Bang Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
-                restAlliances = roundBangHandler(restAlliances, 5, 40000)
-            }
-            restAlliances[0].persons.forEach {
-                val person = getOnlinePersonDetail(it)
-                if(person != null){
-                    person.xiuXei += 40000
-                    addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} ${restAlliances[0].name} Bang Battle Winner")
-                }
+                restAlliances = roundBangHandler(restAlliances, 10, 100000)
             }
             writeHistory("Bang Battle Winner: ${restAlliances[0].name}", null, 0)
             val message = Message.obtain()
@@ -791,13 +783,13 @@ class CultivationActivity : BaseActivity() {
                             secondAlliancePersons[secondIndex], round, xiuWei)
                     if(result){
                         secondIndex++
-                        if(secondIndex == secondAlliancePersons.size){
+                        if(secondIndex == secondAlliancePersons.size || secondIndex == 10){
                             restAlliance.add(firstAlliance)
                             break
                         }
                     }else{
                         firstIndex++
-                        if(firstIndex == firstAlliancePersons.size){
+                        if(firstIndex == firstAlliancePersons.size || firstIndex == 10){
                             restAlliance.add(secondAlliance)
                             break
                         }
@@ -843,13 +835,13 @@ class CultivationActivity : BaseActivity() {
                             secondClanPersons[secondIndex], round, xiuWei)
                     if(result){
                         secondIndex++
-                        if(secondIndex == secondClanPersons.size){
+                        if(secondIndex == secondClanPersons.size || secondIndex == 5){
                             restClan.add(firstClan)
                             break
                         }
                     }else{
                         firstIndex++
-                        if(firstIndex == firstClanPersons.size){
+                        if(firstIndex == firstClanPersons.size || firstIndex == 5){
                             restClan.add(secondClan)
                             break
                         }

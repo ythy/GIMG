@@ -294,7 +294,6 @@ object CultivationHelper {
     fun battle(person1: Person, person2: Person, round:Int, xiuwei:Int):Boolean{
         val props1 = getProperty(person1)
         val props2 = getProperty(person2)
-        writeHistory("Battle Start: ${getPersonBasicString(person1)}  vs  ${getPersonBasicString(person2)}", null, 0)
         var hp1 = props1[0]
         var hp2  = props2[0]
         for (it in 0 until round){
@@ -328,14 +327,12 @@ object CultivationHelper {
         }
         val firstWin = hp1 >= hp2
         if(firstWin){
-            writeHistory("Battle End: ${person1.name}(${props1[2]}-${props1[3]}-${props1[4]}) win，HP$hp1 🔪${ hp2 - props2[0]} Exp+${xiuwei/5}", person1)
+            writeHistory("Battle End: ${person1.name}($hp1) 🔪 ${person2.name}($hp2)", person1)
             person1.xiuXei += xiuwei / 4
-            writeHistory("Battle End: ${person2.name}(${props2[2]}-${props2[3]}-${props2[4]}) fail，HP$hp2 🔪${hp1 - props1[0]} Exp-$xiuwei", person2)
             person2.xiuXei -= xiuwei
         }else{
-            writeHistory("Battle End: ${person2.name}(${props2[2]}-${props2[3]}-${props2[4]}) win，HP$hp2 🔪${hp1 - props1[0]} Exp+${xiuwei/5}", person2)
+            writeHistory("Battle End: ${person2.name}($hp2) 🔪 ${person1.name}($hp1)", person2)
             person2.xiuXei += xiuwei / 4
-            writeHistory("Battle End: ${person1.name}(${props1[2]}-${props1[3]}-${props1[4]}) fail，HP$hp1 🔪${hp2 - props2[0]} Exp-$xiuwei", person1)
             person1.xiuXei -= xiuwei
         }
         person1.HP += hp1 - props1[0]
