@@ -63,7 +63,6 @@ class FragmentDialogClan : DialogFragment() {
         newFragment.show(ft, "dialog_person_info")
     }
 
-    lateinit var mClan: Clan
     lateinit var mId:String
     lateinit var mContext:CultivationActivity
     lateinit var mDialogView:DialogView
@@ -88,11 +87,13 @@ class FragmentDialogClan : DialogFragment() {
     fun init(){
         mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
-        mClan = mContext.mClans.find { it.id == mId }!!
-        mDialogView.name.text = if(mContext.pinyinMode) PinyinUtil.convert(mClan.name) else mClan.name
-        mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
-        updateView()
-        registerTimeLooper()
+        val clan = mContext.mClans.find { it.id == mId }
+        if(clan != null){
+            mDialogView.name.text = if(mContext.pinyinMode) PinyinUtil.convert(clan.name) else clan.name
+            mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
+            updateView()
+            registerTimeLooper()
+        }
     }
 
     private fun registerTimeLooper(){
@@ -109,8 +110,13 @@ class FragmentDialogClan : DialogFragment() {
     }
 
     private fun updateView(){
-        mDialogView.total.text = mClan.persons.size.toString()
-        val zhu = if(mClan.persons.isEmpty()) null else mContext.getOnlinePersonDetail(mClan.persons[0])
+        val clan = mContext.mClans.find { it.id == mId }
+        if(clan == null){
+            onCloseHandler()
+            return
+        }
+        mDialogView.total.text = clan.persons.size.toString()
+        val zhu = if(clan.persons.isEmpty()) null else mContext.getOnlinePersonDetail(clan.persons[0])
         if(zhu == null){
             mDialogView.zhu.text = ""
         }else{
@@ -118,7 +124,7 @@ class FragmentDialogClan : DialogFragment() {
             mDialogView.zhu.text = zhuName
         }
         mPersonList.clear()
-        mPersonList.addAll(mClan.persons.mapNotNull { mContext.getOnlinePersonDetail(it) })
+        mPersonList.addAll(clan.persons.mapNotNull { mContext.getOnlinePersonDetail(it) })
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
 

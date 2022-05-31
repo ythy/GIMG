@@ -93,6 +93,13 @@
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
+            android:id="@+id/btn_time"
+            style="@style/ButtonSmall"
+            android:tag="ON"
+            android:text="Stop"/>
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="40dp"
             android:id="@+id/btn_save"
             style="@style/ButtonSmall"
             android:text="Save"/>

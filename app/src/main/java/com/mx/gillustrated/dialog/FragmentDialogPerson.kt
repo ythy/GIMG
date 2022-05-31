@@ -16,6 +16,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.common.MConfig
+import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import com.mx.gillustrated.vo.cultivation.PersonEvent
@@ -61,6 +62,12 @@ class FragmentDialogPerson : DialogFragment() {
         this.dismiss()
     }
 
+    @OnClick(R.id.tv_lingGen)
+    fun onLingGenClickHandler(){
+        val prop = mPerson.extraProperty.joinToString()
+        Toast.makeText(mContext, prop, Toast.LENGTH_SHORT).show()
+    }
+
     @OnClick(R.id.tv_partner)
     fun onPartnerClickHandler(){
         val partner = mContext.getOnlinePersonDetail(mPerson.partner) ?: return
@@ -96,6 +103,7 @@ class FragmentDialogPerson : DialogFragment() {
                 mPerson.partner = null
                 mPerson.partnerName = null
                 mDialogView.be.tag = null
+                setFamily()
             }
         }
     }
@@ -241,17 +249,19 @@ class FragmentDialogPerson : DialogFragment() {
             mBtnRevive.text = "Kill"
         }
         mSwitchFav.isChecked = mPerson.isFav
-        mDialogView.name.text = if(mPinyinMode) "${mPerson.pinyinName}(${mPerson.gender})-${mPerson.ancestorLevel}" else "${mPerson.name}(${mPerson.gender.props})-${mPerson.ancestorLevel}"
+        val lifeTurn = if(mPerson.lifeTurn == 0) "" else ".${mPerson.lifeTurn}"
+        mDialogView.name.text = if(mPinyinMode) "${mPerson.pinyinName}$lifeTurn(${mPerson.gender})-${mPerson.ancestorLevel}" else "${mPerson.name}$lifeTurn(${mPerson.gender.props})-${mPerson.ancestorLevel}"
         setFamily()
         mDialogView.alliance.text = mPerson.allianceName
         mDialogView.age.text = "${mPerson.age}/${mPerson.lifetime}"
         mDialogView.neigong.text = mPerson.maxXiuWei.toString()
+        mDialogView.props.text =  getProperty()
         mDialogView.clan.text = mContext.mClans.find { it.persons.contains(mPerson.id) }?.name ?: ""
         mDialogView.jingjie.text = mPerson.jinJieName
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"
         mDialogView.xiuweiAdd.text = ((mPerson.lingGenType.qiBasic + mPerson.extraXiuwei + mPerson.allianceXiuwei) * ((mPerson.extraXuiweiMulti + 100).toDouble() / 100 )).toInt().toString() + "(${mPerson.allianceXiuwei})"
-        val currentJinJie = mContext.getJingJie(mPerson.jingJieId)
+        val currentJinJie = CultivationHelper.getJingJie(mPerson.jingJieId)
         var bonus = 0
         if(currentJinJie.bonus > 0 && mPerson.lingGenType.jinBonus.isNotEmpty()){
             bonus = mPerson.lingGenType.jinBonus[currentJinJie.bonus - 1]
@@ -273,11 +283,15 @@ class FragmentDialogPerson : DialogFragment() {
 
     }
 
-    private fun setFamily(){
+    private fun getProperty():String{
+        val result = CultivationHelper.getProperty(mPerson)
+        return "${result[0]}/${result[1]} ${result[2]}-${result[3]}-${result[4]}"
+    }
 
+    private fun setFamily(){
         mDialogView.partner.text = if(mPerson.partnerName != null) "<${getContent(mPerson.partnerName)}>"  else ""
         mDialogView.partner.visibility = if(mPerson.partnerName != null) View.VISIBLE else View.GONE
-        mDialogView.be.visibility = if(mPerson.partnerName != null) View.VISIBLE else View.GONE
+        mDialogView.be.visibility = if(mPerson.partner != null &&  mContext.getOnlinePersonDetail(mPerson.partner) == null) View.VISIBLE else View.GONE
 
         val dadName = if(mPerson.parentName != null) "[${mPerson.parentName!!.first}" else null
         val mumName = if(mPerson.parentName != null) "${mPerson.parentName!!.second}]" else null
@@ -378,6 +392,10 @@ class FragmentDialogPerson : DialogFragment() {
 
         @BindView(R.id.tv_clan)
         lateinit var clan:TextView
+
+        @BindView(R.id.tv_props)
+        lateinit var props:TextView
+
 
         @BindView(R.id.btn_be)
         lateinit var be:ImageButton

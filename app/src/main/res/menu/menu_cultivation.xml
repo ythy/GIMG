@@ -8,4 +8,20 @@
         android:id="@+id/menu_disaster"
         android:orderInCategory="200"
         android:title="disaster"/>
+    <item
+        android:id="@+id/menu_disaster_all"
+        android:orderInCategory="210"
+        android:title="disasterAll"/>
+    <item
+        android:id="@+id/menu_battle_bang"
+        android:orderInCategory="300"
+        android:title="battleBang"/>
+    <item
+        android:id="@+id/menu_battle_clan"
+        android:orderInCategory="310"
+        android:title="battleClan"/>
+    <item
+        android:id="@+id/menu_battle_single"
+        android:orderInCategory="310"
+        android:title="battleSingle"/>
 </menu>

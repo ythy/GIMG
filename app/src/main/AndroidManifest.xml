@@ -72,7 +72,6 @@
             android:name=".activity.CultivationActivity"
             android:screenOrientation="portrait">
         </activity>
-
     </application>
 	
     

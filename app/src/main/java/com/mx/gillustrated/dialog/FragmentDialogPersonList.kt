@@ -152,7 +152,10 @@ class FragmentDialogPersonList  : DialogFragment() {
     private fun setOnlineList(){
         mPersonData.clear()
         mPersonData.addAll(mContext.mPersons)
-        mPersonData.sortByDescending {  it.jingJieId.toInt() * 1000000 + it.xiuXei }
+
+        mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
+                .thenByDescending { it.jingJieId }
+                .thenByDescending { it.xiuXei } )
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
         mTotalText.text = mPersonData.size.toString()

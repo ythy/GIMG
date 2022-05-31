@@ -105,6 +105,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:id="@+id/tv_neigong"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:id="@+id/tv_props"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

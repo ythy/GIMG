@@ -1,6 +1,8 @@
 package com.mx.gillustrated.adapter
 
+import android.annotation.TargetApi
 import android.graphics.Color
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -32,6 +34,7 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
         return arg0.toLong()
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
         var convertView = convertViews
         lateinit var component: Component
@@ -49,12 +52,15 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
         if(person != null && person.jinJieName.indexOf("-") == -1){
             var lingGen = person.lingGenName
             if(person.lingGenType.id == "1000006" || person.lingGenType.id == "1000007"){
-                lingGen = mContext.getTianName(person.lingGenId)
+                lingGen = CultivationHelper.getTianName(person.lingGenId)
             }
             val lingGenColor = CommonColors[person.lingGenType.color]
             val index = history.indexOf(lingGen)
             val spannable = SpannableString(history)
-            spannable.setSpan(ForegroundColorSpan(Color.parseColor(lingGenColor)), index, index + lingGen.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if(index > -1){
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(lingGenColor)), index, index + lingGen.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+
 //            if(history.indexOf(person.jinJieName) > -1){
 //                val jingJieColor = CommonColors[person.jinJieColor]
 //                val jingJieIndex = history.indexOf(person.jinJieName)

@@ -12,6 +12,8 @@ class Alliance {
     var lingGen:String? = null
     var tianfu:Int = 0 //要求的tianfu number
     var success:Int = 0//突破率
+    var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
+
     var zhu:String? = null
     var hu:MutableList<String> = mutableListOf()
     var persons:MutableList<String> = mutableListOf()

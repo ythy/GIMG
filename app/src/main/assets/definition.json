@@ -872,11 +872,11 @@
     {
       "id": "2000601",
       "name": "ZhuZai-1",
-      "max": 1000000,
+      "max": 800000,
       "color": 8,
       "success": 1,
       "fault": 1,
-      "lifetime": 100000,
+      "lifetime": 5000,
       "bonus": 0
     }
   ],
@@ -884,49 +884,60 @@
   "lingGenTian": [
     {
       "id": "1010001",
-      "name": "冰天灵根"
+      "name": "冰天灵根",
+      "property": [0,0,10,0,0,0,0,0]
     },
     {
       "id": "1010002",
-      "name": "殛雷灵根"
+      "name": "殛雷灵根",
+      "property": [0,10,0,0,0,0,0,0]
     },
     {
       "id": "1010003",
-      "name": "蓝银草灵根"
+      "name": "蓝银草灵根",
+      "property": [50,0,0,0,0,0,0,0]
     },
     {
       "id": "1010004",
-      "name": "风天灵根"
+      "name": "风天灵根",
+      "property": [0,0,0,10,0,0,0,0]
     },
     {
       "id": "1010005",
-      "name": "炎天灵根"
+      "name": "炎天灵根",
+      "property": [0,10,0,0,0,0,0,0]
     },
     {
       "id": "1010006",
-      "name": "狗狗🐕灵根"
+      "name": "狗狗🐕灵根",
+      "property": [0,0,0,10,0,0,0,0]
     },
     {
       "id": "1010007",
-      "name": "兔兔🐇灵根"
+      "name": "兔兔🐇灵根",
+      "property": [0,0,0,10,0,0,0,0]
     },
     {
       "id": "1010008",
-      "name": "猫猫🐱灵根"
+      "name": "猫猫🐱灵根",
+      "property": [50,0,0,0,0,0,0,0]
     },
     {
       "id": "1010009",
       "name": "变异帝灵根",
+      "property": [0,10,10,0,0,0,0,0],
       "type": 1
     },
     {
       "id": "1010010",
       "name": "变异娲灵根",
+      "property": [50,10,0,0,0,0,0,0],
       "type": 1
     },
     {
       "id": "1010011",
       "name": "变异仙灵根",
+      "property": [0,10,0,10,0,0,0,0],
       "type": 1
     }
   ],
@@ -1032,6 +1043,14 @@
       "weight": 100
     },
     {
+      "id": "4000106",
+      "name": "Power6",
+      "type": 1,
+      "bonus": 80,
+      "rarity": 5,
+      "weight": 200
+    },
+    {
       "id": "4000201",
       "name": "Clever1",
       "type": 2,
@@ -1072,6 +1091,14 @@
       "weight": 200
     },
     {
+      "id": "4000206",
+      "name": "Clever6",
+      "type": 2,
+      "bonus": 300,
+      "rarity": 5,
+      "weight": 300
+    },
+    {
       "id": "4000301",
       "name": "Life1",
       "type": 3,
@@ -1104,6 +1131,22 @@
       "weight": 100
     },
     {
+      "id": "4000305",
+      "name": "Life5",
+      "type": 3,
+      "bonus": 300,
+      "rarity": 4,
+      "weight": 200
+    },
+    {
+      "id": "4000306",
+      "name": "Life6",
+      "type": 3,
+      "bonus": 450,
+      "rarity": 5,
+      "weight": 300
+    },
+    {
       "id": "4000401",
       "name": "Top3",
       "type": 4,
@@ -1126,6 +1169,14 @@
       "bonus": 10,
       "rarity": 4,
       "weight": 200
+    },
+    {
+      "id": "4000404",
+      "name": "Top6",
+      "type": 4,
+      "bonus": 15,
+      "rarity": 5,
+      "weight": 500
     },
     {
       "id": "4000501",
@@ -1166,6 +1217,14 @@
       "bonus": 20,
       "rarity": 4,
       "weight": 200
+    },
+    {
+      "id": "4000506",
+      "name": "Fu6",
+      "type": 5,
+      "bonus": 30,
+      "rarity": 5,
+      "weight": 300
     }
   ],
 
@@ -1235,6 +1294,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "金",
+      "property": [0,10,0,0,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1243,6 +1303,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "水",
+      "property": [0,0,10,0,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1251,6 +1312,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "木",
+      "property": [50,0,0,0,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1259,6 +1321,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "火",
+      "property": [0,5,0,5,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1267,24 +1330,29 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "土",
+      "property": [0,5,5,0,0,0,0,0],
       "speedG1": 20
     },
     {
       "id": "6000106",
       "name": "隐",
+      "tianfu": 1,
       "level": 10,
       "lifetime": 0,
       "maxPerson": 20,
       "xiuwei": 20,
+      "property": [0,10,10,0,0,0,0,0],
       "speedG1": 20
     },
     {
       "id": "6000107",
       "name": "魔",
+      "tianfu": 1,
       "level": 10,
       "lifetime": -50,
       "maxPerson": 20,
       "xiuwei": 60,
+      "property": [0,20,0,0,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1295,6 +1363,7 @@
       "lifetime": 0,
       "maxPerson": 10,
       "xiuwei": 40,
+      "property": [0,30,10,0,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1305,6 +1374,7 @@
       "lifetime": 50,
       "maxPerson": 10,
       "xiuwei": 20,
+      "property": [50,10,10,0,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1316,6 +1386,7 @@
       "maxPerson": 10,
       "xiuwei": 20,
       "xiuweiMulti": 50,
+      "property": [20,10,10,10,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1327,6 +1398,7 @@
       "success": 10,
       "maxPerson": 5,
       "xiuwei": 40,
+      "property": [50,20,10,10,0,0,0,0],
       "speedG1": 30
     }
   ]

@@ -53,6 +53,12 @@ class FragmentDialogAlliance : DialogFragment() {
 
     }
 
+    @OnClick(R.id.tv_xiuwei)
+    fun onXiuweiClickHandler(){
+        val prop = mAlliance.property.joinToString()
+        Toast.makeText(mContext, prop, Toast.LENGTH_SHORT).show()
+    }
+
     @OnItemClick(R.id.lv_person)
     fun onItemClick(position:Int){
         val ft = mContext.supportFragmentManager.beginTransaction()
@@ -122,6 +128,17 @@ class FragmentDialogAlliance : DialogFragment() {
             val zhuName = if(mContext.pinyinMode) zhu.pinyinName else zhu.name
             mDialogView.zhu.text = zhuName
         }
+        val huName = mutableListOf<String>()
+        if(mAlliance.hu.isNotEmpty()){
+            mAlliance.hu.forEach {
+                val hu = mContext.getOnlinePersonDetail(it)
+                if(hu != null){
+                    huName.add(if(mContext.pinyinMode) hu.pinyinName else hu.name)
+                }
+            }
+        }
+        mDialogView.hu.text = if(huName.isEmpty()) "" else "${huName.joinToString(" ", "<", ">")}"
+
         var speedString = ""
         mAlliance.speedG1List.forEach {
             val person =  mContext.getOnlinePersonDetail(it)
@@ -154,6 +171,9 @@ class FragmentDialogAlliance : DialogFragment() {
 
         @BindView(R.id.tv_zhu)
         lateinit var zhu:TextView
+
+        @BindView(R.id.tv_hu)
+        lateinit var hu:TextView
 
         @BindView(R.id.lv_person)
         lateinit var persons:ListView
