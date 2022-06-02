@@ -1,6 +1,7 @@
 package com.mx.gillustrated.vo.cultivation
 
 import com.mx.gillustrated.util.NameUtil
+import java.util.*
 
 class Person{
         var id:String = ""
@@ -10,9 +11,9 @@ class Person{
         lateinit var lingGenType: LingGen
         var lingGenId:String = "" //Tian spec
         var lingGenName:String = ""
-        var birthDay:MutableList<Pair<Int, Int>> = mutableListOf()
+        var birthDay:MutableList<Pair<Int, Int>> =  Collections.synchronizedList(mutableListOf())
         var lifetime:Int = 100
-        var events:MutableList<PersonEvent> = mutableListOf()
+        var events:MutableList<PersonEvent> = Collections.synchronizedList(mutableListOf())
         var tianfus:MutableList<TianFu> = mutableListOf()
         var isDead:Boolean = false
         var isFav:Boolean = false
@@ -21,7 +22,7 @@ class Person{
         var partnerName:String? = null //赋值一次
         var parent:Pair<String, String>? = null//唯一
         var parentName:Pair<String, String>? = null//赋值一次，显示用
-        var children:MutableList<String> = mutableListOf()
+        var children:MutableList<String> =  Collections.synchronizedList(mutableListOf())
         var lifeTurn:Int = 0//
 
         var HP:Int = 10

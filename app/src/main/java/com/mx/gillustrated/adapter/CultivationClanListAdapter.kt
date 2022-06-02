@@ -17,7 +17,7 @@ import com.mx.gillustrated.vo.cultivation.Alliance
 import com.mx.gillustrated.vo.cultivation.Clan
 import com.mx.gillustrated.vo.cultivation.Person
 
-class CultivationClanListAdapter  constructor(mContext: Context, private val allPerson: MutableList<Person>, private val list: List<Clan>) : BaseAdapter() {
+class CultivationClanListAdapter  constructor(mContext: Context, private val list: List<Clan>) : BaseAdapter() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
 
@@ -47,12 +47,15 @@ class CultivationClanListAdapter  constructor(mContext: Context, private val all
             component = convertView.tag as ViewHolder
 
         val clan = list[arg0]
-        val zhu = if(clan.persons.isEmpty()) null else allPerson.find { clan.persons[0] == it.id }
-        val pinyinMode = CultivationHelper.isPinyinMode(allPerson[0])
+        val personList = clan.clanPersonList.filter { !it.isDead }
+        val pinyinMode =  CultivationHelper.isPinyinMode(clan.clanPersonList[0])
 
         component.name.text = if(pinyinMode) PinyinUtil.convert(clan.name) else clan.name
-        component.zhu.text = if(pinyinMode) zhu?.pinyinName else zhu?.name
-        component.persons.text = clan.persons.size.toString()
+        if(personList.isNotEmpty())
+            component.zhu.text = if(pinyinMode) personList[0].pinyinName else personList[0].name
+        else
+            component.zhu.text = ""
+        component.persons.text = personList.size.toString()
         component.total.text  = clan.totalXiuwei.toString()
         return convertView
     }

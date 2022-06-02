@@ -159,7 +159,7 @@ class FragmentDialogPerson : DialogFragment() {
     fun init(){
         mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
-        val person = mContext.getPersonDetail(mId)
+        val person = mContext.getOnlinePersonDetail(mId)
         if(person == null){
             onCloseHandler()
             return
@@ -236,7 +236,7 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun updateView(){
-        val person = mContext.getPersonDetail(mId)
+        val person = mContext.getOnlinePersonDetail(mId)
         if(person == null){
             onCloseHandler()
             return
@@ -256,7 +256,7 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.age.text = "${mPerson.age}/${mPerson.lifetime}"
         mDialogView.neigong.text = mPerson.maxXiuWei.toString()
         mDialogView.props.text =  getProperty()
-        mDialogView.clan.text = mContext.mClans.find { it.persons.contains(mPerson.id) }?.name ?: ""
+        mDialogView.clan.text = mContext.mClans.find { it.id == mPerson.ancestorId }?.name ?: ""
         mDialogView.jingjie.text = mPerson.jinJieName
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"
@@ -291,7 +291,8 @@ class FragmentDialogPerson : DialogFragment() {
     private fun setFamily(){
         mDialogView.partner.text = if(mPerson.partnerName != null) "<${getContent(mPerson.partnerName)}>"  else ""
         mDialogView.partner.visibility = if(mPerson.partnerName != null) View.VISIBLE else View.GONE
-        mDialogView.be.visibility = if(mPerson.partner != null &&  mContext.getOnlinePersonDetail(mPerson.partner) == null) View.VISIBLE else View.GONE
+        val partner = mContext.getOnlinePersonDetail(mPerson.partner)
+        mDialogView.be.visibility = if( partner == null || partner.isDead) View.VISIBLE else View.GONE
 
         val dadName = if(mPerson.parentName != null) "[${mPerson.parentName!!.first}" else null
         val mumName = if(mPerson.parentName != null) "${mPerson.parentName!!.second}]" else null
@@ -300,11 +301,11 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.parentDad.visibility = if(mPerson.parentName != null) View.VISIBLE else View.GONE
         mDialogView.parentMum.visibility = if(mPerson.parentName != null) View.VISIBLE else View.GONE
 
-        val children = mPerson.children.filter { mContext.getOnlinePersonDetail(it) != null }.map { mContext.getOnlinePersonDetail(it) }
+        val children = mPerson.children.mapNotNull { mContext.getOnlinePersonDetail(it) }.filter { !it.isDead }
         mDialogView.children.removeAllViews()
         if(children.isNotEmpty()){
             children.forEach {
-                val person = it!!
+                val person = it
                 val textView = TextView(this.context)
                 textView.text =  if(mPinyinMode) person.pinyinName else person.name
                 textView.setOnClickListener { _->

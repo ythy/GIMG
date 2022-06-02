@@ -115,16 +115,16 @@ class FragmentDialogClan : DialogFragment() {
             onCloseHandler()
             return
         }
-        mDialogView.total.text = clan.persons.size.toString()
-        val zhu = if(clan.persons.isEmpty()) null else mContext.getOnlinePersonDetail(clan.persons[0])
-        if(zhu == null){
-            mDialogView.zhu.text = ""
-        }else{
-            val zhuName = if(mContext.pinyinMode) zhu.pinyinName else zhu.name
-            mDialogView.zhu.text = zhuName
+        val personList = clan.clanPersonList.filter { !it.isDead }
+        if(personList.isEmpty()){
+            onCloseHandler()
+            return
         }
+        mDialogView.total.text = personList.size.toString()
+        personList.sortedBy { it.ancestorLevel }
+        mDialogView.zhu.text = if(mContext.pinyinMode) personList[0].pinyinName else personList[0].name
         mPersonList.clear()
-        mPersonList.addAll(clan.persons.mapNotNull { mContext.getOnlinePersonDetail(it) })
+        mPersonList.addAll(personList)
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
 

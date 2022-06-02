@@ -59,6 +59,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
 
     @OnClick(R.id.btn_close)
     fun onCloseHandler(){
+        mThreadRunnable = false
         this.dismiss()
     }
 
@@ -90,7 +91,8 @@ class FragmentDialogAllianceList  : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setList()
+        mListView.adapter = AllianceListAdapter(this.context!!, mAllianceListData)
+        updateView()
         registerTimeLooper()
     }
 
@@ -107,19 +109,14 @@ class FragmentDialogAllianceList  : DialogFragment() {
         }).start()
     }
 
-    private fun setList(){
+    private fun updateView(){
         mAllianceListData.clear()
         mAllianceListData.addAll(mContext.mAlliance)
         mAllianceListData.forEach { it.isPinyinMode = mContext.pinyinMode }
         mAllianceListData.sortByDescending { it.totalXiuwei }
-        mListView.adapter = AllianceListAdapter(this.context!!, mAllianceListData)
-        mTotalText.text = mAllianceListData.sumBy { it.persons.size }.toString()
-    }
-
-    fun updateView(){
-        mAllianceListData.sortByDescending { it.totalXiuwei }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
-        mTotalText.text = mAllianceListData.sumBy { it.persons.size }.toString()
+        mTotalText.text = mAllianceListData.sumBy { it.personList.count{ p->!p.isDead } }.toString()
     }
+
 }

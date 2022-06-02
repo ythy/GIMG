@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import butterknife.BindView
@@ -57,11 +58,16 @@ class FragmentDialogClanList  : DialogFragment() {
 
     @OnClick(R.id.btn_close)
     fun onCloseHandler(){
+        mThreadRunnable = false
         this.dismiss()
     }
 
     @OnItemClick(R.id.lv_clan)
     fun onItemClick(position:Int){
+        if(mClanListData[position].clanPersonList.count { !it.isDead } == 0){
+            Toast.makeText(mContext, "size 0", Toast.LENGTH_SHORT).show()
+            return
+        }
         val ft = mContext.supportFragmentManager.beginTransaction()
         // Create and show the dialog.
         val newFragment = FragmentDialogClan.newInstance()
@@ -88,7 +94,8 @@ class FragmentDialogClanList  : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setList()
+        mListView.adapter = CultivationClanListAdapter(this.context!!, mClanListData)
+        updateView()
         registerTimeLooper()
     }
 
@@ -105,15 +112,12 @@ class FragmentDialogClanList  : DialogFragment() {
         }).start()
     }
 
-    private fun setList(){
-        mClanListData.clear()
-        mClanListData.addAll(mContext.mClans)
-        mClanListData.sortByDescending { it.totalXiuwei }
-        mListView.adapter = CultivationClanListAdapter(this.context!!, mContext.mPersons, mClanListData)
-        mTotalText.text = mClanListData.size.toString()
-    }
-
     fun updateView(){
+        mClanListData.clear()
+        mContext.mClans.forEach {
+            it.totalXiuwei = it.clanPersonList.filter { c->!c.isDead }.sumByDouble { s->s.maxXiuWei.toDouble() }.toLong()
+        }
+        mClanListData.addAll(mContext.mClans)
         mClanListData.sortByDescending { it.totalXiuwei }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()

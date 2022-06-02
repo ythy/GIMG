@@ -120,39 +120,33 @@ class FragmentDialogAlliance : DialogFragment() {
     }
 
     private fun updateView(){
-        mDialogView.total.text = mAlliance.persons.size.toString()
-        val zhu = mContext.getOnlinePersonDetail(mAlliance.zhu)
-        if(zhu == null){
+        if(mAlliance.zhuPerson == null){
             mDialogView.zhu.text = ""
         }else{
-            val zhuName = if(mContext.pinyinMode) zhu.pinyinName else zhu.name
+            val zhuName = if(mContext.pinyinMode) mAlliance.zhuPerson!!.pinyinName else mAlliance.zhuPerson!!.name
             mDialogView.zhu.text = zhuName
         }
         val huName = mutableListOf<String>()
-        if(mAlliance.hu.isNotEmpty()){
-            mAlliance.hu.forEach {
-                val hu = mContext.getOnlinePersonDetail(it)
-                if(hu != null){
-                    huName.add(if(mContext.pinyinMode) hu.pinyinName else hu.name)
-                }
+        if(mAlliance.huPersons.isNotEmpty()){
+            mAlliance.huPersons.forEach {
+                huName.add(if(mContext.pinyinMode) it.pinyinName else it.name)
             }
         }
         mDialogView.hu.text = if(huName.isEmpty()) "" else "${huName.joinToString(" ", "<", ">")}"
 
         var speedString = ""
-        mAlliance.speedG1List.forEach {
-            val person =  mContext.getOnlinePersonDetail(it)
-            if(person != null)
-                speedString += (if(mContext.pinyinMode) person.pinyinName else person.name) + " "
+        mAlliance.speedG1PersonList.forEach {
+            speedString += (if(mContext.pinyinMode) it.pinyinName else it.name) + " "
         }
         mDialogView.speeds.text = speedString
 
         mPersonList.clear()
-        mPersonList.addAll(mAlliance.persons.mapNotNull { mContext.getOnlinePersonDetail(it) })
+        mPersonList.addAll(mAlliance.personList.filter { !it.isDead })
         mPersonList.sortByDescending { it.maxXiuWei }
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
 
+        mDialogView.total.text = mPersonList.size.toString()
     }
 
     class DialogView constructor(view: View){

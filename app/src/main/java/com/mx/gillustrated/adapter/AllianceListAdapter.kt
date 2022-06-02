@@ -41,7 +41,7 @@ class AllianceListAdapter  constructor(mContext: Context, private val list: List
             component = convertView.tag as ViewHolder
 
         component.name.text = if(list[arg0].isPinyinMode) PinyinUtil.convert(list[arg0].name) else list[arg0].name
-        component.persons.text = list[arg0].persons.size.toString()
+        component.persons.text = list[arg0].personList.filter { !it.isDead }.size.toString()
         component.total.text  = list[arg0].totalXiuwei.toString()
         return convertView
     }

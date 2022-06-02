@@ -142,8 +142,8 @@ class FragmentDialogPersonList  : DialogFragment() {
 
     private fun setOfflineList(){
         mPersonData.clear()
-        mPersonData.addAll(mContext.mDeadPersons)
-        mPersonData.sortByDescending { it.birthDay.last().second }
+        mPersonData.addAll(mContext.mPersons.filter { it.isDead })
+        mPersonData.sortByDescending { it.lifeTurn * 1000000 + it.jinJieMax}
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
         mTotalText.text = mPersonData.size.toString()
@@ -151,7 +151,7 @@ class FragmentDialogPersonList  : DialogFragment() {
 
     private fun setOnlineList(){
         mPersonData.clear()
-        mPersonData.addAll(mContext.mPersons)
+        mPersonData.addAll(mContext.mPersons.filter { !it.isDead })
 
         mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
                 .thenByDescending { it.jingJieId }

@@ -14,7 +14,7 @@ object CultivationHelper {
 
     lateinit var mConfig:Config
     var mCurrentXun:Int = 0//当前时间
-    var mHistoryTempData:MutableList<HistoryInfo> = mutableListOf()
+    var mHistoryTempData:MutableList<HistoryInfo> = Collections.synchronizedList(mutableListOf())
     fun writeHistory(content:String, person: Person?, type:Int = 1){
         mHistoryTempData.add(0, HistoryInfo(content, person, type))
     }
@@ -25,14 +25,14 @@ object CultivationHelper {
         }else{
             allAlliance.filter { it.level == 1 }.toMutableList()
         }
-        options.addAll(allAlliance.filter { it.level > 1 && person.tianfus.filter { f->f.rarity >=2 }.size >= it.tianfu  && it.persons.size < it.maxPerson })
+        options.addAll(allAlliance.filter { it.level > 1 && person.tianfus.filter { f->f.rarity >=2 }.size >= it.tianfu  && it.personList.filter { p-> !p.isDead }.size < it.maxPerson })
         val random = Random().nextInt(options.map { 100 / it.level }.sum() )
         var count = 0
         for (i in 0 until options.size){
             val alliance = options[i]
             count += 100 / alliance.level
             if(random < count){
-                alliance.persons.add(person.id)
+                alliance.personList.add(person)
                 person.allianceId = alliance.id
                 person.allianceName = alliance.name
                 person.allianceSuccess = alliance.success
@@ -44,85 +44,60 @@ object CultivationHelper {
         }
     }
 
-    fun updateAllianceGain(allAlliance: MutableList<Alliance>, allPerson: MutableList<Person>){
+    fun updateAllianceGain(allAlliance: MutableList<Alliance>, updated:Boolean = false){
         allAlliance.forEach { alliance->
-            val fixedPersons = alliance.persons.toList()
-            val fixedAllPerson = allPerson.toList()
-            val persons = fixedPersons.mapNotNull { fixedAllPerson.find { p -> p.id == it } }.toMutableList()
-            alliance.totalXiuwei = persons.sumByDouble { it.maxXiuWei.toDouble() }.toLong()
-            alliance.persons = persons.map { it.id }.toMutableList()
-            if(persons.isNotEmpty()){
-                persons.sortBy { it.birthDay.last().first }
-                val zhu = persons.first()
-                alliance.zhu = zhu.id
-                if(alliance.hu.isNotEmpty()){
-                    alliance.hu.removeIf { fixedAllPerson.find { f->f.id == it }  == null }
-                    if(alliance.hu.isEmpty()){
-                       updateHuInAlliance(alliance, persons)
-                    }
+            alliance.totalXiuwei = alliance.personList.sumByDouble { it.maxXiuWei.toDouble() }.toLong()
+            val alivePersons = alliance.personList.filter { !it.isDead }
+            if(alivePersons.isNotEmpty()){
+                var zhu = alivePersons.first()
+                alivePersons.forEach {
+                    if (it.birthDay.last().first < zhu.birthDay.last().first)
+                        zhu = it
+                }
+                alliance.zhuPerson = zhu
+
+                if(updated) {
+                    updateHuInAlliance(alliance, alivePersons)
+                    updateG1InAlliance(alliance, alivePersons.toMutableList())
                 }
 
-                //10 nian 一次，Fu 范围内必中
-                if(mCurrentXun % 120 == 0) {
-                    updateHuInAlliance(alliance, persons)
-                    val base = persons.toMutableList()
-                    base.sortByDescending { it.extraSpeed }
-                    val result = mutableListOf<String>()
-                    var total = Math.min(10, Math.max(1, persons.size / 4))
-                    val specBase = base.filter { it.extraSpeed > 0 }.toMutableList()
-                    while (total-- > 0) {
-                        if(specBase.isNotEmpty()){
-                            val totalRandom = specBase.map { it.extraSpeed }.sum()
-                            val random = Random().nextInt(totalRandom)
-                            var count = 0
-                            for (p in 0 until specBase.size ){
-                                count += base[p].extraSpeed
-                                if(random < count){
-                                    val selectPerson = specBase[p]
-                                    specBase.remove(selectPerson)
-                                    base.remove(selectPerson)
-                                    result.add(selectPerson.id)
-                                    break
-                                }
-                            }
-                        }else{
-                            val random = Random().nextInt(base.size)
-                            val selectPerson = base[random]
-                            base.remove(selectPerson)
-                            result.add(selectPerson.id)
-                        }
-                    }
-                    alliance.speedG1List = result
-                }
-
-                persons.forEach { p->
+                alivePersons.forEach { p->
                     p.allianceXiuwei = alliance.xiuwei
-                    if(alliance.speedG1List.find { it == p.id} != null){
+                    if(alliance.speedG1PersonList.find { it.id == p.id} != null){
                         p.allianceXiuwei += alliance.speedG1
                     }
-                    if(p.id == alliance.zhu){
+                    if(p.id == alliance.zhuPerson?.id){
                         p.allianceXiuwei += 20
                     }
-                    if(alliance.hu.find { it == p.id } != null){
+                    if(alliance.huPersons.find { it.id == p.id } != null){
                         p.allianceXiuwei += 10
                     }
                 }
             }else{
-                alliance.zhu = null
-                alliance.hu = mutableListOf()
+                alliance.zhuPerson = null
+                alliance.huPersons.clear()
             }
         }
     }
 
-    private fun updateHuInAlliance(alliance: Alliance, persons:MutableList<Person>){
-        val huSize =  Math.max(1,  persons.size / 10)
+    private fun updateHuInAlliance(alliance: Alliance, persons:List<Person>){
+        val huSize =   Math.min(4, Math.max(1, persons.size / 10))
         val hu = mutableListOf<Person>()
         for(i in 0 until huSize){
             val random = Random().nextInt(persons.size)
             if(hu.find { persons[random].id == it.id } == null)
                 hu.add(persons[random])
         }
-        alliance.hu = hu.map { it.id }.toMutableList()
+        alliance.huPersons.clear()
+        alliance.huPersons.addAll(hu)
+    }
+
+    private fun updateG1InAlliance(alliance: Alliance, persons:MutableList<Person>){
+        val total = Math.min(10, Math.max(1, persons.size / 4))
+        persons.sortByDescending { it.extraSpeed }
+        alliance.speedG1PersonList.clear()
+        alliance.speedG1PersonList.addAll(persons.filterIndexed { index, _ -> index < total })
+
     }
 
     private fun getTianFu(parent: Pair<Person, Person>?):MutableList<TianFu>{
@@ -279,6 +254,8 @@ object CultivationHelper {
             result.parentName = Pair(parent.first.name, parent.second.name)
             result.ancestorLevel = parent.first.ancestorLevel + 1
             result.ancestorId = parent.first.ancestorId ?: parent.first.id
+        }else{
+            result.ancestorId = result.id
         }
 
         return result
@@ -389,18 +366,15 @@ object CultivationHelper {
         person.events.add(personEvent)
     }
 
-    //20年选定一次
     fun updatePartner(allPerson: MutableList<Person>){
-        if(mCurrentXun % 240 == 0) {
-            val males = allPerson.filter { it.gender == NameUtil.Gender.Male && it.partner == null && (it.lifetime - it.age > 200) }
-            val females = allPerson.filter { it.gender == NameUtil.Gender.Female && it.partner == null && (it.lifetime - it.age > 200) }
-            if(males.size > 5 && females.size > 5){
-                val man = males[Random().nextInt(males.size)]
-                val woman = females.sortedBy { Math.abs(man.age - it.age) }[0]
-                if(man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId)
-                    return
-                createPartner(man, woman)
-            }
+        val males = allPerson.filter { !it.isDead && it.gender == NameUtil.Gender.Male && it.partner == null && (it.lifetime - it.age > 200) }
+        val females = allPerson.filter { !it.isDead && it.gender == NameUtil.Gender.Female && it.partner == null && (it.lifetime - it.age > 200) }
+        if(males.size > 5 && females.size > 5){
+            val man = males[Random().nextInt(males.size)]
+            val woman = females.sortedBy { Math.abs(man.age - it.age) }[0]
+            if(man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId)
+                return
+            createPartner(man, woman)
         }
     }
 
@@ -458,7 +432,7 @@ object CultivationHelper {
         }
     }
 
-    val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#4C0404")
+    val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA")
     private val LevelMapper = mapOf(
             1 to "初期", 2 to "中期", 3 to "后期", 4 to "圆满"
     )
