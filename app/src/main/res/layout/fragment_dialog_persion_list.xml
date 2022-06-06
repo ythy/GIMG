@@ -28,7 +28,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2">
+            android:layout_weight="1">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,13 +42,20 @@
            <Button
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:id="@+id/btn_be"
+               android:visibility="gone"
+               android:text="be"/>
+           <Button
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
                android:id="@+id/btn_switch"
+               android:layout_marginStart="5dp"
                android:tag="ON"
                android:text="online"/>
            <Button
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_marginStart="10dp"
+               android:layout_marginStart="5dp"
                android:id="@+id/btn_close"
                android:text="OK"/>
        </LinearLayout>

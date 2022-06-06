@@ -263,9 +263,56 @@ object CultivationHelper {
 
     fun getPersonBasicString(person:Person, detail:Boolean = true):String{
         return if(detail)
-            "${if(person.jinJieName.indexOf("-") > -1) person.pinyinName else person.name} (${person.age}/${person.lifetime}:${person.jinJieName}) ${person.lingGenName} "
+            "${person.name} (${person.age}/${person.lifetime}:${person.jinJieName}) ${person.lingGenName} "
         else
             ""
+    }
+
+    fun battleEnemy(person: Person, enemy: Enemy, xiuwei:Int):Boolean{
+        val props1 = getProperty(person)
+        val props2 = mutableListOf(enemy.HP, enemy.maxHP, enemy.attack, enemy.defence, enemy.speed)
+        var hp1 = props1[0]
+        var hp2  = props2[0]
+        while (true){
+            val first = if(props1[4] == props2[4]) Random().nextInt(2) == 0
+            else props1[4] > props2[4]
+            if(first){
+                val hpReduced2 = Math.max(1, props1[2] - props2[3])
+                hp2 -= hpReduced2
+                if(hp2 > 0){
+                    val hpReduced1 = Math.max(1, props2[2] - props1[3])
+                    hp1 -= hpReduced1
+                    if(hp1 <= 0){
+                        break
+                    }
+                }else{
+                    break
+                }
+            }else{
+                val hpReduced1 = Math.max(1, props2[2] - props1[3])
+                hp1 -= hpReduced1
+                if(hp1 > 0){
+                    val hpReduced2 = Math.max(1, props1[2] - props2[3])
+                    hp2 -= hpReduced2
+                    if(hp2 <= 0){
+                        break
+                    }
+                }else{
+                    break
+                }
+            }
+        }
+        val firstWin = hp1 >= hp2
+        if(firstWin){
+            writeHistory("Battle End: ${person.name}($hp1) 🔪 ${enemy.name}($hp2)", person)
+            person.xiuXei += xiuwei
+        }else{
+            writeHistory("Battle End: ${enemy.name}($hp2) 🔪 ${person.name}($hp1)", person)
+            person.xiuXei -= xiuwei
+        }
+        person.HP += hp1 - props1[0]
+        enemy.HP += hp2 - props2[0]
+        return firstWin
     }
 
     fun battle(person1: Person, person2: Person, round:Int, xiuwei:Int):Boolean{

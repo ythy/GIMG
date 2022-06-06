@@ -292,7 +292,7 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.partner.text = if(mPerson.partnerName != null) "<${getContent(mPerson.partnerName)}>"  else ""
         mDialogView.partner.visibility = if(mPerson.partnerName != null) View.VISIBLE else View.GONE
         val partner = mContext.getOnlinePersonDetail(mPerson.partner)
-        mDialogView.be.visibility = if( partner == null || partner.isDead) View.VISIBLE else View.GONE
+        mDialogView.be.visibility = if(mPerson.partner != null && partner == null ) View.VISIBLE else View.GONE
 
         val dadName = if(mPerson.parentName != null) "[${mPerson.parentName!!.first}" else null
         val mumName = if(mPerson.parentName != null) "${mPerson.parentName!!.second}]" else null

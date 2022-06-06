@@ -36,15 +36,16 @@ class CultivationActivity : BaseActivity() {
 
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
-    var mSpeed = 10L//流失速度
+    var mSpeed = 1L//流失速度
     var pinyinMode:Boolean = true //是否pinyin模式
-    private val mInitPersonCount = 500//初始化Person数量
+    private val mInitPersonCount = 2000//初始化Person数量
     var readRecord = true
     var maxFemaleProfile = 0 // 1号保留不用
     var maxMaleProfile = 0 // 默认0号
     var mPersons:MutableList<Person> = Collections.synchronizedList(mutableListOf())
     var mAlliance:MutableList<Alliance> =  Collections.synchronizedList(mutableListOf())
     var mClans:MutableList<Clan> =  Collections.synchronizedList(mutableListOf())
+    var mEnemys:MutableList<Enemy> =  Collections.synchronizedList(mutableListOf())
     private var mHistoryData = mutableListOf<CultivationHelper.HistoryInfo>()
     private val mTimeHandler:TimeHandler = TimeHandler(this)
 
@@ -192,6 +193,13 @@ class CultivationActivity : BaseActivity() {
         }).start()
     }
 
+    override fun onPause() {
+        super.onPause()
+        setTimeLooper(false)
+        this.finish()
+    }
+
+
     private fun init(json:String?){
         val out:String? = if(readRecord) json else null
         if(out != null){
@@ -299,6 +307,7 @@ class CultivationActivity : BaseActivity() {
         if(currentXun % 480 == 0) {
             updateClans(currentXun)
         }
+        updateEnemys(currentXun)
 
         val yongyu = personDataString
         for (i in 0 until mPersons.size) {
@@ -460,6 +469,28 @@ class CultivationActivity : BaseActivity() {
         return person
     }
 
+    fun bePerson(){
+        setTimeLooper(false)
+        Thread(Runnable {
+            Thread.sleep(500)
+            mPersons.forEach { person ->
+                if(person.isDead){
+                    person.partnerName = null
+                    person.partner = null
+                }else{
+                    val partner = getOnlinePersonDetail(person.partner)
+                    if(person.partner != null && (partner == null || partner.isDead)){
+                        person.partnerName = null
+                        person.partner = null
+                    }
+                }
+            }
+            val message = Message.obtain()
+            message.what = 6
+            mTimeHandler.sendMessage(message)
+        }).start()
+    }
+
     fun revivePerson(id:String){
         setTimeLooper(false)
         Thread(Runnable {
@@ -543,6 +574,26 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
+    private fun updateEnemys(xun:Int){
+        val random = Random()
+        mEnemys.filter { !it.isDead }.forEach {
+            if(xun - it.birthDay >= it.lifetime){
+                writeHistory("${it.name} 消失", null, 0)
+                it.isDead = true
+            }else{
+                if(random.nextInt(it.attackFrequency) == 0){
+                    val persons = mPersons.filter { f->!f.isDead }
+                    val person = persons[random.nextInt(persons.size)]
+                    val result = CultivationHelper.battleEnemy(person, it, it.HP * 1000)
+                    if(result){
+                        writeHistory("${it.name} 消失", null, 0)
+                        it.isDead = true
+                    }
+                }
+            }
+        }
+    }
+
     private fun joinClans(person:Person){
         val myClan = mClans.find { it.id == person.ancestorId }
         myClan?.clanPersonList?.add(person)
@@ -568,9 +619,31 @@ class CultivationActivity : BaseActivity() {
     private fun updateHP(){
         val persons = mPersons.filter { !it.isDead && it.HP < it.maxHP }
         persons.forEach {
-            if(it.HP < it.maxHP)
+            if(CultivationHelper.getProperty(it)[0] < -10){
+                val count = Math.abs(CultivationHelper.getProperty(it)[0])
+                it.HP += count
+                it.lifetime -=  Math.min(100, count)
+            }else{
                 it.HP++
+            }
         }
+    }
+
+    private fun eventEnemyHandler(){
+        val enemy = Enemy()
+        val random = Random()
+        enemy.id = UUID.randomUUID().toString()
+        enemy.name = "远古${random.nextInt(10001)}号"
+        enemy.birthDay = mCurrentXun
+        enemy.HP = 10 + 10 * random.nextInt(100)// max 1000
+        enemy.maxHP = enemy.HP
+        enemy.attack = 10 + 10 * random.nextInt(50) // max 500
+        enemy.defence = 10 + 10 * random.nextInt(10) // max 100
+        enemy.speed = 500 / enemy.defence
+        enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
+        enemy.lifetime = 1000 + 1000 * random.nextInt(10) // max 10000
+        mEnemys.add(enemy)
+        writeHistory("${enemy.name} 天降 - (${enemy.HP}/${enemy.lifetime})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
     }
 
     private fun resetHandler(){
@@ -614,7 +687,7 @@ class CultivationActivity : BaseActivity() {
                 writeHistory("Single Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
 
-                restPersons = roundHandler(restPersons, 10, 200000)
+                restPersons = roundHandler(restPersons, 20, 200000)
             }
             restPersons[0].xiuXei += 200000
             writeHistory("Single Battle Winner: ${restPersons[0].allianceName} - ${restPersons[0].name}", restPersons[0])
@@ -644,7 +717,7 @@ class CultivationActivity : BaseActivity() {
             while (restClans.size > 1){
                 writeHistory("Clan Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
-                restClans = roundClanHandler(restClans, 5, 40000)
+                restClans = roundClanHandler(restClans, 10, 80000)
             }
             restClans[0].clanPersonList.forEach {
                 if(!it.isDead){
@@ -677,7 +750,7 @@ class CultivationActivity : BaseActivity() {
             while (restAlliances.size > 1){
                 writeHistory("Bang Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
-                restAlliances = roundBangHandler(restAlliances, 10, 100000)
+                restAlliances = roundBangHandler(restAlliances, 20, 200000)
             }
             writeHistory("Bang Battle Winner: ${restAlliances[0].name}", null, 0)
             val message = Message.obtain()
@@ -874,6 +947,10 @@ class CultivationActivity : BaseActivity() {
             R.id.menu_battle_single ->{
                 battleSingleHandler()
             }
+            R.id.menu_event_enemy ->{
+                eventEnemyHandler()
+            }
+
         }
         return true
     }

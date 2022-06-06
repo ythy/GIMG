@@ -9,10 +9,7 @@ import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import butterknife.BindView
@@ -59,12 +56,20 @@ class FragmentDialogPersonList  : DialogFragment() {
     @BindView(R.id.btn_switch)
     lateinit var mSwitchBtn: Button
 
+    @BindView(R.id.btn_be)
+    lateinit var mBe: Button
+
+
     @OnClick(R.id.btn_close)
     fun onCloseHandler(){
         mThreadRunnable = false
         this.dismiss()
     }
 
+    @OnClick(R.id.btn_be)
+    fun onBeClickHandler(){
+       mContext.bePerson()
+    }
 
     @OnClick(R.id.btn_switch)
     fun onSwitchClickHandler(){
@@ -72,10 +77,12 @@ class FragmentDialogPersonList  : DialogFragment() {
         if(tag == "ON"){
             mSwitchBtn.text = "offline"
             mSwitchBtn.tag = "OFF"
+            mBe.visibility = View.VISIBLE
             setOfflineList()
         }else{
             mSwitchBtn.text = "online"
             mSwitchBtn.tag = "ON"
+            mBe.visibility = View.GONE
             setOnlineList()
         }
     }

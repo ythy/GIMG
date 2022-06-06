@@ -24,4 +24,8 @@
         android:id="@+id/menu_battle_single"
         android:orderInCategory="310"
         android:title="battleSingle"/>
+    <item
+        android:id="@+id/menu_event_enemy"
+        android:orderInCategory="400"
+        android:title="enemy"/>
 </menu>
