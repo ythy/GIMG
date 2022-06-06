@@ -372,10 +372,10 @@ object CultivationHelper {
         val zhuan = person.lifeTurn
         val jingJieLevel = getJingJieLevel(person.jingJieId)
 
-        val extraHP = 100 * zhuan + 5 * lingGenLevel + jingJieLevel.first + 4 * jingJieLevel.second + property[0]
-        val attack =  20 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[1]
-        val defence =  20 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[2]
-        val speed = 10 * zhuan + 2 * lingGenLevel + property[3]
+        val extraHP = 25 * zhuan + 5 * lingGenLevel + jingJieLevel.first + 4 * jingJieLevel.second + property[0]
+        val attack =  5 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[1]
+        val defence =  5 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[2]
+        val speed = 5 * zhuan + 2 * lingGenLevel + property[3]
 
         return mutableListOf(person.HP + extraHP, person.maxHP + extraHP,
                 attack, defence, speed)

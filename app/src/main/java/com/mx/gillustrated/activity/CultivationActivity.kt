@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -36,7 +37,7 @@ class CultivationActivity : BaseActivity() {
 
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
-    var mSpeed = 1L//流失速度
+    var mSpeed = 10L//流失速度
     var pinyinMode:Boolean = true //是否pinyin模式
     private val mInitPersonCount = 500//初始化Person数量
     var readRecord = true
@@ -196,8 +197,16 @@ class CultivationActivity : BaseActivity() {
     override fun onPause() {
         super.onPause()
         setTimeLooper(false)
-        this.finish()
     }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("RRRRRRR", "${mCurrentXun} - ${mThreadRunnable}")
+        if(mCurrentXun > 0){
+            setTimeLooper(true)
+        }
+    }
+
 
 
     private fun init(json:String?){
@@ -632,18 +641,33 @@ class CultivationActivity : BaseActivity() {
     private fun eventEnemyHandler(){
         val enemy = Enemy()
         val random = Random()
-        enemy.id = UUID.randomUUID().toString()
-        enemy.name = "远古${random.nextInt(10001)}号"
-        enemy.birthDay = mCurrentXun
-        enemy.HP = 10 + 10 * random.nextInt(100)// max 1000
-        enemy.maxHP = enemy.HP
-        enemy.attack = 10 + 10 * random.nextInt(50) // max 500
-        enemy.defence = 10 + 10 * random.nextInt(10) // max 100
-        enemy.speed = 500 / enemy.defence
-        enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
-        enemy.lifetime = 1000 + 1000 * random.nextInt(10) // max 10000
-        mEnemys.add(enemy)
-        writeHistory("${enemy.name} 天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
+        if(random.nextInt(2) == 0){
+            enemy.id = UUID.randomUUID().toString()
+            enemy.name = "远古${random.nextInt(10001)}号"
+            enemy.birthDay = mCurrentXun
+            enemy.HP = 10 + 10 * random.nextInt(100)// max 1000
+            enemy.maxHP = enemy.HP
+            enemy.attack = 110 + 10 * random.nextInt(50) // max 600
+            enemy.defence = 10 + 10 * random.nextInt(10) // max 100
+            enemy.speed = 500 / enemy.defence
+            enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
+            enemy.lifetime = 1000 + 1000 * random.nextInt(10) // max 10000
+            mEnemys.add(enemy)
+            writeHistory("${enemy.name} 天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
+        }else{
+            enemy.id = UUID.randomUUID().toString()
+            enemy.name = "菜菜${random.nextInt(10001)}号"
+            enemy.birthDay = mCurrentXun
+            enemy.HP = 10 + 10 * random.nextInt(50)// max 500
+            enemy.maxHP = enemy.HP
+            enemy.attack = 10 + 10 * random.nextInt(20) // max 200
+            enemy.defence = 10 + 5 * random.nextInt(5) // max 30
+            enemy.speed = 300 / enemy.defence
+            enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
+            enemy.lifetime = 1000 + 1000 * random.nextInt(10) // max 10000
+            mEnemys.add(enemy)
+            writeHistory("${enemy.name} 天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
+        }
     }
 
     private fun resetHandler(){
