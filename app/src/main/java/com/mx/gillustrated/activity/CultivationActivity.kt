@@ -38,7 +38,7 @@ class CultivationActivity : BaseActivity() {
     private var mHistoryThreadRunnable = true
     var mSpeed = 1L//流失速度
     var pinyinMode:Boolean = true //是否pinyin模式
-    private val mInitPersonCount = 2000//初始化Person数量
+    private val mInitPersonCount = 500//初始化Person数量
     var readRecord = true
     var maxFemaleProfile = 0 // 1号保留不用
     var maxMaleProfile = 0 // 默认0号
@@ -643,7 +643,7 @@ class CultivationActivity : BaseActivity() {
         enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
         enemy.lifetime = 1000 + 1000 * random.nextInt(10) // max 10000
         mEnemys.add(enemy)
-        writeHistory("${enemy.name} 天降 - (${enemy.HP}/${enemy.lifetime})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
+        writeHistory("${enemy.name} 天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
     }
 
     private fun resetHandler(){

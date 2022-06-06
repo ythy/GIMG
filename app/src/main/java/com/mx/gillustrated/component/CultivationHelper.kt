@@ -307,7 +307,7 @@ object CultivationHelper {
             writeHistory("Battle End: ${person.name}($hp1) 🔪 ${enemy.name}($hp2)", person)
             person.xiuXei += xiuwei
         }else{
-            writeHistory("Battle End: ${enemy.name}($hp2) 🔪 ${person.name}($hp1)", person)
+            writeHistory("Battle End: ${enemy.name}($hp2/${(enemy.lifetime + enemy.birthDay - mCurrentXun)/12}) 🔪 ${person.name}($hp1)", person)
             person.xiuXei -= xiuwei
         }
         person.HP += hp1 - props1[0]
