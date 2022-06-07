@@ -374,10 +374,12 @@ class CultivationActivity : BaseActivity() {
             if (random <= totalSuccess) {//成功
                 if (next != null) {
                     val commonText = "${yongyu[1]} ${CultivationHelper.getJinJieName(next.name, pinyinMode)}，${yongyu[2]} $random/$totalSuccess"
-                    addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
                     val lastJingJieDigt = CultivationHelper.getJingJieLevel(it.jingJieId)
                     if (it.isFav || (lastJingJieDigt.first >= 0 && lastJingJieDigt.third == 4)) {
                         writeHistory("${getPersonBasicString(it)} $commonText", it)
+                    }
+                    if (lastJingJieDigt.first >= 0 && lastJingJieDigt.third == 4) {
+                        addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
                     }
                     it.jingJieId = next.id
                     it.jingJieSuccess = next.success
@@ -668,7 +670,7 @@ class CultivationActivity : BaseActivity() {
             if(CultivationHelper.getProperty(it)[0] < -10){
                 val count = Math.abs(CultivationHelper.getProperty(it)[0])
                 it.HP += count
-                it.lifetime -=  Math.min(100, count)
+                it.lifetime -= count
             }else{
                 it.HP++
             }
