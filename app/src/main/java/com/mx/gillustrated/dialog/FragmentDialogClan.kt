@@ -115,7 +115,7 @@ class FragmentDialogClan : DialogFragment() {
             onCloseHandler()
             return
         }
-        val personList = clan.clanPersonList.filter { !it.isDead }
+        val personList = clan.clanPersonList
         if(personList.isEmpty()){
             onCloseHandler()
             return

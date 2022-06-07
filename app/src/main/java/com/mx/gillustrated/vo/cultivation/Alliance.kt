@@ -46,7 +46,7 @@ class Alliance: AllianceConfig() {
         config.id = super.id
         config.name = super.name
         config.lingGen = super.lingGen
-        config.persons = this.personList.filter { !it.isDead }.map { it.id }
+        config.persons = this.personList.map { it.id }
         return config
     }
 

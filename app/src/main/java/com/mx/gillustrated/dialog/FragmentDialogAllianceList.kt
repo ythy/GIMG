@@ -116,7 +116,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
         mAllianceListData.sortByDescending { it.totalXiuwei }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
-        mTotalText.text = mAllianceListData.sumBy { it.personList.count{ p->!p.isDead } }.toString()
+        mTotalText.text = mAllianceListData.sumBy { it.personList.size }.toString()
     }
 
 }

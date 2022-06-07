@@ -115,7 +115,7 @@ class FragmentDialogClanList  : DialogFragment() {
     fun updateView(){
         mClanListData.clear()
         mContext.mClans.forEach {
-            it.totalXiuwei = it.clanPersonList.filter { c->!c.isDead }.sumByDouble { s->s.maxXiuWei.toDouble() }.toLong()
+            it.totalXiuwei = it.clanPersonList.sumByDouble { s->s.maxXiuWei.toDouble() }.toLong()
         }
         mClanListData.addAll(mContext.mClans)
         mClanListData.sortByDescending { it.totalXiuwei }

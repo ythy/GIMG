@@ -27,7 +27,7 @@ class Clan : ClanBak(){
         bak.id = super.id
         bak.name = super.name
         bak.createDate = super.createDate
-        bak.persons = this.clanPersonList.filter { !it.isDead }.map { it.id }
+        bak.persons = this.clanPersonList.map { it.id }
         return bak
     }
 }

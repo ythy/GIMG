@@ -17,6 +17,8 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
+import com.mx.gillustrated.component.CultivationHelper.EnemyNames
+import com.mx.gillustrated.util.PinyinUtil
 
 class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, private val list: List<CultivationHelper.HistoryInfo>) : BaseAdapter() {
 
@@ -60,16 +62,24 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
             if(index > -1){
                 spannable.setSpan(ForegroundColorSpan(Color.parseColor(lingGenColor)), index, index + lingGen.length + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-
-//            if(history.indexOf(person.jinJieName) > -1){
-//                val jingJieColor = CommonColors[person.jinJieColor]
-//                val jingJieIndex = history.indexOf(person.jinJieName)
-//                spannable.setSpan(ForegroundColorSpan(Color.parseColor(jingJieColor)), jingJieIndex, jingJieIndex + person.jinJieName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//            }
             component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
-
         }else{
-            component.tvRow.text = history
+            val matchResult1 = "(${EnemyNames[0]}|${PinyinUtil.convert(EnemyNames[0])})[0-9]+(hao|号)".toRegex().find(history)
+            val matchResult2 = "(${EnemyNames[1]}|${PinyinUtil.convert(EnemyNames[1])})[0-9]+(hao|号)".toRegex().find(history)
+            when {
+                matchResult1 != null -> {
+                    val spannable = SpannableString(history)
+                    spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[2])), matchResult1.range.start, matchResult1.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
+                }
+                matchResult2 != null -> {
+                    val spannable = SpannableString(history)
+                    spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[1])), matchResult2.range.start, matchResult2.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
+                }
+                else -> component.tvRow.text = history
+            }
+
         }
 
         return convertView!!

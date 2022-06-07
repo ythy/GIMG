@@ -25,14 +25,16 @@ object CultivationHelper {
         }else{
             allAlliance.filter { it.level == 1 }.toMutableList()
         }
-        options.addAll(allAlliance.filter { it.level > 1 && person.tianfus.filter { f->f.rarity >=2 }.size >= it.tianfu  && it.personList.filter { p-> !p.isDead }.size < it.maxPerson })
+        options.addAll(allAlliance.filter { it.level > 1 && person.tianfus.filter { f->f.rarity >=2 }.size >= it.tianfu  && it.personList.size < it.maxPerson })
         val random = Random().nextInt(options.map { 100 / it.level }.sum() )
         var count = 0
         for (i in 0 until options.size){
             val alliance = options[i]
             count += 100 / alliance.level
             if(random < count){
-                alliance.personList.add(person)
+                synchronized(alliance.personList){
+                    alliance.personList.add(person)
+                }
                 person.allianceId = alliance.id
                 person.allianceName = alliance.name
                 person.allianceSuccess = alliance.success
@@ -47,35 +49,41 @@ object CultivationHelper {
     fun updateAllianceGain(allAlliance: MutableList<Alliance>, updated:Boolean = false){
         allAlliance.forEach { alliance->
             alliance.totalXiuwei = alliance.personList.sumByDouble { it.maxXiuWei.toDouble() }.toLong()
-            val alivePersons = alliance.personList.filter { !it.isDead }
+            val alivePersons = alliance.personList
             if(alivePersons.isNotEmpty()){
-                var zhu = alivePersons.first()
-                alivePersons.forEach {
-                    if (it.birthDay.last().first < zhu.birthDay.last().first)
-                        zhu = it
+                synchronized(alivePersons){
+                    var zhu = alivePersons.first()
+                    alivePersons.forEach {
+                        if (it.birthDay.last().first < zhu.birthDay.last().first)
+                            zhu = it
+                    }
+                    alliance.zhuPerson = zhu
                 }
-                alliance.zhuPerson = zhu
-
                 if(updated) {
                     updateHuInAlliance(alliance, alivePersons)
                     updateG1InAlliance(alliance, alivePersons.toMutableList())
                 }
-
                 alivePersons.forEach { p->
                     p.allianceXiuwei = alliance.xiuwei
-                    if(alliance.speedG1PersonList.find { it.id == p.id} != null){
-                        p.allianceXiuwei += alliance.speedG1
+                    synchronized(alliance.speedG1PersonList){
+                        if(alliance.speedG1PersonList.find { it.id == p.id} != null){
+                            p.allianceXiuwei += alliance.speedG1
+                        }
                     }
                     if(p.id == alliance.zhuPerson?.id){
                         p.allianceXiuwei += 20
                     }
-                    if(alliance.huPersons.find { it.id == p.id } != null){
-                        p.allianceXiuwei += 10
+                    synchronized(alliance.huPersons) {
+                        if (alliance.huPersons.find { it.id == p.id } != null) {
+                            p.allianceXiuwei += 10
+                        }
                     }
                 }
             }else{
                 alliance.zhuPerson = null
-                alliance.huPersons.clear()
+                synchronized(alliance.huPersons){
+                    alliance.huPersons.clear()
+                }
             }
         }
     }
@@ -88,16 +96,21 @@ object CultivationHelper {
             if(hu.find { persons[random].id == it.id } == null)
                 hu.add(persons[random])
         }
-        alliance.huPersons.clear()
-        alliance.huPersons.addAll(hu)
+        synchronized(alliance.huPersons){
+            alliance.huPersons.clear()
+            alliance.huPersons.addAll(hu)
+        }
     }
 
     private fun updateG1InAlliance(alliance: Alliance, persons:MutableList<Person>){
         val total = Math.min(10, Math.max(1, persons.size / 4))
-        persons.sortByDescending { it.extraSpeed }
-        alliance.speedG1PersonList.clear()
-        alliance.speedG1PersonList.addAll(persons.filterIndexed { index, _ -> index < total })
-
+        synchronized(persons){
+            persons.sortByDescending { it.extraSpeed }
+        }
+        synchronized(alliance.speedG1PersonList){
+            alliance.speedG1PersonList.clear()
+            alliance.speedG1PersonList.addAll(persons.filterIndexed { index, _ -> index < total })
+        }
     }
 
     private fun getTianFu(parent: Pair<Person, Person>?):MutableList<TianFu>{
@@ -304,10 +317,10 @@ object CultivationHelper {
         }
         val firstWin = hp1 >= hp2
         if(firstWin){
-            writeHistory("Battle End: ${person.name}($hp1) 🔪 ${enemy.name}($hp2)", person)
+            writeHistory("${person.name}($hp1) 🔪 ${enemy.name}($hp2)", person)
             person.xiuXei += xiuwei
         }else{
-            writeHistory("Battle End: ${enemy.name}($hp2/${(enemy.lifetime + enemy.birthDay - mCurrentXun)/12}) 🔪 ${person.name}($hp1)", person)
+            writeHistory("${enemy.name}($hp2/${(enemy.lifetime + enemy.birthDay - mCurrentXun)/12}) 🔪 ${person.name}($hp1)", person)
             person.xiuXei -= xiuwei
         }
         person.HP += hp1 - props1[0]
@@ -351,11 +364,11 @@ object CultivationHelper {
         }
         val firstWin = hp1 >= hp2
         if(firstWin){
-            writeHistory("Battle End: ${person1.name}($hp1) 🔪 ${person2.name}($hp2)", person1)
+            writeHistory("${person1.name}($hp1) 🔪 ${person2.name}($hp2)", person1)
             person1.xiuXei += xiuwei / 4
             person2.xiuXei -= xiuwei
         }else{
-            writeHistory("Battle End: ${person2.name}($hp2) 🔪 ${person1.name}($hp1)", person2)
+            writeHistory("${person2.name}($hp2) 🔪 ${person1.name}($hp1)", person2)
             person2.xiuXei += xiuwei / 4
             person1.xiuXei -= xiuwei
         }
@@ -478,7 +491,7 @@ object CultivationHelper {
             (NameMapper[prefix] ?: prefix) + LevelMapper[grade]
         }
     }
-
+    val EnemyNames = arrayOf("远古", "菜菜")
     val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA")
     private val LevelMapper = mapOf(
             1 to "初期", 2 to "中期", 3 to "后期", 4 to "圆满"
