@@ -220,7 +220,7 @@ object CultivationHelper {
     }
 
     fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?,
-                              lifetime:Int = 100, parent:Pair<Person, Person>? = null): Person {
+                              lifetime:Int = 100, parent:Pair<Person, Person>? = null, fav:Boolean = false): Person {
         val personGender = gender ?: when (Random().nextInt(2)) {
             0 -> NameUtil.Gender.Male
             else -> NameUtil.Gender.Female
@@ -232,7 +232,6 @@ object CultivationHelper {
 
         val lingGen = getLingGen(parent)
         val tianFus = getTianFu(parent)
-        val isFav = lifetime == 100000
         val birthDay:Pair<Int, Int> = Pair(mCurrentXun, 0)
         val result = Person()
         result.id =  UUID.randomUUID().toString()
@@ -253,8 +252,8 @@ object CultivationHelper {
         result.jinJieColor = initJingJie.color
         result.jingJieSuccess = initJingJie.success
         result.jinJieMax = initJingJie.max
-        result.profile = if(isFav) 1 else 0
-        result.isFav = isFav
+        result.profile = if(fav) 1 else 0
+        result.isFav = fav
         result.tianfus = tianFus
         result.lifetime = lifetime + (tianFus.find { it.type == 3 }?.bonus ?: 0)
         result.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0

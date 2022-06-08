@@ -25,7 +25,7 @@ open class AllianceConfig {
         alliance.id = this.id
         alliance.name = this.name
         alliance.lingGen = this.lingGen
-        alliance.personList.addAll(this.persons.mapNotNull { persons.find { p->!p.isDead && p.id == it} })
+        alliance.personList.addAll(this.persons.distinct().mapNotNull { persons.find { p->!p.isDead && p.id == it} })
         return alliance
     }
 }
@@ -46,7 +46,7 @@ class Alliance: AllianceConfig() {
         config.id = super.id
         config.name = super.name
         config.lingGen = super.lingGen
-        config.persons = this.personList.map { it.id }
+        config.persons = this.personList.filter { it.allianceId == super.id }.map { it.id }
         return config
     }
 

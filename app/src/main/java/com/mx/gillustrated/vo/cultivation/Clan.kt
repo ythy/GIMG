@@ -13,7 +13,7 @@ open class ClanBak {
         clan.id = this.id
         clan.name = this.name
         clan.createDate = this.createDate
-        clan.clanPersonList.addAll(this.persons.mapNotNull { list.find { p->!p.isDead && p.id == it} })
+        clan.clanPersonList.addAll(this.persons.distinct().mapNotNull { list.find { p->!p.isDead && p.id == it} })
         return clan
     }
 }

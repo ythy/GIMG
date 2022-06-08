@@ -11,19 +11,22 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import butterknife.*
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.adapter.PersonPagerAdapter
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.fragment.FragmentPersonEvent
+import com.mx.gillustrated.fragment.FragmentPersonInfo
+import com.mx.gillustrated.util.CommonUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
-import com.mx.gillustrated.vo.cultivation.PersonEvent
 import java.io.File
 import java.lang.ref.WeakReference
-import java.sql.Time
-import java.sql.Timestamp
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -50,7 +53,7 @@ class FragmentDialogPerson : DialogFragment() {
 
     @OnClick(R.id.btn_life)
     fun onLifetimeHandler(){
-        val success = mContext.addPersonLifetime(mId)
+        val success = mContext.addPersonLifetime(mPerson.id)
         if(success){
             Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
         }
@@ -111,12 +114,9 @@ class FragmentDialogPerson : DialogFragment() {
     @OnClick(R.id.btn_revive)
     fun onReviveHandler(){
         if(mBtnRevive.text == "Kill"){
-            val success = mContext.killPerson(mId)
-            if(success){
-                Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
-            }
+            mContext.killPerson(mPerson.id)
         }else{
-            mContext.revivePerson(mId)
+            mContext.revivePerson(mPerson.id)
             mThreadRunnable = true
         }
     }
@@ -127,47 +127,47 @@ class FragmentDialogPerson : DialogFragment() {
     @BindView(R.id.sch_fav)
     lateinit var mSwitchFav:Switch
 
+    @BindView(R.id.vp_person)
+    lateinit var mViewPager: ViewPager
+
     @OnCheckedChanged(R.id.sch_fav)
     fun onFavSwitch(checked:Boolean){
         mPerson.isFav = checked
     }
 
     lateinit var mPerson:Person
-    lateinit var mId:String
     lateinit var mContext:CultivationActivity
     lateinit var mDialogView:DialogView
+    val mFragments:MutableList<Fragment> = mutableListOf()
     var mPinyinMode:Boolean = false
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
-    private var mEventDataString = mutableListOf<String>()
-    private var mEventData = mutableListOf<PersonEvent>()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_dialog_persion, container, false)
-        ButterKnife.bind(this, v)
-        mDialogView = DialogView(v)
-        return v
+        return inflater.inflate(R.layout.fragment_dialog_persion, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ButterKnife.bind(this, view)
+        mDialogView = DialogView(view)
         init()
     }
 
     fun init(){
-        mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
-        val person = mContext.getOnlinePersonDetail(mId)
+        val id = this.arguments!!.getString("id", "")
+        val person = mContext.getOnlinePersonDetail(id)
         if(person == null){
             onCloseHandler()
             return
         }
         mPerson = person
         mPinyinMode = mContext.pinyinMode
-        mDialogView.events.adapter = ArrayAdapter(this.context!!,
-                android.R.layout.simple_list_item_1, android.R.id.text1, mEventDataString)
+        setViewPager()
         setTianfu()
         setProfile()
         updateView()
@@ -185,6 +185,27 @@ class FragmentDialogPerson : DialogFragment() {
                 }
             }
         }).start()
+    }
+
+    private fun setViewPager(){
+        val bundle = Bundle()
+        bundle.putString("id", mPerson.id)
+        val info = FragmentPersonInfo()
+        info.arguments = bundle
+        val his = FragmentPersonEvent()
+        his.arguments = bundle
+        mFragments.clear()
+        mFragments.add(info)
+        mFragments.add(his)
+        mViewPager.adapter = PersonPagerAdapter(childFragmentManager, mFragments)
+        mViewPager.currentItem = 0
+    }
+
+    private fun updateViewPager(){
+        if(mViewPager.currentItem == 1){
+            val fragment:FragmentPersonEvent = mFragments[1] as FragmentPersonEvent
+            fragment.updateEvent()
+        }
     }
 
     private fun setProfile(){
@@ -236,12 +257,6 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun updateView(){
-        val person = mContext.getOnlinePersonDetail(mId)
-        if(person == null){
-            onCloseHandler()
-            return
-        }
-        mPerson = person
         if(mPerson.isDead){
             mThreadRunnable = false
             mBtnRevive.text = "Revive"
@@ -269,18 +284,8 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.success.text = "${mPerson.jingJieSuccess + mPerson.extraTupo + mPerson.allianceSuccess + bonus}"
         mDialogView.lingGen.text = mPerson.lingGenName
         mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenType.color]))
-        val eventChanged = mEventData.size != mPerson.events.size
-        mPerson.events.forEach {
-            if(mEventData.find { e-> e.nid == it.nid} == null){
-                mEventData.add(it)
-                mEventDataString.add(0, it.content)
-            }
-        }
-        if(eventChanged){
-            (mDialogView.events.adapter as BaseAdapter).notifyDataSetChanged()
-            mDialogView.events.invalidateViews()
-        }
 
+        updateViewPager()
     }
 
     private fun getProperty():String{
@@ -379,9 +384,6 @@ class FragmentDialogPerson : DialogFragment() {
         @BindView(R.id.tv_lingGen)
         lateinit var lingGen:TextView
 
-        @BindView(R.id.lv_events)
-        lateinit var events:ListView
-
         @BindView(R.id.ll_tianfu)
         lateinit var tianfu:LinearLayout
 
@@ -396,7 +398,6 @@ class FragmentDialogPerson : DialogFragment() {
 
         @BindView(R.id.tv_props)
         lateinit var props:TextView
-
 
         @BindView(R.id.btn_be)
         lateinit var be:ImageButton

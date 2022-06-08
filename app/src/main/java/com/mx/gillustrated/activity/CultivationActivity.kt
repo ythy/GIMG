@@ -37,9 +37,9 @@ class CultivationActivity : BaseActivity() {
 
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
-    var mSpeed = 1L//流失速度
+    var mSpeed = 10L//流失速度
     var pinyinMode:Boolean = true //是否pinyin模式
-    private val mInitPersonCount = 500//初始化Person数量
+    private val mInitPersonCount = 200//初始化Person数量
     var readRecord = true
     var maxFemaleProfile = 0 // 1号保留不用
     var maxMaleProfile = 0 // 默认0号
@@ -235,8 +235,8 @@ class CultivationActivity : BaseActivity() {
     private fun startWorld(){
         writeHistory("进入世界...", null, 0)
         addMultiPerson(mInitPersonCount)
-        val li = addPersion(Pair("李", "逍遥"), NameUtil.Gender.Male, 100000)
-        val nu = addPersion(Pair("阿", "奴"), NameUtil.Gender.Female, 100000)
+        val li = addPersion(Pair("李", "逍遥"), NameUtil.Gender.Male, 100, null, true)
+        val nu = addPersion(Pair("阿", "奴"), NameUtil.Gender.Female, 100, null, true)
         CultivationHelper.createPartner(li, nu)
     }
 
@@ -303,6 +303,36 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
+    private fun deadHandler(it:Person, currentXun:Int){
+        val yongyu = personDataString
+        addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} ${yongyu[0]}")
+        writeHistory("${getPersonBasicString(it)} ${yongyu[0]}", it)
+        synchronized(mAlliance){
+            val alliance = mAlliance.find { a->a.id == it.allianceId }
+            if(alliance != null){
+                synchronized(alliance.personList){
+                    alliance.personList.removeIf { p->p.id == it.id }
+                }
+            }
+        }
+        it.allianceId = ""
+        it.allianceName = ""
+        it.isDead = true
+        val pair = Pair(it.birthDay.last().first, currentXun)
+        it.birthDay.removeIf { p -> p.second == 0 }
+        it.birthDay.add(pair)
+    }
+
+    private fun isDeadException(person:Person):Boolean{
+        val matchName = "(李逍遥|阿奴)".toRegex()
+        if(person.lifeTurn > 1){
+            return true
+        }else if(matchName.find(person.name) != null){
+            return true
+        }
+        return false
+    }
+
     private fun xunHandler(currentXun:Int) {
         //randomEvent(fixedPerson) 暂时不启用
         CultivationHelper.updateAllianceGain(mAlliance, currentXun % 120 == 0)
@@ -331,24 +361,13 @@ class CultivationActivity : BaseActivity() {
                 }
             }
             it.age = totalAgeXun / 12
-            if (it.age > it.lifetime) {
-                addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} ${yongyu[0]}")
-                writeHistory("${getPersonBasicString(it)} ${yongyu[0]}", it)
-                synchronized(mAlliance){
-                    val alliance = mAlliance.find { a->a.id == it.allianceId }
-                    if(alliance != null){
-                        synchronized(alliance.personList){
-                            alliance.personList.removeIf { p->p.id == it.id }
-                        }
-                    }
+            if (it.age > it.lifetime ) {
+                if(isDeadException(it)){
+                    it.lifetime += 5000
+                }else{
+                    deadHandler(it, currentXun)
+                    continue
                 }
-                it.allianceId = ""
-                it.allianceName = ""
-                it.isDead = true
-                val pair = Pair(it.birthDay.last().first, currentXun)
-                it.birthDay.removeIf { p -> p.second == 0 }
-                it.birthDay.add(pair)
-                continue
             }
             val currentJinJie = CultivationHelper.getJingJie(it.jingJieId)
             it.jinJieName = CultivationHelper.getJinJieName(currentJinJie.name, pinyinMode)
@@ -476,8 +495,9 @@ class CultivationActivity : BaseActivity() {
         }).start()
     }
 
-    private fun addPersion(fixedName:Pair<String, String?>?, fixedGender:NameUtil.Gender?, lifetime: Int = 100, parent: Pair<Person, Person>? = null):Person{
-        val person = CultivationHelper.getPersonInfo(fixedName, fixedGender, lifetime, parent)
+    private fun addPersion(fixedName:Pair<String, String?>?, fixedGender:NameUtil.Gender?,
+                           lifetime: Int = 100, parent: Pair<Person, Person>? = null, fav:Boolean = false):Person{
+        val person = CultivationHelper.getPersonInfo(fixedName, fixedGender, lifetime, parent, fav)
         synchronized(mPersons){
             mPersons.add(person)
         }
@@ -530,13 +550,19 @@ class CultivationActivity : BaseActivity() {
         }).start()
     }
 
-    fun killPerson(id:String):Boolean{
-        val person = mPersons.find { !it.isDead && it.id == id }
-        if(person != null){
-            person.lifetime = person.age
-            return true
-        }
-        return false
+    fun killPerson(id:String){
+        setTimeLooper(false)
+        Thread(Runnable {
+            Thread.sleep(500)
+            val person = mPersons.find { !it.isDead && it.id == id }
+            if(person != null){
+                person.lifetime = person.age
+                deadHandler(person, mCurrentXun)
+            }
+            val message = Message.obtain()
+            message.what = 6
+            mTimeHandler.sendMessage(message)
+        }).start()
     }
 
     fun addPersonLifetime(id:String):Boolean{
