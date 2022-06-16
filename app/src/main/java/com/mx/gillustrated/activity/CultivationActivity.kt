@@ -725,7 +725,7 @@ class CultivationActivity : BaseActivity() {
                 continue
             if(CultivationHelper.getProperty(it)[0] < -10){
                 val count = Math.abs(CultivationHelper.getProperty(it)[0])
-                it.HP += count
+                it.HP = Math.min(it.maxHP, it.HP + count)
                 it.lifetime -= count
             }else{
                 it.HP++
@@ -874,7 +874,7 @@ class CultivationActivity : BaseActivity() {
     private fun roundHandler(persons: MutableList<Person>, round:Int, xiuWei:Int){
         persons.shuffle()
         val passIds = mutableListOf<String>()
-        for (i in 0 until persons.size) {
+        for (i in 0 until persons.size step 2) {
             if (i + 1 >= persons.size) {
                 break
             }
@@ -893,7 +893,7 @@ class CultivationActivity : BaseActivity() {
     private fun roundBangHandler(alliance: MutableList<Alliance>, round:Int, xiuWei:Int){
         alliance.shuffle()
         val passIds = mutableListOf<String>()
-        for (i in 0 until alliance.size){
+        for (i in 0 until alliance.size step 2){
             if( i + 1 >= alliance.size){
                break
             }
@@ -904,10 +904,10 @@ class CultivationActivity : BaseActivity() {
 
             if(firstAlliancePersons.size == 0){
                 passIds.add(firstAlliance.id)
-                break
+                continue
             }else if(secondAlliancePersons.size == 0){
                 passIds.add(secondAlliance.id)
-                break
+                continue
             }
             firstAlliancePersons.shuffle()
             secondAlliancePersons.shuffle()
@@ -937,7 +937,7 @@ class CultivationActivity : BaseActivity() {
     private fun roundClanHandler(clan: MutableList<Clan>, round:Int, xiuWei:Int){
         clan.shuffle()
         val passIds = mutableListOf<String>()
-        for (i in 0 until clan.size){
+        for (i in 0 until clan.size step 2){
             if( i + 1 >= clan.size){
                 break
             }
@@ -948,10 +948,10 @@ class CultivationActivity : BaseActivity() {
 
             if(firstClanPersons.size == 0){
                 passIds.add(firstClan.id)
-                break
+                continue
             }else if(secondClanPersons.size == 0){
                 passIds.add(secondClan.id)
-                break
+                continue
             }
             firstClanPersons.shuffle()
             secondClanPersons.shuffle()
