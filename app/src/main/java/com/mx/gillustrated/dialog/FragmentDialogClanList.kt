@@ -64,7 +64,7 @@ class FragmentDialogClanList  : DialogFragment() {
 
     @OnItemClick(R.id.lv_clan)
     fun onItemClick(position:Int){
-        if(mClanListData[position].clanPersonList.count { !it.isDead } == 0){
+        if(mClanListData[position].clanPersonList.map { it.value }.count { !it.isDead } == 0){
             Toast.makeText(mContext, "size 0", Toast.LENGTH_SHORT).show()
             return
         }
@@ -115,9 +115,9 @@ class FragmentDialogClanList  : DialogFragment() {
     fun updateView(){
         mClanListData.clear()
         mContext.mClans.forEach {
-            it.totalXiuwei = it.clanPersonList.sumByDouble { s->s.maxXiuWei.toDouble() }.toLong()
+            it.value.totalXiuwei = it.value.clanPersonList.map { it.value }.sumByDouble { s->s.maxXiuWei.toDouble() }.toLong()
         }
-        mClanListData.addAll(mContext.mClans)
+        mClanListData.addAll(mContext.mClans.map { it.value })
         mClanListData.sortByDescending { it.totalXiuwei }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()

@@ -9,7 +9,7 @@ class Enemy {
     var defence:Int = 0
     var speed:Int = 0
     var attackFrequency:Int = 12 //xun
-    var birthDay:Int = 0 //xun
-    var lifetime:Int = 0 //xun
+    var birthDay:Long = 0 //xun
+    var lifetime:Long = 0 //xun
     var isDead:Boolean = false
 }

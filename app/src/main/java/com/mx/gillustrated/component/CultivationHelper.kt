@@ -7,34 +7,32 @@ import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
 import java.util.*
-
+import java.util.concurrent.ConcurrentHashMap
 @SuppressLint("SetTextI18n")
 @RequiresApi(Build.VERSION_CODES.N)
 object CultivationHelper {
 
     lateinit var mConfig:Config
-    var mCurrentXun:Int = 0//当前时间
+    var mCurrentXun:Long = 0//当前时间
     var mHistoryTempData:MutableList<HistoryInfo> = Collections.synchronizedList(mutableListOf())
     fun writeHistory(content:String, person: Person?, type:Int = 1){
         mHistoryTempData.add(0, HistoryInfo(content, person, type))
     }
 
-    fun joinAlliance(person: Person, allAlliance:MutableList<Alliance>){
+    fun joinAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>){
         val options = if(person.lingGenId == "") {
-            allAlliance.filter { it.level == 1 }.filter { person.lingGenName.indexOf(it.lingGen!!) >= 0 }.toMutableList()
+            allAlliance.filter { it.value.level == 1 }.filter { person.lingGenName.indexOf(it.value.lingGen!!) >= 0 }.map { it.value }.toMutableList()
         }else{
-            allAlliance.filter { it.level == 1 }.toMutableList()
+            allAlliance.filter { it.value.level == 1 }.map { it.value }.toMutableList()
         }
-        options.addAll(allAlliance.filter { it.level > 1 && person.tianfus.filter { f->f.rarity >=2 }.size >= it.tianfu  && it.personList.size < it.maxPerson })
+        options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfus.filter { f->f.rarity >=2 }.size >= it.value.tianfu  && it.value.personList.size < it.value.maxPerson }.map { it.value })
         val random = Random().nextInt(options.map { 100 / it.level }.sum() )
         var count = 0
         for (i in 0 until options.size){
             val alliance = options[i]
             count += 100 / alliance.level
             if(random < count){
-                synchronized(alliance.personList){
-                    alliance.personList.add(person)
-                }
+                alliance.personList[person.id] = person
                 person.allianceId = alliance.id
                 person.allianceName = alliance.name
                 person.allianceSuccess = alliance.success
@@ -46,27 +44,32 @@ object CultivationHelper {
         }
     }
 
-    fun updateAllianceGain(allAlliance: MutableList<Alliance>, updated:Boolean = false){
-        allAlliance.forEach { alliance->
-            alliance.totalXiuwei = alliance.personList.sumByDouble { it.maxXiuWei.toDouble() }.toLong()
+    fun updateAllianceGain(allAlliance:ConcurrentHashMap<String, Alliance>, updated:Boolean = false){
+        allAlliance.forEach { data->
+            val alliance = data.value
+            alliance.totalXiuwei = alliance.personList.reduceValuesToLong(1000,
+                    { p: Person -> p.maxXiuWei }, 0, { left, right -> left + right })
             val alivePersons = alliance.personList
             if(alivePersons.isNotEmpty()){
-                synchronized(alivePersons){
-                    var zhu = alivePersons.first()
-                    alivePersons.forEach {
+                val zhuList = alivePersons.map { it.value }.toMutableList()
+                var zhu = zhuList[0]
+                synchronized(zhuList){
+                    zhuList.forEach {
                         if (it.birthDay.last().first < zhu.birthDay.last().first)
                             zhu = it
                     }
-                    alliance.zhuPerson = zhu
                 }
+                alliance.zhuPerson = zhu
+
                 if(updated) {
                     updateHuInAlliance(alliance, alivePersons)
-                    updateG1InAlliance(alliance, alivePersons.toMutableList())
+                    updateG1InAlliance(alliance, alivePersons)
                 }
-                alivePersons.forEach { p->
+                alivePersons.forEach { map ->
+                    val p = map.value
                     p.allianceXiuwei = alliance.xiuwei
                     synchronized(alliance.speedG1PersonList){
-                        if(alliance.speedG1PersonList.find { it.id == p.id} != null){
+                        if(alliance.speedG1PersonList.contains(p.id)){
                             p.allianceXiuwei += alliance.speedG1
                         }
                     }
@@ -74,42 +77,39 @@ object CultivationHelper {
                         p.allianceXiuwei += 20
                     }
                     synchronized(alliance.huPersons) {
-                        if (alliance.huPersons.find { it.id == p.id } != null) {
+                        if (alliance.huPersons.contains(p.id)) {
                             p.allianceXiuwei += 10
                         }
                     }
                 }
             }else{
                 alliance.zhuPerson = null
-                synchronized(alliance.huPersons){
-                    alliance.huPersons.clear()
-                }
+                alliance.huPersons.clear()
             }
         }
     }
 
-    private fun updateHuInAlliance(alliance: Alliance, persons:List<Person>){
+    private fun updateHuInAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
         val huSize =   Math.min(4, Math.max(1, persons.size / 10))
-        val hu = mutableListOf<Person>()
+        val keys = persons.keys
+        alliance.huPersons.clear()
         for(i in 0 until huSize){
             val random = Random().nextInt(persons.size)
-            if(hu.find { persons[random].id == it.id } == null)
-                hu.add(persons[random])
-        }
-        synchronized(alliance.huPersons){
-            alliance.huPersons.clear()
-            alliance.huPersons.addAll(hu)
+            val key = keys.elementAt(random)
+            if(persons[key] != null)
+                alliance.huPersons[key] = persons[key]!!
         }
     }
 
-    private fun updateG1InAlliance(alliance: Alliance, persons:MutableList<Person>){
+    private fun updateG1InAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
         val total = Math.min(10, Math.max(1, persons.size / 4))
-        synchronized(persons){
-            persons.sortByDescending { it.extraSpeed }
-        }
-        synchronized(alliance.speedG1PersonList){
-            alliance.speedG1PersonList.clear()
-            alliance.speedG1PersonList.addAll(persons.filterIndexed { index, _ -> index < total })
+        val personList = persons.map { it.value }.toMutableList()
+        alliance.speedG1PersonList.clear()
+        synchronized(personList){
+            personList.sortByDescending { it.extraSpeed }
+            for (i in 0 until total){
+                alliance.speedG1PersonList[personList[i].id] = personList[i]
+            }
         }
     }
 
@@ -220,7 +220,7 @@ object CultivationHelper {
     }
 
     fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?,
-                              lifetime:Int = 100, parent:Pair<Person, Person>? = null, fav:Boolean = false): Person {
+                              lifetime:Long = 100, parent:Pair<Person, Person>? = null, fav:Boolean = false): Person {
         val personGender = gender ?: when (Random().nextInt(2)) {
             0 -> NameUtil.Gender.Male
             else -> NameUtil.Gender.Female
@@ -232,7 +232,7 @@ object CultivationHelper {
 
         val lingGen = getLingGen(parent)
         val tianFus = getTianFu(parent)
-        val birthDay:Pair<Int, Int> = Pair(mCurrentXun, 0)
+        val birthDay:Pair<Long, Long> = Pair(mCurrentXun, 0)
         val result = Person()
         result.id =  UUID.randomUUID().toString()
         result.name = personName.first + personName.second
@@ -425,15 +425,17 @@ object CultivationHelper {
         person.events.add(personEvent)
     }
 
-    fun updatePartner(allPerson: MutableList<Person>){
-        val males = allPerson.filter { !it.isDead && it.gender == NameUtil.Gender.Male && it.partner == null && (it.lifetime - it.age > 200) }
-        val females = allPerson.filter { !it.isDead && it.gender == NameUtil.Gender.Female && it.partner == null && (it.lifetime - it.age > 200) }
+    fun updatePartner(allPerson:ConcurrentHashMap<String, Person>){
+        val males = allPerson.filter { !it.value.isDead && it.value.gender == NameUtil.Gender.Male && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value }.toMutableList()
+        val females = allPerson.filter { !it.value.isDead && it.value.gender == NameUtil.Gender.Female && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value }.toMutableList()
         if(males.size > 5 && females.size > 5){
-            val man = males[Random().nextInt(males.size)]
-            val woman = females.sortedBy { Math.abs(man.age - it.age) }[0]
-            if(man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId)
-                return
-            createPartner(man, woman)
+            synchronized(females){
+                val man = males[Random().nextInt(males.size)]
+                val woman = females.sortedBy { Math.abs(man.age - it.age) }[0]
+                if(man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId)
+                    return
+                createPartner(man, woman)
+            }
         }
     }
 

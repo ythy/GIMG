@@ -87,7 +87,7 @@ class FragmentDialogClan : DialogFragment() {
     fun init(){
         mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
-        val clan = mContext.mClans.find { it.id == mId }
+        val clan = mContext.mClans[mId]
         if(clan != null){
             mDialogView.name.text = if(mContext.pinyinMode) PinyinUtil.convert(clan.name) else clan.name
             mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
@@ -110,12 +110,12 @@ class FragmentDialogClan : DialogFragment() {
     }
 
     private fun updateView(){
-        val clan = mContext.mClans.find { it.id == mId }
+        val clan = mContext.mClans[mId]
         if(clan == null){
             onCloseHandler()
             return
         }
-        val personList = clan.clanPersonList
+        val personList = clan.clanPersonList.map { it.value }
         if(personList.isEmpty()){
             onCloseHandler()
             return

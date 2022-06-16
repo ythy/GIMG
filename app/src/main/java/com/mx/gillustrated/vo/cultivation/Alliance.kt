@@ -1,6 +1,6 @@
 package com.mx.gillustrated.vo.cultivation
 
-import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 //zhu 增益 20
 open class AllianceConfig {
@@ -17,15 +17,14 @@ open class AllianceConfig {
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
     var speedG1:Int = 0
     var speedG2:Int = 0
-
     var persons:List<String> = mutableListOf()
 
-    fun toAlliance(persons:List<Person>):Alliance{
+    fun toAlliance(personMap: ConcurrentHashMap<String, Person>):Alliance{
         val alliance = Alliance()
         alliance.id = this.id
         alliance.name = this.name
         alliance.lingGen = this.lingGen
-        alliance.personList.addAll(this.persons.distinct().mapNotNull { persons.find { p->!p.isDead && p.id == it} })
+        alliance.personList.putAll(personMap.filterKeys { this.persons.contains(it) })
         return alliance
     }
 }
@@ -33,10 +32,10 @@ open class AllianceConfig {
 class Alliance: AllianceConfig() {
 
     var zhuPerson:Person? = null
-    var huPersons:MutableList<Person> = Collections.synchronizedList(mutableListOf())
-    var personList:MutableList<Person> = Collections.synchronizedList(mutableListOf())
-    var speedG1PersonList:MutableList<Person> = Collections.synchronizedList(mutableListOf())
-    var speedG2PersonList:MutableList<Person> = Collections.synchronizedList(mutableListOf())
+    var huPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
+    var personList:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
+    var speedG1PersonList:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
+    var speedG2PersonList:ConcurrentHashMap<String, Person> =ConcurrentHashMap()
 
     var totalXiuwei:Long = 0// extra props
     var isPinyinMode:Boolean = false// extra props
@@ -46,7 +45,7 @@ class Alliance: AllianceConfig() {
         config.id = super.id
         config.name = super.name
         config.lingGen = super.lingGen
-        config.persons = this.personList.filter { it.allianceId == super.id }.map { it.id }
+        config.persons = this.personList.filter { it.value.allianceId == super.id }.map { it.key }
         return config
     }
 

@@ -97,7 +97,7 @@ class FragmentDialogAlliance : DialogFragment() {
     fun init(){
         mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
-        mAlliance = mContext.mAlliance.find { it.id == mId }!!
+        mAlliance = mContext.mAlliance[mId]!!
         mDialogView.name.text = if(mContext.pinyinMode) PinyinUtil.convert(mAlliance.name) else mAlliance.name
         mDialogView.lifetime.text = "life: ${mAlliance.lifetime}"
         mDialogView.xiuwei.text = "xiuwei: ${mAlliance.xiuwei}(${mAlliance.xiuweiMulti})  ↑${mAlliance.success}"
@@ -129,19 +129,19 @@ class FragmentDialogAlliance : DialogFragment() {
         val huName = mutableListOf<String>()
         if(mAlliance.huPersons.isNotEmpty()){
             mAlliance.huPersons.forEach {
-                huName.add(if(mContext.pinyinMode) it.pinyinName else it.name)
+                huName.add(if(mContext.pinyinMode) it.value.pinyinName else it.value.name)
             }
         }
         mDialogView.hu.text = if(huName.isEmpty()) "" else "${huName.joinToString(" ", "<", ">")}"
 
         var speedString = ""
         mAlliance.speedG1PersonList.forEach {
-            speedString += (if(mContext.pinyinMode) it.pinyinName else it.name) + " "
+            speedString += (if(mContext.pinyinMode) it.value.pinyinName else it.value.name) + " "
         }
         mDialogView.speeds.text = speedString
 
         mPersonList.clear()
-        mPersonList.addAll(mAlliance.personList)
+        mPersonList.addAll(mAlliance.personList.map { it.value })
         mPersonList.sortByDescending { it.maxXiuWei }
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()

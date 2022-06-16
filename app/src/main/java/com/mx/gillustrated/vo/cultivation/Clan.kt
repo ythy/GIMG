@@ -1,33 +1,34 @@
 package com.mx.gillustrated.vo.cultivation
 
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 open class ClanBak {
     lateinit var id:String // person.ancestorId
     lateinit var name:String
-    var createDate:Int = 0//xun
+    var createDate:Long = 0//xun
     var persons: List<String> = Collections.synchronizedList(mutableListOf())
 
-    fun toClan(list:List<Person>):Clan{
+    fun toClan(personMap: ConcurrentHashMap<String, Person>):Clan{
         val clan = Clan()
         clan.id = this.id
         clan.name = this.name
         clan.createDate = this.createDate
-        clan.clanPersonList.addAll(this.persons.distinct().mapNotNull { list.find { p->!p.isDead && p.id == it} })
+        clan.clanPersonList.putAll(personMap.filterKeys { this.persons.contains(it) })
         return clan
     }
 }
 
 class Clan : ClanBak(){
     var totalXiuwei:Long = 0// extra props
-    var clanPersonList: MutableList<Person> = Collections.synchronizedList(mutableListOf())
+    var clanPersonList: ConcurrentHashMap<String, Person> = ConcurrentHashMap()
 
     fun toClanBak():ClanBak{
         val bak = ClanBak()
         bak.id = super.id
         bak.name = super.name
         bak.createDate = super.createDate
-        bak.persons = this.clanPersonList.map { it.id }
+        bak.persons = this.clanPersonList.filter { it.value.ancestorId == super.id }.map { it.key }
         return bak
     }
 }

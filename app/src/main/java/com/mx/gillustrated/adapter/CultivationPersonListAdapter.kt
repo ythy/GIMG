@@ -50,10 +50,10 @@ class CultivationPersonListAdapter constructor(context: Context, private val lis
         val lifeTurn = if(person.lifeTurn == 0) "" else ".${person.lifeTurn}"
         component.name.text = if(pinyinMode) "${person.pinyinName}$lifeTurn(${person.gender})" else "${person.name}$lifeTurn(${person.gender.props})"
         component.age.text = "${person.age}/${person.lifetime}-${person.ancestorLevel}"
-        component.jingjie.text = person.jinJieName
+        component.jingjie.text = if(pinyinMode) PinyinUtil.convert(person.jinJieName) else person.jinJieName
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))
         component.xiuwei.text = "${person.xiuXei}/${person.jinJieMax}"
-        component.lingGen.text = person.lingGenName
+        component.lingGen.text = if(pinyinMode) PinyinUtil.convert(person.lingGenName) else person.lingGenName
         component.lingGen.setTextColor(Color.parseColor(CommonColors[person.lingGenType.color]))
         component.alliance.text = if(pinyinMode) PinyinUtil.convert(person.allianceName) else person.allianceName
 

@@ -1,8 +1,8 @@
 package com.mx.gillustrated.vo.cultivation
 
 class BakInfo {
-    var xun: Int = 0
-    var alliance:List<AllianceConfig> = mutableListOf()
-    var persons:List<Person> = mutableListOf()
-    var clans:List<ClanBak> = mutableListOf()
+    var xun: Long = 0
+    var alliance:Map<String, AllianceConfig> = HashMap()
+    var persons:Map<String, Person> = HashMap()
+    var clans:Map<String, ClanBak> = HashMap()
 }

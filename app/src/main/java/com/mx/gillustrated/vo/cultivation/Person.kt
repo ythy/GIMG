@@ -11,8 +11,8 @@ class Person{
         lateinit var lingGenType: LingGen
         var lingGenId:String = "" //Tian spec
         var lingGenName:String = ""
-        var birthDay:MutableList<Pair<Int, Int>> =  Collections.synchronizedList(mutableListOf())
-        var lifetime:Int = 100
+        var birthDay:MutableList<Pair<Long, Long>> =  Collections.synchronizedList(mutableListOf())
+        var lifetime:Long = 100
         var events:MutableList<PersonEvent> = Collections.synchronizedList(mutableListOf())
         var tianfus:MutableList<TianFu> = mutableListOf()
         var isDead:Boolean = false
@@ -42,7 +42,7 @@ class Person{
         var ancestorLevel:Int = 0 // 0 初代
         var ancestorId:String? = null// 一次
         lateinit var pinyinName:String// 一次
-        var age:Int = 0 // now -  birthDay
+        var age:Long = 0 // now -  birthDay
         var jinJieName = "" //  updated by xun
         var jinJieColor = 0 //  updated by xun
         var jinJieMax:Int = 0 // updated by xun

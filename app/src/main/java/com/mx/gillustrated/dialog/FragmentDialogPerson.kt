@@ -267,12 +267,12 @@ class FragmentDialogPerson : DialogFragment() {
         val lifeTurn = if(mPerson.lifeTurn == 0) "" else ".${mPerson.lifeTurn}"
         mDialogView.name.text = if(mPinyinMode) "${mPerson.pinyinName}$lifeTurn(${mPerson.gender})-${mPerson.ancestorLevel}" else "${mPerson.name}$lifeTurn(${mPerson.gender.props})-${mPerson.ancestorLevel}"
         setFamily()
-        mDialogView.alliance.text = mPerson.allianceName
+        mDialogView.alliance.text = if(mPinyinMode) PinyinUtil.convert(mPerson.allianceName) else mPerson.allianceName
         mDialogView.age.text = "${mPerson.age}/${mPerson.lifetime}"
         mDialogView.neigong.text = mPerson.maxXiuWei.toString()
         mDialogView.props.text =  getProperty()
-        mDialogView.clan.text = mContext.mClans.find { it.id == mPerson.ancestorId }?.name ?: ""
-        mDialogView.jingjie.text = mPerson.jinJieName
+        mDialogView.clan.text = mContext.mClans[mPerson.ancestorId]?.name ?: ""
+        mDialogView.jingjie.text = if(mPinyinMode) PinyinUtil.convert(mPerson.jinJieName) else mPerson.jinJieName
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"
         mDialogView.xiuweiAdd.text = ((mPerson.lingGenType.qiBasic + mPerson.extraXiuwei + mPerson.allianceXiuwei) * ((mPerson.extraXuiweiMulti + 100).toDouble() / 100 )).toInt().toString() + "(${mPerson.allianceXiuwei})"
@@ -282,7 +282,7 @@ class FragmentDialogPerson : DialogFragment() {
             bonus = mPerson.lingGenType.jinBonus[currentJinJie.bonus - 1]
         }
         mDialogView.success.text = "${mPerson.jingJieSuccess + mPerson.extraTupo + mPerson.allianceSuccess + bonus}"
-        mDialogView.lingGen.text = mPerson.lingGenName
+        mDialogView.lingGen.text = if(mPinyinMode) PinyinUtil.convert(mPerson.lingGenName) else mPerson.lingGenName
         mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenType.color]))
 
         updateViewPager()

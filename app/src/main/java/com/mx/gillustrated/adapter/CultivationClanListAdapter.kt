@@ -47,8 +47,9 @@ class CultivationClanListAdapter  constructor(mContext: Context, private val lis
             component = convertView.tag as ViewHolder
 
         val clan = list[arg0]
-        val personList = clan.clanPersonList
-        val pinyinMode =  if(personList.isEmpty()) true else CultivationHelper.isPinyinMode(clan.clanPersonList[0])
+        val personList = clan.clanPersonList.map { it.value }
+        personList.sortedBy { it.ancestorLevel }
+        val pinyinMode =  if(personList.isEmpty()) true else CultivationHelper.isPinyinMode(personList[0])
 
         component.name.text = if(pinyinMode) PinyinUtil.convert(clan.name) else clan.name
         if(personList.isNotEmpty())
