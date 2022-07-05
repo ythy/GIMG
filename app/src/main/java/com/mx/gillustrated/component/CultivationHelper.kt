@@ -47,40 +47,12 @@ object CultivationHelper {
     fun updateAllianceGain(allAlliance:ConcurrentHashMap<String, Alliance>, updated:Boolean = false){
         allAlliance.forEach { data->
             val alliance = data.value
-            alliance.totalXiuwei = alliance.personList.reduceValuesToLong(1000,
-                    { p: Person -> p.maxXiuWei }, 0, { left, right -> left + right })
             val alivePersons = alliance.personList
             if(alivePersons.isNotEmpty()){
-                val zhuList = alivePersons.map { it.value }.toMutableList()
-                var zhu = zhuList[0]
-                synchronized(zhuList){
-                    zhuList.forEach {
-                        if (it.birthDay.last().first < zhu.birthDay.last().first)
-                            zhu = it
-                    }
-                }
-                alliance.zhuPerson = zhu
-
                 if(updated) {
-                    updateHuInAlliance(alliance, alivePersons)
+                    //updateHuInAlliance(alliance, alivePersons)
+                    updateZhuInAlliance(alliance, alivePersons)
                     updateG1InAlliance(alliance, alivePersons)
-                }
-                alivePersons.forEach { map ->
-                    val p = map.value
-                    p.allianceXiuwei = alliance.xiuwei
-                    synchronized(alliance.speedG1PersonList){
-                        if(alliance.speedG1PersonList.contains(p.id)){
-                            p.allianceXiuwei += alliance.speedG1
-                        }
-                    }
-                    if(p.id == alliance.zhuPerson?.id){
-                        p.allianceXiuwei += 20
-                    }
-                    synchronized(alliance.huPersons) {
-                        if (alliance.huPersons.contains(p.id)) {
-                            p.allianceXiuwei += 10
-                        }
-                    }
                 }
             }else{
                 alliance.zhuPerson = null
@@ -89,6 +61,16 @@ object CultivationHelper {
         }
     }
 
+    private fun updateZhuInAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
+        if(alliance.zhuPerson?.isDead == false){
+            return
+        }
+        val personList = Collections.synchronizedList( persons.map { it.value })
+        personList.sortedBy { it.lastBirthDay }
+        alliance.zhuPerson = personList.first()
+    }
+
+    //暂时取消
     private fun updateHuInAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
         val huSize =   Math.min(4, Math.max(1, persons.size / 10))
         val keys = persons.keys
@@ -103,14 +85,13 @@ object CultivationHelper {
 
     private fun updateG1InAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
         val total = Math.min(10, Math.max(1, persons.size / 4))
-        val personList = persons.map { it.value }.toMutableList()
+        val personList =  Collections.synchronizedList( persons.map { it.value })
         alliance.speedG1PersonList.clear()
-        synchronized(personList){
-            personList.sortByDescending { it.extraSpeed }
-            for (i in 0 until total){
-                alliance.speedG1PersonList[personList[i].id] = personList[i]
-            }
+        personList.sortByDescending { it.extraSpeed }
+        for (i in 0 until total){
+            alliance.speedG1PersonList[personList[i].id] = personList[i]
         }
+
     }
 
     private fun getTianFu(parent: Pair<Person, Person>?):MutableList<TianFu>{
@@ -246,6 +227,7 @@ object CultivationHelper {
             result.extraProperty = mConfig.lingGenTian.find { it.id == lingGen.second }?.property!!
         }
         result.birthDay.add(birthDay)
+        result.lastBirthDay = mCurrentXun
         val initJingJie = mConfig.jingJieType[0]
         result.jingJieId = initJingJie.id
         result.jinJieName = getJinJieName(initJingJie.name)
@@ -393,7 +375,20 @@ object CultivationHelper {
                 attack, defence, speed)
     }
 
-    fun getXiuweiGrow(person:Person):Int{
+    fun getXiuweiGrow(person:Person, allAllianceMap:ConcurrentHashMap<String, Alliance>):Int{
+        val alliance = allAllianceMap[person.allianceId] ?: return 0
+        synchronized(person){
+            person.allianceXiuwei = alliance.xiuwei
+            if(alliance.speedG1PersonList.contains(person.id)){
+                person.allianceXiuwei += alliance.speedG1
+            }
+            if (alliance.huPersons.contains(person.id)) {
+                person.allianceXiuwei += 10
+            }
+            if(person.id == alliance.zhuPerson?.id){
+                person.allianceXiuwei += 20
+            }
+        }
         val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
@@ -427,11 +422,12 @@ object CultivationHelper {
 
     fun updatePartner(allPerson:ConcurrentHashMap<String, Person>){
         val males = allPerson.filter { !it.value.isDead && it.value.gender == NameUtil.Gender.Male && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value }.toMutableList()
-        val females = allPerson.filter { !it.value.isDead && it.value.gender == NameUtil.Gender.Female && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value }.toMutableList()
+        val females =  Collections.synchronizedList(allPerson.filter { !it.value.isDead && it.value.gender == NameUtil.Gender.Female && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value })
         if(males.size > 5 && females.size > 5){
             synchronized(females){
                 val man = males[Random().nextInt(males.size)]
-                val woman = females.sortedBy { Math.abs(man.age - it.age) }[0]
+                val manAge = man.age
+                val woman = females.sortedBy { Math.abs(manAge - it.age) }[0]
                 if(man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId)
                     return
                 createPartner(man, woman)

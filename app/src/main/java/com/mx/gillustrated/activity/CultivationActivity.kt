@@ -28,9 +28,10 @@ import com.mx.gillustrated.util.JsonFileReader
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
+import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.*
 
 @SuppressLint("SetTextI18n")
 @TargetApi(Build.VERSION_CODES.N)
@@ -38,9 +39,9 @@ class CultivationActivity : BaseActivity() {
 
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
-    private var mSpeed = 10L//流失速度
+    private var mSpeed = 1L//流失速度
     var pinyinMode:Boolean = true //是否pinyin模式
-    private val mInitPersonCount = 500//初始化Person数量
+    private val mInitPersonCount = 1000//初始化Person数量
     var readRecord = true
     var maxFemaleProfile = 0 // 1号保留不用
     var maxMaleProfile = 0 // 默认0号
@@ -50,6 +51,8 @@ class CultivationActivity : BaseActivity() {
     private var mEnemys:ConcurrentHashMap<String, Enemy> = ConcurrentHashMap()
     private var mHistoryData = mutableListOf<CultivationHelper.HistoryInfo>()
     private val mTimeHandler:TimeHandler = TimeHandler(this)
+
+    private val mExecutor:ExecutorService = Executors.newFixedThreadPool(20)
 
     @BindView(R.id.lv_history)
     lateinit var mHistory:ListView
@@ -75,6 +78,17 @@ class CultivationActivity : BaseActivity() {
             val backupInfo = BakInfo()
             backupInfo.xun = mCurrentXun
             backupInfo.alliance = mAlliance.mapValues { it.value.toConfig() }
+            mPersons.forEach { p->
+                val it = p.value
+                it.lingGenName = if (it.lingGenId == "") it.lingGenName else CultivationHelper.getTianName(it.lingGenId)
+                if (it.gender == NameUtil.Gender.Female && it.profile == 0 && maxFemaleProfile > 1) {
+                    it.profile = Random().nextInt(maxFemaleProfile - 1) + 2
+                }
+                if (it.gender == NameUtil.Gender.Male && it.profile == 0 && maxMaleProfile > 2) {
+                    it.profile = Random().nextInt(maxMaleProfile - 2) + 2
+                }
+                it.HP = Math.min(it.HP, it.maxHP)
+            }
             backupInfo.persons = mPersons.filter { !it.value.isDead }
             backupInfo.clans = mClans.mapValues { it.value.toClanBak() }
             CultivationBakUtil.saveDataToFiles(Gson().toJson(backupInfo))
@@ -92,13 +106,6 @@ class CultivationActivity : BaseActivity() {
     @OnClick(R.id.btn_time)
     fun onTimeClickHandler(){
         setTimeLooper(mBtnTime.tag == "OFF")
-    }
-
-    @OnClick(R.id.btn_clear)
-    fun onClearClickHandler(){
-        mHistoryData.clear()
-        (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
-        mHistory.invalidateViews()
     }
 
     @OnClick(R.id.btn_add_speed)
@@ -304,9 +311,8 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun deadHandler(it:Person, currentXun:Long){
-        val yongyu = personDataString
-        addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} ${yongyu[0]}")
-        writeHistory("${getPersonBasicString(it)} ${yongyu[0]}", it)
+        addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} ${personDataString[0]}")
+        writeHistory("${getPersonBasicString(it)} ${personDataString[0]}", it)
         val alliance = mAlliance[it.allianceId]
         alliance?.personList?.remove(it.id)
         it.allianceId = ""
@@ -330,100 +336,93 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun xunHandler(currentXun:Long) {
-        //randomEvent(fixedPerson) 暂时不启用
+        mExecutor.execute {
+            updateInfoByXun(currentXun)
+        }
+        for ((_: String, it: Person) in mPersons.filterNot { it.value.isDead } ) {
+            mExecutor.execute {
+                updatePersonByXun(it, currentXun)
+            }
+        }
+    }
+
+    private fun updatePersonByXun(it:Person, currentXun:Long){
+        if (it.isDead)
+            return
+        it.age = (it.lastTotalXun + currentXun - it.lastBirthDay) / 12
+        if (it.age > it.lifetime ) {
+            if(isDeadException(it)){
+                it.lifetime += 5000
+            }else{
+                deadHandler(it, currentXun)
+                return
+            }
+        }
+        val currentJinJie = CultivationHelper.getJingJie(it.jingJieId)
+        val xiuweiGrow = CultivationHelper.getXiuweiGrow(it, mAlliance)
+        it.maxXiuWei += xiuweiGrow
+        it.xiuXei += xiuweiGrow
+        if (it.xiuXei < currentJinJie.max) {
+            return
+        }
+        val next = CultivationHelper.getNextJingJie(it.jingJieId)
+        it.xiuXei = 0
+        val totalSuccess = CultivationHelper.getTotalSuccess(it, currentJinJie.bonus)
+        val random = Random().nextInt(100)
+        if (random <= totalSuccess) {//成功
+            if (next != null) {
+                val commonText = "${personDataString[1]} ${CultivationHelper.getJinJieName(next.name, pinyinMode)}，${personDataString[2]} $random/$totalSuccess"
+                val lastJingJieDigt = CultivationHelper.getJingJieLevel(it.jingJieId)
+                if (it.isFav || (lastJingJieDigt.first >= 0 && lastJingJieDigt.third == 4)) {
+                    writeHistory("${getPersonBasicString(it)} $commonText", it)
+                }
+                if (lastJingJieDigt.first >= 0 && lastJingJieDigt.third == 4) {
+                    addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
+                }
+                it.jingJieId = next.id
+                it.jinJieName = CultivationHelper.getJinJieName(next.name, pinyinMode)
+                it.jingJieSuccess = next.success
+                it.jinJieColor = next.color
+                it.jinJieMax = next.max
+                val allianceNow = mAlliance[it.allianceId]
+                it.lifetime += next.lifetime * (100 + (allianceNow?.lifetime ?: 0)) / 100
+            } else {
+                val commonText = "转转成功，${personDataString[2]} $random/$totalSuccess"
+                addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
+                writeHistory("${getPersonBasicString(it)} $commonText", it)
+                it.jingJieId = mConfig.jingJieType[0].id
+                it.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name, pinyinMode)
+                it.jingJieSuccess = mConfig.jingJieType[0].success
+                it.jinJieColor = mConfig.jingJieType[0].color
+                it.jinJieMax = mConfig.jingJieType[0].max
+                it.lifeTurn += 1
+                it.lifetime = it.age + it.lifeTurn * 1000
+            }
+        } else {
+            val commonText = if (next != null)
+                "${personDataString[5]} ${CultivationHelper.getJinJieName(next.name, pinyinMode)} ${personDataString[3]} $random/$totalSuccess，${personDataString[4]} ${totalSuccess + currentJinJie.fault}%"
+            else
+                "转转失败 ${personDataString[3]} $random/$totalSuccess，${personDataString[4]} ${totalSuccess + currentJinJie.fault}%"
+            if (it.isFav) {
+                writeHistory("${getPersonBasicString(it)} $commonText", it)
+            }
+            it.jingJieSuccess += currentJinJie.fault
+        }
+
+    }
+
+    private fun updateInfoByXun(currentXun:Long){
         CultivationHelper.updateAllianceGain(mAlliance, currentXun % 120 == 0L)
         if(currentXun % 120 == 0L) {
             updatePartnerChildren()
             updateHP()
         }
         if(currentXun % 240 == 0L) {
-           CultivationHelper.updatePartner(mPersons)
+            CultivationHelper.updatePartner(mPersons)
         }
+        //randomEvent(fixedPerson) 暂时不启用
         updateClans(currentXun)
         updateEnemys(currentXun)
-
-        val yongyu = personDataString
-        for ((_: String, it: Person) in mPersons) {
-            if (it.isDead)
-                continue
-            var totalAgeXun = 0L
-            synchronized(it.birthDay){
-                it.birthDay.forEach {
-                    totalAgeXun += if (it.second == 0L) {
-                        currentXun - it.first
-                    } else {
-                        it.second - it.first
-                    }
-                }
-            }
-            it.age = totalAgeXun / 12
-            if (it.age > it.lifetime ) {
-                if(isDeadException(it)){
-                    it.lifetime += 5000
-                }else{
-                    deadHandler(it, currentXun)
-                    continue
-                }
-            }
-            val currentJinJie = CultivationHelper.getJingJie(it.jingJieId)
-            it.jinJieName = CultivationHelper.getJinJieName(currentJinJie.name, pinyinMode)
-            it.lingGenName = if (it.lingGenId == "") it.lingGenName else CultivationHelper.getTianName(it.lingGenId)
-            if (it.gender == NameUtil.Gender.Female && it.profile == 0 && maxFemaleProfile > 1) {
-                it.profile = Random().nextInt(maxFemaleProfile - 1) + 2
-            }
-            if (it.gender == NameUtil.Gender.Male && it.profile == 0 && maxMaleProfile > 2) {
-                it.profile = Random().nextInt(maxMaleProfile - 2) + 2
-            }
-            var currentXiuwei = it.xiuXei
-            val xiuweiGrow = CultivationHelper.getXiuweiGrow(it)
-            it.maxXiuWei += xiuweiGrow
-            currentXiuwei += xiuweiGrow
-            if (currentXiuwei < currentJinJie.max) {
-                it.xiuXei = currentXiuwei
-                continue
-            }
-            val next = CultivationHelper.getNextJingJie(it.jingJieId)
-            it.xiuXei -= currentJinJie.max
-            val totalSuccess = CultivationHelper.getTotalSuccess(it, currentJinJie.bonus)
-            val random = Random().nextInt(100)
-            if (random <= totalSuccess) {//成功
-                if (next != null) {
-                    val commonText = "${yongyu[1]} ${CultivationHelper.getJinJieName(next.name, pinyinMode)}，${yongyu[2]} $random/$totalSuccess"
-                    val lastJingJieDigt = CultivationHelper.getJingJieLevel(it.jingJieId)
-                    if (it.isFav || (lastJingJieDigt.first >= 0 && lastJingJieDigt.third == 4)) {
-                        writeHistory("${getPersonBasicString(it)} $commonText", it)
-                    }
-                    if (lastJingJieDigt.first >= 0 && lastJingJieDigt.third == 4) {
-                        addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
-                    }
-                    it.jingJieId = next.id
-                    it.jingJieSuccess = next.success
-                    it.jinJieColor = next.color
-                    it.jinJieMax = next.max
-                    val allianceNow = mAlliance[it.allianceId]
-                    it.lifetime += next.lifetime * (100 + (allianceNow?.lifetime ?: 0)) / 100
-                } else {
-                    val commonText = "转转成功，${yongyu[2]} $random/$totalSuccess"
-                    addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
-                    writeHistory("${getPersonBasicString(it)} $commonText", it)
-                    it.jingJieId = mConfig.jingJieType[0].id
-                    it.jingJieSuccess = mConfig.jingJieType[0].success
-                    it.jinJieColor = mConfig.jingJieType[0].color
-                    it.jinJieMax = mConfig.jingJieType[0].max
-                    it.lifeTurn += 1
-                    it.lifetime = it.age + it.lifeTurn * 1000
-                }
-            } else {
-                val commonText = if (next != null)
-                    "${yongyu[5]} ${CultivationHelper.getJinJieName(next.name, pinyinMode)} ${yongyu[3]} $random/$totalSuccess，${yongyu[4]} ${totalSuccess + currentJinJie.fault}%"
-                else
-                    "转转失败 ${yongyu[3]} $random/$totalSuccess，${yongyu[4]} ${totalSuccess + currentJinJie.fault}%"
-                if (it.isFav) {
-                    writeHistory("${getPersonBasicString(it)} $commonText", it)
-                }
-                it.jingJieSuccess += currentJinJie.fault
-            }
-        }
     }
 
     //1旬一月
@@ -480,48 +479,40 @@ class CultivationActivity : BaseActivity() {
         setTimeLooper(false)
         mProgressDialog.show()
         Thread(Runnable {
-            Thread.sleep(500)
             var temp = count
-            while(temp-- > 0){
-                addPersion(null, null)
+            Thread.sleep(500)
+            try {
+                while(temp-- > 0){
+                    Log.d("MAOXIN1", "$temp")
+                    mExecutor.execute(AddPersonRunnable(temp, mTimeHandler))
+                    Log.d("MAOXIN2", "$temp")
+                }
+            }catch (e:IOException) {
+                mExecutor.shutdown()
             }
-            val message = Message.obtain()
-            message.what = 5
-            mTimeHandler.sendMessage(message)
         }).start()
     }
 
-//    private fun addMultiPerson(count:Int){
-//        setTimeLooper(false)
-//        mProgressDialog.show()
-//        var tempCount = count
-//        Thread(Runnable {
-//            Log.d("TTTTTTTTTTTTY", "1" )
-//            Thread.sleep(500)
-//            Log.d("TTTTTTTTTTTTZ", "2" )
-//            while(tempCount-- > 0){
-//                Log.d("TTTTTTTTTTTT1", "$tempCount" )
-//                Thread(Runnable {
-//
-//                }).start()
-//                Log.d("TTTTTTTTTTTT4", "$tempCount" )
-//            }
-//        }).start()
-//    }
-//
-//    class AddPersonRunnable constructor(val count:Int, val handler:TimeHandler):Runnable {
-//
-//        override fun run() {
-//            Log.d("TTTTTTTTTTTT2", "$count" )
-//            //addPersion(null, null)
-//            val message = Message.obtain()
-//            message.what = 5
-//            message.arg1 = count
-//            handler.sendMessage(message)
-//            Log.d("TTTTTTTTTTTT3", "$count" )
-//        }
-//
-//    }
+    class AddPersonRunnable constructor(private val count:Int, val handler:TimeHandler):Runnable {
+        override fun run() {
+            Log.d("MAOXIN3", "$count")
+            val person = CultivationHelper.getPersonInfo(null, null)
+            Log.d("MAOXIN4", "$count")
+            val message = Message.obtain()
+            message.what = 5
+            message.obj = person
+            message.arg1 = count
+            handler.sendMessage(message)
+        }
+    }
+
+
+    private fun addPersonFromThread(person:Person){
+        mPersons[person.id] = person
+        CultivationHelper.joinAlliance(person, mAlliance)
+        addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} 加入")
+        writeHistory("${getPersonBasicString(person)} 加入", person)
+    }
 
     private fun addPersion(fixedName:Pair<String, String?>?, fixedGender:NameUtil.Gender?,
                            lifetime: Long = 100, parent: Pair<Person, Person>? = null, fav:Boolean = false):Person{
@@ -564,6 +555,8 @@ class CultivationActivity : BaseActivity() {
             if(person != null && !person.isDead){
                 person.isDead = false
                 person.lifetime += 5000L
+                person.lastBirthDay = mCurrentXun
+                person.lastTotalXun += person.birthDay.last().second -  person.birthDay.last().first
                 person.birthDay.add(Pair(mCurrentXun, 0))
                 val commonText = " 复活，寿命增加5000"
                 addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} $commonText")
@@ -721,7 +714,7 @@ class CultivationActivity : BaseActivity() {
     // update every 10 years
     private fun updateHP(){
         for ((_: String, it: Person) in mPersons) {
-            if(it.isDead || it.HP < it.maxHP )
+            if(it.isDead || it.HP >= it.maxHP )
                 continue
             if(CultivationHelper.getProperty(it)[0] < -10){
                 val count = Math.abs(CultivationHelper.getProperty(it)[0])
@@ -1057,7 +1050,8 @@ class CultivationActivity : BaseActivity() {
                 val activity = reference.get()!!
                 if(msg.what == 1){
                     val xun = msg.obj.toString().toLong()
-                    activity.mDate.text = "$xun 旬 - ${activity.getYearString(xun)}"
+                    if(activity.mDate.text != "${activity.getYearString(xun)}")
+                        activity.mDate.text = "${activity.getYearString(xun)}"
                     activity.xunHandler(xun)
                 }else if(msg.what == 2){
                     activity.mProgressDialog.dismiss()
@@ -1077,12 +1071,13 @@ class CultivationActivity : BaseActivity() {
                     Toast.makeText(activity, "重启完成", Toast.LENGTH_SHORT).show()
                     activity.startWorld()
                 }else if(msg.what == 5){
-                    //Log.d("TTTTTTTTTTTT5", "${msg.arg1}" )
-                   // if(msg.arg1 == -1){
+                    activity.addPersonFromThread(msg.obj as Person)
+                    Log.d("MAOXIN5", "${msg.arg1}")
+                    if(msg.arg1 == 0){
                         Toast.makeText(activity, "加入完成", Toast.LENGTH_SHORT).show()
                         activity.mProgressDialog.dismiss()
                         activity.setTimeLooper(true)
-                  //  }
+                    }
                 }else if(msg.what == 6){
                     Toast.makeText(activity, "操作完成", Toast.LENGTH_SHORT).show()
                     activity.setTimeLooper(true)

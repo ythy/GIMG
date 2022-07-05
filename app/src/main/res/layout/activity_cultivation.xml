@@ -13,13 +13,20 @@
         <LinearLayout
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
+            android:layout_weight="1"
             android:orientation="horizontal"
             android:gravity="center_vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_date"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="center_vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -27,31 +34,16 @@
                 android:id="@+id/tv_speed"/>
             <ImageButton
                 android:id="@+id/btn_add_speed"
-                style="@style/CommonImageButtonStyle"
+                style="@style/ImageButtonSmall"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 android:background="@drawable/material_up" />
             <ImageButton
                 android:id="@+id/btn_reduce_speed"
-                style="@style/CommonImageButtonStyle"
+                style="@style/ImageButtonSmall"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
                 android:background="@drawable/material_down" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="end">
-            <Button
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                android:id="@+id/btn_clear"
-                style="@style/ButtonSmall"
-                android:backgroundTint="@color/color_ana"
-                android:layout_marginStart="5dp"
-                android:text="Clear"
-                tools:targetApi="lollipop" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout

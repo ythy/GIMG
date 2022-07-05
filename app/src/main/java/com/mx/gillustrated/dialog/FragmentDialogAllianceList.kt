@@ -112,7 +112,11 @@ class FragmentDialogAllianceList  : DialogFragment() {
     private fun updateView(){
         mAllianceListData.clear()
         mAllianceListData.addAll(mContext.mAlliance.map { it.value })
-        mAllianceListData.forEach { it.isPinyinMode = mContext.pinyinMode }
+        mAllianceListData.forEach {
+            it.isPinyinMode = mContext.pinyinMode
+            it.totalXiuwei = it.personList.reduceValuesToLong(1000,
+                    { p: Person -> p.maxXiuWei }, 0, { left, right -> left + right })
+        }
         mAllianceListData.sortByDescending { it.totalXiuwei }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
