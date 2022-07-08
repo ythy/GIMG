@@ -64,7 +64,7 @@ class FragmentDialogClanList  : DialogFragment() {
 
     @OnItemClick(R.id.lv_clan)
     fun onItemClick(position:Int){
-        if(mClanListData[position].clanPersonList.map { it.value }.count { !it.isDead } == 0){
+        if(mClanListData[position].clanPersonList.map { it.value }.count() == 0){
             Toast.makeText(mContext, "size 0", Toast.LENGTH_SHORT).show()
             return
         }

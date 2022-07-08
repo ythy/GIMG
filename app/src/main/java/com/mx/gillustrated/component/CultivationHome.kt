@@ -33,7 +33,7 @@ class CultivationHome constructor(context:Context) : View(context){
     init {
         mPaint.isAntiAlias = true
         mPaint.isDither = true
-        mPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        //mPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
 
         val random = Random()
         val bitmapCount = random.nextInt(1)

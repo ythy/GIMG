@@ -62,7 +62,7 @@ object CultivationHelper {
     }
 
     private fun updateZhuInAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
-        if(alliance.zhuPerson?.isDead == false){
+        if(alliance.zhuPerson != null){
             return
         }
         val personList = Collections.synchronizedList( persons.map { it.value })
@@ -421,8 +421,8 @@ object CultivationHelper {
     }
 
     fun updatePartner(allPerson:ConcurrentHashMap<String, Person>){
-        val males = allPerson.filter { !it.value.isDead && it.value.gender == NameUtil.Gender.Male && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value }.toMutableList()
-        val females =  Collections.synchronizedList(allPerson.filter { !it.value.isDead && it.value.gender == NameUtil.Gender.Female && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value })
+        val males = allPerson.filter { it.value.gender == NameUtil.Gender.Male && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value }.toMutableList()
+        val females =  Collections.synchronizedList(allPerson.filter { it.value.gender == NameUtil.Gender.Female && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value })
         if(males.size > 5 && females.size > 5){
             synchronized(females){
                 val man = males[Random().nextInt(males.size)]

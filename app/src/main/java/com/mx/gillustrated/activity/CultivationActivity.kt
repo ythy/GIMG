@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -39,13 +38,14 @@ class CultivationActivity : BaseActivity() {
 
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
-    private var mSpeed = 1L//流失速度
+    private var mSpeed = 10L//流失速度
     var pinyinMode:Boolean = true //是否pinyin模式
-    private val mInitPersonCount = 1000//初始化Person数量
+    private val mInitPersonCount = 500//初始化Person数量
     var readRecord = true
     var maxFemaleProfile = 0 // 1号保留不用
     var maxMaleProfile = 0 // 默认0号
     var mPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
+    var mDeadPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var mAlliance:ConcurrentHashMap<String, Alliance> = ConcurrentHashMap()
     var mClans:ConcurrentHashMap<String, Clan> = ConcurrentHashMap()
     private var mEnemys:ConcurrentHashMap<String, Enemy> = ConcurrentHashMap()
@@ -88,8 +88,9 @@ class CultivationActivity : BaseActivity() {
                     it.profile = Random().nextInt(maxMaleProfile - 2) + 2
                 }
                 it.HP = Math.min(it.HP, it.maxHP)
+                it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null && getOfflinePersonDetail(f) == null }.toMutableList()
             }
-            backupInfo.persons = mPersons.filter { !it.value.isDead }
+            backupInfo.persons = mPersons
             backupInfo.clans = mClans.mapValues { it.value.toClanBak() }
             CultivationBakUtil.saveDataToFiles(Gson().toJson(backupInfo))
             val message = Message.obtain()
@@ -214,6 +215,11 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mThreadRunnable = false
+        mHistoryThreadRunnable = false
+    }
 
 
     private fun init(json:String?){
@@ -222,6 +228,11 @@ class CultivationActivity : BaseActivity() {
             val backup = Gson().fromJson(out, BakInfo::class.java)
             mCurrentXun = backup.xun
             mPersons.putAll(backup.persons)
+            mPersons.forEach {
+                if(it.value.children.isNotEmpty())
+                    it.value.children = Collections.synchronizedList(it.value.children)
+                it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
+            }
             mAlliance.putAll(backup.alliance.mapValues {
                 it.value.toAlliance(mPersons)
             })
@@ -298,6 +309,12 @@ class CultivationActivity : BaseActivity() {
         return mPersons[id]
     }
 
+    fun getOfflinePersonDetail(id:String?):Person?{
+        if(id == null)
+            return null
+        return mDeadPersons[id]
+    }
+
     fun setTimeLooper(flag:Boolean){
         if(flag){
             mBtnTime.tag = "ON"
@@ -311,23 +328,30 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun deadHandler(it:Person, currentXun:Long){
+        if(getOnlinePersonDetail(it.id) == null)
+            return
         addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} ${personDataString[0]}")
         writeHistory("${getPersonBasicString(it)} ${personDataString[0]}", it)
         val alliance = mAlliance[it.allianceId]
         alliance?.personList?.remove(it.id)
         it.allianceId = ""
         it.allianceName = ""
-        it.isDead = true
+        if(alliance != null && alliance.zhuPerson == it)
+            alliance.zhuPerson = null
+        if(mClans[it.ancestorId] != null)
+            mClans[it.ancestorId]!!.clanPersonList.remove(it.id)
         synchronized(it.birthDay){
             val pair = Pair(it.birthDay.last().first, currentXun)
             it.birthDay.removeIf { it.second == 0L }
             it.birthDay.add(pair)
         }
+        mPersons.remove(it.id)
+        mDeadPersons[it.id] = it
     }
 
     private fun isDeadException(person:Person):Boolean{
         val matchName = "(李逍遥|阿奴)".toRegex()
-        if(person.lifeTurn > 1 || person.isFav){
+        if(person.isFav){
             return true
         }else if(matchName.find(person.name) != null){
             return true
@@ -336,10 +360,14 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun xunHandler(currentXun:Long) {
+        val year = getYearString(currentXun)
+        if(mDate.text != year) {
+            mDate.text = year
+        }
         mExecutor.execute {
             updateInfoByXun(currentXun)
         }
-        for ((_: String, it: Person) in mPersons.filterNot { it.value.isDead } ) {
+        for ((_: String, it: Person) in mPersons) {
             mExecutor.execute {
                 updatePersonByXun(it, currentXun)
             }
@@ -347,8 +375,6 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updatePersonByXun(it:Person, currentXun:Long){
-        if (it.isDead)
-            return
         it.age = (it.lastTotalXun + currentXun - it.lastBirthDay) / 12
         if (it.age > it.lifetime ) {
             if(isDeadException(it)){
@@ -396,7 +422,7 @@ class CultivationActivity : BaseActivity() {
                 it.jinJieColor = mConfig.jingJieType[0].color
                 it.jinJieMax = mConfig.jingJieType[0].max
                 it.lifeTurn += 1
-                it.lifetime = it.age + it.lifeTurn * 1000
+                it.lifetime = it.age + it.lifeTurn * 100
             }
         } else {
             val commonText = if (next != null)
@@ -457,7 +483,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updateHistory(){
-        if(mHistoryData.size > 1000)
+        if(mHistoryData.size > 200 && mThreadRunnable)
             mHistoryData.clear()
         val tempList = CultivationHelper.mHistoryTempData.toList()
         CultivationHelper.mHistoryTempData.clear()
@@ -483,9 +509,7 @@ class CultivationActivity : BaseActivity() {
             Thread.sleep(500)
             try {
                 while(temp-- > 0){
-                    Log.d("MAOXIN1", "$temp")
                     mExecutor.execute(AddPersonRunnable(temp, mTimeHandler))
-                    Log.d("MAOXIN2", "$temp")
                 }
             }catch (e:IOException) {
                 mExecutor.shutdown()
@@ -495,9 +519,7 @@ class CultivationActivity : BaseActivity() {
 
     class AddPersonRunnable constructor(private val count:Int, val handler:TimeHandler):Runnable {
         override fun run() {
-            Log.d("MAOXIN3", "$count")
             val person = CultivationHelper.getPersonInfo(null, null)
-            Log.d("MAOXIN4", "$count")
             val message = Message.obtain()
             message.what = 5
             message.obj = person
@@ -506,39 +528,38 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-
-    private fun addPersonFromThread(person:Person){
-        mPersons[person.id] = person
-        CultivationHelper.joinAlliance(person, mAlliance)
-        addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} 加入")
-        writeHistory("${getPersonBasicString(person)} 加入", person)
-    }
-
     private fun addPersion(fixedName:Pair<String, String?>?, fixedGender:NameUtil.Gender?,
                            lifetime: Long = 100, parent: Pair<Person, Person>? = null, fav:Boolean = false):Person{
         val person = CultivationHelper.getPersonInfo(fixedName, fixedGender, lifetime, parent, fav)
+        combinedPersonRelationship(person)
+        return person
+    }
+
+    private fun combinedPersonRelationship(person: Person){
         mPersons[person.id] = person
+        if(mClans[person.ancestorId] != null){
+            mClans[person.ancestorId]!!.clanPersonList[person.id] = person
+        }
         CultivationHelper.joinAlliance(person, mAlliance)
         addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} 加入")
         writeHistory("${getPersonBasicString(person)} 加入", person)
-        return person
     }
+
 
     fun bePerson(){
         setTimeLooper(false)
         Thread(Runnable {
             Thread.sleep(500)
+            mDeadPersons.forEach {
+                it.value.partnerName = null
+                it.value.partner = null
+            }
             mPersons.forEach {
                 val person = it.value
-                if(person.isDead){
+                val partner = getOnlinePersonDetail(person.partner)
+                if(person.partner != null && partner == null ){
                     person.partnerName = null
                     person.partner = null
-                }else{
-                    val partner = getOnlinePersonDetail(person.partner)
-                    if(person.partner != null && (partner == null || partner.isDead)){
-                        person.partnerName = null
-                        person.partner = null
-                    }
                 }
             }
             val message = Message.obtain()
@@ -551,13 +572,14 @@ class CultivationActivity : BaseActivity() {
         setTimeLooper(false)
         Thread(Runnable {
             Thread.sleep(500)
-            val person = mPersons[id]
-            if(person != null && !person.isDead){
-                person.isDead = false
+            val person = mDeadPersons[id]
+            if(person != null){
                 person.lifetime += 5000L
                 person.lastBirthDay = mCurrentXun
                 person.lastTotalXun += person.birthDay.last().second -  person.birthDay.last().first
                 person.birthDay.add(Pair(mCurrentXun, 0))
+                mPersons[id] = person
+                mDeadPersons.remove(id)
                 val commonText = " 复活，寿命增加5000"
                 addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} $commonText")
                 writeHistory("${getPersonBasicString(person)} $commonText", person)
@@ -619,7 +641,7 @@ class CultivationActivity : BaseActivity() {
 
     // Every 10 Years
     private fun updatePartnerChildren(){
-        val females = mPersons.filter { !it.value.isDead && it.value.gender == NameUtil.Gender.Female }.map { it.value }.toMutableList()
+        val females = mPersons.filter { it.value.gender == NameUtil.Gender.Female }.map { it.value }.toMutableList()
         for(i in 0 until females.size) {
             val it = females[i]
             if(it.partner != null){
@@ -658,9 +680,8 @@ class CultivationActivity : BaseActivity() {
                 it.isDead = true
             }else{
                 if(random.nextInt(it.attackFrequency) == 0){
-                    val persons = mPersons.filter { f->!f.value.isDead }
-                    val keys = persons.keys
-                    val person = persons[keys.elementAt(random.nextInt(keys.size))]
+                    val keys = mPersons.keys
+                    val person = mPersons[keys.elementAt(random.nextInt(keys.size))]
                     if(person != null){
                         val result = CultivationHelper.battleEnemy(person, it, it.HP * 1000)
                         if(result){
@@ -675,11 +696,10 @@ class CultivationActivity : BaseActivity() {
 
     private fun updateClans(xun:Long){
         if(xun % 480 == 0L) {
-            mPersons.filter { !it.value.isDead && it.value.ancestorId != null }.map { it.value }.toMutableList()
+            mPersons.filter { it.value.ancestorId != null }.map { it.value }.toMutableList()
                     .groupBy { it.ancestorId }.forEach { (t, u) ->
                 if (u.size >= 5) {
-                    val clanOld = mClans[t]
-                    if (clanOld == null) {
+                    if (mClans[t] == null) {
                         val clan = Clan()
                         clan.id = t!!
                         clan.name = u[0].lastName
@@ -697,16 +717,6 @@ class CultivationActivity : BaseActivity() {
                 if(it.value.clanPersonList.isEmpty()){
                     mClans.remove(it.key)
                 }
-                it.value.clanPersonList.forEach { (t: String, u: Person) ->
-                    if(u.isDead)
-                        it.value.clanPersonList.remove(t)
-                }
-                mPersons.filter { p->p.value.ancestorId == it.value.id }.forEach { f->
-                    val person = f.value
-                    if(!it.value.clanPersonList.contains(person.id)){
-                        it.value.clanPersonList[person.id] = person
-                    }
-                }
             }
         }
     }
@@ -714,7 +724,7 @@ class CultivationActivity : BaseActivity() {
     // update every 10 years
     private fun updateHP(){
         for ((_: String, it: Person) in mPersons) {
-            if(it.isDead || it.HP >= it.maxHP )
+            if(it.HP >= it.maxHP )
                 continue
             if(CultivationHelper.getProperty(it)[0] < -10){
                 val count = Math.abs(CultivationHelper.getProperty(it)[0])
@@ -779,7 +789,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun battleSingleHandler(){
         val random = Random()
-        val persons = mPersons.filter { !it.value.isDead && random.nextInt(2) == 0 && CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
+        val persons = mPersons.filter { random.nextInt(2) == 0 && CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
         if(persons.isEmpty() || persons.size < 10){
             Toast.makeText(this, "persons less than 10", Toast.LENGTH_SHORT).show()
             return
@@ -892,8 +902,8 @@ class CultivationActivity : BaseActivity() {
             }
             val firstAlliance = alliance[i]
             val secondAlliance = alliance[i+1]
-            val firstAlliancePersons = firstAlliance.personList.filter { !it.value.isDead && CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
-            val secondAlliancePersons = secondAlliance.personList.filter { !it.value.isDead && CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
+            val firstAlliancePersons = firstAlliance.personList.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
+            val secondAlliancePersons = secondAlliance.personList.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
 
             if(firstAlliancePersons.size == 0){
                 passIds.add(firstAlliance.id)
@@ -936,8 +946,8 @@ class CultivationActivity : BaseActivity() {
             }
             val firstClan = clan[i]
             val secondClan = clan[i+1]
-            val firstClanPersons = firstClan.clanPersonList.filter { !it.value.isDead && CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
-            val secondClanPersons = secondClan.clanPersonList.filter { !it.value.isDead && CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
+            val firstClanPersons = firstClan.clanPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
+            val secondClanPersons = secondClan.clanPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
 
             if(firstClanPersons.size == 0){
                 passIds.add(firstClan.id)
@@ -973,9 +983,9 @@ class CultivationActivity : BaseActivity() {
 
     private fun disasterHandler(randomSize:Int = 0){
         val effectPersons = if(randomSize == 0)
-            mPersons.filter { !it.value.isDead }
+            mPersons
         else
-            mPersons.filter { !it.value.isDead && Random().nextInt(randomSize) == 0 }
+            mPersons.filter { Random().nextInt(randomSize) == 0 }
 
         val random = Random().nextInt(10)
         val level = when (random) {
@@ -1050,8 +1060,6 @@ class CultivationActivity : BaseActivity() {
                 val activity = reference.get()!!
                 if(msg.what == 1){
                     val xun = msg.obj.toString().toLong()
-                    if(activity.mDate.text != "${activity.getYearString(xun)}")
-                        activity.mDate.text = "${activity.getYearString(xun)}"
                     activity.xunHandler(xun)
                 }else if(msg.what == 2){
                     activity.mProgressDialog.dismiss()
@@ -1071,8 +1079,7 @@ class CultivationActivity : BaseActivity() {
                     Toast.makeText(activity, "重启完成", Toast.LENGTH_SHORT).show()
                     activity.startWorld()
                 }else if(msg.what == 5){
-                    activity.addPersonFromThread(msg.obj as Person)
-                    Log.d("MAOXIN5", "${msg.arg1}")
+                    activity.combinedPersonRelationship(msg.obj as Person)
                     if(msg.arg1 == 0){
                         Toast.makeText(activity, "加入完成", Toast.LENGTH_SHORT).show()
                         activity.mProgressDialog.dismiss()

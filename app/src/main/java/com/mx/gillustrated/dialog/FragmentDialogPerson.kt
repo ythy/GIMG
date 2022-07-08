@@ -160,7 +160,7 @@ class FragmentDialogPerson : DialogFragment() {
     fun init(){
         mContext = activity as CultivationActivity
         val id = this.arguments!!.getString("id", "")
-        val person = mContext.getOnlinePersonDetail(id)
+        val person = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)
         if(person == null){
             onCloseHandler()
             return
@@ -257,7 +257,7 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun updateView(){
-        if(mPerson.isDead){
+        if(mContext.getOnlinePersonDetail(mPerson.id) == null){
             mThreadRunnable = false
             mBtnRevive.text = "Revive"
         }else{
@@ -306,7 +306,7 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.parentDad.visibility = if(mPerson.parentName != null) View.VISIBLE else View.GONE
         mDialogView.parentMum.visibility = if(mPerson.parentName != null) View.VISIBLE else View.GONE
 
-        val children = mPerson.children.mapNotNull { mContext.getOnlinePersonDetail(it) }.filter { !it.isDead }
+        val children = mPerson.children.mapNotNull { mContext.getOnlinePersonDetail(it) }
         mDialogView.children.removeAllViews()
         if(children.isNotEmpty()){
             children.forEach {

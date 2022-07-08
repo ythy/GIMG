@@ -17,7 +17,6 @@ class Person() :Parcelable {
         var lifetime:Long = 100
         var events:MutableList<PersonEvent> = Collections.synchronizedList(mutableListOf())
         var tianfus:MutableList<TianFu> = mutableListOf()
-        var isDead:Boolean = false
         var isFav:Boolean = false
         var profile:Int = 0
         var partner:String? = null //赋值一次
@@ -70,7 +69,6 @@ class Person() :Parcelable {
                 lifetime = parcel.readLong()
                 events =  Collections.synchronizedList(parcel.createTypedArrayList(PersonEvent))
                 tianfus = Collections.synchronizedList(parcel.createTypedArrayList(TianFu))
-                isDead = parcel.readByte() != 0.toByte()
                 isFav = parcel.readByte() != 0.toByte()
                 profile = parcel.readInt()
                 partner = parcel.readString()
@@ -120,7 +118,6 @@ class Person() :Parcelable {
                 parcel.writeLong(lifetime)
                 parcel.writeTypedList(events)
                 parcel.writeTypedList(tianfus)
-                parcel.writeByte(if (isDead) 1 else 0)
                 parcel.writeByte(if (isFav) 1 else 0)
                 parcel.writeInt(profile)
                 parcel.writeString(partner)
