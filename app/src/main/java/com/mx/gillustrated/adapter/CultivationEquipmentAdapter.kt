@@ -1,24 +1,23 @@
 package com.mx.gillustrated.adapter
 
+import android.content.ComponentCallbacks
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
-import com.mx.gillustrated.R
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import butterknife.BindView
 import butterknife.ButterKnife
-import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.util.PinyinUtil
-import com.mx.gillustrated.vo.cultivation.Alliance
-import com.mx.gillustrated.vo.cultivation.Clan
-import com.mx.gillustrated.vo.cultivation.Person
+import com.mx.gillustrated.R
+import com.mx.gillustrated.component.CultivationHelper.CommonColors
+import com.mx.gillustrated.vo.cultivation.Equipment
 
-class CultivationClanListAdapter  constructor(mContext: Context, private val list: List<Clan>) : BaseAdapter() {
-
+class CultivationEquipmentAdapter constructor(mContext: Context, private val list: List<Equipment>, private val callbacks: EquipmentAdapterCallback) : BaseAdapter() {
     private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
 
     override fun getCount(): Int {
@@ -40,23 +39,22 @@ class CultivationClanListAdapter  constructor(mContext: Context, private val lis
 
         if (convertView == null) {
             convertView = layoutInflater.inflate(
-                    R.layout.adapter_clan_list, arg2, false)
+                    R.layout.adapter_cultivation_equipment, arg2, false)
             component = ViewHolder(convertView)
             convertView!!.tag = component
         } else
             component = convertView.tag as ViewHolder
 
-        val clan = list[arg0]
-        val personList = clan.clanPersonList.map { it.value }
-        val pinyinMode =  if(personList.isEmpty()) true else CultivationHelper.isPinyinMode(personList[0])
+        val values = list[arg0]
+        component.name.text = values.name
+        component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
+        component.xiuwei.text = "${values.xiuwei}"
+        component.success.text = "${values.success}"
+        component.props.text = values.property.take(4).joinToString()
 
-        component.name.text = if(pinyinMode) PinyinUtil.convert(clan.name) else clan.name
-        if(clan.zhu != null)
-            component.zhu.text = if(pinyinMode) clan.zhu!!.pinyinName else clan.zhu!!.name
-        else
-            component.zhu.text = ""
-        component.persons.text = personList.size.toString()
-        component.total.text  = clan.totalXiuwei.toString()
+        component.del.setOnClickListener{
+            callbacks.onDeleteHandler(values.id)
+        }
         return convertView
     }
 
@@ -65,18 +63,26 @@ class CultivationClanListAdapter  constructor(mContext: Context, private val lis
         @BindView(R.id.tv_name)
         lateinit var name: TextView
 
-        @BindView(R.id.tv_zhu)
-        lateinit var zhu: TextView
+        @BindView(R.id.tv_xiuwei)
+        lateinit var xiuwei: TextView
 
-        @BindView(R.id.tv_persons)
-        lateinit var persons: TextView
+        @BindView(R.id.tv_success)
+        lateinit var success: TextView
 
-        @BindView(R.id.tv_total)
-        lateinit var total: TextView
+        @BindView(R.id.tv_props)
+        lateinit var props: TextView
 
+
+        @BindView(R.id.btnDel)
+        lateinit var del: ImageButton
 
         init {
             ButterKnife.bind(this, view)
         }
     }
+
+    interface EquipmentAdapterCallback {
+        fun onDeleteHandler(id:String)
+    }
+
 }

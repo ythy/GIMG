@@ -20,6 +20,7 @@ import com.mx.gillustrated.adapter.PersonPagerAdapter
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.fragment.FragmentEquipment
 import com.mx.gillustrated.fragment.FragmentPersonEvent
 import com.mx.gillustrated.fragment.FragmentPersonInfo
 import com.mx.gillustrated.util.CommonUtil
@@ -190,12 +191,12 @@ class FragmentDialogPerson : DialogFragment() {
     private fun setViewPager(){
         val bundle = Bundle()
         bundle.putString("id", mPerson.id)
-        val info = FragmentPersonInfo()
-        info.arguments = bundle
+        val equip = FragmentEquipment()
+        equip.arguments = bundle
         val his = FragmentPersonEvent()
         his.arguments = bundle
         mFragments.clear()
-        mFragments.add(info)
+        mFragments.add(equip)
         mFragments.add(his)
         mViewPager.adapter = PersonPagerAdapter(childFragmentManager, mFragments)
         mViewPager.currentItem = 0
@@ -275,13 +276,9 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.jingjie.text = if(mPinyinMode) PinyinUtil.convert(mPerson.jinJieName) else mPerson.jinJieName
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"
-        mDialogView.xiuweiAdd.text = ((mPerson.lingGenType.qiBasic + mPerson.extraXiuwei + mPerson.allianceXiuwei) * ((mPerson.extraXuiweiMulti + 100).toDouble() / 100 )).toInt().toString() + "(${mPerson.allianceXiuwei})"
+        mDialogView.xiuweiAdd.text =  "${CultivationHelper.getXiuweiGrow(mPerson, mContext.mAlliance)}" + "(${mPerson.allianceXiuwei})"
         val currentJinJie = CultivationHelper.getJingJie(mPerson.jingJieId)
-        var bonus = 0
-        if(currentJinJie.bonus > 0 && mPerson.lingGenType.jinBonus.isNotEmpty()){
-            bonus = mPerson.lingGenType.jinBonus[currentJinJie.bonus - 1]
-        }
-        mDialogView.success.text = "${mPerson.jingJieSuccess + mPerson.extraTupo + mPerson.allianceSuccess + bonus}"
+        mDialogView.success.text = "${CultivationHelper.getTotalSuccess(mPerson, currentJinJie.bonus)}"
         mDialogView.lingGen.text = if(mPinyinMode) PinyinUtil.convert(mPerson.lingGenName) else mPerson.lingGenName
         mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenType.color]))
 

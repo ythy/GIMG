@@ -156,7 +156,7 @@
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 150,
+      "lifetime": 100,
       "bonus": 0
     },
     {
@@ -196,7 +196,7 @@
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 200,
+      "lifetime": 100,
       "bonus": 0
     },
     {
@@ -236,7 +236,7 @@
       "color": 2,
       "success": 10,
       "fault": 3,
-      "lifetime": 400,
+      "lifetime": 300,
       "bonus": 0
     },
     {
@@ -276,7 +276,7 @@
       "color": 3,
       "success": 5,
       "fault": 2,
-      "lifetime": 1000,
+      "lifetime": 600,
       "bonus": 0
     },
     {
@@ -316,7 +316,7 @@
       "color": 3,
       "success": 2,
       "fault": 1,
-      "lifetime": 1500,
+      "lifetime": 800,
       "bonus": 0
     },
     {
@@ -356,7 +356,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 2000,
+      "lifetime": 1000,
       "bonus": 0
     },
     {
@@ -396,7 +396,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 2500,
+      "lifetime": 1500,
       "bonus": 0
     },
     {
@@ -436,7 +436,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 4000,
+      "lifetime": 2000,
       "bonus": 0
     },
     {
@@ -476,7 +476,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 4000,
+      "lifetime": 2500,
       "bonus": 0
     },
     {
@@ -516,7 +516,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 6000,
+      "lifetime": 4000,
       "bonus": 0
     },
     {
@@ -556,7 +556,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 8000,
+      "lifetime": 6000,
       "bonus": 0
     },
     {
@@ -596,7 +596,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 8000,
+      "lifetime": 6000,
       "bonus": 0
     },
     {
@@ -636,7 +636,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 10000,
+      "lifetime": 8000,
       "bonus": 0
     },
     {
@@ -676,7 +676,7 @@
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 12000,
+      "lifetime": 10000,
       "bonus": 0
     },
     {
@@ -716,7 +716,7 @@
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 15000,
+      "lifetime": 10000,
       "bonus": 0
     },
     {
@@ -756,7 +756,7 @@
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 20000,
+      "lifetime": 10000,
       "bonus": 0
     },
     {
@@ -796,7 +796,7 @@
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 20000,
+      "lifetime": 12000,
       "bonus": 0
     },
     {
@@ -836,7 +836,7 @@
       "color": 8,
       "success": 1,
       "fault": 1,
-      "lifetime": 20000,
+      "lifetime": 15000,
       "bonus": 0
     },
     {
@@ -1400,6 +1400,98 @@
       "xiuwei": 40,
       "property": [50,20,10,10,0,0,0,0],
       "speedG1": 30
+    }
+  ],
+  "equipment": [
+    {
+      "id": "7001001",
+      "name": "开",
+      "type": 0,
+      "rarity": 8,
+      "xiuwei": 0,
+      "success": 20,
+      "property": [0,0,0,100,0,0,0,0]
+    },
+    {
+      "id": "7001002",
+      "name": "元",
+      "type": 0,
+      "rarity": 8,
+      "xiuwei": 500,
+      "success": 0,
+      "property": [0,0,0,100,0,0,0,0]
+    },
+    {
+      "id": "7002001",
+      "name": "朴",
+      "type": 1,
+      "rarity": 1,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [0,5,0,0,0,0,0,0]
+    },
+    {
+      "id": "7002002",
+      "name": "铁",
+      "type": 1,
+      "rarity": 2,
+      "xiuwei": 5,
+      "success": 0,
+      "property": [0,10,0,0,0,0,0,0]
+    },
+    {
+      "id": "7002003",
+      "name": "钢",
+      "type": 1,
+      "rarity": 3,
+      "xiuwei": 5,
+      "success": 0,
+      "property": [0,20,0,0,0,0,0,0]
+    },
+    {
+      "id": "7002004",
+      "name": "煅",
+      "type": 1,
+      "rarity": 4,
+      "xiuwei": 10,
+      "success": 0,
+      "property": [0,30,0,0,0,0,0,0]
+    },
+    {
+      "id": "7002005",
+      "name": "阿",
+      "type": 1,
+      "rarity": 5,
+      "xiuwei": 20,
+      "success": 0,
+      "property": [0,50,0,0,0,0,0,0]
+    },
+    {
+      "id": "7002006",
+      "name": "钧",
+      "type": 1,
+      "rarity": 6,
+      "xiuwei": 30,
+      "success": 0,
+      "property": [0,60,20,20,0,0,0,0]
+    },
+    {
+      "id": "7002007",
+      "name": "仪",
+      "type": 1,
+      "rarity": 7,
+      "xiuwei": 40,
+      "success": 0,
+      "property": [0,100,0,50,0,0,0,0]
+    },
+    {
+      "id": "7002008",
+      "name": "倚",
+      "type": 1,
+      "rarity": 8,
+      "xiuwei": 50,
+      "success": 5,
+      "property": [0,150,50,50,0,0,0,0]
     }
   ]
 

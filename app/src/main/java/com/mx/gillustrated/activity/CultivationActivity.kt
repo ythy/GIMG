@@ -39,8 +39,8 @@ class CultivationActivity : BaseActivity() {
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
     private var mSpeed = 10L//流失速度
-    var pinyinMode:Boolean = true //是否pinyin模式
-    private val mInitPersonCount = 500//初始化Person数量
+    var pinyinMode:Boolean = false //是否pinyin模式
+    private val mInitPersonCount = 1000//初始化Person数量
     var readRecord = true
     var maxFemaleProfile = 0 // 1号保留不用
     var maxMaleProfile = 0 // 默认0号
@@ -338,8 +338,12 @@ class CultivationActivity : BaseActivity() {
         it.allianceName = ""
         if(alliance != null && alliance.zhuPerson == it)
             alliance.zhuPerson = null
-        if(mClans[it.ancestorId] != null)
+        if(mClans[it.ancestorId] != null){
             mClans[it.ancestorId]!!.clanPersonList.remove(it.id)
+            if(mClans[it.ancestorId]!!.zhu?.id == it.id){
+                mClans[it.ancestorId]!!.zhu = null
+            }
+        }
         synchronized(it.birthDay){
             val pair = Pair(it.birthDay.last().first, currentXun)
             it.birthDay.removeIf { it.second == 0L }
@@ -422,7 +426,7 @@ class CultivationActivity : BaseActivity() {
                 it.jinJieColor = mConfig.jingJieType[0].color
                 it.jinJieMax = mConfig.jingJieType[0].max
                 it.lifeTurn += 1
-                it.lifetime = it.age + it.lifeTurn * 100
+                it.lifetime = it.age + it.lifeTurn * 50 + (it.tianfus.find { t-> t.type == 3 }?.bonus ?: 0)
             }
         } else {
             val commonText = if (next != null)
@@ -483,7 +487,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updateHistory(){
-        if(mHistoryData.size > 200 && mThreadRunnable)
+        if(mHistoryData.size > 500 && mThreadRunnable)
             mHistoryData.clear()
         val tempList = CultivationHelper.mHistoryTempData.toList()
         CultivationHelper.mHistoryTempData.clear()
@@ -716,6 +720,10 @@ class CultivationActivity : BaseActivity() {
             mClans.forEach {
                 if(it.value.clanPersonList.isEmpty()){
                     mClans.remove(it.key)
+                }else if(it.value.zhu == null){
+                    val temp = it.value.clanPersonList.map { c->c.value }.toMutableList()
+                    temp.sortBy { s-> s.ancestorLevel }
+                    it.value.zhu = temp[0]
                 }
             }
         }

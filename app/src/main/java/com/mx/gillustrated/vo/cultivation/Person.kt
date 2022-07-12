@@ -28,7 +28,12 @@ class Person() :Parcelable {
 
         var HP:Int = 10
         var maxHP:Int = 10
-        var extraProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//update once
+        var extraProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//update once deps tianfu
+
+        var equipment:MutableList<String> =  Collections.synchronizedList(mutableListOf())
+        var equipmentXiuwei:Int = 0 //
+        var equipmentSuccess:Int = 0 //
+        var equipmentProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//
 
         var jingJieId:String = ""
         var jingJieSuccess:Int = 0
@@ -82,6 +87,11 @@ class Person() :Parcelable {
                 maxHP = parcel.readInt()
                 extraProperty = parcel.createIntArray().toMutableList()
 
+                equipment = Collections.synchronizedList(parcel.createStringArrayList())
+                equipmentXiuwei = parcel.readInt()
+                equipmentSuccess = parcel.readInt()
+                equipmentProperty = parcel.createIntArray().toMutableList()
+
                 jingJieId = parcel.readString()
                 jingJieSuccess = parcel.readInt()
                 xiuXei = parcel.readInt()
@@ -131,6 +141,11 @@ class Person() :Parcelable {
                 parcel.writeInt(HP)
                 parcel.writeInt(maxHP)
                 parcel.writeIntArray(extraProperty.toIntArray())
+
+                parcel.writeStringList(equipment)
+                parcel.writeInt(equipmentXiuwei)
+                parcel.writeInt(equipmentSuccess)
+                parcel.writeIntArray(equipmentProperty.toIntArray())
 
                 parcel.writeString(jingJieId)
                 parcel.writeInt(jingJieSuccess)

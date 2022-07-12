@@ -52,6 +52,7 @@ open class ClanBak() :Parcelable {
 class Clan() : ClanBak(), Parcelable{
     var totalXiuwei:Long = 0// extra props
     var clanPersonList: ConcurrentHashMap<String, Person> = ConcurrentHashMap()
+    var zhu:Person? = null
 
     constructor(parcel: Parcel) : this() {
         totalXiuwei = parcel.readLong()

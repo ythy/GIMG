@@ -29,11 +29,11 @@ class FragmentPersonInfo  : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         ButterKnife.bind(this, view)
         mContext = activity as CultivationActivity
-        init()
+       // init()
     }
 
     fun init(){
-        val draw = CultivationHome(mContext)
-        mHome.addView(draw)
+       // val draw = CultivationHome(mContext)
+       // mHome.addView(draw)
     }
 }

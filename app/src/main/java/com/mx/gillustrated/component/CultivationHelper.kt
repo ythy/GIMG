@@ -360,7 +360,7 @@ object CultivationHelper {
 
     fun getProperty(person: Person):MutableList<Int>{
         val property = person.extraProperty.mapIndexed { index, it ->
-            it + person.allianceProperty[index]
+            it + person.allianceProperty[index] + person.equipmentProperty[index]
         }
         val lingGenLevel = person.lingGenType.color // 0 until 6
         val zhuan = person.lifeTurn
@@ -373,6 +373,18 @@ object CultivationHelper {
 
         return mutableListOf(person.HP + extraHP, person.maxHP + extraHP,
                 attack, defence, speed)
+    }
+
+    fun updatePersonEquipment(person:Person){
+        val equipments = person.equipment.mapNotNull { mConfig.equipment.find { e-> e.id == it } }
+        person.equipmentXiuwei = equipments.sumBy { it.xiuwei }
+        person.equipmentSuccess = equipments.sumBy { it.success }
+        person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
+        equipments.forEach {
+            it.property.forEachIndexed { index, i ->
+                person.equipmentProperty[index] += i
+            }
+        }
     }
 
     fun getXiuweiGrow(person:Person, allAllianceMap:ConcurrentHashMap<String, Alliance>):Int{
@@ -389,7 +401,7 @@ object CultivationHelper {
                 person.allianceXiuwei += 20
             }
         }
-        val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei
+        val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
     }
@@ -398,11 +410,12 @@ object CultivationHelper {
         val tianfuSuccess = person.extraTupo
         val allianceSuccess = person.allianceSuccess
         val currentSuccess = person.jingJieSuccess
+        val equipmentSuccess = person.equipmentSuccess
         var bonus = 0
         if(jingJieBonus > 0 && person.lingGenType.jinBonus.isNotEmpty()){
             bonus = person.lingGenType.jinBonus[jingJieBonus - 1]
         }
-        return currentSuccess + tianfuSuccess + allianceSuccess + bonus
+        return currentSuccess + tianfuSuccess + allianceSuccess + equipmentSuccess + bonus
     }
 
     private fun getExtraXuiweiMulti(person:Person, alliance:Alliance? = null):Int{

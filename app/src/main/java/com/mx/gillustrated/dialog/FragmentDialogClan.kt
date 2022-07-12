@@ -121,8 +121,7 @@ class FragmentDialogClan : DialogFragment() {
             return
         }
         mDialogView.total.text = personList.size.toString()
-        personList.sortedBy { it.ancestorLevel }
-        mDialogView.zhu.text = if(mContext.pinyinMode) personList[0].pinyinName else personList[0].name
+        mDialogView.zhu.text = if(mContext.pinyinMode) clan.zhu?.pinyinName else clan.zhu?.name
         mPersonList.clear()
         mPersonList.addAll(personList)
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
