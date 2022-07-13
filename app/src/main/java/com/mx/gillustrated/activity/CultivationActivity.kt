@@ -39,7 +39,7 @@ class CultivationActivity : BaseActivity() {
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
     private var mSpeed = 10L//流失速度
-    var pinyinMode:Boolean = false //是否pinyin模式
+    var pinyinMode:Boolean = true //是否pinyin模式
     private val mInitPersonCount = 1000//初始化Person数量
     var readRecord = true
     var maxFemaleProfile = 0 // 1号保留不用
@@ -328,8 +328,8 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun deadHandler(it:Person, currentXun:Long){
-        if(getOnlinePersonDetail(it.id) == null)
-            return
+        mPersons.remove(it.id)
+        mDeadPersons[it.id] = it
         addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} ${personDataString[0]}")
         writeHistory("${getPersonBasicString(it)} ${personDataString[0]}", it)
         val alliance = mAlliance[it.allianceId]
@@ -349,8 +349,6 @@ class CultivationActivity : BaseActivity() {
             it.birthDay.removeIf { it.second == 0L }
             it.birthDay.add(pair)
         }
-        mPersons.remove(it.id)
-        mDeadPersons[it.id] = it
     }
 
     private fun isDeadException(person:Person):Boolean{
@@ -384,7 +382,8 @@ class CultivationActivity : BaseActivity() {
             if(isDeadException(it)){
                 it.lifetime += 5000
             }else{
-                deadHandler(it, currentXun)
+                if(getOnlinePersonDetail(it.id) != null)
+                    deadHandler(it, currentXun)
                 return
             }
         }
@@ -426,7 +425,7 @@ class CultivationActivity : BaseActivity() {
                 it.jinJieColor = mConfig.jingJieType[0].color
                 it.jinJieMax = mConfig.jingJieType[0].max
                 it.lifeTurn += 1
-                it.lifetime = it.age + it.lifeTurn * 50 + (it.tianfus.find { t-> t.type == 3 }?.bonus ?: 0)
+                it.lifetime = it.age + 100 + it.lifeTurn * 5 + (it.tianfus.find { t-> t.type == 3 }?.bonus ?: 0)
             }
         } else {
             val commonText = if (next != null)
@@ -691,6 +690,7 @@ class CultivationActivity : BaseActivity() {
                         if(result){
                             writeHistory("${it.name} 消失", null, 0)
                             it.isDead = true
+                            CultivationHelper.gainJiEquipment(person, 14, it.type)
                         }
                     }
                 }
@@ -750,6 +750,7 @@ class CultivationActivity : BaseActivity() {
         if(random.nextInt(2) == 0){
             enemy.id = UUID.randomUUID().toString()
             enemy.name = "${CultivationHelper.EnemyNames[0]}${random.nextInt(10001)}号"
+            enemy.type = 1
             enemy.birthDay = mCurrentXun
             enemy.HP = 10 + 10 * random.nextInt(100)// max 1000
             enemy.maxHP = enemy.HP
@@ -763,6 +764,7 @@ class CultivationActivity : BaseActivity() {
         }else{
             enemy.id = UUID.randomUUID().toString()
             enemy.name = "${CultivationHelper.EnemyNames[1]}${random.nextInt(10001)}号"
+            enemy.type = 0
             enemy.birthDay = mCurrentXun
             enemy.HP = 10 + 10 * random.nextInt(50)// max 500
             enemy.maxHP = enemy.HP
@@ -819,6 +821,7 @@ class CultivationActivity : BaseActivity() {
             persons[0].xiuXei += 200000
             writeHistory("Single Battle Winner: ${persons[0].allianceName} - ${persons[0].name}", persons[0])
             addPersonEvent(persons[0],"${getYearString()} ${getPersonBasicString(persons[0], false)} Single Battle Winner")
+            CultivationHelper.gainJiEquipment(persons[0], 13)
             val message = Message.obtain()
             message.what = 8
             mTimeHandler.sendMessage(message)
@@ -847,6 +850,7 @@ class CultivationActivity : BaseActivity() {
             }
             clans[0].clanPersonList.forEach {
                 it.value.xiuXei += 200000
+                CultivationHelper.gainJiEquipment(it.value, 12)
             }
             writeHistory("Clan Battle Winner: ${clans[0].name}", null, 0)
             val message = Message.obtain()
@@ -874,6 +878,9 @@ class CultivationActivity : BaseActivity() {
                 writeHistory("Bang Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
                 roundBangHandler(alliances, 20, 200000)
+            }
+            alliances[0].personList.forEach {
+                CultivationHelper.gainJiEquipment(it.value, 11)
             }
             writeHistory("Bang Battle Winner: ${alliances[0].name}", null, 0)
             val message = Message.obtain()

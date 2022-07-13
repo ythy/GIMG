@@ -49,7 +49,7 @@ class FragmentDialogEquipment constructor(val callback:EquipmentSelectorCallback
     }
 
     fun init(){
-        val list = CultivationHelper.mConfig.equipment.toMutableList()
+        val list = CultivationHelper.mConfig.equipment.filter { it.type < 10 }.toMutableList()
         list.sortWith(compareBy<Equipment> {it.type}.thenByDescending { it.rarity })
         mCurrentSelected = list[0]
         val adapter = ArrayAdapter<Equipment>(context!!,

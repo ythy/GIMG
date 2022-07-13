@@ -2,6 +2,7 @@ package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
@@ -66,8 +67,7 @@ object CultivationHelper {
             return
         }
         val personList = Collections.synchronizedList( persons.map { it.value })
-        personList.sortedBy { it.lastBirthDay }
-        alliance.zhuPerson = personList.first()
+        alliance.zhuPerson = personList.sortedBy { it.lastBirthDay }.first()
     }
 
     //暂时取消
@@ -147,8 +147,7 @@ object CultivationHelper {
         var lingGenId = ""
         var lingGen: LingGen? = null
         if(parent == null || selectNumber < 20){
-            val lingGenList = mConfig.lingGenType
-            lingGenList.sortedBy { it.randomBasic }
+            val lingGenList = mConfig.lingGenType.sortedBy { it.randomBasic }
             val sum = lingGenList.sumBy { it.randomBasic }
             val random = Random().nextInt(sum)
             var current = 0 //当前分布
@@ -366,13 +365,23 @@ object CultivationHelper {
         val zhuan = person.lifeTurn
         val jingJieLevel = getJingJieLevel(person.jingJieId)
 
-        val extraHP = 25 * zhuan + 5 * lingGenLevel + jingJieLevel.first + 4 * jingJieLevel.second + property[0]
-        val attack =  5 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[1]
-        val defence =  5 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[2]
-        val speed = 5 * zhuan + 2 * lingGenLevel + property[3]
+        val extraHP = 5 * lingGenLevel + jingJieLevel.first + 4 * jingJieLevel.second + property[0]
+        val attack =  1 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[1]
+        val defence =  1 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[2]
+        val speed =  2 * lingGenLevel + property[3]
 
         return mutableListOf(person.HP + extraHP, person.maxHP + extraHP,
                 attack, defence, speed)
+    }
+
+    //type 11,12,13,14 -> B,C,S,E
+    fun gainJiEquipment(person:Person, type:Int, level:Int = 0){
+        val equipment = mConfig.equipment.filter{ it.type == type}.sortedBy { it.rarity }[level]
+        if(person.equipment.find { it == equipment.id } != null){
+            return
+        }
+        person.equipment.add(equipment.id)
+        updatePersonEquipment(person)
     }
 
     fun updatePersonEquipment(person:Person){

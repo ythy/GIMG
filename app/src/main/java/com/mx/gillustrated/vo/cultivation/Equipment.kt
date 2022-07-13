@@ -6,8 +6,8 @@ import android.os.Parcelable
 class Equipment() :Parcelable {
     lateinit var id:String
     lateinit var name:String
-    var type:Int = 0 // 0 Bao; 1 Wu; 2 Jia
-    var rarity:Int = 0//6 100，7 150，8 ~
+    var type:Int = 0 // 0 Bao; 1 Wu; 2 Jia, 10 huizhang
+    var rarity:Int = 0//5 30, 6 40，7 50，8 ~
     var xiuwei:Int = 0
     var success:Int = 0
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)

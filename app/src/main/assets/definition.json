@@ -1422,6 +1422,33 @@
       "property": [0,0,0,100,0,0,0,0]
     },
     {
+      "id": "7001003",
+      "name": "亽",
+      "type": 0,
+      "rarity": 0,
+      "xiuwei": 10,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7001005",
+      "name": "彡",
+      "type": 0,
+      "rarity": 2,
+      "xiuwei": 30,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7001007",
+      "name": "乄",
+      "type": 0,
+      "rarity": 4,
+      "xiuwei": 50,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },
+    {
       "id": "7002001",
       "name": "朴",
       "type": 1,
@@ -1435,7 +1462,7 @@
       "name": "铁",
       "type": 1,
       "rarity": 2,
-      "xiuwei": 5,
+      "xiuwei": 0,
       "success": 0,
       "property": [0,10,0,0,0,0,0,0]
     },
@@ -1444,54 +1471,99 @@
       "name": "钢",
       "type": 1,
       "rarity": 3,
-      "xiuwei": 5,
+      "xiuwei": 0,
       "success": 0,
-      "property": [0,20,0,0,0,0,0,0]
+      "property": [0,15,0,0,0,0,0,0]
     },
     {
       "id": "7002004",
       "name": "煅",
       "type": 1,
       "rarity": 4,
-      "xiuwei": 10,
+      "xiuwei": 0,
       "success": 0,
-      "property": [0,30,0,0,0,0,0,0]
+      "property": [0,20,0,0,0,0,0,0]
     },
     {
       "id": "7002005",
-      "name": "阿",
+      "name": "太阿",
       "type": 1,
       "rarity": 5,
-      "xiuwei": 20,
+      "xiuwei": 0,
       "success": 0,
-      "property": [0,50,0,0,0,0,0,0]
+      "property": [0,30,0,5,0,0,0,0]
     },
     {
       "id": "7002006",
-      "name": "钧",
+      "name": "承钧",
       "type": 1,
       "rarity": 6,
-      "xiuwei": 30,
+      "xiuwei": 0,
       "success": 0,
-      "property": [0,60,20,20,0,0,0,0]
+      "property": [0,40,0,10,0,0,0,0]
     },
     {
       "id": "7002007",
-      "name": "仪",
+      "name": "巨阙",
       "type": 1,
       "rarity": 7,
-      "xiuwei": 40,
+      "xiuwei": 10,
       "success": 0,
-      "property": [0,100,0,50,0,0,0,0]
+      "property": [0,50,0,20,0,0,0,0]
     },
     {
       "id": "7002008",
-      "name": "倚",
+      "name": "倚天",
       "type": 1,
       "rarity": 8,
       "xiuwei": 50,
       "success": 5,
-      "property": [0,150,50,50,0,0,0,0]
+      "property": [0,100,50,50,0,0,0,0]
+    },
+    {
+      "id": "7006101",
+      "name": "纪-B1",
+      "type": 11,
+      "rarity": 1,
+      "xiuwei": 5,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7006201",
+      "name": "纪-C1",
+      "type": 12,
+      "rarity": 2,
+      "xiuwei": 10,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7006301",
+      "name": "纪-S1",
+      "type": 13,
+      "rarity": 4,
+      "xiuwei": 20,
+      "success": 0,
+      "property": [10,0,0,10,0,0,0,0]
+    },
+    {
+      "id": "7006401",
+      "name": "纪-E1",
+      "type": 14,
+      "rarity": 2,
+      "xiuwei": 10,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7006402",
+      "name": "纪-E2",
+      "type": 14,
+      "rarity": 4,
+      "xiuwei": 20,
+      "success": 0,
+      "property": [10,10,0,0,0,0,0,0]
     }
   ]
 

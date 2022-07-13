@@ -6,6 +6,7 @@ import android.os.Parcelable
 class Enemy() :Parcelable {
     lateinit var id:String
     lateinit var name:String
+    var type:Int = 0
     var HP:Int = 0
     var maxHP:Int = 0
     var attack:Int = 0
@@ -19,6 +20,7 @@ class Enemy() :Parcelable {
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
         name = parcel.readString()
+        type = parcel.readInt()
         HP = parcel.readInt()
         maxHP = parcel.readInt()
         attack = parcel.readInt()
@@ -33,6 +35,7 @@ class Enemy() :Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(name)
+        parcel.writeInt(type)
         parcel.writeInt(HP)
         parcel.writeInt(maxHP)
         parcel.writeInt(attack)

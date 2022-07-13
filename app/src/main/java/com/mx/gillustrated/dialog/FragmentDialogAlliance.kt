@@ -141,7 +141,7 @@ class FragmentDialogAlliance : DialogFragment() {
         mDialogView.speeds.text = speedString
 
         mPersonList.clear()
-        mPersonList.addAll(mAlliance.personList.map { it.value })
+        mPersonList.addAll(mAlliance.personList.map { it.value }.toMutableList())
         mPersonList.sortByDescending { it.maxXiuWei }
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
