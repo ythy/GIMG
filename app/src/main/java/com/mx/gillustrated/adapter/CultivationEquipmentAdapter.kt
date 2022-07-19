@@ -46,14 +46,14 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val lis
             component = convertView.tag as ViewHolder
 
         val values = list[arg0]
-        component.name.text = values.name
+        component.name.text = values.uniqueName
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         component.xiuwei.text = "${values.xiuwei}"
         component.success.text = "${values.success}"
         component.props.text = values.property.take(4).joinToString()
 
         component.del.setOnClickListener{
-            callbacks.onDeleteHandler(values.id)
+            callbacks.onDeleteHandler(values.uniqueName)
         }
         return convertView
     }
@@ -82,7 +82,7 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val lis
     }
 
     interface EquipmentAdapterCallback {
-        fun onDeleteHandler(id:String)
+        fun onDeleteHandler(uniqueName:String)
     }
 
 }

@@ -22,9 +22,9 @@ object CultivationHelper {
 
     fun joinAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>){
         val options = if(person.lingGenId == "") {
-            allAlliance.filter { it.value.level == 1 }.filter { person.lingGenName.indexOf(it.value.lingGen!!) >= 0 }.map { it.value }.toMutableList()
+            allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.filter { person.lingGenName.indexOf(it.value.lingGen!!) >= 0 }.map { it.value }.toMutableList()
         }else{
-            allAlliance.filter { it.value.level == 1 }.map { it.value }.toMutableList()
+            allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.map { it.value }.toMutableList()
         }
         options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfus.filter { f->f.rarity >=2 }.size >= it.value.tianfu  && it.value.personList.size < it.value.maxPerson }.map { it.value })
         val random = Random().nextInt(options.map { 100 / it.level }.sum() )
@@ -43,6 +43,16 @@ object CultivationHelper {
                 break
             }
         }
+    }
+
+    fun joinFixedAlliance(person: Person, alliance:Alliance){
+        alliance.personList[person.id] = person
+        person.allianceId = alliance.id
+        person.allianceName = alliance.name
+        person.allianceSuccess = alliance.success
+        person.allianceProperty = alliance.property
+        person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
+        person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
     }
 
     fun updateAllianceGain(allAlliance:ConcurrentHashMap<String, Alliance>, updated:Boolean = false){
@@ -94,7 +104,10 @@ object CultivationHelper {
 
     }
 
-    private fun getTianFu(parent: Pair<Person, Person>?):MutableList<TianFu>{
+    private fun getTianFu(parent: Pair<Person, Person>?, fixedTianfus:MutableList<String>?):MutableList<TianFu>{
+        if(fixedTianfus != null && fixedTianfus.isNotEmpty()){
+            return fixedTianfus.map { mConfig.tianFuType.find { f-> f.id == it }!! }.toMutableList()
+        }
         val tianFus = mutableListOf<TianFu>()
         mConfig.tianFuType.groupBy { it.type }.forEach { (_, u) ->
             var data: TianFu? = null
@@ -129,7 +142,45 @@ object CultivationHelper {
         return tianFus
     }
 
-    private fun getLingGen(parent: Pair<Person, Person>?):Triple<LingGen, String, String>{
+    private fun getLingGenDetail(id:String):Triple<LingGen, String, String>{
+        val lingGen = mConfig.lingGenType.find { it.id == id }!!
+        var lingGenName = ""
+        var lingGenId = ""
+        when (id) {
+            "1000006" -> {
+                val arr = mConfig.lingGenTian.filter { it.type == 0 }
+                val tianIndex = Random().nextInt(arr.size)
+                lingGenId = arr[tianIndex].id
+                lingGenName = arr[tianIndex].name
+            }
+            "1000007" -> {
+                val arr = mConfig.lingGenTian.filter { it.type == 1 }
+                val tianIndex = Random().nextInt(arr.size)
+                lingGenId = arr[tianIndex].id
+                lingGenName = arr[tianIndex].name
+            }
+            else -> {
+                var type = mutableListOf("金", "水", "木", "火", "土")
+                var typeNum = 5
+                var total = lingGen.id.substring(6).toInt()
+                while (total > 0){
+                    val index = Random().nextInt(typeNum)
+                    val selectType = type[index]
+                    lingGenName += selectType
+                    type = type.filter { it != selectType}.toMutableList()
+                    total--
+                    typeNum--
+                }
+            }
+        }
+        return Triple(lingGen, lingGenId, lingGenName)
+    }
+
+
+    private fun getLingGen(parent: Pair<Person, Person>?, lingGenTypeFixed:String? = null):Triple<LingGen, String, String>{
+        if(lingGenTypeFixed != null){
+            return getLingGenDetail(lingGenTypeFixed)
+        }
         var firestNumber = 10
         var secondNumber = 10
         if(parent != null){
@@ -158,34 +209,9 @@ object CultivationHelper {
                     break
                 }
             }
-
-            when {
-                lingGen!!.id == "1000006" -> {
-                    val arr = mConfig.lingGenTian.filter { it.type == 0 }
-                    val tianIndex = Random().nextInt(arr.size)
-                    lingGenId = arr[tianIndex].id
-                    lingGenName = arr[tianIndex].name
-                }
-                lingGen.id == "1000007" -> {
-                    val arr = mConfig.lingGenTian.filter { it.type == 1 }
-                    val tianIndex = Random().nextInt(arr.size)
-                    lingGenId = arr[tianIndex].id
-                    lingGenName = arr[tianIndex].name
-                }
-                else -> {
-                    var type = mutableListOf("金", "水", "木", "火", "土")
-                    var typeNum = 5
-                    var total = lingGen.id.substring(6).toInt()
-                    while (total > 0){
-                        val index = Random().nextInt(typeNum)
-                        val selectType = type[index]
-                        lingGenName += selectType
-                        type = type.filter { it != selectType}.toMutableList()
-                        total--
-                        typeNum--
-                    }
-                }
-            }
+            val info = getLingGenDetail(lingGen!!.id)
+            lingGenId = info.second
+            lingGenName = info.third
         }else{
             val maxPerson:Person = if(selectNumber in 20 until 20 + firestNumber){
                 parent.first
@@ -200,7 +226,7 @@ object CultivationHelper {
     }
 
     fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?,
-                              lifetime:Long = 100, parent:Pair<Person, Person>? = null, fav:Boolean = false): Person {
+                              lifetime:Long = 100, parent:Pair<Person, Person>? = null, fav:Boolean = false, mix:PersonFixedInfoMix? = null): Person {
         val personGender = gender ?: when (Random().nextInt(2)) {
             0 -> NameUtil.Gender.Male
             else -> NameUtil.Gender.Female
@@ -210,8 +236,8 @@ object CultivationHelper {
         else
             NameUtil.getChineseName(null, personGender)
 
-        val lingGen = getLingGen(parent)
-        val tianFus = getTianFu(parent)
+        val lingGen = getLingGen(parent, mix?.lingGenId)
+        val tianFus = getTianFu(parent, mix?.tianFuIds)
         val birthDay:Pair<Long, Long> = Pair(mCurrentXun, 0)
         val result = Person()
         result.id =  UUID.randomUUID().toString()
@@ -377,21 +403,37 @@ object CultivationHelper {
     //type 11,12,13,14 -> B,C,S,E
     fun gainJiEquipment(person:Person, type:Int, level:Int = 0){
         val equipment = mConfig.equipment.filter{ it.type == type}.sortedBy { it.rarity }[level]
-        if(person.equipment.find { it == equipment.id } != null){
-            return
-        }
-        person.equipment.add(equipment.id)
+        val result = Equipment()
+        result.id = equipment.id
+        result.name = equipment.name
+        result.uniqueName = "${result.name}(${mCurrentXun/12})"
+        result.type = equipment.type
+        result.rarity = equipment.rarity
+        result.xiuwei = equipment.xiuwei
+        result.success = equipment.success
+        result.property = equipment.property
+        person.equipment.add("${result.id},${result.uniqueName}")
         updatePersonEquipment(person)
     }
 
     fun updatePersonEquipment(person:Person){
-        val equipments = person.equipment.mapNotNull { mConfig.equipment.find { e-> e.id == it } }
-        person.equipmentXiuwei = equipments.sumBy { it.xiuwei }
-        person.equipmentSuccess = equipments.sumBy { it.success }
+        val equipments = person.equipment.mapNotNull { mConfig.equipment.find { e-> e.id == it.split(",")[0] } }
+        person.equipmentXiuwei = 0
+        person.equipmentSuccess = 0
         person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
-        equipments.forEach {
-            it.property.forEachIndexed { index, i ->
-                person.equipmentProperty[index] += i
+        if(equipments.isNotEmpty()){
+            equipments.groupBy { it.id }.forEach { (_, u) ->
+                for (index in 0 until u.size){
+                    val equipment = u[index]
+                    if( index + 1 > equipment.maxCount ){
+                        break
+                    }
+                    person.equipmentXiuwei += equipment.xiuwei
+                    person.equipmentSuccess += equipment.success
+                    equipment.property.forEachIndexed { pi, pp ->
+                        person.equipmentProperty[pi] += pp
+                    }
+                }
             }
         }
     }
@@ -427,7 +469,7 @@ object CultivationHelper {
         return currentSuccess + tianfuSuccess + allianceSuccess + equipmentSuccess + bonus
     }
 
-    private fun getExtraXuiweiMulti(person:Person, alliance:Alliance? = null):Int{
+    fun getExtraXuiweiMulti(person:Person, alliance:Alliance? = null):Int{
         val tianValue =  person.tianfus.find { it.type == 2 }?.bonus ?: 0
         val allianceValue = alliance?.xiuweiMulti ?: 0
         return tianValue + allianceValue
@@ -482,6 +524,19 @@ object CultivationHelper {
         }
     }
 
+    fun getJinJieName(input:String, pinyinMode:Boolean = false):String{
+        if(pinyinMode)
+            return input
+        val split = input.split("-")
+        val prefix = split[0]
+        val grade = split[1].toInt()
+        return if(prefix == "LianQi"){
+            NameMapper[prefix] + (if(grade<10) "${grade}层" else "圆满")
+        }else{
+            (NameMapper[prefix] ?: prefix) + LevelMapper[grade]
+        }
+    }
+
     fun getTianName(id:String):String{
         return mConfig.lingGenTian.find { it.id == id }!!.name
     }
@@ -498,18 +553,27 @@ object CultivationHelper {
             null
     }
 
-    fun getJinJieName(input:String, pinyinMode:Boolean = false):String{
-        if(pinyinMode)
-            return input
-        val split = input.split("-")
-        val prefix = split[0]
-        val grade = split[1].toInt()
-        return if(prefix == "LianQi"){
-            NameMapper[prefix] + (if(grade<10) "${grade}层" else "圆满")
-        }else{
-            (NameMapper[prefix] ?: prefix) + LevelMapper[grade]
-        }
-    }
+    data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?)
+
+    val SpecPersonFirstName3:MutableList<Triple<Pair<String, String>, NameUtil.Gender, Int>> = mutableListOf(Triple(Pair("\u7389", "\u5e1d"), NameUtil.Gender.Male, 0), Triple(Pair("\u83e9","\u63d0"), NameUtil.Gender.Male, 0), Triple(Pair("\u6768","\u622c"), NameUtil.Gender.Male, 0),
+            Triple(Pair("\u9080","\u6708"), NameUtil.Gender.Female, 1),Triple(Pair("\u601c","\u661f"), NameUtil.Gender.Female, 1),Triple(Pair("\u82cf","\u6a31"), NameUtil.Gender.Female, 1),Triple(Pair("\u674e","\u7ea2\u8896"), NameUtil.Gender.Female, 1),
+            Triple(Pair("\u9ec4","\u84c9"), NameUtil.Gender.Female, 2),Triple(Pair("\u8d75","\u654f"), NameUtil.Gender.Female, 2),Triple(Pair("\u5468","\u82b7\u82e5"), NameUtil.Gender.Female, 2))
+
+
+    val SpecPersonFixedName:MutableList<Triple<Pair<String, String>, NameUtil.Gender, PersonFixedInfoMix>> = mutableListOf(
+            Triple(Pair("\u9ec4", "\u5e1d"), NameUtil.Gender.Male, PersonFixedInfoMix("1000007", mutableListOf("4000106", "4000206", "4000305", "4000404", "4000506")))
+            ,Triple(Pair("\u7384", "\u5973"), NameUtil.Gender.Female, PersonFixedInfoMix("1000007", mutableListOf("4000106", "4000206", "4000304", "4000404", "4000504")))
+            ,Triple(Pair("\u5b5f", "\u5a46"), NameUtil.Gender.Female, PersonFixedInfoMix("1000006", mutableListOf("4000104", "4000204", "4000305", "4000402", "4000506")))
+            ,Triple(Pair("\u7532", "\u6590"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000103", "4000204", "4000305", "4000503")))
+            ,Triple(Pair("\u7530", "\u9e64"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000104", "4000203", "4000305", "4000503")))
+            ,Triple(Pair("\u6bdb", "\u6b23"), NameUtil.Gender.Male, PersonFixedInfoMix("1000007", mutableListOf("4000105", "4000206", "4000305", "4000404", "4000506")))
+    )
+
+    val SpecPersonFirstName2:MutableList<String> = mutableListOf("主", "廿一", "廿三")
+    val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿")
+    data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int)
+
+
     val EnemyNames = arrayOf("远古", "菜菜")
     val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA")
     private val LevelMapper = mapOf(
@@ -523,4 +587,7 @@ object CultivationHelper {
 
     // type 1 人物信息
     data class HistoryInfo(var content:String, var person:Person?, var type:Int = 0)
+
+
+
 }

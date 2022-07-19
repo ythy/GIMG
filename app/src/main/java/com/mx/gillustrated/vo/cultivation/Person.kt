@@ -41,8 +41,8 @@ class Person() :Parcelable {
         var maxXiuWei:Long = 0
         var allianceId:String = ""
         var allianceXiuwei:Int = 0 //alliance 增益 zhu / speed； 每轮更新
-        var allianceSuccess:Int = 0 //alliance 增益 更新一次
-        var allianceProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//alliance
+        var allianceSuccess:Int = 0 //alliance 增益 初始和读取更新
+        var allianceProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//alliance 初始和读取更新
 
         //extra props
         var lastBirthDay:Long = 0
@@ -57,7 +57,7 @@ class Person() :Parcelable {
         var extraXiuwei:Int = 0 //tianfu
         var extraTupo:Int = 0 //tianfu
         var extraSpeed:Int = 0 //tianfu
-        var extraXuiweiMulti:Int = 0 //tianfu + alliance 更新一次
+        var extraXuiweiMulti:Int = 0 //tianfu + alliance  初始和读取更新
         var allianceName:String = "" // alliance
 
         constructor(parcel: Parcel) : this() {

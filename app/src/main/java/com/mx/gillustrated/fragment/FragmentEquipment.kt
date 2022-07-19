@@ -38,9 +38,7 @@ class FragmentEquipment: Fragment() {
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
                     override fun onItemSelected(equipment: Equipment) {
-                        if(mEquipments.find { it.type > 0 && it.type == equipment.type } != null )
-                            return
-                        mPerson.equipment.add(equipment.id)
+                        mPerson.equipment.add("${equipment.id},${equipment.name}")
                         CultivationHelper.updatePersonEquipment(mPerson)
                         updateList()
                     }
@@ -69,8 +67,8 @@ class FragmentEquipment: Fragment() {
         mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
         mListView.adapter = CultivationEquipmentAdapter(this.context!!, mEquipments, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
             @RequiresApi(Build.VERSION_CODES.N)
-            override fun onDeleteHandler(id: String) {
-                mPerson.equipment.removeIf { it == id }
+            override fun onDeleteHandler(uniqueName: String) {
+                mPerson.equipment.removeIf { it.split(",")[1] == uniqueName }
                 CultivationHelper.updatePersonEquipment(mPerson)
                 updateList()
             }
@@ -79,9 +77,21 @@ class FragmentEquipment: Fragment() {
     }
 
     fun updateList(){
-        val equipments = mPerson.equipment.mapNotNull { mConfigEquipments.find { e-> e.id == it } }
+        val equipments = mPerson.equipment.map {
+            val equipment = mConfigEquipments.find { e-> e.id == it.split(",")[0] }!!
+            val result = Equipment()
+            result.id = equipment.id
+            result.name = equipment.name
+            result.uniqueName = it.split(",")[1]
+            result.type = equipment.type
+            result.rarity = equipment.rarity
+            result.xiuwei = equipment.xiuwei
+            result.success = equipment.success
+            result.property = equipment.property
+            result
+        }
         mEquipments.clear()
-        mEquipments.addAll(equipments)
+        mEquipments.addAll(equipments.sortedBy { it.type })
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
     }

@@ -1400,6 +1400,84 @@
       "xiuwei": 40,
       "property": [50,20,10,10,0,0,0,0],
       "speedG1": 30
+    },
+    {
+      "id": "6000201",
+      "name": "琴",
+      "type": 1,
+      "lifetime": 100,
+      "xiuwei": 100,
+      "property": [0,30,20,10,0,0,0,0],
+      "speedG1": 50
+    },
+    {
+      "id": "6000202",
+      "name": "棋",
+      "type": 1,
+      "lifetime": 100,
+      "xiuweiMulti": 200,
+      "property": [0,20,30,10,0,0,0,0],
+      "speedG1": 50
+    },
+    {
+      "id": "6000203",
+      "name": "书",
+      "type": 1,
+      "lifetime": 100,
+      "xiuwei": 50,
+      "xiuweiMulti": 100,
+      "property": [0,20,20,20,0,0,0,0],
+      "speedG1": 50
+    },
+    {
+      "id": "6000204",
+      "name": "画",
+      "type": 1,
+      "lifetime": 100,
+      "success": 5,
+      "xiuwei": 40,
+      "xiuweiMulti": 80,
+      "property": [50,30,10,10,0,0,0,0],
+      "speedG1": 50
+    },
+    {
+      "id": "6000311",
+      "name": "剑",
+      "type": 2,
+      "xiuwei": 20,
+      "xiuweiMulti": 40,
+      "property": [0,50,0,10,0,0,0,0],
+      "speedG1": 20
+    },
+    {
+      "id": "6000401",
+      "name": "庭",
+      "type": 3,
+      "lifetime": 200,
+      "xiuwei": 100,
+      "xiuweiMulti": 200,
+      "property": [50,30,30,20,0,0,0,0],
+      "speedG1": 50
+    },
+    {
+      "id": "6000402",
+      "name": "古",
+      "type": 3,
+      "lifetime": 200,
+      "xiuwei": 100,
+      "xiuweiMulti": 300,
+      "property": [50,60,10,10,0,0,0,0],
+      "speedG1": 50
+    },
+    {
+      "id": "6000403",
+      "name": "庸",
+      "type": 3,
+      "lifetime": 200,
+      "xiuwei": 150,
+      "xiuweiMulti": 200,
+      "property": [20,80,0,20,0,0,0,0],
+      "speedG1": 50
     }
   ],
   "equipment": [
@@ -1525,7 +1603,8 @@
       "name": "纪-B1",
       "type": 11,
       "rarity": 1,
-      "xiuwei": 5,
+      "maxCount": 10,
+      "xiuwei": 2,
       "success": 0,
       "property": [0,0,0,0,0,0,0,0]
     },
@@ -1533,8 +1612,9 @@
       "id": "7006201",
       "name": "纪-C1",
       "type": 12,
-      "rarity": 2,
-      "xiuwei": 10,
+      "rarity": 1,
+      "maxCount": 10,
+      "xiuwei": 2,
       "success": 0,
       "property": [0,0,0,0,0,0,0,0]
     },
@@ -1543,27 +1623,30 @@
       "name": "纪-S1",
       "type": 13,
       "rarity": 4,
-      "xiuwei": 20,
+      "maxCount": 10,
+      "xiuwei": 5,
       "success": 0,
-      "property": [10,0,0,10,0,0,0,0]
+      "property": [0,0,0,2,0,0,0,0]
     },
     {
       "id": "7006401",
       "name": "纪-E1",
       "type": 14,
       "rarity": 2,
-      "xiuwei": 10,
+      "maxCount": 10,
+      "xiuwei": 2,
       "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
+      "property": [0,1,0,0,0,0,0,0]
     },
     {
       "id": "7006402",
       "name": "纪-E2",
       "type": 14,
       "rarity": 4,
-      "xiuwei": 20,
+      "maxCount": 10,
+      "xiuwei": 5,
       "success": 0,
-      "property": [10,10,0,0,0,0,0,0]
+      "property": [0,2,0,0,0,0,0,0]
     }
   ]
 

@@ -5,9 +5,18 @@ import android.os.Parcelable
 import java.util.concurrent.ConcurrentHashMap
 
 //zhu 增益 20
+/*
+ update:
+ 1.雅4 - type 1, number 4, fixed gender
+ 2.继承 - type 2, number 1
+ 3.TianTing - type 3, index 0, fixed 3
+ 4.GuLong - type 3, index 1, fixed 4
+ 5.Yong - type 3, index 2, fixed 3
+ */
 open class AllianceConfig() :Parcelable {
     lateinit var id:String
     lateinit var name:String
+    var type:Int = 0//类型，0 all, 1 spec
     var level:Int = 1// 权重100的约分 默认1
     var maxPerson:Int = 0//最大人数
     var lifetime:Int = 0
@@ -24,6 +33,7 @@ open class AllianceConfig() :Parcelable {
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
         name = parcel.readString()
+        type = parcel.readInt()
         level = parcel.readInt()
         maxPerson = parcel.readInt()
         lifetime = parcel.readInt()
@@ -50,6 +60,7 @@ open class AllianceConfig() :Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(name)
+        parcel.writeInt(type)
         parcel.writeInt(level)
         parcel.writeInt(maxPerson)
         parcel.writeInt(lifetime)

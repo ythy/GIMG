@@ -123,7 +123,7 @@ class FragmentDialogClan : DialogFragment() {
         mDialogView.total.text = personList.size.toString()
         mDialogView.zhu.text = if(mContext.pinyinMode) clan.zhu?.pinyinName else clan.zhu?.name
         mPersonList.clear()
-        mPersonList.addAll(personList)
+        mPersonList.addAll(personList.sortedBy { it.ancestorLevel })
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
 

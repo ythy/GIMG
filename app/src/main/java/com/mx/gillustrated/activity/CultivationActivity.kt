@@ -16,11 +16,16 @@ import com.google.gson.Gson
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CultivationHistoryAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName
+import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName2
+import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName3
+import com.mx.gillustrated.component.CultivationHelper.SpecPersonFixedName
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
 import com.mx.gillustrated.component.CultivationHelper.getPersonBasicString
 import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
+import com.mx.gillustrated.component.CultivationHelper.SpecPersonInfo
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.util.CultivationBakUtil
 import com.mx.gillustrated.util.JsonFileReader
@@ -31,6 +36,7 @@ import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.*
+
 
 @SuppressLint("SetTextI18n")
 @TargetApi(Build.VERSION_CODES.N)
@@ -241,6 +247,15 @@ class CultivationActivity : BaseActivity() {
             })
         }
         createAlliance()
+        //更新Alliance属性
+        mPersons.forEach {
+            it.value.allianceSuccess = mAlliance[it.value.allianceId]!!.success
+            it.value.allianceProperty =  mAlliance[it.value.allianceId]!!.property
+            it.value.allianceName = mAlliance[it.value.allianceId]!!.name
+            it.value.extraXuiweiMulti = CultivationHelper.getExtraXuiweiMulti(it.value,  mAlliance[it.value.allianceId]!!)
+            it.value.equipment.removeIf { e-> e.split(",").size != 2}
+            CultivationHelper.updatePersonEquipment(it.value)
+        }
         if(out == null){
             startWorld()
         }else{
@@ -270,37 +285,58 @@ class CultivationActivity : BaseActivity() {
     private fun createAlliance() {
         if(mAlliance.isEmpty()){
             mConfig.alliance.forEach {
-                val alliance = Alliance()
-                alliance.name = it.name + "界"
-                alliance.id = it.id
-                alliance.level = it.level
-                alliance.lifetime = it.lifetime
-                alliance.xiuwei = it.xiuwei
-                alliance.maxPerson = it.maxPerson
-                alliance.tianfu = it.tianfu
-                alliance.success = it.success
-                alliance.xiuweiMulti = it.xiuweiMulti
-                alliance.lingGen = it.lingGen
-                alliance.property = it.property
-                alliance.speedG1 = it.speedG1
-                alliance.speedG2 = it.speedG2
-                mAlliance[it.id] = alliance
+                mAlliance[it.id] = newAlliance(it)
             }
         }else{
+            mConfig.alliance.forEach { configAlliance->
+                val alliance = mAlliance[configAlliance.id]
+                if(alliance != null){
+                    alliance.name = configAlliance.name + "界"
+                    alliance.type = configAlliance.type
+                    alliance.level = configAlliance.level
+                    alliance.lifetime = configAlliance.lifetime
+                    alliance.maxPerson = configAlliance.maxPerson
+                    alliance.xiuwei = configAlliance.xiuwei
+                    alliance.xiuweiMulti = configAlliance.xiuweiMulti
+                    alliance.success = configAlliance.success
+                    alliance.tianfu = configAlliance.tianfu
+                    alliance.speedG1 = configAlliance.speedG1
+                    alliance.speedG2 = configAlliance.speedG2
+                    alliance.property = configAlliance.property
+                }else{
+                    mAlliance[configAlliance.id] = newAlliance(configAlliance)
+                }
+            }
+
             mAlliance.forEach {
-                val configAllianc = mConfig.alliance.find { f-> f.id == it.key }!!
-                it.value.level = configAllianc.level
-                it.value.lifetime = configAllianc.lifetime
-                it.value.maxPerson = configAllianc.maxPerson
-                it.value.xiuwei = configAllianc.xiuwei
-                it.value.xiuweiMulti = configAllianc.xiuweiMulti
-                it.value.success = configAllianc.success
-                it.value.tianfu = configAllianc.tianfu
-                it.value.speedG1 = configAllianc.speedG1
-                it.value.speedG2 = configAllianc.speedG2
-                it.value.property = configAllianc.property
+                if(mConfig.alliance.find { a-> a.id == it.value.id } == null){
+                    mAlliance.remove(it.value.id)
+                    mPersons.forEach { p->
+                        if(p.value.allianceId == it.value.id)
+                            mPersons.remove(p.value.id)
+                    }
+                }
             }
         }
+    }
+
+    private fun newAlliance(it:AllianceConfig):Alliance{
+        val alliance = Alliance()
+        alliance.name = it.name + "界"
+        alliance.id = it.id
+        alliance.type = it.type
+        alliance.level = it.level
+        alliance.lifetime = it.lifetime
+        alliance.xiuwei = it.xiuwei
+        alliance.maxPerson = it.maxPerson
+        alliance.tianfu = it.tianfu
+        alliance.success = it.success
+        alliance.xiuweiMulti = it.xiuweiMulti
+        alliance.lingGen = it.lingGen
+        alliance.property = it.property
+        alliance.speedG1 = it.speedG1
+        alliance.speedG2 = it.speedG2
+        return alliance
     }
 
     fun getOnlinePersonDetail(id:String?):Person?{
@@ -425,7 +461,7 @@ class CultivationActivity : BaseActivity() {
                 it.jinJieColor = mConfig.jingJieType[0].color
                 it.jinJieMax = mConfig.jingJieType[0].max
                 it.lifeTurn += 1
-                it.lifetime = it.age + 100 + it.lifeTurn * 5 + (it.tianfus.find { t-> t.type == 3 }?.bonus ?: 0)
+                it.lifetime = it.age + 100 * ( 100 + mAlliance[it.allianceId]!!.lifetime ) / 100 + it.lifeTurn * 5 + (it.tianfus.find { t-> t.type == 3 }?.bonus ?: 0)
             }
         } else {
             val commonText = if (next != null)
@@ -653,13 +689,26 @@ class CultivationActivity : BaseActivity() {
                 val baseNumber = if(children.isEmpty()) 10L else Math.pow((children.size * 2).toDouble(), 5.0).toLong()
                 if(partner != null && baseNumber < Int.MAX_VALUE){
                     if(Random().nextInt(baseNumber.toInt()) == 0){
-                        val child = addPersion(Pair(partner.lastName, null), null, 100,
-                                Pair(partner, it))
-                        synchronized(it.children){
-                            it.children.add(child.id)
+                        val child = if(mAlliance[partner.allianceId]!!.type == 2 && partner.ancestorLevel <= 1 && mPersons[partner.ancestorId] != null ){
+                            if(Random().nextInt(2) == 0){
+                                val allianceList = mutableListOf(mAlliance[partner.allianceId]!!)
+                                fixedPersonGenerate(mutableListOf(SpecPersonInfo(Pair(partner.lastName, null), NameUtil.Gender.Male, 0)),
+                                        allianceList, Pair(partner, it))[0]
+                            }else{
+                                addPersion(Pair(partner.lastName, null), NameUtil.Gender.Female, 100,
+                                        Pair(partner, it))
+                            }
+                        }else{
+                            addPersion(Pair(partner.lastName, null), null, 100,
+                                    Pair(partner, it))
                         }
-                        synchronized(partner.children){
-                            partner.children.add(child.id)
+                        if(child != null){
+                            synchronized(it.children){
+                                it.children.add(child.id)
+                            }
+                            synchronized(partner.children){
+                                partner.children.add(child.id)
+                            }
                         }
                     }
                 }
@@ -776,6 +825,60 @@ class CultivationActivity : BaseActivity() {
             mEnemys[enemy.id] = enemy
             writeHistory("${enemy.name}天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
         }
+    }
+
+    private fun addSpecPerson(){
+        val allianceList = Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 })
+        val specPersonList = mutableListOf<SpecPersonInfo>()
+        for ( i in 0 until 4){
+            SpecPersonFirstName.forEach { first->
+                specPersonList.add(SpecPersonInfo(Pair(allianceList[i].name.slice(0 until 1), first), NameUtil.Gender.Female, i))
+            }
+        }
+        fixedPersonGenerate(specPersonList, allianceList)
+
+        val allianceList2 = mAlliance.map { it.value }.filter { it.type == 2 }.toMutableList()
+        val specPersonList2 = mutableListOf<SpecPersonInfo>()
+        for ( i in 0 until 1){
+            SpecPersonFirstName2.forEach { first->
+                specPersonList2.add(SpecPersonInfo(Pair(allianceList2[i].name.slice(0 until 1), first), null, i))
+            }
+        }
+        fixedPersonGenerate(specPersonList2, allianceList2)
+
+        val allianceList3 = mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id }.toMutableList()
+        val specPersonList3 =  SpecPersonFirstName3.map { props->
+            SpecPersonInfo(Pair(props.first.first, props.first.second), props.second, props.third)
+        }.toMutableList()
+        fixedPersonGenerate(specPersonList3, allianceList3)
+
+        val personList = Collections.synchronizedList(mPersons.map { m-> m.value })
+        SpecPersonFixedName.forEach {
+            if(personList.find { p-> p.name == it.first.first + it.first.second } == null){
+                val person = CultivationHelper.getPersonInfo(it.first, it.second, 100, null, false, it.third)
+                mPersons[person.id] = person
+                CultivationHelper.joinAlliance(person, mAlliance)
+                addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} 加入")
+                writeHistory("${getPersonBasicString(person)} 加入", person)
+            }
+        }
+
+    }
+
+    private fun fixedPersonGenerate(specPersonList:MutableList<SpecPersonInfo>, allianceList:MutableList<Alliance>, parent: Pair<Person, Person>? = null):MutableList<Person?>{
+        val personList = Collections.synchronizedList(mPersons.map { m-> m.value })
+        val result = mutableListOf<Person?>()
+        specPersonList.forEach {
+            if(personList.find { p-> p.name == it.name.first + it.name.second } == null){
+                val person = CultivationHelper.getPersonInfo(it.name, it.gender, 100, parent)
+                result.add(person)
+                mPersons[person.id] = person
+                CultivationHelper.joinFixedAlliance(person, allianceList[it.allianceIndex])
+                addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} 加入")
+                writeHistory("${getPersonBasicString(person)} 加入", person)
+            }
+        }
+        return result
     }
 
     private fun resetHandler(){
@@ -936,13 +1039,13 @@ class CultivationActivity : BaseActivity() {
                         secondAlliancePersons[secondIndex], round, xiuWei)
                 if(result){
                     secondIndex++
-                    if(secondIndex == secondAlliancePersons.size || secondIndex == 20){
+                    if(secondIndex == secondAlliancePersons.size || secondIndex == 100){
                         passIds.add(secondAlliance.id)
                         break
                     }
                 }else{
                     firstIndex++
-                    if(firstIndex == firstAlliancePersons.size || firstIndex == 20){
+                    if(firstIndex == firstAlliancePersons.size || firstIndex == 100){
                         passIds.add(firstAlliance.id)
                         break
                     }
@@ -1056,6 +1159,9 @@ class CultivationActivity : BaseActivity() {
             }
             R.id.menu_event_enemy ->{
                 eventEnemyHandler()
+            }
+            R.id.menu_add_spec ->{
+                addSpecPerson()
             }
 
         }

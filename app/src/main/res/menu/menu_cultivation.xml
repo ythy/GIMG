@@ -28,4 +28,8 @@
         android:id="@+id/menu_event_enemy"
         android:orderInCategory="400"
         android:title="enemy"/>
+    <item
+        android:id="@+id/menu_add_spec"
+        android:orderInCategory="500"
+        android:title="specPerson"/>
 </menu>
