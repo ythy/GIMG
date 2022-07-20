@@ -1,16 +1,13 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+
 @SuppressLint("SetTextI18n")
-@RequiresApi(Build.VERSION_CODES.N)
 object CultivationHelper {
 
     lateinit var mConfig:Config
@@ -181,8 +178,8 @@ object CultivationHelper {
                 secondNumber = 1
         }
         val selectNumber = Random().nextInt(20 + firestNumber + secondNumber)
-        var lingGenName = ""
-        var lingGenId = ""
+        val lingGenName: String
+        val lingGenId: String
         var lingGen: LingGen? = null
         if(parent == null || selectNumber < 20){
             val lingGenList = mConfig.lingGenType.sortedBy { it.randomBasic }
@@ -514,17 +511,17 @@ object CultivationHelper {
 
     data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?)
 
-    val SpecPersonFirstName3:MutableList<Triple<Pair<String, String>, NameUtil.Gender, Int>> = mutableListOf(Triple(Pair("\u7389", "\u5e1d"), NameUtil.Gender.Male, 0), Triple(Pair("\u83e9","\u63d0"), NameUtil.Gender.Male, 0), Triple(Pair("\u6768","\u622c"), NameUtil.Gender.Male, 0),
+    val SpecPersonFirstName3:MutableList<Triple<Pair<String, String>, NameUtil.Gender, Int>> = mutableListOf(Triple(Pair("\u7389", "\u5e1d"), NameUtil.Gender.Male, 0), Triple(Pair("\u83e9","\u63d0"), NameUtil.Gender.Male, 0), Triple(Pair("\u6768","\u622c"), NameUtil.Gender.Male, 0), Triple(Pair("\u54ea","\u5412"), NameUtil.Gender.Male, 0),
             Triple(Pair("\u9080","\u6708"), NameUtil.Gender.Female, 1),Triple(Pair("\u601c","\u661f"), NameUtil.Gender.Female, 1),Triple(Pair("\u82cf","\u6a31"), NameUtil.Gender.Female, 1),Triple(Pair("\u674e","\u7ea2\u8896"), NameUtil.Gender.Female, 1),
-            Triple(Pair("\u9ec4","\u84c9"), NameUtil.Gender.Female, 2),Triple(Pair("\u8d75","\u654f"), NameUtil.Gender.Female, 2),Triple(Pair("\u5468","\u82b7\u82e5"), NameUtil.Gender.Female, 2))
+            Triple(Pair("\u9ec4","\u84c9"), NameUtil.Gender.Female, 2),Triple(Pair("\u8d75","\u654f"), NameUtil.Gender.Female, 2),Triple(Pair("\u5468","\u82b7\u82e5"), NameUtil.Gender.Female, 2), Triple(Pair("\u6bb5","\u8a89"), NameUtil.Gender.Male, 2))
 
 
     val SpecPersonFixedName:MutableList<Triple<Pair<String, String>, NameUtil.Gender, PersonFixedInfoMix>> = mutableListOf(
             Triple(Pair("\u9ec4", "\u5e1d"), NameUtil.Gender.Male, PersonFixedInfoMix("1000007", mutableListOf("4000106", "4000206", "4000305", "4000404", "4000506")))
             ,Triple(Pair("\u7384", "\u5973"), NameUtil.Gender.Female, PersonFixedInfoMix("1000007", mutableListOf("4000106", "4000206", "4000304", "4000404", "4000504")))
             ,Triple(Pair("\u5b5f", "\u5a46"), NameUtil.Gender.Female, PersonFixedInfoMix("1000006", mutableListOf("4000104", "4000204", "4000305", "4000402", "4000506")))
-            ,Triple(Pair("\u7532", "\u6590"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000103", "4000204", "4000305", "4000503")))
-            ,Triple(Pair("\u7530", "\u9e64"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000104", "4000203", "4000305", "4000503")))
+            ,Triple(Pair("\u7532", "\u6590\u59ec"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000103", "4000204", "4000305", "4000503")))
+            ,Triple(Pair("\u5c0f", "\u677e\u59ec"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000104", "4000203", "4000305", "4000503")))
             ,Triple(Pair("\u6bdb", "\u6b23"), NameUtil.Gender.Male, PersonFixedInfoMix("1000007", mutableListOf("4000105", "4000206", "4000305", "4000404", "4000506")))
     )
 

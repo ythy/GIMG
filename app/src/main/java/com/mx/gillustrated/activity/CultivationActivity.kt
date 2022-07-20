@@ -932,7 +932,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleClanHandler(){
-        val clans = mClans.filter { it.value.clanPersonList.size > 4 }.map { it.value }.toMutableList()
+        val clans = mClans.filter { it.value.clanPersonList.size > 0 }.map { it.value }.toMutableList()
         if(clans.isEmpty() || clans.size < 4){
             Toast.makeText(this, "Clan less than 4", Toast.LENGTH_SHORT).show()
             return
