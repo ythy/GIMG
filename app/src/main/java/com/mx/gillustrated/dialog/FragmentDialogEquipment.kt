@@ -2,6 +2,7 @@ package com.mx.gillustrated.dialog
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Range
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +19,11 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.vo.cultivation.Equipment
 
 @RequiresApi(Build.VERSION_CODES.N)
-class FragmentDialogEquipment constructor(val callback:EquipmentSelectorCallback): DialogFragment()  {
+class FragmentDialogEquipment constructor(val callback:EquipmentSelectorCallback, val mType:Range<Int>): DialogFragment()  {
 
     companion object{
-        fun newInstance(callback:EquipmentSelectorCallback): FragmentDialogEquipment {
-            return FragmentDialogEquipment(callback)
+        fun newInstance(callback:EquipmentSelectorCallback, type:Range<Int>): FragmentDialogEquipment {
+            return FragmentDialogEquipment(callback, type)
         }
     }
 
@@ -49,8 +50,8 @@ class FragmentDialogEquipment constructor(val callback:EquipmentSelectorCallback
     }
 
     fun init(){
-        val list = CultivationHelper.mConfig.equipment.filter { it.type < 10 }.toMutableList()
-        list.sortWith(compareBy<Equipment> {it.type}.thenByDescending { it.rarity })
+        val list = CultivationHelper.mConfig.equipment.filter { mType.contains(it.type) }.toMutableList()
+        list.sortWith(compareBy<Equipment> {it.type}.thenBy { it.rarity })
         mCurrentSelected = list[0]
         val adapter = ArrayAdapter<Equipment>(context!!,
                 android.R.layout.simple_spinner_item, list)

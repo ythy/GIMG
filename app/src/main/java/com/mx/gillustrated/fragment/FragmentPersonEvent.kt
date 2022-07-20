@@ -1,5 +1,6 @@
 package com.mx.gillustrated.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.ListView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.vo.cultivation.Person
 import com.mx.gillustrated.vo.cultivation.PersonEvent
 
@@ -45,12 +48,13 @@ class FragmentPersonEvent : Fragment(){
         updateEvent()
     }
 
+
     fun updateEvent(){
         val eventChanged = mEventData.size != mPerson.events.size
         mPerson.events.forEach {
             if(mEventData.find { e-> e.nid == it.nid} == null){
                 mEventData.add(it)
-                mEventDataString.add(0, it.content)
+                mEventDataString.add(0, CultivationHelper.showing(it.content))
             }
         }
         if(eventChanged){

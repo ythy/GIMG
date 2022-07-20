@@ -26,6 +26,7 @@ import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonInfo
+import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.util.CultivationBakUtil
 import com.mx.gillustrated.util.JsonFileReader
@@ -45,7 +46,6 @@ class CultivationActivity : BaseActivity() {
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
     private var mSpeed = 10L//流失速度
-    var pinyinMode:Boolean = true //是否pinyin模式
     private val mInitPersonCount = 1000//初始化Person数量
     var readRecord = true
     var maxFemaleProfile = 0 // 1号保留不用
@@ -436,7 +436,7 @@ class CultivationActivity : BaseActivity() {
         val random = Random().nextInt(100)
         if (random <= totalSuccess) {//成功
             if (next != null) {
-                val commonText = "${personDataString[1]} ${CultivationHelper.getJinJieName(next.name, pinyinMode)}，${personDataString[2]} $random/$totalSuccess"
+                val commonText = "${personDataString[1]} ${CultivationHelper.getJinJieName(next.name)}，${personDataString[2]} $random/$totalSuccess"
                 val lastJingJieDigt = CultivationHelper.getJingJieLevel(it.jingJieId)
                 if (it.isFav || (lastJingJieDigt.first >= 0 && lastJingJieDigt.third == 4)) {
                     writeHistory("${getPersonBasicString(it)} $commonText", it)
@@ -445,7 +445,7 @@ class CultivationActivity : BaseActivity() {
                     addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
                 }
                 it.jingJieId = next.id
-                it.jinJieName = CultivationHelper.getJinJieName(next.name, pinyinMode)
+                it.jinJieName = CultivationHelper.getJinJieName(next.name)
                 it.jingJieSuccess = next.success
                 it.jinJieColor = next.color
                 it.jinJieMax = next.max
@@ -456,7 +456,7 @@ class CultivationActivity : BaseActivity() {
                 addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
                 writeHistory("${getPersonBasicString(it)} $commonText", it)
                 it.jingJieId = mConfig.jingJieType[0].id
-                it.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name, pinyinMode)
+                it.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name)
                 it.jingJieSuccess = mConfig.jingJieType[0].success
                 it.jinJieColor = mConfig.jingJieType[0].color
                 it.jinJieMax = mConfig.jingJieType[0].max
@@ -465,7 +465,7 @@ class CultivationActivity : BaseActivity() {
             }
         } else {
             val commonText = if (next != null)
-                "${personDataString[5]} ${CultivationHelper.getJinJieName(next.name, pinyinMode)} ${personDataString[3]} $random/$totalSuccess，${personDataString[4]} ${totalSuccess + currentJinJie.fault}%"
+                "${personDataString[5]} ${CultivationHelper.getJinJieName(next.name)} ${personDataString[3]} $random/$totalSuccess，${personDataString[4]} ${totalSuccess + currentJinJie.fault}%"
             else
                 "转转失败 ${personDataString[3]} $random/$totalSuccess，${personDataString[4]} ${totalSuccess + currentJinJie.fault}%"
             if (it.isFav) {

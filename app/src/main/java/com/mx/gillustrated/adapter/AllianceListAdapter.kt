@@ -9,6 +9,7 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Alliance
 
@@ -40,7 +41,7 @@ class AllianceListAdapter  constructor(mContext: Context, private val list: List
         } else
             component = convertView.tag as ViewHolder
 
-        component.name.text = if(list[arg0].isPinyinMode) PinyinUtil.convert(list[arg0].name) else list[arg0].name
+        component.name.text =  CultivationHelper.showing(list[arg0].name)
         component.persons.text = list[arg0].personList.size.toString()
         component.total.text  = list[arg0].totalXiuwei.toString()
         return convertView

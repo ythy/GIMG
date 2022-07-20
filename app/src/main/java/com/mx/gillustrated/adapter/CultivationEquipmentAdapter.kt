@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
+import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.vo.cultivation.Equipment
 
@@ -46,14 +47,14 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val lis
             component = convertView.tag as ViewHolder
 
         val values = list[arg0]
-        component.name.text = values.uniqueName
+        component.name.text = CultivationHelper.showing(values.uniqueName)
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         component.xiuwei.text = "${values.xiuwei}"
         component.success.text = "${values.success}"
         component.props.text = values.property.take(4).joinToString()
 
         component.del.setOnClickListener{
-            callbacks.onDeleteHandler(values.uniqueName)
+            callbacks.onDeleteHandler(values)
         }
         return convertView
     }
@@ -82,7 +83,7 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val lis
     }
 
     interface EquipmentAdapterCallback {
-        fun onDeleteHandler(uniqueName:String)
+        fun onDeleteHandler(equipment: Equipment)
     }
 
 }

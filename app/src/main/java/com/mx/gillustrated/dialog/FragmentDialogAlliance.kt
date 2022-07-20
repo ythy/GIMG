@@ -15,6 +15,7 @@ import butterknife.*
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
+import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Alliance
 import com.mx.gillustrated.vo.cultivation.Person
@@ -98,7 +99,7 @@ class FragmentDialogAlliance : DialogFragment() {
         mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
         mAlliance = mContext.mAlliance[mId]!!
-        mDialogView.name.text = if(mContext.pinyinMode) PinyinUtil.convert(mAlliance.name) else mAlliance.name
+        mDialogView.name.text = CultivationHelper.showing(mAlliance.name)
         mDialogView.lifetime.text = "life: ${mAlliance.lifetime}"
         mDialogView.xiuwei.text = "xiuwei: ${mAlliance.xiuwei}(${mAlliance.xiuweiMulti})  ↑${mAlliance.success}"
         mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
@@ -123,20 +124,13 @@ class FragmentDialogAlliance : DialogFragment() {
         if(mAlliance.zhuPerson == null){
             mDialogView.zhu.text = ""
         }else{
-            val zhuName = if(mContext.pinyinMode) mAlliance.zhuPerson!!.pinyinName else mAlliance.zhuPerson!!.name
+            val zhuName = CultivationHelper.showing(mAlliance.zhuPerson!!.name)
             mDialogView.zhu.text = zhuName
         }
-        val huName = mutableListOf<String>()
-        if(mAlliance.huPersons.isNotEmpty()){
-            mAlliance.huPersons.forEach {
-                huName.add(if(mContext.pinyinMode) it.value.pinyinName else it.value.name)
-            }
-        }
-        mDialogView.hu.text = if(huName.isEmpty()) "" else "${huName.joinToString(" ", "<", ">")}"
 
         var speedString = ""
         mAlliance.speedG1PersonList.forEach {
-            speedString += (if(mContext.pinyinMode) it.value.pinyinName else it.value.name) + " "
+            speedString += ( CultivationHelper.showing(it.value.name) ) + " "
         }
         mDialogView.speeds.text = speedString
 
@@ -165,9 +159,6 @@ class FragmentDialogAlliance : DialogFragment() {
 
         @BindView(R.id.tv_zhu)
         lateinit var zhu:TextView
-
-        @BindView(R.id.tv_hu)
-        lateinit var hu:TextView
 
         @BindView(R.id.lv_person)
         lateinit var persons:ListView

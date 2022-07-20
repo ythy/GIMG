@@ -1483,7 +1483,7 @@
   "equipment": [
     {
       "id": "7001001",
-      "name": "开",
+      "name": "\u516b\u54ab\u955c",
       "type": 0,
       "rarity": 8,
       "xiuwei": 0,
@@ -1492,7 +1492,7 @@
     },
     {
       "id": "7001002",
-      "name": "元",
+      "name": "\u516b\u5c3a\u743c\u52fe\u7389",
       "type": 0,
       "rarity": 8,
       "xiuwei": 500,
@@ -1501,16 +1501,16 @@
     },
     {
       "id": "7001003",
-      "name": "亽",
+      "name": "\u661f\u5c18\u73e0",
       "type": 0,
-      "rarity": 0,
-      "xiuwei": 10,
-      "success": 0,
+      "rarity": 6,
+      "xiuwei": 0,
+      "success": 10,
       "property": [0,0,0,0,0,0,0,0]
     },
     {
       "id": "7001005",
-      "name": "彡",
+      "name": "\u6df7\u6c8c\u5760",
       "type": 0,
       "rarity": 2,
       "xiuwei": 30,
@@ -1519,7 +1519,7 @@
     },
     {
       "id": "7001007",
-      "name": "乄",
+      "name": "\u9e3f\u8499\u5760",
       "type": 0,
       "rarity": 4,
       "xiuwei": 50,
@@ -1527,8 +1527,17 @@
       "property": [0,0,0,0,0,0,0,0]
     },
     {
+      "id": "7001008",
+      "name": "\u592a\u521d\u5760",
+      "type": 0,
+      "rarity": 6,
+      "xiuwei": 100,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },
+    {
       "id": "7002001",
-      "name": "朴",
+      "name": "\u6734\u5200",
       "type": 1,
       "rarity": 1,
       "xiuwei": 0,
@@ -1537,7 +1546,7 @@
     },
     {
       "id": "7002002",
-      "name": "铁",
+      "name": "\u94c1\u5200",
       "type": 1,
       "rarity": 2,
       "xiuwei": 0,
@@ -1546,7 +1555,7 @@
     },
     {
       "id": "7002003",
-      "name": "钢",
+      "name": "\u94a2\u5200",
       "type": 1,
       "rarity": 3,
       "xiuwei": 0,
@@ -1555,7 +1564,7 @@
     },
     {
       "id": "7002004",
-      "name": "煅",
+      "name": "\u7145\u5200",
       "type": 1,
       "rarity": 4,
       "xiuwei": 0,
@@ -1564,7 +1573,7 @@
     },
     {
       "id": "7002005",
-      "name": "太阿",
+      "name": "\u592a\u963f",
       "type": 1,
       "rarity": 5,
       "xiuwei": 0,
@@ -1573,7 +1582,7 @@
     },
     {
       "id": "7002006",
-      "name": "承钧",
+      "name": "\u627f\u94a7",
       "type": 1,
       "rarity": 6,
       "xiuwei": 0,
@@ -1582,21 +1591,39 @@
     },
     {
       "id": "7002007",
-      "name": "巨阙",
+      "name": "\u5de8\u9619",
       "type": 1,
       "rarity": 7,
-      "xiuwei": 10,
+      "xiuwei": 0,
       "success": 0,
       "property": [0,50,0,20,0,0,0,0]
     },
     {
       "id": "7002008",
-      "name": "倚天",
+      "name": "\u501a\u5929\u5251",
       "type": 1,
       "rarity": 8,
-      "xiuwei": 50,
+      "xiuwei": 0,
       "success": 5,
-      "property": [0,100,50,50,0,0,0,0]
+      "property": [0,100,0,50,0,0,0,0]
+    },
+    {
+      "id": "7002009",
+      "name": "\u5c60\u9f99\u5200",
+      "type": 1,
+      "rarity": 8,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [0,150,0,50,0,0,0,0]
+    },
+    {
+      "id": "7002010",
+      "name": "\u5929\u4e1b\u4e91\u5251",
+      "type": 1,
+      "rarity": 8,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [0,100,0,100,0,0,0,0]
     },
     {
       "id": "7006101",

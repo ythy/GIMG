@@ -2,6 +2,7 @@ package com.mx.gillustrated.fragment
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Range
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,18 +39,44 @@ class FragmentEquipment: Fragment() {
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
                     override fun onItemSelected(equipment: Equipment) {
+                        if( mPerson.equipment.find { it.split(",")[0] == equipment.id } != null)
+                            return
+                        val exist = mPerson.equipment.find { e-> mConfigEquipments.find { c-> c.id == e.split(",")[0] }?.type == equipment.type }
+                        if(equipment.type > 0 && exist != null){
+                            mPerson.equipment.remove(exist)
+                        }
                         mPerson.equipment.add("${equipment.id},${equipment.name}")
                         CultivationHelper.updatePersonEquipment(mPerson)
                         updateList()
                     }
-                })
+                }, Range(1, 10))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_equipment")
     }
 
+    @OnClick(R.id.btn_add_equipment_bao)
+    fun onAddBaoClickHandler(){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogEquipment.
+                newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
+                    override fun onItemSelected(equipment: Equipment) {
+                        if( mPerson.equipment.find { it.split(",")[0] == equipment.id } != null)
+                            return
+                        mPerson.equipment.add("${equipment.id},${equipment.name}")
+                        CultivationHelper.updatePersonEquipment(mPerson)
+                        updateList()
+                    }
+                }, Range(0, 0))
+        newFragment.isCancelable = true
+        newFragment.show(ft, "dialog_equipment")
+    }
+
+
+
     lateinit var mContext: CultivationActivity
     lateinit var mPerson: Person
-    val mEquipments: MutableList<Equipment> = mutableListOf()
+    private val mEquipments: MutableList<Equipment> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_vp_equipment, container, false)
@@ -66,9 +93,14 @@ class FragmentEquipment: Fragment() {
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
         mListView.adapter = CultivationEquipmentAdapter(this.context!!, mEquipments, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
-            @RequiresApi(Build.VERSION_CODES.N)
-            override fun onDeleteHandler(uniqueName: String) {
-                mPerson.equipment.removeIf { it.split(",")[1] == uniqueName }
+            override fun onDeleteHandler(equipment: Equipment) {
+                mPerson.equipment.removeIf {
+                    val equipmentArray = it.split(",")
+                    if(equipment.type > 10)
+                        equipmentArray[1] == equipment.uniqueName
+                    else
+                        equipmentArray[0] == equipment.id
+                }
                 CultivationHelper.updatePersonEquipment(mPerson)
                 updateList()
             }
@@ -82,16 +114,17 @@ class FragmentEquipment: Fragment() {
             val result = Equipment()
             result.id = equipment.id
             result.name = equipment.name
-            result.uniqueName = it.split(",")[1]
+            result.uniqueName = if(equipment.type > 10) it.split(",")[1] else equipment.name
             result.type = equipment.type
             result.rarity = equipment.rarity
             result.xiuwei = equipment.xiuwei
             result.success = equipment.success
             result.property = equipment.property
             result
-        }
+        }.toMutableList()
         mEquipments.clear()
-        mEquipments.addAll(equipments.sortedBy { it.type })
+        equipments.sortWith(compareBy<Equipment> {it.type}.thenBy { it.rarity })
+        mEquipments.addAll(equipments)
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
     }

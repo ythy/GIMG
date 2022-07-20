@@ -49,7 +49,6 @@ class Person() :Parcelable {
         var lastTotalXun:Long = 0
         var ancestorLevel:Int = 0 // 0 初代
         var ancestorId:String? = null// 一次
-        lateinit var pinyinName:String// 一次
         var age:Long = 0 // now -  birthDay
         var jinJieName = "" //  updated by xun
         var jinJieColor = 0 //  updated by xun
@@ -104,7 +103,6 @@ class Person() :Parcelable {
                 lastBirthDay = parcel.readLong()
                 ancestorLevel = parcel.readInt()
                 ancestorId = parcel.readString()
-                pinyinName = parcel.readString()
                 age = parcel.readLong()
                 jinJieName = parcel.readString()
                 jinJieColor = parcel.readInt()
@@ -159,7 +157,6 @@ class Person() :Parcelable {
                 parcel.writeLong(lastBirthDay)
                 parcel.writeInt(ancestorLevel)
                 parcel.writeString(ancestorId)
-                parcel.writeString(pinyinName)
                 parcel.writeLong(age)
                 parcel.writeString(jinJieName)
                 parcel.writeInt(jinJieColor)

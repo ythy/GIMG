@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap
 object CultivationHelper {
 
     lateinit var mConfig:Config
+    var pinyinMode:Boolean = true //是否pinyin模式
     var mCurrentXun:Long = 0//当前时间
     var mHistoryTempData:MutableList<HistoryInfo> = Collections.synchronizedList(mutableListOf())
     fun writeHistory(content:String, person: Person?, type:Int = 1){
@@ -67,7 +68,6 @@ object CultivationHelper {
                 }
             }else{
                 alliance.zhuPerson = null
-                alliance.huPersons.clear()
             }
         }
     }
@@ -78,19 +78,6 @@ object CultivationHelper {
         }
         val personList = Collections.synchronizedList( persons.map { it.value })
         alliance.zhuPerson = personList.sortedBy { it.lastBirthDay }.first()
-    }
-
-    //暂时取消
-    private fun updateHuInAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
-        val huSize =   Math.min(4, Math.max(1, persons.size / 10))
-        val keys = persons.keys
-        alliance.huPersons.clear()
-        for(i in 0 until huSize){
-            val random = Random().nextInt(persons.size)
-            val key = keys.elementAt(random)
-            if(persons[key] != null)
-                alliance.huPersons[key] = persons[key]!!
-        }
     }
 
     private fun updateG1InAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
@@ -242,7 +229,6 @@ object CultivationHelper {
         val result = Person()
         result.id =  UUID.randomUUID().toString()
         result.name = personName.first + personName.second
-        result.pinyinName = PinyinUtil.convert(result.name)
         result.lastName = personName.first
         result.gender = personGender
         result.lingGenType = lingGen.first
@@ -403,16 +389,7 @@ object CultivationHelper {
     //type 11,12,13,14 -> B,C,S,E
     fun gainJiEquipment(person:Person, type:Int, level:Int = 0){
         val equipment = mConfig.equipment.filter{ it.type == type}.sortedBy { it.rarity }[level]
-        val result = Equipment()
-        result.id = equipment.id
-        result.name = equipment.name
-        result.uniqueName = "${result.name}(${mCurrentXun/12})"
-        result.type = equipment.type
-        result.rarity = equipment.rarity
-        result.xiuwei = equipment.xiuwei
-        result.success = equipment.success
-        result.property = equipment.property
-        person.equipment.add("${result.id},${result.uniqueName}")
+        person.equipment.add("${equipment.id},${equipment.name}(${mCurrentXun/12}")
         updatePersonEquipment(person)
     }
 
@@ -444,9 +421,6 @@ object CultivationHelper {
             person.allianceXiuwei = alliance.xiuwei
             if(alliance.speedG1PersonList.contains(person.id)){
                 person.allianceXiuwei += alliance.speedG1
-            }
-            if (alliance.huPersons.contains(person.id)) {
-                person.allianceXiuwei += 10
             }
             if(person.id == alliance.zhuPerson?.id){
                 person.allianceXiuwei += 20
@@ -510,9 +484,6 @@ object CultivationHelper {
         writeHistory("${getPersonBasicString(man)} 与 ${getPersonBasicString(woman)} 结伴了", null, 0)
     }
 
-    fun isPinyinMode(person: Person):Boolean{
-        return person.jinJieName.indexOf("-") > -1
-    }
 
     fun getJingJieLevel(id:String):Triple<Int, Int, Int>{
         val list = mConfig.jingJieType.filter { it.color > 0 }
@@ -524,33 +495,21 @@ object CultivationHelper {
         }
     }
 
-    fun getJinJieName(input:String, pinyinMode:Boolean = false):String{
+    fun showing(input:String):String{
+        return if (pinyinMode) PinyinUtil.convert(input) else input
+    }
+
+    fun getJinJieName(input:String):String{
         if(pinyinMode)
             return input
         val split = input.split("-")
         val prefix = split[0]
         val grade = split[1].toInt()
         return if(prefix == "LianQi"){
-            NameMapper[prefix] + (if(grade<10) "${grade}层" else "圆满")
+            NameMapper[prefix] + (if(grade<10) "$grade\u5c42" else "\u5706\u6ee1")
         }else{
             (NameMapper[prefix] ?: prefix) + LevelMapper[grade]
         }
-    }
-
-    fun getTianName(id:String):String{
-        return mConfig.lingGenTian.find { it.id == id }!!.name
-    }
-
-    fun getJingJie(id:String):JingJie{
-        return mConfig.jingJieType.find { it.id == id }!!
-    }
-
-    fun getNextJingJie(id:String):JingJie?{
-        val nextIndex = mConfig.jingJieType.indexOf(getJingJie(id)) + 1
-        return if(nextIndex < mConfig.jingJieType.size)
-            mConfig.jingJieType[nextIndex]
-        else
-            null
     }
 
     data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?)
@@ -569,10 +528,26 @@ object CultivationHelper {
             ,Triple(Pair("\u6bdb", "\u6b23"), NameUtil.Gender.Male, PersonFixedInfoMix("1000007", mutableListOf("4000105", "4000206", "4000305", "4000404", "4000506")))
     )
 
+    fun getTianName(id:String):String{
+        return mConfig.lingGenTian.find { it.id == id }!!.name
+    }
+
+    fun getJingJie(id:String):JingJie{
+        return mConfig.jingJieType.find { it.id == id }!!
+    }
+
+    fun getNextJingJie(id:String):JingJie?{
+        val nextIndex = mConfig.jingJieType.indexOf(getJingJie(id)) + 1
+        return if(nextIndex < mConfig.jingJieType.size)
+            mConfig.jingJieType[nextIndex]
+        else
+            null
+    }
+
+
     val SpecPersonFirstName2:MutableList<String> = mutableListOf("主", "廿一", "廿三")
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿")
     data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int)
-
 
     val EnemyNames = arrayOf("远古", "菜菜")
     val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA")

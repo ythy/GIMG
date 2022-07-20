@@ -93,22 +93,18 @@ open class AllianceConfig() :Parcelable {
 class Alliance() : AllianceConfig(), Parcelable {
 
     var zhuPerson:Person? = null
-    var huPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var personList:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var speedG1PersonList:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var speedG2PersonList:ConcurrentHashMap<String, Person> =ConcurrentHashMap()
 
     var totalXiuwei:Long = 0// extra props
-    var isPinyinMode:Boolean = false// extra props
 
     constructor(parcel: Parcel) : this() {
         zhuPerson = parcel.readParcelable(Person::class.java.classLoader)
-        huPersons = parcel.readValue(ConcurrentHashMap::class.java.classLoader) as ConcurrentHashMap<String, Person>
         personList = parcel.readValue(ConcurrentHashMap::class.java.classLoader) as ConcurrentHashMap<String, Person>
         speedG1PersonList = parcel.readValue(ConcurrentHashMap::class.java.classLoader) as ConcurrentHashMap<String, Person>
         speedG2PersonList = parcel.readValue(ConcurrentHashMap::class.java.classLoader) as ConcurrentHashMap<String, Person>
         totalXiuwei = parcel.readLong()
-        isPinyinMode = parcel.readByte() != 0.toByte()
     }
 
     fun toConfig():AllianceConfig{
@@ -123,12 +119,10 @@ class Alliance() : AllianceConfig(), Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         super.writeToParcel(parcel, flags)
         parcel.writeParcelable(zhuPerson, flags)
-        parcel.writeValue(huPersons)
         parcel.writeValue(personList)
         parcel.writeValue(speedG1PersonList)
         parcel.writeValue(speedG2PersonList)
         parcel.writeLong(totalXiuwei)
-        parcel.writeByte(if (isPinyinMode) 1 else 0)
     }
 
     override fun describeContents(): Int {

@@ -113,7 +113,6 @@ class FragmentDialogAllianceList  : DialogFragment() {
         mAllianceListData.clear()
         mAllianceListData.addAll(mContext.mAlliance.map { it.value })
         mAllianceListData.forEach {
-            it.isPinyinMode = mContext.pinyinMode
             it.totalXiuwei = it.personList.reduceValuesToLong(1000,
                     { p: Person -> p.maxXiuWei }, 0, { left, right -> left + right })
         }

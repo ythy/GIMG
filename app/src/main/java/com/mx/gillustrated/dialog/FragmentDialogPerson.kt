@@ -140,7 +140,6 @@ class FragmentDialogPerson : DialogFragment() {
     lateinit var mContext:CultivationActivity
     lateinit var mDialogView:DialogView
     val mFragments:MutableList<Fragment> = mutableListOf()
-    var mPinyinMode:Boolean = false
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
@@ -167,7 +166,6 @@ class FragmentDialogPerson : DialogFragment() {
             return
         }
         mPerson = person
-        mPinyinMode = mContext.pinyinMode
         setViewPager()
         setTianfu()
         setProfile()
@@ -266,20 +264,20 @@ class FragmentDialogPerson : DialogFragment() {
         }
         mSwitchFav.isChecked = mPerson.isFav
         val lifeTurn = if(mPerson.lifeTurn == 0) "" else ".${mPerson.lifeTurn}"
-        mDialogView.name.text = if(mPinyinMode) "${mPerson.pinyinName}$lifeTurn(${mPerson.gender})-${mPerson.ancestorLevel}" else "${mPerson.name}$lifeTurn(${mPerson.gender.props})-${mPerson.ancestorLevel}"
+        mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}$lifeTurn(${mPerson.gender})-${mPerson.ancestorLevel}"
         setFamily()
-        mDialogView.alliance.text = if(mPinyinMode) PinyinUtil.convert(mPerson.allianceName) else mPerson.allianceName
+        mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
         mDialogView.age.text = "${mPerson.age}/${mPerson.lifetime}"
         mDialogView.neigong.text = mPerson.maxXiuWei.toString()
         mDialogView.props.text =  getProperty()
-        mDialogView.clan.text = mContext.mClans[mPerson.ancestorId]?.name ?: ""
-        mDialogView.jingjie.text = if(mPinyinMode) PinyinUtil.convert(mPerson.jinJieName) else mPerson.jinJieName
+        mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.name ?: "")
+        mDialogView.jingjie.text = CultivationHelper.showing(mPerson.jinJieName)
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"
         mDialogView.xiuweiAdd.text =  "${CultivationHelper.getXiuweiGrow(mPerson, mContext.mAlliance)}" + "(${mPerson.allianceXiuwei})"
         val currentJinJie = CultivationHelper.getJingJie(mPerson.jingJieId)
         mDialogView.success.text = "${CultivationHelper.getTotalSuccess(mPerson, currentJinJie.bonus)}"
-        mDialogView.lingGen.text = if(mPinyinMode) PinyinUtil.convert(mPerson.lingGenName) else mPerson.lingGenName
+        mDialogView.lingGen.text = CultivationHelper.showing(mPerson.lingGenName)
         mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenType.color]))
 
         updateViewPager()
@@ -309,7 +307,7 @@ class FragmentDialogPerson : DialogFragment() {
             children.forEach {
                 val person = it
                 val textView = TextView(this.context)
-                textView.text =  if(mPinyinMode) person.pinyinName else person.name
+                textView.text =  CultivationHelper.showing(person.name)
                 textView.setOnClickListener { _->
                     openPersonDetail(it.id)
                     onCloseHandler()
@@ -326,10 +324,7 @@ class FragmentDialogPerson : DialogFragment() {
     private fun getContent(name:String?):String{
         if(name == null)
             return ""
-        return if(mPinyinMode)
-            PinyinUtil.convert(name)
-        else
-            name
+        return CultivationHelper.showing(name)
     }
 
     private fun openPersonDetail(id:String){

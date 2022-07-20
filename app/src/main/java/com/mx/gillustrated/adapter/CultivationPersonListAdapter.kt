@@ -13,6 +13,7 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
+import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
@@ -46,16 +47,15 @@ class CultivationPersonListAdapter constructor(context: Context, private val lis
             component = convertView.tag as Component
         }
         val person = list[arg0]
-        val pinyinMode = person.jinJieName.indexOf("-") > -1
         val lifeTurn = if(person.lifeTurn == 0) "" else ".${person.lifeTurn}"
-        component.name.text = if(pinyinMode) "${person.pinyinName}$lifeTurn(${person.gender})" else "${person.name}$lifeTurn(${person.gender.props})"
+        component.name.text = "${CultivationHelper.showing(person.name)}$lifeTurn(${person.gender})"
         component.age.text = "${person.age}/${person.lifetime}-${person.ancestorLevel}"
-        component.jingjie.text = if(pinyinMode) PinyinUtil.convert(person.jinJieName) else person.jinJieName
+        component.jingjie.text = CultivationHelper.showing(person.jinJieName)
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))
         component.xiuwei.text = "${person.xiuXei}/${person.jinJieMax}"
-        component.lingGen.text = if(pinyinMode) PinyinUtil.convert(person.lingGenName) else person.lingGenName
+        component.lingGen.text = CultivationHelper.showing(person.lingGenName)
         component.lingGen.setTextColor(Color.parseColor(CommonColors[person.lingGenType.color]))
-        component.alliance.text = if(pinyinMode) PinyinUtil.convert(person.allianceName) else person.allianceName
+        component.alliance.text = CultivationHelper.showing(person.allianceName)
 
         return convertView!!
     }

@@ -48,11 +48,10 @@ class CultivationClanListAdapter  constructor(mContext: Context, private val lis
 
         val clan = list[arg0]
         val personList = clan.clanPersonList.map { it.value }
-        val pinyinMode =  if(personList.isEmpty()) true else CultivationHelper.isPinyinMode(personList[0])
 
-        component.name.text = if(pinyinMode) PinyinUtil.convert(clan.name) else clan.name
+        component.name.text = CultivationHelper.showing(clan.name)
         if(clan.zhu != null)
-            component.zhu.text = if(pinyinMode) clan.zhu!!.pinyinName else clan.zhu!!.name
+            component.zhu.text = CultivationHelper.showing(clan.zhu!!.name)
         else
             component.zhu.text = ""
         component.persons.text = personList.size.toString()

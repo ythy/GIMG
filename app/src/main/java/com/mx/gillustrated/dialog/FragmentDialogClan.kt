@@ -15,6 +15,7 @@ import butterknife.*
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
+import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Alliance
 import com.mx.gillustrated.vo.cultivation.Clan
@@ -89,7 +90,7 @@ class FragmentDialogClan : DialogFragment() {
         mContext = activity as CultivationActivity
         val clan = mContext.mClans[mId]
         if(clan != null){
-            mDialogView.name.text = if(mContext.pinyinMode) PinyinUtil.convert(clan.name) else clan.name
+            mDialogView.name.text = CultivationHelper.showing(clan.name)
             mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
             updateView()
             registerTimeLooper()
@@ -121,7 +122,7 @@ class FragmentDialogClan : DialogFragment() {
             return
         }
         mDialogView.total.text = personList.size.toString()
-        mDialogView.zhu.text = if(mContext.pinyinMode) clan.zhu?.pinyinName else clan.zhu?.name
+        mDialogView.zhu.text = if(clan.zhu?.name == null ) "" else CultivationHelper.showing(clan.zhu!!.name)
         mPersonList.clear()
         mPersonList.addAll(personList.sortedBy { it.ancestorLevel })
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
