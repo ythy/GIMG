@@ -1,6 +1,6 @@
 package com.mx.gillustrated.fragment
 
-import android.graphics.PointF
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +11,6 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
-import com.mx.gillustrated.component.CultivationHome
-import java.util.*
 
 class FragmentPersonInfo  : Fragment(){
 

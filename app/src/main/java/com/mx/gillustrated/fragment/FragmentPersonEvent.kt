@@ -1,6 +1,5 @@
 package com.mx.gillustrated.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.ListView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -41,9 +39,9 @@ class FragmentPersonEvent : Fragment(){
     }
 
     fun init(){
-        val id = this.arguments!!.getString("id", "")
+        val id = this.requireArguments().getString("id", "")
         mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
-        mListView.adapter = ArrayAdapter(this.context!!, R.layout.list_simple_item_text1,
+        mListView.adapter = ArrayAdapter(this.requireContext(), R.layout.list_simple_item_text1,
             android.R.id.text1, mEventDataString)
         updateEvent()
     }

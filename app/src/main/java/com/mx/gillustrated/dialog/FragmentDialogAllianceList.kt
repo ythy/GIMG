@@ -1,7 +1,6 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -20,12 +18,10 @@ import butterknife.OnItemClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.AllianceListAdapter
-import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.vo.cultivation.Alliance
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 
-@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class FragmentDialogAllianceList  : DialogFragment() {
 
@@ -39,10 +35,10 @@ class FragmentDialogAllianceList  : DialogFragment() {
 
             private val reference: WeakReference<FragmentDialogAllianceList> = WeakReference(context)
 
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val dialog = reference.get()
-                if(msg?.what == 1 && dialog != null ){
+                if(msg.what == 1 && dialog != null ){
                     dialog.updateView()
                 }
             }
@@ -91,13 +87,13 @@ class FragmentDialogAllianceList  : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mListView.adapter = AllianceListAdapter(this.context!!, mAllianceListData)
+        mListView.adapter = AllianceListAdapter(this.requireContext(), mAllianceListData)
         updateView()
         registerTimeLooper()
     }
 
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread {
             while (true){
                 Thread.sleep(2000)
                 if(mThreadRunnable){
@@ -106,7 +102,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     private fun updateView(){
@@ -119,7 +115,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
         mAllianceListData.sortByDescending { it.totalXiuwei }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
-        mTotalText.text = mAllianceListData.sumBy { it.personList.size }.toString()
+        mTotalText.text = mAllianceListData.sumOf { it.personList.size }.toString()
     }
 
 }

@@ -23,7 +23,7 @@ class Equipment() :Parcelable {
         rarity = parcel.readInt()
         xiuwei = parcel.readInt()
         success = parcel.readInt()
-        property = parcel.createIntArray().toMutableList()
+        property = parcel.createIntArray()!!.toMutableList()
         maxCount = parcel.readInt()
     }
 

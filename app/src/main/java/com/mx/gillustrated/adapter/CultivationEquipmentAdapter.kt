@@ -1,16 +1,13 @@
 package com.mx.gillustrated.adapter
 
-import android.content.ComponentCallbacks
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
@@ -33,7 +30,6 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val lis
         return arg0.toLong()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
         var convertView = convertViews
         lateinit var component: ViewHolder

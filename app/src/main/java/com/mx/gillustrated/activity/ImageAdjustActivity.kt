@@ -86,7 +86,7 @@ class ImageAdjustActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.activity_image_adjust)
         ButterKnife.bind(this)
-        originImagePath = this.intent.getStringExtra("source")
+        originImagePath = this.intent.getStringExtra("source")!!
         this.initView()
     }
 

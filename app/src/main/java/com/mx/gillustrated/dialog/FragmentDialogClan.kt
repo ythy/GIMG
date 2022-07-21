@@ -1,7 +1,6 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -9,20 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import butterknife.*
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.util.PinyinUtil
-import com.mx.gillustrated.vo.cultivation.Alliance
-import com.mx.gillustrated.vo.cultivation.Clan
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 
-@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class FragmentDialogClan : DialogFragment() {
 
@@ -34,10 +28,10 @@ class FragmentDialogClan : DialogFragment() {
 
             private val reference: WeakReference<FragmentDialogClan> = WeakReference(context)
 
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val dialog = reference.get()
-                if(msg?.what == 1 && dialog != null ){
+                if(msg.what == 1 && dialog != null ){
                     dialog.updateView()
                 }
             }
@@ -86,19 +80,19 @@ class FragmentDialogClan : DialogFragment() {
     }
 
     fun init(){
-        mId = this.arguments!!.getString("id", "")
+        mId = this.requireArguments().getString("id", "")
         mContext = activity as CultivationActivity
         val clan = mContext.mClans[mId]
         if(clan != null){
             mDialogView.name.text = CultivationHelper.showing(clan.name)
-            mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
+            mDialogView.persons.adapter = CultivationPersonListAdapter(this.requireContext(), mPersonList)
             updateView()
             registerTimeLooper()
         }
     }
 
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread{
             while (true){
                 Thread.sleep(2000)
                 if(mThreadRunnable){
@@ -107,7 +101,7 @@ class FragmentDialogClan : DialogFragment() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     private fun updateView(){

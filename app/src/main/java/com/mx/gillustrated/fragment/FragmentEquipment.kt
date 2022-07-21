@@ -1,17 +1,13 @@
 package com.mx.gillustrated.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Range
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.ListView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.mx.gillustrated.R
@@ -21,14 +17,11 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.dialog.FragmentDialogEquipment
 import com.mx.gillustrated.vo.cultivation.Equipment
 import com.mx.gillustrated.vo.cultivation.Person
-import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.N)
 class FragmentEquipment: Fragment() {
 
     private val mConfigEquipments = CultivationHelper.mConfig.equipment
 
-    @BindView(R.id.lv_equipment)
     lateinit var mListView: ListView
 
 
@@ -90,9 +83,9 @@ class FragmentEquipment: Fragment() {
     }
 
     fun init(){
-        val id = this.arguments!!.getString("id", "")
+        val id = this.requireArguments().getString("id", "")
         mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
-        mListView.adapter = CultivationEquipmentAdapter(this.context!!, mEquipments, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
+        mListView.adapter = CultivationEquipmentAdapter(this.requireContext(), mEquipments, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
             override fun onDeleteHandler(equipment: Equipment) {
                 mPerson.equipment.removeIf {
                     val equipmentArray = it.split(",")

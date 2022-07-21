@@ -12,10 +12,10 @@ open class ClanBak() :Parcelable {
     var persons: List<String> = Collections.synchronizedList(mutableListOf())
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        name = parcel.readString()
+        id = parcel.readString()!!
+        name = parcel.readString()!!
         createDate = parcel.readLong()
-        persons = parcel.createStringArrayList()
+        persons = parcel.createStringArrayList()!!
     }
 
     fun toClan(personMap: ConcurrentHashMap<String, Person>):Clan{

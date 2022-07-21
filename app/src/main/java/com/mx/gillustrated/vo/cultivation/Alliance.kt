@@ -31,8 +31,8 @@ open class AllianceConfig() :Parcelable {
     var persons:List<String> = mutableListOf()
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        name = parcel.readString()
+        id = parcel.readString()!!
+        name = parcel.readString()!!
         type = parcel.readInt()
         level = parcel.readInt()
         maxPerson = parcel.readInt()
@@ -42,10 +42,10 @@ open class AllianceConfig() :Parcelable {
         lingGen = parcel.readString()
         tianfu = parcel.readInt()
         success = parcel.readInt()
-        property = parcel.createIntArray().toMutableList()
+        property = parcel.createIntArray()!!.toMutableList()
         speedG1 = parcel.readInt()
         speedG2 = parcel.readInt()
-        persons = parcel.createStringArrayList()
+        persons = parcel.createStringArrayList()!!
     }
 
     fun toAlliance(personMap: ConcurrentHashMap<String, Person>):Alliance{

@@ -18,8 +18,8 @@ class Enemy() :Parcelable {
     var isDead:Boolean = false
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        name = parcel.readString()
+        id = parcel.readString()!!
+        name = parcel.readString()!!
         type = parcel.readInt()
         HP = parcel.readInt()
         maxHP = parcel.readInt()

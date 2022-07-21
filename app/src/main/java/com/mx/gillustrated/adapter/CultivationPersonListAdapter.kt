@@ -2,9 +2,6 @@ package com.mx.gillustrated.adapter
 
 import android.content.Context
 import android.graphics.Color
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +12,6 @@ import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
-import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 
 class CultivationPersonListAdapter constructor(context: Context, private val list: MutableList<Person>) : BaseAdapter() {

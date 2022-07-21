@@ -84,34 +84,34 @@ class Person() :Parcelable {
 
                 HP = parcel.readInt()
                 maxHP = parcel.readInt()
-                extraProperty = parcel.createIntArray().toMutableList()
+                extraProperty = parcel.createIntArray()!!.toMutableList()
 
                 equipment = Collections.synchronizedList(parcel.createStringArrayList())
                 equipmentXiuwei = parcel.readInt()
                 equipmentSuccess = parcel.readInt()
-                equipmentProperty = parcel.createIntArray().toMutableList()
+                equipmentProperty = parcel.createIntArray()!!.toMutableList()
 
-                jingJieId = parcel.readString()
+                jingJieId = parcel.readString()!!
                 jingJieSuccess = parcel.readInt()
                 xiuXei = parcel.readInt()
                 maxXiuWei = parcel.readLong()
-                allianceId = parcel.readString()
+                allianceId = parcel.readString()!!
                 allianceXiuwei = parcel.readInt()
                 allianceSuccess = parcel.readInt()
-                allianceProperty= parcel.createIntArray().toMutableList()
+                allianceProperty= parcel.createIntArray()!!.toMutableList()
 
                 lastBirthDay = parcel.readLong()
                 ancestorLevel = parcel.readInt()
                 ancestorId = parcel.readString()
                 age = parcel.readLong()
-                jinJieName = parcel.readString()
+                jinJieName = parcel.readString()!!
                 jinJieColor = parcel.readInt()
                 jinJieMax = parcel.readInt()
                 extraXiuwei = parcel.readInt()
                 extraTupo = parcel.readInt()
                 extraSpeed = parcel.readInt()
                 extraXuiweiMulti = parcel.readInt()
-                allianceName = parcel.readString()
+                allianceName = parcel.readString()!!
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {

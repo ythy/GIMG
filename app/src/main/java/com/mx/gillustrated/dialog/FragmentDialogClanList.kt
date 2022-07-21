@@ -1,7 +1,6 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -12,7 +11,6 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -24,7 +22,6 @@ import com.mx.gillustrated.adapter.CultivationClanListAdapter
 import com.mx.gillustrated.vo.cultivation.Clan
 import java.lang.ref.WeakReference
 
-@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class FragmentDialogClanList  : DialogFragment() {
 
@@ -38,10 +35,10 @@ class FragmentDialogClanList  : DialogFragment() {
 
             private val reference: WeakReference<FragmentDialogClanList> = WeakReference(context)
 
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val dialog = reference.get()
-                if(msg?.what == 1 && dialog != null ){
+                if(msg.what == 1 && dialog != null ){
                     dialog.updateView()
                 }
             }
@@ -64,7 +61,7 @@ class FragmentDialogClanList  : DialogFragment() {
 
     @OnItemClick(R.id.lv_clan)
     fun onItemClick(position:Int){
-        if(mClanListData[position].clanPersonList.map { it.value }.count() == 0){
+        if(mClanListData[position].clanPersonList.map { it.value }.isEmpty()){
             Toast.makeText(mContext, "size 0", Toast.LENGTH_SHORT).show()
             return
         }
@@ -94,13 +91,13 @@ class FragmentDialogClanList  : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mListView.adapter = CultivationClanListAdapter(this.context!!, mClanListData)
+        mListView.adapter = CultivationClanListAdapter(this.requireContext(), mClanListData)
         updateView()
         registerTimeLooper()
     }
 
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread{
             while (true){
                 Thread.sleep(2000)
                 if(mThreadRunnable){
@@ -109,13 +106,13 @@ class FragmentDialogClanList  : DialogFragment() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     fun updateView(){
         mClanListData.clear()
         mContext.mClans.forEach {
-            it.value.totalXiuwei = it.value.clanPersonList.map { c->c.value }.sumByDouble { s->s.maxXiuWei.toDouble() }.toLong()
+            it.value.totalXiuwei = it.value.clanPersonList.map { c->c.value }.sumOf{ s->s.maxXiuWei }
         }
         mClanListData.addAll(mContext.mClans.map { it.value })
         mClanListData.sortByDescending { it.totalXiuwei }

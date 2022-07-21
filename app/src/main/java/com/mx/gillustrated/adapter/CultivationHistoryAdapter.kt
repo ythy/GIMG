@@ -1,8 +1,6 @@
 package com.mx.gillustrated.adapter
 
-import android.annotation.TargetApi
 import android.graphics.Color
-import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -36,7 +34,6 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
         return arg0.toLong()
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
         var convertView = convertViews
         lateinit var component: Component

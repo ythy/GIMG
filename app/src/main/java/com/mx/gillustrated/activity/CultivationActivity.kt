@@ -1,8 +1,6 @@
 package com.mx.gillustrated.activity
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -37,17 +35,18 @@ import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.*
+import kotlin.math.abs
+import kotlin.math.pow
 
 
 @SuppressLint("SetTextI18n")
-@TargetApi(Build.VERSION_CODES.N)
 class CultivationActivity : BaseActivity() {
 
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
     private var mSpeed = 10L//流失速度
     private val mInitPersonCount = 1000//初始化Person数量
-    var readRecord = true
+    private var readRecord = true
     var maxFemaleProfile = 0 // 1号保留不用
     var maxMaleProfile = 0 // 默认0号
     var mPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
@@ -79,7 +78,7 @@ class CultivationActivity : BaseActivity() {
     fun onSaveClickHandler(){
         setTimeLooper(false)
         mProgressDialog.show()
-        Thread(Runnable {
+        Thread{
             Thread.sleep(500)
             val backupInfo = BakInfo()
             backupInfo.xun = mCurrentXun
@@ -93,7 +92,7 @@ class CultivationActivity : BaseActivity() {
                 if (it.gender == NameUtil.Gender.Male && it.profile == 0 && maxMaleProfile > 2) {
                     it.profile = Random().nextInt(maxMaleProfile - 2) + 2
                 }
-                it.HP = Math.min(it.HP, it.maxHP)
+                it.HP = it.HP.coerceAtMost(it.maxHP)
                 it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null && getOfflinePersonDetail(f) == null }.toMutableList()
             }
             backupInfo.persons = mPersons
@@ -102,7 +101,7 @@ class CultivationActivity : BaseActivity() {
             val message = Message.obtain()
             message.what = 2
             mTimeHandler.sendMessage(message)
-        }).start()
+        }.start()
     }
 
     @OnClick(R.id.btn_multi)
@@ -197,7 +196,7 @@ class CultivationActivity : BaseActivity() {
         initLayout()
         loadConfig()
         mProgressDialog.show()
-        Thread(Runnable {
+        Thread{
             Thread.sleep(100)
             val backup = CultivationBakUtil.getDataFromFiles()
             val message = Message.obtain()
@@ -206,7 +205,7 @@ class CultivationActivity : BaseActivity() {
             message.arg1 = CultivationBakUtil.findFemaleHeaderSize()
             message.arg2 = CultivationBakUtil.findMaleHeaderSize()
             mTimeHandler.sendMessage(message)
-        }).start()
+        }.start()
     }
 
     override fun onPause() {
@@ -492,7 +491,7 @@ class CultivationActivity : BaseActivity() {
 
     //1旬一月
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread{
             while (true){
                 Thread.sleep(mSpeed)
                 if(mThreadRunnable){
@@ -503,13 +502,13 @@ class CultivationActivity : BaseActivity() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
 
     //1旬一月
     private fun registerHistoryTimeLooper(){
-        Thread(Runnable {
+        Thread{
             while (true){
                 Thread.sleep(1000)
                 if(mHistoryThreadRunnable){
@@ -518,7 +517,7 @@ class CultivationActivity : BaseActivity() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     private fun updateHistory(){
@@ -536,14 +535,14 @@ class CultivationActivity : BaseActivity() {
         mHistory.invalidateViews()
     }
 
-    fun getYearString(xun:Long = mCurrentXun):String{
+    private fun getYearString(xun:Long = mCurrentXun):String{
        return "${xun / 12}年"
     }
 
     private fun addMultiPerson(count:Int){
         setTimeLooper(false)
         mProgressDialog.show()
-        Thread(Runnable {
+        Thread{
             var temp = count
             Thread.sleep(500)
             try {
@@ -553,7 +552,7 @@ class CultivationActivity : BaseActivity() {
             }catch (e:IOException) {
                 mExecutor.shutdown()
             }
-        }).start()
+        }.start()
     }
 
     class AddPersonRunnable constructor(private val count:Int, val handler:TimeHandler):Runnable {
@@ -587,7 +586,7 @@ class CultivationActivity : BaseActivity() {
 
     fun bePerson(){
         setTimeLooper(false)
-        Thread(Runnable {
+        Thread{
             Thread.sleep(500)
             mDeadPersons.forEach {
                 it.value.partnerName = null
@@ -604,12 +603,12 @@ class CultivationActivity : BaseActivity() {
             val message = Message.obtain()
             message.what = 6
             mTimeHandler.sendMessage(message)
-        }).start()
+        }.start()
     }
 
     fun revivePerson(id:String){
         setTimeLooper(false)
-        Thread(Runnable {
+        Thread{
             Thread.sleep(500)
             val person = mDeadPersons[id]
             if(person != null){
@@ -627,12 +626,12 @@ class CultivationActivity : BaseActivity() {
             val message = Message.obtain()
             message.what = 6
             mTimeHandler.sendMessage(message)
-        }).start()
+        }.start()
     }
 
     fun killPerson(id:String){
         setTimeLooper(false)
-        Thread(Runnable {
+        Thread{
             Thread.sleep(500)
             val person = mPersons[id]
             if(person != null){
@@ -642,7 +641,7 @@ class CultivationActivity : BaseActivity() {
             val message = Message.obtain()
             message.what = 6
             mTimeHandler.sendMessage(message)
-        }).start()
+        }.start()
     }
 
     fun addPersonLifetime(id:String):Boolean{
@@ -660,18 +659,18 @@ class CultivationActivity : BaseActivity() {
     private fun randomEvent(persons:List<Person>){
         mConfig.events.forEach {
             val extraRate = 200/persons.size
-            val random = Random().nextInt(it.weight * Math.max(1, extraRate))   //人少概率降低，200概率正常
+            val random = Random().nextInt(it.weight * 1.coerceAtLeast(extraRate))   //人少概率降低，200概率正常
             if(random == 0 && persons.isNotEmpty()){
                 val personRandom = Random().nextInt(persons.size)
                 val person = persons[personRandom]
                 addPersonEvent(person,"${getYearString()} " + it.name.replace("P", getPersonBasicString(person, false)).replace("B", it.bonus.toString()), it)
-                when {
-                    it.type == 1 -> {
+                when (it.type) {
+                    1 -> {
                         person.xiuXei += it.bonus
                         person.maxXiuWei += it.bonus
                     }
-                    it.type == 2 -> person.jingJieSuccess += it.bonus
-                    it.type == 3 -> person.lifetime += it.bonus
+                    2 -> person.jingJieSuccess += it.bonus
+                    3 -> person.lifetime += it.bonus
                 }
                 writeHistory( "${getYearString()} " + it.name.replace("P", getPersonBasicString(person)).replace("B", it.bonus.toString()), person)
             }
@@ -686,7 +685,7 @@ class CultivationActivity : BaseActivity() {
             if(it.partner != null){
                 val partner = getOnlinePersonDetail(it.partner)
                 val children = it.children.filter { c-> getOnlinePersonDetail(c) != null }
-                val baseNumber = if(children.isEmpty()) 10L else Math.pow((children.size * 2).toDouble(), 5.0).toLong()
+                val baseNumber = if(children.isEmpty()) 10L else (children.size * 2).toDouble().pow(5.0).toLong()
                 if(partner != null && baseNumber < Int.MAX_VALUE){
                     if(Random().nextInt(baseNumber.toInt()) == 0){
                         val child = if(mAlliance[partner.allianceId]!!.type == 2 && partner.ancestorLevel <= 1 && mPersons[partner.ancestorId] != null ){
@@ -784,8 +783,8 @@ class CultivationActivity : BaseActivity() {
             if(it.HP >= it.maxHP )
                 continue
             if(CultivationHelper.getProperty(it)[0] < -10){
-                val count = Math.abs(CultivationHelper.getProperty(it)[0])
-                it.HP = Math.min(it.maxHP, it.HP + count)
+                val count = abs(CultivationHelper.getProperty(it)[0])
+                it.HP = it.maxHP.coerceAtMost(it.HP + count)
                 it.lifetime -= count
             }else{
                 it.HP++
@@ -888,7 +887,7 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.mHistoryTempData.clear()
         (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
         mHistory.invalidateViews()
-        Thread(Runnable {
+        Thread {
             Thread.sleep(1000)
             mCurrentXun = 0
             mPersons.clear()
@@ -897,7 +896,7 @@ class CultivationActivity : BaseActivity() {
             val message = Message.obtain()
             message.what = 4
             mTimeHandler.sendMessage(message)
-        }).start()
+        }.start()
     }
 
     private fun battleSingleHandler(){
@@ -912,7 +911,7 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.mHistoryTempData.clear()
         (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
         mHistory.invalidateViews()
-        Thread(Runnable {
+        Thread{
             Thread.sleep(500)
             writeHistory("Single Battle Start", null, 0)
             var roundNumber = 1
@@ -928,7 +927,7 @@ class CultivationActivity : BaseActivity() {
             val message = Message.obtain()
             message.what = 8
             mTimeHandler.sendMessage(message)
-        }).start()
+        }.start()
     }
 
     private fun battleClanHandler(){
@@ -942,7 +941,7 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.mHistoryTempData.clear()
         (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
         mHistory.invalidateViews()
-        Thread(Runnable {
+        Thread{
             Thread.sleep(500)
             writeHistory("Clan Battle Start", null, 0)
             var roundNumber = 1
@@ -959,7 +958,7 @@ class CultivationActivity : BaseActivity() {
             val message = Message.obtain()
             message.what = 8
             mTimeHandler.sendMessage(message)
-        }).start()
+        }.start()
     }
 
     private fun battleBangHandler(){
@@ -973,7 +972,7 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.mHistoryTempData.clear()
         (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
         mHistory.invalidateViews()
-        Thread(Runnable {
+        Thread{
             Thread.sleep(500)
             writeHistory("Bang Battle Start", null, 0)
             var roundNumber = 1
@@ -989,7 +988,7 @@ class CultivationActivity : BaseActivity() {
             val message = Message.obtain()
             message.what = 8
             mTimeHandler.sendMessage(message)
-        }).start()
+        }.start()
     }
 
     private fun roundHandler(persons: MutableList<Person>, round:Int, xiuWei:Int){

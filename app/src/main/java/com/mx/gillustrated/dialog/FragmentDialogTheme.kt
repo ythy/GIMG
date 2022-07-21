@@ -11,7 +11,6 @@ import androidx.fragment.app.DialogFragment
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import butterknife.OnItemSelected
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.MainActivity
 
@@ -47,7 +46,7 @@ class FragmentDialogTheme : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        dialog!!.window.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog!!.window?.requestFeature(Window.FEATURE_NO_TITLE)
         val v = inflater.inflate(R.layout.fragment_dialog_theme, container, false)
         ButterKnife.bind(this, v)
         init()

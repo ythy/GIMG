@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -22,15 +21,11 @@ import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.fragment.FragmentEquipment
 import com.mx.gillustrated.fragment.FragmentPersonEvent
-import com.mx.gillustrated.fragment.FragmentPersonInfo
-import com.mx.gillustrated.util.CommonUtil
-import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class FragmentDialogPerson : DialogFragment() {
 
@@ -42,10 +37,10 @@ class FragmentDialogPerson : DialogFragment() {
 
             private val reference: WeakReference<FragmentDialogPerson> = WeakReference(context)
 
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val dialog = reference.get()
-                if(msg?.what == 1 && dialog != null ){
+                if(msg.what == 1 && dialog != null ){
                     dialog.updateView()
                 }
             }
@@ -159,7 +154,7 @@ class FragmentDialogPerson : DialogFragment() {
 
     fun init(){
         mContext = activity as CultivationActivity
-        val id = this.arguments!!.getString("id", "")
+        val id = this.requireArguments().getString("id", "")
         val person = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)
         if(person == null){
             onCloseHandler()
@@ -174,7 +169,7 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread {
             while (true){
                 Thread.sleep(2000)
                 if(mThreadRunnable){
@@ -183,7 +178,7 @@ class FragmentDialogPerson : DialogFragment() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     private fun setViewPager(){
@@ -237,12 +232,12 @@ class FragmentDialogPerson : DialogFragment() {
                 textView.setTextColor(Color.parseColor(CommonColors[data.rarity]))
                 textView.setOnClickListener {
                     var text = ""
-                    when {
-                        data.type == 1 -> text = "基础修为"
-                        data.type == 2 -> text = "修为加速"
-                        data.type == 3 -> text = "Life"
-                        data.type == 4 -> text = "突破"
-                        data.type == 5 -> text = "福源"
+                    when (data.type) {
+                        1 -> text = "基础修为"
+                        2 -> text = "修为加速"
+                        3 -> text = "Life"
+                        4 -> text = "突破"
+                        5 -> text = "福源"
                     }
                     Toast.makeText(this.context, "${text}增加${data.bonus}", Toast.LENGTH_SHORT).show()
                 }

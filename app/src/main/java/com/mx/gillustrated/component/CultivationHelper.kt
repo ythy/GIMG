@@ -6,6 +6,7 @@ import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.abs
 
 @SuppressLint("SetTextI18n")
 object CultivationHelper {
@@ -25,7 +26,7 @@ object CultivationHelper {
             allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.map { it.value }.toMutableList()
         }
         options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfus.filter { f->f.rarity >=2 }.size >= it.value.tianfu  && it.value.personList.size < it.value.maxPerson }.map { it.value })
-        val random = Random().nextInt(options.map { 100 / it.level }.sum() )
+        val random = Random().nextInt(options.sumOf { 100 / it.level })
         var count = 0
         for (i in 0 until options.size){
             val alliance = options[i]
@@ -74,11 +75,11 @@ object CultivationHelper {
             return
         }
         val personList = Collections.synchronizedList( persons.map { it.value })
-        alliance.zhuPerson = personList.sortedBy { it.lastBirthDay }.first()
+        alliance.zhuPerson = personList.minByOrNull { it.lastBirthDay }
     }
 
     private fun updateG1InAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
-        val total = Math.min(10, Math.max(1, persons.size / 4))
+        val total = 10.coerceAtMost(1.coerceAtLeast(persons.size / 4))
         val personList =  Collections.synchronizedList( persons.map { it.value })
         alliance.speedG1PersonList.clear()
         personList.sortByDescending { it.extraSpeed }
@@ -95,7 +96,7 @@ object CultivationHelper {
         val tianFus = mutableListOf<TianFu>()
         mConfig.tianFuType.groupBy { it.type }.forEach { (_, u) ->
             var data: TianFu? = null
-            for (i in 0 until u.size){
+            for (i in u.indices){
                 if(Random().nextInt(u[i].weight) == 0){
                     data = u[i]
                     break
@@ -104,7 +105,7 @@ object CultivationHelper {
             if(data != null){
                 tianFus.add(data)
             }else if(parent != null){
-                for (i in 0 until u.size){
+                for (i in u.indices){
                     var weight = u[i].weight
                     val extraFirst = parent.first.tianfus.find { it.type == u[i].type }
                     val extraSecond = parent.second.tianfus.find { it.type == u[i].type }
@@ -112,7 +113,7 @@ object CultivationHelper {
                         weight /= 50
                     if(extraSecond != null)
                         weight /= 50
-                    weight = Math.max(1, weight)
+                    weight = 1.coerceAtLeast(weight)
                     if(Random().nextInt(weight) == 0){
                         data = u[i]
                         break
@@ -183,10 +184,10 @@ object CultivationHelper {
         var lingGen: LingGen? = null
         if(parent == null || selectNumber < 20){
             val lingGenList = mConfig.lingGenType.sortedBy { it.randomBasic }
-            val sum = lingGenList.sumBy { it.randomBasic }
+            val sum = lingGenList.sumOf{ it.randomBasic }
             val random = Random().nextInt(sum)
             var current = 0 //当前分布
-            for ( i in 0 until lingGenList.size){
+            for ( i in lingGenList.indices){
                 current += lingGenList[i].randomBasic
                 if(random < current){
                     lingGen = lingGenList[i]
@@ -279,10 +280,10 @@ object CultivationHelper {
             val first = if(props1[4] == props2[4]) Random().nextInt(2) == 0
             else props1[4] > props2[4]
             if(first){
-                val hpReduced2 = Math.max(1, props1[2] - props2[3])
+                val hpReduced2 = 1.coerceAtLeast(props1[2] - props2[3])
                 hp2 -= hpReduced2
                 if(hp2 > 0){
-                    val hpReduced1 = Math.max(1, props2[2] - props1[3])
+                    val hpReduced1 = 1.coerceAtLeast(props2[2] - props1[3])
                     hp1 -= hpReduced1
                     if(hp1 <= 0){
                         break
@@ -291,10 +292,10 @@ object CultivationHelper {
                     break
                 }
             }else{
-                val hpReduced1 = Math.max(1, props2[2] - props1[3])
+                val hpReduced1 = 1.coerceAtLeast(props2[2] - props1[3])
                 hp1 -= hpReduced1
                 if(hp1 > 0){
-                    val hpReduced2 = Math.max(1, props1[2] - props2[3])
+                    val hpReduced2 = 1.coerceAtLeast(props1[2] - props2[3])
                     hp2 -= hpReduced2
                     if(hp2 <= 0){
                         break
@@ -326,10 +327,10 @@ object CultivationHelper {
             val first = if(props1[4] == props2[4]) Random().nextInt(2) == 0
                                     else props1[4] > props2[4]
             if(first){
-                val hpReduced2 = Math.max(1, props1[2] - props2[3])
+                val hpReduced2 = 1.coerceAtLeast(props1[2] - props2[3])
                 hp2 -= hpReduced2
                 if(hp2 > 0){
-                    val hpReduced1 = Math.max(1, props2[2] - props1[3])
+                    val hpReduced1 = 1.coerceAtLeast(props2[2] - props1[3])
                     hp1 -= hpReduced1
                     if(hp1 <= 0){
                         break
@@ -338,10 +339,10 @@ object CultivationHelper {
                     break
                 }
             }else{
-                val hpReduced1 = Math.max(1, props2[2] - props1[3])
+                val hpReduced1 = 1.coerceAtLeast(props2[2] - props1[3])
                 hp1 -= hpReduced1
                 if(hp1 > 0){
-                    val hpReduced2 = Math.max(1, props1[2] - props2[3])
+                    val hpReduced2 = 1.coerceAtLeast(props1[2] - props2[3])
                     hp2 -= hpReduced2
                     if(hp2 <= 0){
                         break
@@ -397,7 +398,7 @@ object CultivationHelper {
         person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
         if(equipments.isNotEmpty()){
             equipments.groupBy { it.id }.forEach { (_, u) ->
-                for (index in 0 until u.size){
+                for (index in u.indices){
                     val equipment = u[index]
                     if( index + 1 > equipment.maxCount ){
                         break
@@ -462,7 +463,7 @@ object CultivationHelper {
             synchronized(females){
                 val man = males[Random().nextInt(males.size)]
                 val manAge = man.age
-                val woman = females.sortedBy { Math.abs(manAge - it.age) }[0]
+                val woman = females.sortedBy { abs(manAge - it.age) }[0]
                 if(man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId)
                     return
                 createPartner(man, woman)

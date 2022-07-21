@@ -1,8 +1,6 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -10,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -22,7 +19,6 @@ import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 
-@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class FragmentDialogPersonList  : DialogFragment() {
 
@@ -36,11 +32,10 @@ class FragmentDialogPersonList  : DialogFragment() {
 
             private val reference: WeakReference<FragmentDialogPersonList> = WeakReference(context)
 
-            @TargetApi(Build.VERSION_CODES.N)
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val dialog = reference.get()
-                if(msg?.what == 1 && dialog != null ){
+                if(msg.what == 1 && dialog != null ){
                     dialog.updateList()
                 }
             }
@@ -121,13 +116,13 @@ class FragmentDialogPersonList  : DialogFragment() {
     }
 
     private fun init(){
-        mListView.adapter =  CultivationPersonListAdapter(this.context!!, mPersonData)
+        mListView.adapter =  CultivationPersonListAdapter(this.requireContext(), mPersonData)
         updateList()
         registerTimeLooper()
     }
 
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread {
             while (true){
                 Thread.sleep(5000)
                 if(mThreadRunnable){
@@ -136,7 +131,7 @@ class FragmentDialogPersonList  : DialogFragment() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     private fun updateList(){
