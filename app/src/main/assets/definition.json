@@ -3,58 +3,66 @@
     {
       "id": "1000001",
       "name": "单",
-      "randomBasic": 50,
-      "qiBasic": 50,
-      "color": 4,
-      "jinBonus": [30, 20, 10, 5, 0]
+      "type": 0,
+      "randomBasic": 20,
+      "qiBasic": 60,
+      "color": 4
     },
     {
       "id": "1000002",
       "name": "双",
-      "randomBasic": 150,
-      "qiBasic": 35,
-      "color": 3,
-      "jinBonus": [20, 15, 5, 0, 0]
+      "type": 0,
+      "randomBasic": 10,
+      "qiBasic": 50,
+      "color": 3
     },
     {
       "id": "1000003",
       "name": "三",
-      "randomBasic": 300,
-      "qiBasic": 25,
-      "color": 2,
-      "jinBonus": [15, 10, 0, 0, 0]
+      "type": 0,
+      "randomBasic": 4,
+      "qiBasic": 40,
+      "color": 2
     },
     {
       "id": "1000004",
       "name": "四",
-      "randomBasic": 700,
-      "qiBasic": 20,
-      "color": 1,
-      "jinBonus": []
+      "type": 0,
+      "randomBasic": 2,
+      "qiBasic": 30,
+      "color": 1
     },
     {
       "id": "1000005",
       "name": "五",
-      "randomBasic": 1000,
-      "qiBasic": 15,
-      "color": 0,
-      "jinBonus": []
+      "type": 0,
+      "randomBasic": 1,
+      "qiBasic": 20,
+      "color": 0
     },
     {
       "id": "1000006",
       "name": "天",
-      "randomBasic": 20,
-      "qiBasic": 60,
-      "color": 5,
-      "jinBonus": [40, 30, 20, 10, 5]
+      "type": 1,
+      "randomBasic": 50,
+      "qiBasic": 80,
+      "color": 5
     },
     {
       "id": "1000007",
       "name": "变",
-      "randomBasic": 1,
-      "qiBasic": 100,
-      "color": 6,
-      "jinBonus": [50, 40, 30, 20, 10]
+      "type": 2,
+      "randomBasic": 1000,
+      "qiBasic": 150,
+      "color": 6
+    },
+    {
+      "id": "1000008",
+      "name": "极",
+      "type": 3,
+      "randomBasic": 2000,
+      "qiBasic": 200,
+      "color": 7
     }
   ],
 
@@ -65,8 +73,7 @@
       "max": 200,
       "success": 80,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000002",
@@ -74,8 +81,7 @@
       "max": 300,
       "success": 75,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000003",
@@ -83,8 +89,7 @@
       "max": 500,
       "success": 70,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000004",
@@ -92,8 +97,7 @@
       "max": 800,
       "success": 65,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000005",
@@ -101,8 +105,7 @@
       "max": 1000,
       "success": 60,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000006",
@@ -110,8 +113,7 @@
       "max": 1500,
       "success": 55,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000007",
@@ -119,8 +121,7 @@
       "max": 2000,
       "success": 50,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000008",
@@ -128,8 +129,7 @@
       "max": 2500,
       "success": 45,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000009",
@@ -137,8 +137,7 @@
       "max": 3000,
       "success": 30,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000010",
@@ -146,8 +145,7 @@
       "max": 3500,
       "success": 10,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 1
+      "lifetime": 0
     },
     {
       "id": "2000011",
@@ -156,8 +154,7 @@
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 100,
-      "bonus": 0
+      "lifetime": 100
     },
     {
       "id": "2000012",
@@ -166,8 +163,7 @@
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000013",
@@ -176,8 +172,7 @@
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000014",
@@ -186,8 +181,7 @@
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 2
+      "lifetime": 0
     },
     {
       "id": "2000021",
@@ -196,8 +190,7 @@
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 100,
-      "bonus": 0
+      "lifetime": 100
     },
     {
       "id": "2000022",
@@ -206,8 +199,7 @@
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000023",
@@ -216,8 +208,7 @@
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000024",
@@ -226,8 +217,7 @@
       "color": 1,
       "success": 10,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 3
+      "lifetime": 0
     },
     {
       "id": "2000031",
@@ -236,8 +226,7 @@
       "color": 2,
       "success": 10,
       "fault": 3,
-      "lifetime": 300,
-      "bonus": 0
+      "lifetime": 200
     },
     {
       "id": "2000032",
@@ -246,8 +235,7 @@
       "color": 2,
       "success": 10,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000033",
@@ -256,8 +244,7 @@
       "color": 2,
       "success": 10,
       "fault": 3,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000034",
@@ -266,8 +253,7 @@
       "color": 2,
       "success": 10,
       "fault": 2,
-      "lifetime": 0,
-      "bonus": 4
+      "lifetime": 0
     },
     {
       "id": "2000041",
@@ -276,8 +262,7 @@
       "color": 3,
       "success": 5,
       "fault": 2,
-      "lifetime": 600,
-      "bonus": 0
+      "lifetime": 400
     },
     {
       "id": "2000042",
@@ -286,8 +271,7 @@
       "color": 3,
       "success": 5,
       "fault": 2,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000043",
@@ -296,8 +280,7 @@
       "color": 3,
       "success": 5,
       "fault": 2,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000044",
@@ -306,8 +289,7 @@
       "color": 3,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 5
+      "lifetime": 0
     },
     {
       "id": "2000051",
@@ -316,8 +298,7 @@
       "color": 3,
       "success": 2,
       "fault": 1,
-      "lifetime": 800,
-      "bonus": 0
+      "lifetime": 600
     },
     {
       "id": "2000052",
@@ -326,8 +307,7 @@
       "color": 3,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000053",
@@ -336,8 +316,7 @@
       "color": 3,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000054",
@@ -346,8 +325,7 @@
       "color": 3,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 5
+      "lifetime": 0
     },
     {
       "id": "2000061",
@@ -356,8 +334,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 1000,
-      "bonus": 0
+      "lifetime": 800
     },
     {
       "id": "2000062",
@@ -366,8 +343,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000063",
@@ -376,8 +352,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000064",
@@ -386,8 +361,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 5
+      "lifetime": 0
     },
     {
       "id": "2000071",
@@ -396,8 +370,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 1500,
-      "bonus": 0
+      "lifetime": 1200
     },
     {
       "id": "2000072",
@@ -406,8 +379,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000073",
@@ -416,8 +388,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000074",
@@ -426,8 +397,7 @@
       "color": 4,
       "success": 2,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 5
+      "lifetime": 0
     },
     {
       "id": "2000081",
@@ -436,8 +406,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 2000,
-      "bonus": 0
+      "lifetime": 1500
     },
     {
       "id": "2000082",
@@ -446,8 +415,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000083",
@@ -456,8 +424,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000084",
@@ -466,8 +433,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000091",
@@ -476,8 +442,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 2500,
-      "bonus": 0
+      "lifetime": 2000
     },
     {
       "id": "2000092",
@@ -486,8 +451,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000093",
@@ -496,8 +460,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000094",
@@ -506,8 +469,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000101",
@@ -516,8 +478,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 4000,
-      "bonus": 0
+      "lifetime": 3000
     },
     {
       "id": "2000102",
@@ -526,8 +487,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000103",
@@ -536,8 +496,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000104",
@@ -546,8 +505,7 @@
       "color": 5,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000201",
@@ -556,8 +514,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 6000,
-      "bonus": 0
+      "lifetime": 4000
     },
     {
       "id": "2000202",
@@ -566,8 +523,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000203",
@@ -576,8 +532,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000204",
@@ -586,8 +541,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000301",
@@ -596,8 +550,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 6000,
-      "bonus": 0
+      "lifetime": 5000
     },
     {
       "id": "2000302",
@@ -606,8 +559,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000303",
@@ -616,8 +568,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000304",
@@ -626,8 +577,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000311",
@@ -636,7 +586,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 8000,
+      "lifetime": 6000,
       "bonus": 0
     },
     {
@@ -646,8 +596,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000313",
@@ -656,8 +605,7 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000314",
@@ -666,335 +614,222 @@
       "color": 6,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000401",
-      "name": "ShenJing-1",
+      "name": "ShengJing-1",
       "max": 400000,
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 10000,
-      "bonus": 0
+      "lifetime": 8000
     },
     {
       "id": "2000402",
-      "name": "ShenJing-2",
+      "name": "ShengJing-2",
       "max": 400000,
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000403",
-      "name": "ShenJing-3",
+      "name": "ShengJing-3",
       "max": 400000,
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000404",
-      "name": "ShenJing-4",
+      "name": "ShengJing-4",
       "max": 400000,
       "color": 7,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000411",
-      "name": "TianDao-1",
+      "name": "DiJing-1",
       "max": 500000,
-      "color": 7,
+      "color": 8,
       "success": 1,
       "fault": 1,
-      "lifetime": 10000,
-      "bonus": 0
+      "lifetime": 10000
     },
     {
       "id": "2000412",
-      "name": "TianDao-2",
-      "max": 500000,
-      "color": 7,
+      "name": "DiJing-2",
+      "max": 600000,
+      "color": 8,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000413",
-      "name": "TianDao-3",
-      "max": 500000,
-      "color": 7,
+      "name": "DiJing-3",
+      "max": 700000,
+      "color": 8,
       "success": 1,
       "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
+      "lifetime": 0
     },
     {
       "id": "2000414",
-      "name": "TianDao-4",
-      "max": 500000,
-      "color": 7,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000421",
-      "name": "DaDao-1",
-      "max": 600000,
-      "color": 7,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 10000,
-      "bonus": 0
-    },
-    {
-      "id": "2000422",
-      "name": "DaDao-2",
-      "max": 600000,
-      "color": 7,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000423",
-      "name": "DaDao-3",
-      "max": 600000,
-      "color": 7,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000424",
-      "name": "DaDao-4",
-      "max": 600000,
-      "color": 7,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000431",
-      "name": "ZhiShang-1",
-      "max": 650000,
-      "color": 7,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 12000,
-      "bonus": 0
-    },
-    {
-      "id": "2000432",
-      "name": "ZhiShang-2",
-      "max": 650000,
-      "color": 7,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000433",
-      "name": "ZhiShang-3",
-      "max": 650000,
-      "color": 7,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000434",
-      "name": "ZhiShang-4",
-      "max": 650000,
-      "color": 7,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000501",
-      "name": "ChuangZao-1",
-      "max": 700000,
-      "color": 8,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 15000,
-      "bonus": 0
-    },
-    {
-      "id": "2000502",
-      "name": "ChuangZao-2",
-      "max": 700000,
-      "color": 8,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000503",
-      "name": "ChuangZao-3",
-      "max": 700000,
-      "color": 8,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000504",
-      "name": "ChuangZao-4",
-      "max": 700000,
-      "color": 8,
-      "success": 1,
-      "fault": 1,
-      "lifetime": 0,
-      "bonus": 0
-    },
-    {
-      "id": "2000601",
-      "name": "ZhuZai-1",
+      "name": "DiJing-4",
       "max": 800000,
       "color": 8,
       "success": 1,
       "fault": 1,
-      "lifetime": 5000,
-      "bonus": 0
+      "lifetime": 0
     }
   ],
 
   "lingGenTian": [
     {
       "id": "1010001",
-      "name": "冰天灵根",
-      "property": [0,0,10,0,0,0,0,0]
+      "name": "\u51b0\u5929\u7075\u6839",
+      "property": [0,0,10,0,0,0,0,0],
+      "type": 1
     },
     {
       "id": "1010002",
-      "name": "殛雷灵根",
-      "property": [0,10,0,0,0,0,0,0]
+      "name": "\u6b9b\u96f7\u7075\u6839",
+      "property": [0,10,0,0,0,0,0,0],
+      "type": 1
     },
     {
       "id": "1010003",
-      "name": "蓝银草灵根",
-      "property": [50,0,0,0,0,0,0,0]
+      "name": "\u84dd\u94f6\u8349\u7075\u6839",
+      "property": [50,0,0,0,0,0,0,0],
+      "type": 1
     },
     {
       "id": "1010004",
-      "name": "风天灵根",
-      "property": [0,0,0,10,0,0,0,0]
+      "name": "\u98ce\u5929\u7075\u6839",
+      "property": [0,0,0,10,0,0,0,0],
+      "type": 1
     },
     {
       "id": "1010005",
-      "name": "炎天灵根",
-      "property": [0,10,0,0,0,0,0,0]
+      "name": "\u708e\u5929\u7075\u6839",
+      "property": [0,10,0,0,0,0,0,0],
+      "type": 1
     },
     {
       "id": "1010006",
-      "name": "狗狗🐕灵根",
-      "property": [0,0,0,10,0,0,0,0]
+      "name": "\u72d7\u72d7\u7075\u6839",
+      "property": [0,0,0,10,0,0,0,0],
+      "type": 1
     },
     {
       "id": "1010007",
-      "name": "兔兔🐇灵根",
-      "property": [0,0,0,10,0,0,0,0]
+      "name": "\u5154\u5154\u7075\u6839",
+      "property": [0,0,0,10,0,0,0,0],
+      "type": 1
     },
     {
       "id": "1010008",
-      "name": "猫猫🐱灵根",
-      "property": [50,0,0,0,0,0,0,0]
+      "name": "\u732b\u732b\u7075\u6839",
+      "property": [50,0,0,0,0,0,0,0],
+      "type": 1
     },
     {
       "id": "1010009",
-      "name": "变异帝灵根",
+      "name": "\u53d8\u5f02\u5e1d\u7075\u6839",
       "property": [0,10,10,0,0,0,0,0],
-      "type": 1
+      "type": 2
     },
     {
       "id": "1010010",
-      "name": "变异娲灵根",
+      "name": "\u53d8\u5f02\u5a32\u7075\u6839",
       "property": [50,10,0,0,0,0,0,0],
-      "type": 1
+      "type": 2
     },
     {
       "id": "1010011",
-      "name": "变异仙灵根",
+      "name": "\u53d8\u5f02\u4ed9\u7075\u6839",
       "property": [0,10,0,10,0,0,0,0],
-      "type": 1
+      "type": 2
+    },
+    {
+      "id": "1010012",
+      "name": "\u9752\u9f99\u7075\u6839",
+      "property": [0,30,0,10,0,0,0,0],
+      "type": 3
+    },
+    {
+      "id": "1010013",
+      "name": "\u6731\u96c0\u7075\u6839",
+      "property": [0,20,10,10,0,0,0,0],
+      "type": 3
+    },
+    {
+      "id": "1010014",
+      "name": "\u767d\u864e\u7075\u6839",
+      "property": [0,10,20,10,0,0,0,0],
+      "type": 3
     }
   ],
 
   "events": [
     {
       "id": "3000001",
-      "name": "天降，P修为增加B",
+      "name": "\u5929\u964d，P\u4fee\u4e3a\u589e\u52a0B",
       "type": 1,
       "bonus": 5000,
       "weight": 120
     },
     {
       "id": "3000002",
-      "name": "天降，P修为增加B",
+      "name": "\u5929\u964d，P\u4fee\u4e3a\u589e\u52a0B",
       "type": 1,
       "bonus": 10000,
       "weight": 600
     },
     {
       "id": "3000003",
-      "name": "天降，P修为增加B",
+      "name": "\u5929\u964d，P\u4fee\u4e3a\u589e\u52a0B",
       "type": 1,
       "bonus": 20000,
       "weight": 1200
     },
     {
       "id": "3000011",
-      "name": "发现神秘，P突破增加B%",
+      "name": "\u53d1\u73b0\u795e\u79d8，P\u7a81\u7834\u589e\u52a0B%",
       "type": 2,
       "bonus": 1,
       "weight": 12000
     },
     {
       "id": "3000012",
-      "name": "发现神秘，P突破增加B%",
+      "name": "\u53d1\u73b0\u795e\u79d8，P\u7a81\u7834\u589e\u52a0B%",
       "type": 2,
       "bonus": 2,
       "weight": 24000
     },
     {
       "id": "3000021",
-      "name": "天罚，P寿命降低B",
+      "name": "\u5929\u7f5a，P\u5bff\u547d\u964d\u4f4eB",
       "type": 3,
       "bonus": -10,
       "weight": 120
     },
     {
       "id": "3000022",
-      "name": "天罚，P寿命降低B",
+      "name": "\u5929\u7f5a，P\u5bff\u547d\u964d\u4f4eB",
       "type": 3,
       "bonus": -20,
       "weight": 240
     },
     {
       "id": "3000023",
-      "name": "天罚，P寿命降低B",
+      "name": "\u5929\u7f5a，P\u5bff\u547d\u964d\u4f4eB",
       "type": 3,
       "bonus": -50,
       "weight": 600
@@ -1051,6 +886,30 @@
       "weight": 200
     },
     {
+      "id": "4000107",
+      "name": "Power7",
+      "type": 1,
+      "bonus": 100,
+      "rarity": 6,
+      "weight": 500
+    },
+    {
+      "id": "4000108",
+      "name": "Power8",
+      "type": 1,
+      "bonus": 150,
+      "rarity": 7,
+      "weight": 1500
+    },
+    {
+      "id": "4000109",
+      "name": "Power9",
+      "type": 1,
+      "bonus": 200,
+      "rarity": 8,
+      "weight": 3000
+    },
+    {
       "id": "4000201",
       "name": "Clever1",
       "type": 2,
@@ -1097,6 +956,30 @@
       "bonus": 300,
       "rarity": 5,
       "weight": 300
+    },
+    {
+      "id": "4000207",
+      "name": "Clever7",
+      "type": 2,
+      "bonus": 400,
+      "rarity": 6,
+      "weight": 1000
+    },
+    {
+      "id": "4000208",
+      "name": "Clever8",
+      "type": 2,
+      "bonus": 500,
+      "rarity": 7,
+      "weight": 3000
+    },
+    {
+      "id": "4000209",
+      "name": "Clever9",
+      "type": 2,
+      "bonus": 600,
+      "rarity": 8,
+      "weight": 5000
     },
     {
       "id": "4000301",
@@ -1147,6 +1030,30 @@
       "weight": 300
     },
     {
+      "id": "4000307",
+      "name": "Life7",
+      "type": 3,
+      "bonus": 600,
+      "rarity": 6,
+      "weight": 600
+    },
+    {
+      "id": "4000308",
+      "name": "Life8",
+      "type": 3,
+      "bonus": 800,
+      "rarity": 7,
+      "weight": 1000
+    },
+    {
+      "id": "4000309",
+      "name": "Life9",
+      "type": 3,
+      "bonus": 1000,
+      "rarity": 8,
+      "weight": 2000
+    },
+    {
       "id": "4000401",
       "name": "Top3",
       "type": 4,
@@ -1177,6 +1084,30 @@
       "bonus": 15,
       "rarity": 5,
       "weight": 500
+    },
+    {
+      "id": "4000405",
+      "name": "Top7",
+      "type": 4,
+      "bonus": 20,
+      "rarity": 6,
+      "weight": 2000
+    },
+    {
+      "id": "4000406",
+      "name": "Top8",
+      "type": 4,
+      "bonus": 25,
+      "rarity": 7,
+      "weight": 4000
+    },
+    {
+      "id": "4000407",
+      "name": "Top9",
+      "type": 4,
+      "bonus": 30,
+      "rarity": 8,
+      "weight": 6000
     },
     {
       "id": "4000501",
@@ -1225,6 +1156,30 @@
       "bonus": 30,
       "rarity": 5,
       "weight": 300
+    },
+    {
+      "id": "4000507",
+      "name": "Fu7",
+      "type": 5,
+      "bonus": 40,
+      "rarity": 6,
+      "weight": 500
+    },
+    {
+      "id": "4000508",
+      "name": "Fu8",
+      "type": 5,
+      "bonus": 50,
+      "rarity": 7,
+      "weight": 1000
+    },
+    {
+      "id": "4000509",
+      "name": "Fu9",
+      "type": 5,
+      "bonus": 60,
+      "rarity": 8,
+      "weight": 2000
     }
   ],
 

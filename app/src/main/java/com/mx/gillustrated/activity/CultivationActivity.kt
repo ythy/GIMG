@@ -26,6 +26,7 @@ import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonInfo
+import com.mx.gillustrated.component.CultivationHelper.getJingJie
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.util.CultivationBakUtil
@@ -238,6 +239,11 @@ class CultivationActivity : BaseActivity() {
                 if(it.value.children.isNotEmpty())
                     it.value.children = Collections.synchronizedList(it.value.children)
                 it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
+                if(it.value.jingJieId > "2000411"){
+                    it.value.jingJieId = "2000411"
+                    it.value.jinJieName = CultivationHelper.getJinJieName(getJingJie(it.value.jingJieId).name)
+                }else
+                    it.value.jinJieName = CultivationHelper.getJinJieName(getJingJie(it.value.jingJieId).name)
             }
             mAlliance.putAll(backup.alliance.mapValues {
                 it.value.toAlliance(mPersons)
@@ -432,16 +438,16 @@ class CultivationActivity : BaseActivity() {
         }
         val next = CultivationHelper.getNextJingJie(it.jingJieId)
         it.xiuXei = 0
-        val totalSuccess = CultivationHelper.getTotalSuccess(it, currentJinJie.bonus)
+        val totalSuccess = CultivationHelper.getTotalSuccess(it)
         val random = Random().nextInt(100)
         if (random <= totalSuccess) {//成功
             if (next != null) {
                 val commonText = "${personDataString[1]} ${CultivationHelper.getJinJieName(next.name)}，${personDataString[2]} $random/$totalSuccess"
                 val lastJingJieDigt = CultivationHelper.getJingJieLevel(it.jingJieId)
-                if (it.isFav || (lastJingJieDigt.first >= 0 && lastJingJieDigt.third == 4)) {
+                if (it.isFav || (lastJingJieDigt.second >= 5 && lastJingJieDigt.third == 4)) {
                     writeHistory("${getPersonBasicString(it)} $commonText", it)
                 }
-                if (lastJingJieDigt.first >= 0 && lastJingJieDigt.third == 4) {
+                if (lastJingJieDigt.second >= 5 && lastJingJieDigt.third == 4) {
                     addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
                 }
                 it.jingJieId = next.id
@@ -692,7 +698,7 @@ class CultivationActivity : BaseActivity() {
                         val child = if(mAlliance[partner.allianceId]!!.type == 2 && partner.ancestorLevel <= 1 && mPersons[partner.ancestorId] != null ){
                             if(Random().nextInt(2) == 0){
                                 val allianceList = mutableListOf(mAlliance[partner.allianceId]!!)
-                                fixedPersonGenerate(mutableListOf(SpecPersonInfo(Pair(partner.lastName, null), NameUtil.Gender.Male, 0)),
+                                fixedPersonGenerate(mutableListOf(SpecPersonInfo(Pair(partner.lastName, null), NameUtil.Gender.Male, 0,1,1)),
                                         allianceList, Pair(partner, it))[0]
                             }else{
                                 addPersion(Pair(partner.lastName, null), NameUtil.Gender.Female, 100,
@@ -832,7 +838,7 @@ class CultivationActivity : BaseActivity() {
         val specPersonList = mutableListOf<SpecPersonInfo>()
         for ( i in 0 until 4){
             SpecPersonFirstName.forEach { first->
-                specPersonList.add(SpecPersonInfo(Pair(allianceList[i].name.slice(0 until 1), first), NameUtil.Gender.Female, i))
+                specPersonList.add(SpecPersonInfo(Pair(allianceList[i].name.slice(0 until 1), first), NameUtil.Gender.Female, i, 50, 20))
             }
         }
         fixedPersonGenerate(specPersonList, allianceList)
@@ -841,14 +847,14 @@ class CultivationActivity : BaseActivity() {
         val specPersonList2 = mutableListOf<SpecPersonInfo>()
         for ( i in 0 until 1){
             SpecPersonFirstName2.forEach { first->
-                specPersonList2.add(SpecPersonInfo(Pair(allianceList2[i].name.slice(0 until 1), first), null, i))
+                specPersonList2.add(SpecPersonInfo(Pair(allianceList2[i].name.slice(0 until 1), first), null, i, 20, 10))
             }
         }
         fixedPersonGenerate(specPersonList2, allianceList2)
 
         val allianceList3 = mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id }.toMutableList()
         val specPersonList3 =  SpecPersonFirstName3.map { props->
-            SpecPersonInfo(Pair(props.first.first, props.first.second), props.second, props.third)
+            SpecPersonInfo(Pair(props.first.first, props.first.second), props.second, props.third, 50, 50)
         }.toMutableList()
         fixedPersonGenerate(specPersonList3, allianceList3)
 
@@ -870,7 +876,7 @@ class CultivationActivity : BaseActivity() {
         val result = mutableListOf<Person?>()
         specPersonList.forEach {
             if(personList.find { p-> p.name == it.name.first + it.name.second } == null){
-                val person = CultivationHelper.getPersonInfo(it.name, it.gender, 100, parent)
+                val person = CultivationHelper.getPersonInfo(it.name, it.gender, 100, parent, false, CultivationHelper.PersonFixedInfoMix(null, null, it.TianFuWeight, it.LingGenWeight))
                 result.add(person)
                 mPersons[person.id] = person
                 CultivationHelper.joinFixedAlliance(person, allianceList[it.allianceIndex])

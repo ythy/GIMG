@@ -1,6 +1,7 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
@@ -88,33 +89,35 @@ object CultivationHelper {
 
     }
 
-    private fun getTianFu(parent: Pair<Person, Person>?, fixedTianfus:MutableList<String>?):MutableList<TianFu>{
+    private fun getTianFu(parent: Pair<Person, Person>?, fixedTianfus:MutableList<String>?, tianFuWeight:Int):MutableList<TianFu>{
         if(fixedTianfus != null && fixedTianfus.isNotEmpty()){
             return fixedTianfus.map { mConfig.tianFuType.find { f-> f.id == it }!! }.toMutableList()
         }
         val tianFus = mutableListOf<TianFu>()
-        mConfig.tianFuType.groupBy { it.type }.forEach { (_, u) ->
+        mConfig.tianFuType.groupBy { it.type }.forEach { (_, l) ->
             var data: TianFu? = null
-            for (i in 0 until u.size){
-                if(Random().nextInt(u[i].weight) == 0){
-                    data = u[i]
+            val sortU = l.sortedByDescending { it.weight }
+            for (i in 0 until sortU.size){
+                if(tianFuWeight > 1 && sortU[i].rarity < 3)
+                    continue
+                if(Random().nextInt( Math.max(1, sortU[i].weight / tianFuWeight )) == 0){
+                    data = sortU[i]
                     break
                 }
             }
             if(data != null){
                 tianFus.add(data)
             }else if(parent != null){
-                for (i in 0 until u.size){
-                    var weight = u[i].weight
-                    val extraFirst = parent.first.tianfus.find { it.type == u[i].type }
-                    val extraSecond = parent.second.tianfus.find { it.type == u[i].type }
-                    if(extraFirst != null)
-                        weight /= 50
-                    if(extraSecond != null)
-                        weight /= 50
-                    weight = Math.max(1, weight)
-                    if(Random().nextInt(weight) == 0){
-                        data = u[i]
+                for (i in 0 until sortU.size){
+                    var addonWeight = 1
+                    val extraFirst = parent.first.tianfus.find { it.type == sortU[i].type }
+                    val extraSecond = parent.second.tianfus.find { it.type == sortU[i].type }
+                    if(extraFirst != null && extraFirst.rarity >= 3 )
+                        addonWeight += extraFirst.rarity
+                    if(extraSecond != null && extraSecond.rarity >= 3)
+                        addonWeight += extraSecond.rarity
+                    if(Random().nextInt(sortU[i].weight/addonWeight) == 0){
+                        data = sortU[i]
                         break
                     }
                 }
@@ -130,65 +133,55 @@ object CultivationHelper {
         val lingGen = mConfig.lingGenType.find { it.id == id }!!
         var lingGenName = ""
         var lingGenId = ""
-        when (id) {
-            "1000006" -> {
-                val arr = mConfig.lingGenTian.filter { it.type == 0 }
-                val tianIndex = Random().nextInt(arr.size)
-                lingGenId = arr[tianIndex].id
-                lingGenName = arr[tianIndex].name
-            }
-            "1000007" -> {
-                val arr = mConfig.lingGenTian.filter { it.type == 1 }
-                val tianIndex = Random().nextInt(arr.size)
-                lingGenId = arr[tianIndex].id
-                lingGenName = arr[tianIndex].name
-            }
-            else -> {
-                var type = mutableListOf("金", "水", "木", "火", "土")
-                var typeNum = 5
-                var total = lingGen.id.substring(6).toInt()
-                while (total > 0){
-                    val index = Random().nextInt(typeNum)
-                    val selectType = type[index]
-                    lingGenName += selectType
-                    type = type.filter { it != selectType}.toMutableList()
-                    total--
-                    typeNum--
-                }
+        if (lingGen.type > 0) {
+            val arr = mConfig.lingGenTian.filter { it.type == lingGen.type }
+            val tianIndex = Random().nextInt(arr.size)
+            lingGenId = arr[tianIndex].id
+            lingGenName = arr[tianIndex].name
+        } else {
+            var type = mutableListOf("金", "水", "木", "火", "土")
+            var typeNum = 5
+            var total = lingGen.id.substring(6).toInt()
+            while (total > 0){
+                val index = Random().nextInt(typeNum)
+                val selectType = type[index]
+                lingGenName += selectType
+                type = type.filter { it != selectType}.toMutableList()
+                total--
+                typeNum--
             }
         }
         return Triple(lingGen, lingGenId, lingGenName)
     }
 
 
-    private fun getLingGen(parent: Pair<Person, Person>?, lingGenTypeFixed:String? = null):Triple<LingGen, String, String>{
+    private fun getLingGen(parent: Pair<Person, Person>?, lingGenTypeFixed:String? = null, lingGenWeight:Int):Triple<LingGen, String, String>{
         if(lingGenTypeFixed != null){
             return getLingGenDetail(lingGenTypeFixed)
         }
-        var firestNumber = 10
-        var secondNumber = 10
+        var firestNumber = 100
+        var secondNumber = 100
         if(parent != null){
-            if(parent.first.lingGenType.id == "1000006")
-                firestNumber = 5
-            else if(parent.first.lingGenType.id == "1000007")
-                firestNumber = 1
-            if(parent.second.lingGenType.id == "1000006")
-                secondNumber = 5
-            else if(parent.second.lingGenType.id == "1000007")
-                secondNumber = 1
+            when {
+                parent.first.lingGenType.type == 1 -> firestNumber = 50
+                parent.first.lingGenType.type == 2 -> firestNumber = 5
+                parent.first.lingGenType.type == 3 -> firestNumber = 2
+            }
+            when {
+                parent.second.lingGenType.type == 1 -> secondNumber = 50
+                parent.second.lingGenType.type == 2 -> secondNumber = 5
+                parent.second.lingGenType.type == 3 -> secondNumber = 2
+            }
         }
-        val selectNumber = Random().nextInt(20 + firestNumber + secondNumber)
+        val selectNumber = Random().nextInt(200 + firestNumber + secondNumber)
         val lingGenName: String
         val lingGenId: String
         var lingGen: LingGen? = null
-        if(parent == null || selectNumber < 20){
-            val lingGenList = mConfig.lingGenType.sortedBy { it.randomBasic }
-            val sum = lingGenList.sumBy { it.randomBasic }
-            val random = Random().nextInt(sum)
-            var current = 0 //当前分布
-            for ( i in 0 until lingGenList.size){
-                current += lingGenList[i].randomBasic
-                if(random < current){
+        if(parent == null || selectNumber < 200){
+            val lingGenList = mConfig.lingGenType.sortedByDescending { it.randomBasic }
+            for (i in 0 until lingGenList.size){
+                val weight = Math.max(1, lingGenList[i].randomBasic / lingGenWeight)
+                if(Random().nextInt(weight) == 0){
                     lingGen = lingGenList[i]
                     break
                 }
@@ -197,7 +190,7 @@ object CultivationHelper {
             lingGenId = info.second
             lingGenName = info.third
         }else{
-            val maxPerson:Person = if(selectNumber in 20 until 20 + firestNumber){
+            val maxPerson:Person = if(selectNumber in 200 until 200 + firestNumber){
                 parent.first
             }else{
                 parent.second
@@ -220,8 +213,8 @@ object CultivationHelper {
         else
             NameUtil.getChineseName(null, personGender)
 
-        val lingGen = getLingGen(parent, mix?.lingGenId)
-        val tianFus = getTianFu(parent, mix?.tianFuIds)
+        val lingGen = getLingGen(parent, mix?.lingGenId, mix?.lingGenWeight ?: 1)
+        val tianFus = getTianFu(parent, mix?.tianFuIds, mix?.tianFuWeight ?: 1)
         val birthDay:Pair<Long, Long> = Pair(mCurrentXun, 0)
         val result = Person()
         result.id =  UUID.randomUUID().toString()
@@ -428,16 +421,12 @@ object CultivationHelper {
         return (basic * multi).toInt()
     }
 
-    fun getTotalSuccess(person:Person, jingJieBonus:Int):Int{
+    fun getTotalSuccess(person:Person):Int{
         val tianfuSuccess = person.extraTupo
         val allianceSuccess = person.allianceSuccess
         val currentSuccess = person.jingJieSuccess
         val equipmentSuccess = person.equipmentSuccess
-        var bonus = 0
-        if(jingJieBonus > 0 && person.lingGenType.jinBonus.isNotEmpty()){
-            bonus = person.lingGenType.jinBonus[jingJieBonus - 1]
-        }
-        return currentSuccess + tianfuSuccess + allianceSuccess + equipmentSuccess + bonus
+        return currentSuccess + tianfuSuccess + allianceSuccess + equipmentSuccess
     }
 
     fun getExtraXuiweiMulti(person:Person, alliance:Alliance? = null):Int{
@@ -509,7 +498,7 @@ object CultivationHelper {
         }
     }
 
-    data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?)
+    data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?, var tianFuWeight: Int = 1, var lingGenWeight:Int = 1)
 
     val SpecPersonFirstName3:MutableList<Triple<Pair<String, String>, NameUtil.Gender, Int>> = mutableListOf(Triple(Pair("\u7389", "\u5e1d"), NameUtil.Gender.Male, 0), Triple(Pair("\u83e9","\u63d0"), NameUtil.Gender.Male, 0), Triple(Pair("\u6768","\u622c"), NameUtil.Gender.Male, 0), Triple(Pair("\u54ea","\u5412"), NameUtil.Gender.Male, 0),
             Triple(Pair("\u9080","\u6708"), NameUtil.Gender.Female, 1),Triple(Pair("\u601c","\u661f"), NameUtil.Gender.Female, 1),Triple(Pair("\u82cf","\u6a31"), NameUtil.Gender.Female, 1),Triple(Pair("\u674e","\u7ea2\u8896"), NameUtil.Gender.Female, 1),
@@ -544,17 +533,17 @@ object CultivationHelper {
 
     val SpecPersonFirstName2:MutableList<String> = mutableListOf("主", "廿一", "廿三")
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿")
-    data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int)
+    data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int, var TianFuWeight:Int, var LingGenWeight:Int)
 
-    val EnemyNames = arrayOf("远古", "菜菜")
+    val EnemyNames = arrayOf("\u8fdc\u53e4", "\u83dc\u83dc")
     val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA")
     private val LevelMapper = mapOf(
             1 to "初期", 2 to "中期", 3 to "后期", 4 to "圆满"
     )
     private val NameMapper = mapOf(
             "LianQi" to "炼气", "ZhuJi" to "筑基","JinDan" to "金丹","YuanYing" to "元婴","HuaShen" to "化神","LianXu" to "炼虚","HeTi" to "合体",
-            "DaCheng" to "大乘","DiXian" to "地仙","TianXian" to "天仙","JinXian" to "金仙","TaiYi" to "太乙金仙","DaLuo" to "大罗金仙","HunYuan" to "混元金仙",
-            "DaDao" to "大道圣人","TianDao" to "天道圣人", "ShenJing" to "神境", "ZhiShang" to "大道至上", "ChuangZao" to "创造道者", "ZhuZai" to "创造主宰"
+            "DaCheng" to "大乘","DiXian" to "地仙","TianXian" to "天仙","JinXian" to "金仙","TaiYi" to "太乙金仙","DaLuo" to "大罗金仙","HunYuan" to "准圣",
+            "DiJing" to "帝境", "ShengJing" to "圣境"
     )
 
     // type 1 人物信息
