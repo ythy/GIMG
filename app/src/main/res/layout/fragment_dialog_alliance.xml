@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content" style="@style/BaseActivityStyle"
-    android:minHeight="500dp" android:minWidth="300dp"
-    android:paddingTop="10dp"
-    >
+    android:layout_height="match_parent" style="@style/BaseActivityStyle"
+    android:minWidth="300dp" android:minHeight="600dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -35,7 +33,7 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="350dp">
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

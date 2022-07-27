@@ -22,11 +22,11 @@ import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName3
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonFixedName
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
 import com.mx.gillustrated.component.CultivationHelper.getPersonBasicString
+import com.mx.gillustrated.component.CultivationHelper.mBattleRound
 import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonInfo
-import com.mx.gillustrated.component.CultivationHelper.getJingJie
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.util.CultivationBakUtil
@@ -84,6 +84,7 @@ class CultivationActivity : BaseActivity() {
             Thread.sleep(500)
             val backupInfo = BakInfo()
             backupInfo.xun = mCurrentXun
+            backupInfo.battleRound = mBattleRound
             backupInfo.alliance = mAlliance.mapValues { it.value.toConfig() }
             mPersons.forEach { p->
                 val it = p.value
@@ -239,11 +240,6 @@ class CultivationActivity : BaseActivity() {
                 if(it.value.children.isNotEmpty())
                     it.value.children = Collections.synchronizedList(it.value.children)
                 it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
-                if(it.value.jingJieId > "2000411"){
-                    it.value.jingJieId = "2000411"
-                    it.value.jinJieName = CultivationHelper.getJinJieName(getJingJie(it.value.jingJieId).name)
-                }else
-                    it.value.jinJieName = CultivationHelper.getJinJieName(getJingJie(it.value.jingJieId).name)
             }
             mAlliance.putAll(backup.alliance.mapValues {
                 it.value.toAlliance(mPersons)
@@ -251,6 +247,9 @@ class CultivationActivity : BaseActivity() {
             mClans.putAll(backup.clans.mapValues {
                 it.value.toClan(mPersons)
             })
+            mBattleRound = backup.battleRound ?: BattleRound()
+        }else{
+            mBattleRound = BattleRound()
         }
         createAlliance()
         //更新Alliance属性
@@ -745,7 +744,7 @@ class CultivationActivity : BaseActivity() {
                         if(result){
                             writeHistory("${it.name} 消失", null, 0)
                             it.isDead = true
-                            CultivationHelper.gainJiEquipment(person, 14, it.type)
+                            CultivationHelper.gainJiEquipment(person, 14, it.type, mBattleRound.enemy[it.seq])
                         }
                     }
                 }
@@ -831,6 +830,15 @@ class CultivationActivity : BaseActivity() {
             mEnemys[enemy.id] = enemy
             writeHistory("${enemy.name}天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
         }
+        mBattleRound.enemy[enemy.type]++
+        enemy.seq = mBattleRound.enemy[enemy.type]
+    }
+
+    private fun addFixedcPerson(){
+        val ft = supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogAddPerson.newInstance()
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_add_fixed_person")
     }
 
     private fun addSpecPerson(){
@@ -897,7 +905,9 @@ class CultivationActivity : BaseActivity() {
         Thread(Runnable {
             Thread.sleep(1000)
             mCurrentXun = 0
+            mClans.clear()
             mPersons.clear()
+            mDeadPersons.clear()
             mAlliance.clear()
             createAlliance()
             val message = Message.obtain()
@@ -920,17 +930,23 @@ class CultivationActivity : BaseActivity() {
         mHistory.invalidateViews()
         Thread(Runnable {
             Thread.sleep(500)
-            writeHistory("Single Battle Start", null, 0)
+            mBattleRound.single++
+            writeHistory("第${mBattleRound.single}届  Single Battle Start", null, 0)
             var roundNumber = 1
-            while (persons.size > 1){
+            while (true){
                 writeHistory("Single Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
-                roundHandler(persons, 20, 200000)
+                val result = roundHandler(persons, 20, 200000)
+                if(result)
+                    break
             }
             persons[0].xiuXei += 200000
-            writeHistory("Single Battle Winner: ${persons[0].allianceName} - ${persons[0].name}", persons[0])
+            writeHistory("第${mBattleRound.single}届 Single Battle Winner: ${persons[0].allianceName} - ${persons[0].name}", persons[0])
             addPersonEvent(persons[0],"${getYearString()} ${getPersonBasicString(persons[0], false)} Single Battle Winner")
-            CultivationHelper.gainJiEquipment(persons[0], 13)
+            CultivationHelper.gainJiEquipment(persons[0], 13, 0, mBattleRound.single)
+            writeHistory("第${mBattleRound.single}届 Single Battle Runner: ${persons[1].allianceName} - ${persons[1].name}", persons[1])
+            addPersonEvent(persons[0],"${getYearString()} ${getPersonBasicString(persons[1], false)} Single Battle Runner")
+            CultivationHelper.gainJiEquipment(persons[1], 13, 1, mBattleRound.single)
             val message = Message.obtain()
             message.what = 8
             mTimeHandler.sendMessage(message)
@@ -950,16 +966,19 @@ class CultivationActivity : BaseActivity() {
         mHistory.invalidateViews()
         Thread(Runnable {
             Thread.sleep(500)
-            writeHistory("Clan Battle Start", null, 0)
+            mBattleRound.clan++
+            writeHistory("第${mBattleRound.clan}届 Clan Battle Start", null, 0)
             var roundNumber = 1
-            while (clans.size > 1){
+            while (true){
                 writeHistory("Clan Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
-                roundClanHandler(clans, 10, 80000)
+                val result = roundClanHandler(clans, 10, 80000)
+                if(result)
+                    break
             }
             clans[0].clanPersonList.forEach {
                 it.value.xiuXei += 200000
-                CultivationHelper.gainJiEquipment(it.value, 12)
+                CultivationHelper.gainJiEquipment(it.value, 12, 0, mBattleRound.clan)
             }
             writeHistory("Clan Battle Winner: ${clans[0].name}", null, 0)
             val message = Message.obtain()
@@ -981,24 +1000,31 @@ class CultivationActivity : BaseActivity() {
         mHistory.invalidateViews()
         Thread(Runnable {
             Thread.sleep(500)
-            writeHistory("Bang Battle Start", null, 0)
+            mBattleRound.bang++
+            writeHistory("第${mBattleRound.bang}届 Bang Battle Start", null, 0)
             var roundNumber = 1
-            while (alliances.size > 1){
+            while (true){
                 writeHistory("Bang Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
-                roundBangHandler(alliances, 20, 200000)
+                val result = roundBangHandler(alliances, 20, 200000)
+                if(result)
+                    break
             }
             alliances[0].personList.forEach {
-                CultivationHelper.gainJiEquipment(it.value, 11)
+                CultivationHelper.gainJiEquipment(it.value, 11, 0, mBattleRound.bang)
             }
-            writeHistory("Bang Battle Winner: ${alliances[0].name}", null, 0)
+            alliances[1].personList.forEach {
+                CultivationHelper.gainJiEquipment(it.value, 11, 1, mBattleRound.bang)
+            }
+            writeHistory("第${mBattleRound.bang}届 Bang Battle Winner: ${alliances[0].name}", null, 0)
+            writeHistory("第${mBattleRound.bang}届 Bang Battle Runner: ${alliances[1].name}", null, 0)
             val message = Message.obtain()
             message.what = 8
             mTimeHandler.sendMessage(message)
         }).start()
     }
 
-    private fun roundHandler(persons: MutableList<Person>, round:Int, xiuWei:Int){
+    private fun roundHandler(persons: MutableList<Person>, round:Int, xiuWei:Int):Boolean{
         persons.shuffle()
         val passIds = mutableListOf<String>()
         for (i in 0 until persons.size step 2) {
@@ -1014,10 +1040,18 @@ class CultivationActivity : BaseActivity() {
                 passIds.add(firstPerson.id)
             }
         }
-        persons.removeIf { passIds.contains(it.id) }
+        return if(persons.size == 2){
+            val looser = persons.find { it.id == passIds[0] }!!
+            persons.removeIf { it.id == passIds[0] }
+            persons.add(looser)
+            true
+        }else{
+            persons.removeIf { passIds.contains(it.id) }
+            false
+        }
     }
 
-    private fun roundBangHandler(alliance: MutableList<Alliance>, round:Int, xiuWei:Int){
+    private fun roundBangHandler(alliance: MutableList<Alliance>, round:Int, xiuWei:Int):Boolean{
         alliance.shuffle()
         val passIds = mutableListOf<String>()
         for (i in 0 until alliance.size step 2){
@@ -1058,10 +1092,18 @@ class CultivationActivity : BaseActivity() {
                 }
             }
         }
-        alliance.removeIf { passIds.contains(it.id) }
+        return if(alliance.size == 2){
+            val looser = alliance.find { it.id == passIds[0] }!!
+            alliance.removeIf { it.id == passIds[0] }
+            alliance.add(looser)
+            true
+        }else{
+            alliance.removeIf { passIds.contains(it.id) }
+            false
+        }
     }
 
-    private fun roundClanHandler(clan: MutableList<Clan>, round:Int, xiuWei:Int){
+    private fun roundClanHandler(clan: MutableList<Clan>, round:Int, xiuWei:Int):Boolean{
         clan.shuffle()
         val passIds = mutableListOf<String>()
         for (i in 0 until clan.size step 2){
@@ -1102,7 +1144,15 @@ class CultivationActivity : BaseActivity() {
                 }
             }
         }
-        clan.removeIf { passIds.contains(it.id) }
+        return if(clan.size == 2){
+            val looser = clan.find { it.id == passIds[0] }!!
+            clan.removeIf { it.id == passIds[0] }
+            clan.add(looser)
+            true
+        }else{
+            clan.removeIf { passIds.contains(it.id) }
+            false
+        }
     }
 
     private fun disasterHandler(randomSize:Int = 0){
@@ -1168,6 +1218,9 @@ class CultivationActivity : BaseActivity() {
             }
             R.id.menu_add_spec ->{
                 addSpecPerson()
+            }
+            R.id.menu_add_fixed ->{
+                addFixedcPerson()
             }
 
         }

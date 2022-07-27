@@ -1,7 +1,7 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
-import android.util.Log
+import com.j256.ormlite.stmt.query.In
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
 object CultivationHelper {
 
     lateinit var mConfig:Config
+    lateinit var mBattleRound:BattleRound
     var pinyinMode:Boolean = true //是否pinyin模式
     var mCurrentXun:Long = 0//当前时间
     var mHistoryTempData:MutableList<HistoryInfo> = Collections.synchronizedList(mutableListOf())
@@ -268,9 +269,10 @@ object CultivationHelper {
         val props2 = mutableListOf(enemy.HP, enemy.maxHP, enemy.attack, enemy.defence, enemy.speed)
         var hp1 = props1[0]
         var hp2  = props2[0]
+        val random = Random()
+        val randomSpeed = 20
         while (true){
-            val first = if(props1[4] == props2[4]) Random().nextInt(2) == 0
-            else props1[4] > props2[4]
+            val first = props1[4] + random.nextInt(randomSpeed) > props2[4] + random.nextInt(randomSpeed)
             if(first){
                 val hpReduced2 = Math.max(1, props1[2] - props2[3])
                 hp2 -= hpReduced2
@@ -315,9 +317,10 @@ object CultivationHelper {
         val props2 = getProperty(person2)
         var hp1 = props1[0]
         var hp2  = props2[0]
+        val random = Random()
+        val randomSpeed = 20
         for (it in 0 until round){
-            val first = if(props1[4] == props2[4]) Random().nextInt(2) == 0
-                                    else props1[4] > props2[4]
+            val first = props1[4] + random.nextInt(randomSpeed) > props2[4] + random.nextInt(randomSpeed)
             if(first){
                 val hpReduced2 = Math.max(1, props1[2] - props2[3])
                 hp2 -= hpReduced2
@@ -377,9 +380,9 @@ object CultivationHelper {
     }
 
     //type 11,12,13,14 -> B,C,S,E
-    fun gainJiEquipment(person:Person, type:Int, level:Int = 0){
-        val equipment = mConfig.equipment.filter{ it.type == type}.sortedBy { it.rarity }[level]
-        person.equipment.add("${equipment.id},${equipment.name}(${mCurrentXun/12}")
+    fun gainJiEquipment(person:Person, type:Int, level:Int = 0, round:Int = 0){
+        val equipment = mConfig.equipment.filter{ it.type == type}.sortedBy { it.id }[level]
+        person.equipment.add("${equipment.id},$round")
         updatePersonEquipment(person)
     }
 
@@ -511,7 +514,7 @@ object CultivationHelper {
             ,Triple(Pair("\u5b5f", "\u5a46"), NameUtil.Gender.Female, PersonFixedInfoMix("1000006", mutableListOf("4000104", "4000204", "4000305", "4000402", "4000506")))
             ,Triple(Pair("\u7532", "\u6590\u59ec"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000103", "4000204", "4000305", "4000503")))
             ,Triple(Pair("\u5c0f", "\u677e\u59ec"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000104", "4000203", "4000305", "4000503")))
-            ,Triple(Pair("\u6bdb", "\u6b23"), NameUtil.Gender.Male, PersonFixedInfoMix("1000007", mutableListOf("4000105", "4000206", "4000305", "4000404", "4000506")))
+            ,Triple(Pair("\u6bdb", "\u6b23"), NameUtil.Gender.Male, PersonFixedInfoMix("1000008", mutableListOf("4000109", "4000209", "4000305", "4000407", "4000506")))
     )
 
     fun getTianName(id:String):String{

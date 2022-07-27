@@ -5,4 +5,5 @@ class BakInfo {
     var alliance:Map<String, AllianceConfig> = HashMap()
     var persons:Map<String, Person> = HashMap()
     var clans:Map<String, ClanBak> = HashMap()
+    var battleRound:BattleRound? = null
 }

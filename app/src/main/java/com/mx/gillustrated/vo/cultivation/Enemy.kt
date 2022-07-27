@@ -16,6 +16,7 @@ class Enemy() :Parcelable {
     var birthDay:Long = 0 //xun
     var lifetime:Long = 0 //xun
     var isDead:Boolean = false
+    var seq:Int = 0
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -30,6 +31,7 @@ class Enemy() :Parcelable {
         birthDay = parcel.readLong()
         lifetime = parcel.readLong()
         isDead = parcel.readByte() != 0.toByte()
+        seq = parcel.readInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -45,6 +47,7 @@ class Enemy() :Parcelable {
         parcel.writeLong(birthDay)
         parcel.writeLong(lifetime)
         parcel.writeByte(if (isDead) 1 else 0)
+        parcel.writeInt(seq)
     }
 
     override fun describeContents(): Int {

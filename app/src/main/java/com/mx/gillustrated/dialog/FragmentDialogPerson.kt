@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
@@ -19,6 +20,7 @@ import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.PersonPagerAdapter
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.common.MConfig
+import com.mx.gillustrated.component.AutoWrapLinearLayout
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.fragment.FragmentEquipment
 import com.mx.gillustrated.fragment.FragmentPersonEvent
@@ -139,7 +141,7 @@ class FragmentDialogPerson : DialogFragment() {
     lateinit var mPerson:Person
     lateinit var mContext:CultivationActivity
     lateinit var mDialogView:DialogView
-    val mFragments:MutableList<Fragment> = mutableListOf()
+    private val mFragments:MutableList<Fragment> = mutableListOf()
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
@@ -156,6 +158,17 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView = DialogView(view)
         init()
     }
+
+    //RelativeLayout 需要
+//    override fun onResume() {
+//        super.onResume()
+//        if(dialog?.window != null){
+//            val params = dialog?.window?.attributes!!
+//            params.width = WindowManager.LayoutParams.MATCH_PARENT
+//            params.height = WindowManager.LayoutParams.MATCH_PARENT
+//            dialog?.window?.attributes = params
+//        }
+//    }
 
     fun init(){
         mContext = activity as CultivationActivity
@@ -193,9 +206,12 @@ class FragmentDialogPerson : DialogFragment() {
         equip.arguments = bundle
         val his = FragmentPersonEvent()
         his.arguments = bundle
+        val info = FragmentPersonInfo()
+        info.arguments = bundle
         mFragments.clear()
         mFragments.add(equip)
         mFragments.add(his)
+        mFragments.add(info)
         mViewPager.adapter = PersonPagerAdapter(childFragmentManager, mFragments)
         mViewPager.currentItem = 0
     }
@@ -355,7 +371,7 @@ class FragmentDialogPerson : DialogFragment() {
         lateinit var parentMum:TextView
 
         @BindView(R.id.ll_children)
-        lateinit var children:LinearLayout
+        lateinit var children: LinearLayout
 
         @BindView(R.id.tv_alliance)
         lateinit var alliance:TextView

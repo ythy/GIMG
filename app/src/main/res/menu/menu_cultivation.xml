@@ -32,4 +32,8 @@
         android:id="@+id/menu_add_spec"
         android:orderInCategory="500"
         android:title="specPerson"/>
+    <item
+        android:id="@+id/menu_add_fixed"
+        android:orderInCategory="600"
+        android:title="fixedPerson"/>
 </menu>

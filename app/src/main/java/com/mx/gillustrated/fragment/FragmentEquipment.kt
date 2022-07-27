@@ -39,17 +39,9 @@ class FragmentEquipment: Fragment() {
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
                     override fun onItemSelected(equipment: Equipment) {
-                        if( mPerson.equipment.find { it.split(",")[0] == equipment.id } != null)
-                            return
-                        val exist = mPerson.equipment.find { e-> mConfigEquipments.find { c-> c.id == e.split(",")[0] }?.type == equipment.type }
-                        if(equipment.type > 0 && exist != null){
-                            mPerson.equipment.remove(exist)
-                        }
-                        mPerson.equipment.add("${equipment.id},${equipment.name}")
-                        CultivationHelper.updatePersonEquipment(mPerson)
-                        updateList()
+                        updateEquipment(equipment)
                     }
-                }, Range(1, 10))
+                }, Range(1, 1))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_equipment")
     }
@@ -61,13 +53,23 @@ class FragmentEquipment: Fragment() {
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
                     override fun onItemSelected(equipment: Equipment) {
-                        if( mPerson.equipment.find { it.split(",")[0] == equipment.id } != null)
-                            return
-                        mPerson.equipment.add("${equipment.id},${equipment.name}")
-                        CultivationHelper.updatePersonEquipment(mPerson)
-                        updateList()
+                        updateEquipment(equipment, false)
                     }
                 }, Range(0, 0))
+        newFragment.isCancelable = true
+        newFragment.show(ft, "dialog_equipment")
+    }
+
+    @OnClick(R.id.btn_add_equipment_armor)
+    fun onAddArmorClickHandler(){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogEquipment.
+                newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
+                    override fun onItemSelected(equipment: Equipment) {
+                        updateEquipment(equipment)
+                    }
+                }, Range(2, 2))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_equipment")
     }
@@ -97,7 +99,7 @@ class FragmentEquipment: Fragment() {
                 mPerson.equipment.removeIf {
                     val equipmentArray = it.split(",")
                     if(equipment.type > 10)
-                        equipmentArray[1] == equipment.uniqueName
+                        "${equipment.name}-${equipmentArray[1]}" == equipment.uniqueName
                     else
                         equipmentArray[0] == equipment.id
                 }
@@ -114,7 +116,7 @@ class FragmentEquipment: Fragment() {
             val result = Equipment()
             result.id = equipment.id
             result.name = equipment.name
-            result.uniqueName = if(equipment.type > 10) it.split(",")[1] else equipment.name
+            result.uniqueName = if(equipment.type > 10) "${equipment.name}-${it.split(",")[1]}" else equipment.name
             result.type = equipment.type
             result.rarity = equipment.rarity
             result.xiuwei = equipment.xiuwei
@@ -129,7 +131,19 @@ class FragmentEquipment: Fragment() {
         mListView.invalidateViews()
     }
 
-
+    fun updateEquipment(equipment:Equipment, autoCheck:Boolean = true){
+        if( mPerson.equipment.find { it.split(",")[0] == equipment.id } != null)
+            return
+        if(autoCheck){
+            val exist = mPerson.equipment.find { e-> mConfigEquipments.find { c-> c.id == e.split(",")[0] }?.type == equipment.type }
+            if(equipment.type > 0 && exist != null){
+                mPerson.equipment.remove(exist)
+            }
+        }
+        mPerson.equipment.add("${equipment.id},0")
+        CultivationHelper.updatePersonEquipment(mPerson)
+        updateList()
+    }
 
 
 }
