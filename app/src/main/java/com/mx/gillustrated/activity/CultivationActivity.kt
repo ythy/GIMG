@@ -941,12 +941,13 @@ class CultivationActivity : BaseActivity() {
                     break
             }
             persons[0].xiuXei += 200000
-            writeHistory("第${mBattleRound.single}届 Single Battle Winner: ${persons[0].allianceName} - ${persons[0].name}", persons[0])
+            persons[1].xiuXei += 100000
             addPersonEvent(persons[0],"${getYearString()} ${getPersonBasicString(persons[0], false)} Single Battle Winner")
             CultivationHelper.gainJiEquipment(persons[0], 13, 0, mBattleRound.single)
-            writeHistory("第${mBattleRound.single}届 Single Battle Runner: ${persons[1].allianceName} - ${persons[1].name}", persons[1])
-            addPersonEvent(persons[0],"${getYearString()} ${getPersonBasicString(persons[1], false)} Single Battle Runner")
+            addPersonEvent(persons[1],"${getYearString()} ${getPersonBasicString(persons[1], false)} Single Battle Runner")
             CultivationHelper.gainJiEquipment(persons[1], 13, 1, mBattleRound.single)
+            writeHistory("第${mBattleRound.single}届 Single Battle Runner: ${persons[1].allianceName} - ${persons[1].name}", persons[1])
+            writeHistory("第${mBattleRound.single}届 Single Battle Winner: ${persons[0].allianceName} - ${persons[0].name}", persons[0])
             val message = Message.obtain()
             message.what = 8
             mTimeHandler.sendMessage(message)
@@ -1016,8 +1017,8 @@ class CultivationActivity : BaseActivity() {
             alliances[1].personList.forEach {
                 CultivationHelper.gainJiEquipment(it.value, 11, 1, mBattleRound.bang)
             }
-            writeHistory("第${mBattleRound.bang}届 Bang Battle Winner: ${alliances[0].name}", null, 0)
             writeHistory("第${mBattleRound.bang}届 Bang Battle Runner: ${alliances[1].name}", null, 0)
+            writeHistory("第${mBattleRound.bang}届 Bang Battle Winner: ${alliances[0].name}", null, 0)
             val message = Message.obtain()
             message.what = 8
             mTimeHandler.sendMessage(message)
@@ -1131,13 +1132,13 @@ class CultivationActivity : BaseActivity() {
                         secondClanPersons[secondIndex], round, xiuWei)
                 if(result){
                     secondIndex++
-                    if(secondIndex == secondClanPersons.size || secondIndex == 20){
+                    if(secondIndex == secondClanPersons.size || secondIndex == 5){
                         passIds.add(secondClan.id)
                         break
                     }
                 }else{
                     firstIndex++
-                    if(firstIndex == firstClanPersons.size || firstIndex == 20){
+                    if(firstIndex == firstClanPersons.size || firstIndex == 5){
                         passIds.add(firstClan.id)
                         break
                     }

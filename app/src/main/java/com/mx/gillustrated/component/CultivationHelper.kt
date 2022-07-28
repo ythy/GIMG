@@ -1,7 +1,6 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
-import com.j256.ormlite.stmt.query.In
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
@@ -178,7 +177,7 @@ object CultivationHelper {
         val lingGenName: String
         val lingGenId: String
         var lingGen: LingGen? = null
-        if(parent == null || selectNumber < 200){
+        if(parent == null || lingGenWeight > 1 || selectNumber < 200){
             val lingGenList = mConfig.lingGenType.sortedByDescending { it.randomBasic }
             for (i in 0 until lingGenList.size){
                 val weight = Math.max(1, lingGenList[i].randomBasic / lingGenWeight)
@@ -270,7 +269,7 @@ object CultivationHelper {
         var hp1 = props1[0]
         var hp2  = props2[0]
         val random = Random()
-        val randomSpeed = 20
+        val randomSpeed = 50
         while (true){
             val first = props1[4] + random.nextInt(randomSpeed) > props2[4] + random.nextInt(randomSpeed)
             if(first){
@@ -371,8 +370,8 @@ object CultivationHelper {
         val jingJieLevel = getJingJieLevel(person.jingJieId)
 
         val extraHP = 5 * lingGenLevel + jingJieLevel.first + 4 * jingJieLevel.second + property[0]
-        val attack =  1 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[1]
-        val defence =  1 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[2]
+        val attack =  0 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[1]
+        val defence =  0 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[2]
         val speed =  2 * lingGenLevel + property[3]
 
         return mutableListOf(person.HP + extraHP, person.maxHP + extraHP,

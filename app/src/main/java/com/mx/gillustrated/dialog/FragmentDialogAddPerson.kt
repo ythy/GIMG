@@ -16,6 +16,8 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.util.NameUtil
+import com.mx.gillustrated.util.PinyinUtil
+import com.mx.gillustrated.vo.cultivation.Person
 
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -42,12 +44,28 @@ class FragmentDialogAddPerson: DialogFragment()  {
     @BindView(R.id.et_tianfu)
     lateinit var etTianFu:EditText
 
+    @BindView(R.id.et_mum)
+    lateinit var etMum:EditText
+
 
     @OnClick(R.id.btn_save)
     fun onSaveClick(){
+        val mum = mContext.mPersons.map { it.value }.find { it.name == etMum.text.toString() || PinyinUtil.convert(it.name) == etMum.text.toString()  }
+        var parent:Pair<Person, Person>? = null
+        if(mum?.partner != null){
+            parent = Pair(mContext.mPersons[mum.partner!!]!!, mum) //这里可能有强转导致的并发问题
+        }
         val person = CultivationHelper.getPersonInfo(Pair(etNameFirst.text.toString(), etNameLast.text.toString()),
-                if(rbMale.isChecked) NameUtil.Gender.Male else NameUtil.Gender.Female  , 100, null, false,
+                if(rbMale.isChecked) NameUtil.Gender.Male else NameUtil.Gender.Female  , 100, parent, false,
                 CultivationHelper.PersonFixedInfoMix(null, null, etTianFu.text.toString().toInt(), etLingGen.text.toString().toInt()))
+        if(parent != null){
+            synchronized(parent.first.children){
+                parent.first.children.add(person.id)
+            }
+            synchronized(parent.second.children){
+                parent.second.children.add(person.id)
+            }
+        }
         mContext.mPersons[person.id] = person
         CultivationHelper.joinAlliance(person, mContext.mAlliance)
         CultivationHelper.addPersonEvent(person, "${mContext.getYearString()} ${CultivationHelper.getPersonBasicString(person, false)} 加入")
