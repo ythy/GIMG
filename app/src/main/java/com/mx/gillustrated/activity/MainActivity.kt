@@ -1,5 +1,6 @@
 package com.mx.gillustrated.activity
 
+import android.Manifest
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.ArrayList
@@ -17,6 +18,7 @@ import com.mx.gillustrated.vo.CardInfo
 import com.mx.gillustrated.vo.GameInfo
 import androidx.appcompat.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -44,6 +46,8 @@ class MainActivity : BaseActivity() {
     internal var mainHandler: Handler = MainHandler(this)
 
     companion object {
+        const val MY_PERMISSIONS_REQUEST = 114
+        val permissions:Array<String> = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE)
 
         private class MainHandler(activity: MainActivity) : Handler() {
 
@@ -132,6 +136,10 @@ class MainActivity : BaseActivity() {
         mGameType = intent.getIntExtra("game", CommonUtil.getGameType(this))
         ButterKnife.bind(this)
 
+        requestPermission()
+    }
+
+    private fun init(){
         //Log.d("NATIVE ",  stringFromJNI());
 
         mMainActivityHeader = MainActivityHeader(this,
@@ -200,9 +208,39 @@ class MainActivity : BaseActivity() {
         //		} catch (IOException e) {
         //			e.printStackTrace();
         //		}
-
+    }
+    private fun requestPermission() {
+        if (!hasPermission()) {
+            requestPermissions(permissions, MY_PERMISSIONS_REQUEST)
+        } else
+            init()
     }
 
+    private fun hasPermission(): Boolean {
+        var result = true
+        permissions.forEach {
+            val res = checkCallingOrSelfPermission(it)
+            if (res != PackageManager.PERMISSION_GRANTED)
+                result = false
+        }
+        return result
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    init()
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return
+            }
+        }
+    }
 
     private fun setGameList() {
         ServiceUtils.createConnect(object : DBCall<List<GameInfo>>() {

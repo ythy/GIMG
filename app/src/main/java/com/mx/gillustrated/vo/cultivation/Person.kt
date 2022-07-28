@@ -25,6 +25,7 @@ class Person() :Parcelable {
         var parentName:Pair<String, String>? = null//赋值一次，显示用
         var children:MutableList<String> =  Collections.synchronizedList(mutableListOf())
         var lifeTurn:Int = 0//
+        var singled:Boolean = false //是否独身
 
         var HP:Int = 10
         var maxHP:Int = 10
@@ -81,6 +82,7 @@ class Person() :Parcelable {
                 parentName = parcel.readValue(Pair::class.java.classLoader) as Pair<String, String>?
                 children = Collections.synchronizedList(parcel.createStringArrayList())
                 lifeTurn = parcel.readInt()
+                singled = parcel.readByte() != 0.toByte()
 
                 HP = parcel.readInt()
                 maxHP = parcel.readInt()
@@ -135,6 +137,7 @@ class Person() :Parcelable {
                 parcel.writeValue(parentName)
                 parcel.writeStringList(children)
                 parcel.writeInt(lifeTurn)
+                parcel.writeByte(if (singled) 1 else 0)
 
                 parcel.writeInt(HP)
                 parcel.writeInt(maxHP)

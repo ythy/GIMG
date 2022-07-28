@@ -66,10 +66,7 @@ class FragmentDialogAddPerson: DialogFragment()  {
                 parent.second.children.add(person.id)
             }
         }
-        mContext.mPersons[person.id] = person
-        CultivationHelper.joinAlliance(person, mContext.mAlliance)
-        CultivationHelper.addPersonEvent(person, "${mContext.getYearString()} ${CultivationHelper.getPersonBasicString(person, false)} 加入")
-        CultivationHelper.writeHistory("${CultivationHelper.getPersonBasicString(person)} 加入", person)
+        mContext.combinedPersonRelationship(person)
         this.dismiss()
     }
 

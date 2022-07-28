@@ -12,7 +12,7 @@ object CultivationHelper {
 
     lateinit var mConfig:Config
     lateinit var mBattleRound:BattleRound
-    var pinyinMode:Boolean = true //是否pinyin模式
+    var pinyinMode:Boolean = false //是否pinyin模式
     var mCurrentXun:Long = 0//当前时间
     var mHistoryTempData:MutableList<HistoryInfo> = Collections.synchronizedList(mutableListOf())
     fun writeHistory(content:String, person: Person?, type:Int = 1){
@@ -235,7 +235,7 @@ object CultivationHelper {
         result.jinJieColor = initJingJie.color
         result.jingJieSuccess = initJingJie.success
         result.jinJieMax = initJingJie.max
-        result.profile = if(fav) 1 else 0
+        result.profile = if(fav) 1001 else 0
         result.isFav = fav
         result.tianfus = tianFus
         result.lifetime = lifetime + (tianFus.find { it.type == 3 }?.bonus ?: 0)
@@ -447,8 +447,8 @@ object CultivationHelper {
     }
 
     fun updatePartner(allPerson:ConcurrentHashMap<String, Person>){
-        val males = allPerson.filter { it.value.gender == NameUtil.Gender.Male && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value }.toMutableList()
-        val females =  Collections.synchronizedList(allPerson.filter { it.value.gender == NameUtil.Gender.Female && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value })
+        val males = allPerson.filter { !it.value.singled && it.value.gender == NameUtil.Gender.Male && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value }.toMutableList()
+        val females =  Collections.synchronizedList(allPerson.filter { !it.value.singled && it.value.gender == NameUtil.Gender.Female && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value })
         if(males.size > 5 && females.size > 5){
             synchronized(females){
                 val man = males[Random().nextInt(males.size)]

@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -49,8 +50,8 @@ class CultivationActivity : BaseActivity() {
     private var mSpeed = 10L//流失速度
     private val mInitPersonCount = 1000//初始化Person数量
     var readRecord = true
-    var maxFemaleProfile = 0 // 1号保留不用
-    var maxMaleProfile = 0 // 默认0号
+    var maxFemaleProfile = 0 // 默认0号 1001开始不随机使用
+    var maxMaleProfile = 0 // 默认0号 1001开始不随机使用
     var mPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var mDeadPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var mAlliance:ConcurrentHashMap<String, Alliance> = ConcurrentHashMap()
@@ -90,10 +91,10 @@ class CultivationActivity : BaseActivity() {
                 val it = p.value
                 it.lingGenName = if (it.lingGenId == "") it.lingGenName else CultivationHelper.getTianName(it.lingGenId)
                 if (it.gender == NameUtil.Gender.Female && it.profile == 0 && maxFemaleProfile > 1) {
-                    it.profile = Random().nextInt(maxFemaleProfile - 1) + 2
+                    it.profile = Random().nextInt(maxFemaleProfile) + 1
                 }
-                if (it.gender == NameUtil.Gender.Male && it.profile == 0 && maxMaleProfile > 2) {
-                    it.profile = Random().nextInt(maxMaleProfile - 2) + 2
+                if (it.gender == NameUtil.Gender.Male && it.profile == 0 && maxMaleProfile > 1) {
+                    it.profile = Random().nextInt(maxMaleProfile) + 1
                 }
                 it.HP = Math.min(it.HP, it.maxHP)
                 it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null && getOfflinePersonDetail(f) == null }.toMutableList()
@@ -191,13 +192,17 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-
+    @SuppressLint("MissingPermission")
+    @TargetApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cultivation)
         ButterKnife.bind(this)
         initLayout()
         loadConfig()
+        if(Build.getSerial().contains("EMULATOR")){ //判断是否是模拟器
+            pinyinMode = true
+        }
         mProgressDialog.show()
         Thread(Runnable {
             Thread.sleep(100)
@@ -443,10 +448,10 @@ class CultivationActivity : BaseActivity() {
             if (next != null) {
                 val commonText = "${personDataString[1]} ${CultivationHelper.getJinJieName(next.name)}，${personDataString[2]} $random/$totalSuccess"
                 val lastJingJieDigt = CultivationHelper.getJingJieLevel(it.jingJieId)
-                if (it.isFav || (lastJingJieDigt.second >= 5 && lastJingJieDigt.third == 4)) {
+                if (it.isFav || (lastJingJieDigt.second >= 6 && lastJingJieDigt.third == 4)) {
                     writeHistory("${getPersonBasicString(it)} $commonText", it)
                 }
-                if (lastJingJieDigt.second >= 5 && lastJingJieDigt.third == 4) {
+                if (lastJingJieDigt.second >= 7 && lastJingJieDigt.third == 4) {
                     addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
                 }
                 it.jingJieId = next.id
@@ -579,14 +584,17 @@ class CultivationActivity : BaseActivity() {
         return person
     }
 
-    private fun combinedPersonRelationship(person: Person){
+    fun combinedPersonRelationship(person: Person, log:Boolean = true){
         mPersons[person.id] = person
         if(mClans[person.ancestorId] != null){
             mClans[person.ancestorId]!!.clanPersonList[person.id] = person
         }
         CultivationHelper.joinAlliance(person, mAlliance)
-        addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} 加入")
-        writeHistory("${getPersonBasicString(person)} 加入", person)
+        if(log){
+            addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} 加入")
+            writeHistory("${getPersonBasicString(person)} 加入", person)
+        }
+
     }
 
 
@@ -622,12 +630,11 @@ class CultivationActivity : BaseActivity() {
                 person.lastBirthDay = mCurrentXun
                 person.lastTotalXun += person.birthDay.last().second -  person.birthDay.last().first
                 person.birthDay.add(Pair(mCurrentXun, 0))
-                mPersons[id] = person
                 mDeadPersons.remove(id)
+                combinedPersonRelationship(person, false)
                 val commonText = " 复活，寿命增加5000"
                 addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} $commonText")
                 writeHistory("${getPersonBasicString(person)} $commonText", person)
-                CultivationHelper.joinAlliance(person, mAlliance)
             }
             val message = Message.obtain()
             message.what = 6
@@ -737,15 +744,14 @@ class CultivationActivity : BaseActivity() {
                 it.isDead = true
             }else{
                 if(random.nextInt(it.attackFrequency) == 0){
-                    val keys = mPersons.keys
-                    val person = mPersons[keys.elementAt(random.nextInt(keys.size))]
-                    if(person != null){
-                        val result = CultivationHelper.battleEnemy(person, it, it.HP * 1000)
-                        if(result){
-                            writeHistory("${it.name} 消失", null, 0)
-                            it.isDead = true
-                            CultivationHelper.gainJiEquipment(person, 14, it.type, mBattleRound.enemy[it.seq])
-                        }
+                    val persons = mPersons.map { it.value }.toMutableList()
+                    persons.shuffle()
+                    val person = persons[0]
+                    val result = CultivationHelper.battleEnemy(person, it, it.HP * 1000)
+                    if(result){
+                        writeHistory("${it.name} 消失", null, 0)
+                        it.isDead = true
+                        CultivationHelper.gainJiEquipment(person, 14, it.type, it.seq)
                     }
                 }
             }
@@ -870,10 +876,7 @@ class CultivationActivity : BaseActivity() {
         SpecPersonFixedName.forEach {
             if(personList.find { p-> p.name == it.first.first + it.first.second } == null){
                 val person = CultivationHelper.getPersonInfo(it.first, it.second, 100, null, false, it.third)
-                mPersons[person.id] = person
-                CultivationHelper.joinAlliance(person, mAlliance)
-                addPersonEvent(person,"${getYearString()} ${getPersonBasicString(person, false)} 加入")
-                writeHistory("${getPersonBasicString(person)} 加入", person)
+                combinedPersonRelationship(person)
             }
         }
 

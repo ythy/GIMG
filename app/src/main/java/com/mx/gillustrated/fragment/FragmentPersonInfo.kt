@@ -1,5 +1,6 @@
 package com.mx.gillustrated.fragment
 
+import android.bluetooth.BluetoothProfile
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +9,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Switch
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
+import butterknife.OnCheckedChanged
 import butterknife.OnClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
@@ -31,8 +34,14 @@ class FragmentPersonInfo  : Fragment(){
     @BindView(R.id.et_name)
     lateinit var etName:EditText
 
+    @BindView(R.id.et_profile)
+    lateinit var etProfile:EditText
+
     @BindView(R.id.btn_assign)
     lateinit var btnAssign:Button
+
+    @BindView(R.id.sch_singled)
+    lateinit var mSwitchSingled:Switch
 
     @OnClick(R.id.btn_assign)
     fun onAssignClickHandler(){
@@ -45,6 +54,16 @@ class FragmentPersonInfo  : Fragment(){
             CultivationHelper.writeHistory("${CultivationHelper.getPersonBasicString(partner)} 与 ${CultivationHelper.getPersonBasicString(mPerson)} 结伴了", null, 0)
             updateView()
         }
+    }
+
+    @OnClick(R.id.btn_profile)
+    fun onProfileClickHandler(){
+        mPerson.profile = etProfile.text.toString().toInt()
+    }
+
+    @OnCheckedChanged(R.id.sch_singled)
+    fun onFavSwitch(checked:Boolean){
+        mPerson.singled = checked
     }
 
     lateinit var mPerson: Person
@@ -65,6 +84,8 @@ class FragmentPersonInfo  : Fragment(){
        // mHome.addView(draw)
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
+        mSwitchSingled.isChecked = mPerson.singled
+        etProfile.setText(mPerson.profile.toString())
         updateView()
     }
 
