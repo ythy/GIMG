@@ -263,6 +263,27 @@ object CultivationHelper {
             ""
     }
 
+    fun generateEnemy():Enemy{
+        val enemy = Enemy()
+        val random = Random()
+        val type = random.nextInt(3)
+        val basis = type + 1
+        mBattleRound.enemy[type]++
+        enemy.id = UUID.randomUUID().toString()
+        enemy.seq = mBattleRound.enemy[enemy.type]
+        enemy.name = "${EnemyNames[type]}${enemy.seq}号"
+        enemy.type = type
+        enemy.birthDay = mCurrentXun
+        enemy.HP = 10 + 10 * random.nextInt(50 * basis)
+        enemy.maxHP = enemy.HP
+        enemy.attack = 100 * basis + 10 * random.nextInt(20 * basis)
+        enemy.defence = 10 + 5 * random.nextInt(10 * basis)
+        enemy.speed = 10 + 5 * random.nextInt(50 * basis)
+        enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
+        enemy.lifetime = 1000L + 1000 * random.nextInt(10) // max 10000
+        return enemy
+    }
+
     fun battleEnemy(person: Person, enemy: Enemy, xiuwei:Int):Boolean{
         val props1 = getProperty(person)
         val props2 = mutableListOf(enemy.HP, enemy.maxHP, enemy.attack, enemy.defence, enemy.speed)
@@ -537,7 +558,7 @@ object CultivationHelper {
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿")
     data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int, var TianFuWeight:Int, var LingGenWeight:Int)
 
-    val EnemyNames = arrayOf("\u8fdc\u53e4", "\u83dc\u83dc")
+    val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u5c71\u6d77")
     val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA")
     private val LevelMapper = mapOf(
             1 to "初期", 2 to "中期", 3 to "后期", 4 to "圆满"

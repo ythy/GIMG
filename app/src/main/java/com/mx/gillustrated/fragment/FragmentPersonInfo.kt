@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Switch
+import android.widget.*
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -43,15 +40,22 @@ class FragmentPersonInfo  : Fragment(){
     @BindView(R.id.sch_singled)
     lateinit var mSwitchSingled:Switch
 
+    @BindView(R.id.sch_dink)
+    lateinit var mSwitchDink:Switch
+
     @OnClick(R.id.btn_assign)
     fun onAssignClickHandler(){
         val partner = mContext.mPersons.map { it.value }.find { it.name == etName.text.toString() || PinyinUtil.convert(it.name) == etName.text.toString() }
         if(partner != null){
             mPerson.partner = partner.id
             mPerson.partnerName = partner.name
-            CultivationHelper.addPersonEvent(partner, "${CultivationHelper.mCurrentXun / 12}年 与${mPerson.name}结伴")
-            CultivationHelper.addPersonEvent(mPerson, "${CultivationHelper.mCurrentXun / 12}年 与${partner.name}结伴")
-            CultivationHelper.writeHistory("${CultivationHelper.getPersonBasicString(partner)} 与 ${CultivationHelper.getPersonBasicString(mPerson)} 结伴了", null, 0)
+            if(partner.partner == null){
+                partner.partner = mPerson.id
+                partner.partnerName = mPerson.name
+            }
+            CultivationHelper.addPersonEvent(partner, "${CultivationHelper.mCurrentXun / 12}年 与${mPerson.name}\u7ed3\u4f34")
+            CultivationHelper.addPersonEvent(mPerson, "${CultivationHelper.mCurrentXun / 12}年 与${partner.name}\u7ed3\u4f34")
+            CultivationHelper.writeHistory("${CultivationHelper.getPersonBasicString(partner)} 与 ${CultivationHelper.getPersonBasicString(mPerson)} \u7ed3\u4f34了", null, 0)
             updateView()
         }
     }
@@ -59,11 +63,17 @@ class FragmentPersonInfo  : Fragment(){
     @OnClick(R.id.btn_profile)
     fun onProfileClickHandler(){
         mPerson.profile = etProfile.text.toString().toInt()
+        Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show()
     }
 
     @OnCheckedChanged(R.id.sch_singled)
     fun onFavSwitch(checked:Boolean){
         mPerson.singled = checked
+    }
+
+    @OnCheckedChanged(R.id.sch_dink)
+    fun onDinkSwitch(checked:Boolean){
+        mPerson.dink = checked
     }
 
     lateinit var mPerson: Person
@@ -85,6 +95,7 @@ class FragmentPersonInfo  : Fragment(){
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
         mSwitchSingled.isChecked = mPerson.singled
+        mSwitchDink.isChecked = mPerson.dink
         etProfile.setText(mPerson.profile.toString())
         updateView()
     }

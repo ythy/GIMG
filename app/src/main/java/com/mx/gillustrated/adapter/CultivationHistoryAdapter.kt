@@ -53,20 +53,27 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
         val person = list[arg0].person
         val matchResult1 = "(${EnemyNames[0]}|${PinyinUtil.convert(EnemyNames[0])})[0-9]+(hao|号)".toRegex().find(history)
         val matchResult2 = "(${EnemyNames[1]}|${PinyinUtil.convert(EnemyNames[1])})[0-9]+(hao|号)".toRegex().find(history)
+        val matchResult3 = "(${EnemyNames[2]}|${PinyinUtil.convert(EnemyNames[2])})[0-9]+(hao|号)".toRegex().find(history)
         when {
             matchResult1 != null -> {
                 val spannable = SpannableString(history)
-                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[2])), matchResult1.range.start, matchResult1.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[1])), matchResult1.range.start, matchResult1.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
             }
             matchResult2 != null -> {
                 val spannable = SpannableString(history)
-                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[1])), matchResult2.range.start, matchResult2.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[2])), matchResult2.range.start, matchResult2.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
             }
+            matchResult3 != null -> {
+                val spannable = SpannableString(history)
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[3])), matchResult3.range.start, matchResult3.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
+            }
+
             person != null && person.jinJieName.indexOf("-") == -1 ->{
                 var lingGen = person.lingGenName
-                if(person.lingGenType.id == "1000006" || person.lingGenType.id == "1000007"){
+                if(person.lingGenType.type > 0){
                     lingGen = CultivationHelper.getTianName(person.lingGenId)
                 }
                 val lingGenColor = CommonColors[person.lingGenType.color]

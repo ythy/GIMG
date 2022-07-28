@@ -692,7 +692,7 @@ class CultivationActivity : BaseActivity() {
 
     // Every 10 Years
     private fun updatePartnerChildren(){
-        val females = mPersons.filter { it.value.gender == NameUtil.Gender.Female }.map { it.value }.toMutableList()
+        val females = mPersons.filter { !it.value.dink && it.value.gender == NameUtil.Gender.Female }.map { it.value }.toMutableList()
         for(i in 0 until females.size) {
             val it = females[i]
             if(it.partner != null){
@@ -805,39 +805,9 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun eventEnemyHandler(){
-        val enemy = Enemy()
-        val random = Random()
-        if(random.nextInt(2) == 0){
-            enemy.id = UUID.randomUUID().toString()
-            enemy.name = "${CultivationHelper.EnemyNames[0]}${random.nextInt(10001)}号"
-            enemy.type = 1
-            enemy.birthDay = mCurrentXun
-            enemy.HP = 10 + 10 * random.nextInt(100)// max 1000
-            enemy.maxHP = enemy.HP
-            enemy.attack = 110 + 10 * random.nextInt(50) // max 600
-            enemy.defence = 10 + 10 * random.nextInt(10) // max 100
-            enemy.speed = 500 / enemy.defence
-            enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
-            enemy.lifetime = 1000L + 1000 * random.nextInt(10) // max 10000
-            mEnemys[enemy.id] = enemy
-            writeHistory("${enemy.name}天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
-        }else{
-            enemy.id = UUID.randomUUID().toString()
-            enemy.name = "${CultivationHelper.EnemyNames[1]}${random.nextInt(10001)}号"
-            enemy.type = 0
-            enemy.birthDay = mCurrentXun
-            enemy.HP = 10 + 10 * random.nextInt(50)// max 500
-            enemy.maxHP = enemy.HP
-            enemy.attack = 10 + 10 * random.nextInt(20) // max 200
-            enemy.defence = 10 + 5 * random.nextInt(5) // max 30
-            enemy.speed = 300 / enemy.defence
-            enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
-            enemy.lifetime = 1000L + 1000 * random.nextInt(10) // max 10000
-            mEnemys[enemy.id] = enemy
-            writeHistory("${enemy.name}天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
-        }
-        mBattleRound.enemy[enemy.type]++
-        enemy.seq = mBattleRound.enemy[enemy.type]
+        val enemy = CultivationHelper.generateEnemy()
+        mEnemys[enemy.id] = enemy
+        writeHistory("${enemy.name}天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
     }
 
     private fun addFixedcPerson(){
