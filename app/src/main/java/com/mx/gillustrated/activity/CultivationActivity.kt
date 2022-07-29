@@ -805,15 +805,21 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun eventEnemyHandler(){
-        val enemy = CultivationHelper.generateEnemy()
+        val type = Random().nextInt(4)
+        mBattleRound.enemy[type]++
+        val enemy = CultivationHelper.generateEnemy(type)
         mEnemys[enemy.id] = enemy
+        writeHistory("====================================", null, 0)
+        writeHistory("====================================", null, 0)
         writeHistory("${enemy.name}天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
+        writeHistory("====================================", null, 0)
+        writeHistory("====================================", null, 0)
     }
 
     private fun addFixedcPerson(){
         val ft = supportFragmentManager.beginTransaction()
         val newFragment = FragmentDialogAddPerson.newInstance()
-        newFragment.isCancelable = false
+        newFragment.isCancelable = true
         newFragment.show(ft, "dialog_add_fixed_person")
     }
 
@@ -1129,6 +1135,7 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
+    //暂时不用
     private fun disasterHandler(randomSize:Int = 0){
         val effectPersons = if(randomSize == 0)
             mPersons
@@ -1149,9 +1156,9 @@ class CultivationActivity : BaseActivity() {
             else -> "小"
         }
         if(randomSize == 0){
-            writeHistory( "${description}😡火 所有伙伴寿命降低$level", null, 0 )
+            writeHistory( "${description}\ud83d\ude21\u706b\u0020\u6240\u6709\u4f19\u4f34\u5bff\u547d\u964d\u4f4e$level", null, 0 )
         }
-        val text = "${description}😡火 寿命降低$level"
+        val text = "${description}\ud83d\ude21\u706b\u0020\u5bff\u547d\u964d\u4f4e$level"
         effectPersons.forEach {
             it.value.lifetime -= level
             if(randomSize > 0){
@@ -1171,12 +1178,6 @@ class CultivationActivity : BaseActivity() {
         when (item.itemId) {
             R.id.menu_reset -> {
                 resetHandler()
-            }
-            R.id.menu_disaster -> {
-                disasterHandler(10)
-            }
-            R.id.menu_disaster_all -> {
-                disasterHandler()
             }
             R.id.menu_battle_bang ->{
                battleBangHandler()

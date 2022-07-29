@@ -256,6 +256,24 @@ object CultivationHelper {
         return result
     }
 
+    fun updatePersonInborn(person: Person, lingGenWeight: Int = 1, tianFuWeight: Int = 1){
+        val lingGen = getLingGen(null, null, lingGenWeight)
+        val tianFus = getTianFu(null, null, tianFuWeight)
+        person.lingGenType = lingGen.first
+        person.lingGenName = lingGen.third
+        person.lingGenId = lingGen.second
+        if(lingGen.second != ""){
+            person.extraProperty = mConfig.lingGenTian.find { it.id == lingGen.second }?.property!!
+        }
+        person.tianfus = tianFus
+        person.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
+        person.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
+        person.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
+        person.extraXuiweiMulti =  getExtraXuiweiMulti(person)
+    }
+
+
+
     fun getPersonBasicString(person:Person, detail:Boolean = true):String{
         return if(detail)
             "${person.name} (${person.age}/${person.lifetime}:${person.jinJieName}) ${person.lingGenName} "
@@ -263,14 +281,12 @@ object CultivationHelper {
             ""
     }
 
-    fun generateEnemy():Enemy{
-        val enemy = Enemy()
-        val random = Random()
-        val type = random.nextInt(3)
+    fun generateEnemy(type:Int):Enemy{
         val basis = type + 1
-        mBattleRound.enemy[type]++
+        val random = Random()
+        val enemy = Enemy()
         enemy.id = UUID.randomUUID().toString()
-        enemy.seq = mBattleRound.enemy[enemy.type]
+        enemy.seq = mBattleRound.enemy[type]
         enemy.name = "${EnemyNames[type]}${enemy.seq}号"
         enemy.type = type
         enemy.birthDay = mCurrentXun
@@ -280,7 +296,7 @@ object CultivationHelper {
         enemy.defence = 10 + 5 * random.nextInt(10 * basis)
         enemy.speed = 10 + 5 * random.nextInt(50 * basis)
         enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
-        enemy.lifetime = 1000L + 1000 * random.nextInt(10) // max 10000
+        enemy.lifetime = 1000L + 1000 * random.nextInt(10 / basis) // max 10000
         return enemy
     }
 
@@ -324,7 +340,7 @@ object CultivationHelper {
             writeHistory("${person.name}($hp1) 🔪 ${enemy.name}($hp2)", person)
             person.xiuXei += xiuwei
         }else{
-            writeHistory("${enemy.name}($hp2/${(enemy.lifetime + enemy.birthDay - mCurrentXun)/12}) 🔪 ${person.name}($hp1)", person)
+            writeHistory("${enemy.name}($hp2/${(enemy.lifetime + enemy.birthDay - mCurrentXun)/12}-${enemy.attack}:${enemy.defence}:${enemy.speed}) 🔪 ${person.name}($hp1)", person)
             person.xiuXei -= xiuwei
         }
         person.HP += hp1 - props1[0]
@@ -558,7 +574,7 @@ object CultivationHelper {
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿")
     data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int, var TianFuWeight:Int, var LingGenWeight:Int)
 
-    val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u5c71\u6d77")
+    val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u5c71\u6d77", "\u541e\u566c")
     val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA")
     private val LevelMapper = mapOf(
             1 to "初期", 2 to "中期", 3 to "后期", 4 to "圆满"

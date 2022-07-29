@@ -4,14 +4,14 @@
         android:id="@+id/menu_reset"
         android:orderInCategory="100"
         android:title="reset"/>
-    <item
-        android:id="@+id/menu_disaster"
-        android:orderInCategory="200"
-        android:title="disaster"/>
-    <item
-        android:id="@+id/menu_disaster_all"
-        android:orderInCategory="210"
-        android:title="disasterAll"/>
+    <!--<item-->
+        <!--android:id="@+id/menu_disaster"-->
+        <!--android:orderInCategory="200"-->
+        <!--android:title="disaster"/>-->
+    <!--<item-->
+        <!--android:id="@+id/menu_disaster_all"-->
+        <!--android:orderInCategory="210"-->
+        <!--android:title="disasterAll"/>-->
     <item
         android:id="@+id/menu_battle_bang"
         android:orderInCategory="300"
@@ -29,11 +29,15 @@
         android:orderInCategory="400"
         android:title="enemy"/>
     <item
+        android:id="@+id/menu_enemy_list"
+        android:orderInCategory="400"
+        android:title="enemyList"/>
+    <item
         android:id="@+id/menu_add_spec"
         android:orderInCategory="500"
-        android:title="specPerson"/>
+        android:title="autoPersons"/>
     <item
         android:id="@+id/menu_add_fixed"
         android:orderInCategory="600"
-        android:title="fixedPerson"/>
+        android:title="customPerson"/>
 </menu>

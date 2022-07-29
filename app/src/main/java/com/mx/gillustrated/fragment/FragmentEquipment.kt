@@ -97,11 +97,9 @@ class FragmentEquipment: Fragment() {
         mListView.adapter = CultivationEquipmentAdapter(this.context!!, mEquipments, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
             override fun onDeleteHandler(equipment: Equipment) {
                 mPerson.equipment.removeIf {
-                    val equipmentArray = it.split(",")
-                    if(equipment.type > 10)
-                        "${equipment.name}-${equipmentArray[1]}" == equipment.uniqueName
-                    else
-                        equipmentArray[0] == equipment.id
+                    val idInLoop = it.split(",")[0]
+                    val roundInLoop = it.split(",")[1].toInt()
+                    idInLoop == equipment.id && roundInLoop == equipment.seq
                 }
                 CultivationHelper.updatePersonEquipment(mPerson)
                 updateList()
@@ -116,7 +114,8 @@ class FragmentEquipment: Fragment() {
             val result = Equipment()
             result.id = equipment.id
             result.name = equipment.name
-            result.uniqueName = if(equipment.type > 10) "${equipment.name}-${it.split(",")[1]}" else equipment.name
+            result.seq = it.split(",")[1].toInt()
+            result.uniqueName = if(result.seq > 0) "${equipment.name}-${result.seq}" else equipment.name
             result.type = equipment.type
             result.rarity = equipment.rarity
             result.xiuwei = equipment.xiuwei

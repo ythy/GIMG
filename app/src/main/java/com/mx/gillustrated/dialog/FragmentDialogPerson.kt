@@ -15,6 +15,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import butterknife.*
+import com.j256.ormlite.stmt.query.In
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.PersonPagerAdapter
@@ -199,6 +200,20 @@ class FragmentDialogPerson : DialogFragment() {
         }).start()
     }
 
+    val innerCallback = object:IViewpageCallback{
+        override fun update(type: Int) {
+           when (type){
+               1 -> {
+                   setTianfu()
+                   updateView()
+               }
+               2 -> setProfile()
+               3 -> updateView()
+           }
+        }
+
+    }
+
     private fun setViewPager(){
         val bundle = Bundle()
         bundle.putString("id", mPerson.id)
@@ -206,7 +221,7 @@ class FragmentDialogPerson : DialogFragment() {
         equip.arguments = bundle
         val his = FragmentPersonEvent()
         his.arguments = bundle
-        val info = FragmentPersonInfo()
+        val info = FragmentPersonInfo(innerCallback)
         info.arguments = bundle
         mFragments.clear()
         mFragments.add(equip)
@@ -223,7 +238,7 @@ class FragmentDialogPerson : DialogFragment() {
         }
     }
 
-    private fun setProfile(){
+    fun setProfile(){
         val person = mPerson
         try {
             val imageDir = File(Environment.getExternalStorageDirectory(),
@@ -243,7 +258,8 @@ class FragmentDialogPerson : DialogFragment() {
         }
     }
 
-    private fun setTianfu(){
+    fun setTianfu(){
+        mDialogView.tianfu.removeAllViews()
         val tianFus = mPerson.tianfus
         if(tianFus.isNotEmpty()){
             tianFus.forEach {
@@ -271,7 +287,7 @@ class FragmentDialogPerson : DialogFragment() {
         }
     }
 
-    private fun updateView(){
+    fun updateView(){
         if(mContext.getOnlinePersonDetail(mPerson.id) == null){
             mThreadRunnable = false
             mBtnRevive.text = "Revive"
@@ -412,5 +428,9 @@ class FragmentDialogPerson : DialogFragment() {
         init {
             ButterKnife.bind(this, view)
         }
+    }
+
+    interface IViewpageCallback{
+        fun update(type:Int)
     }
 }

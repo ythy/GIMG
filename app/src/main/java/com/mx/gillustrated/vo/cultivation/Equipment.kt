@@ -8,6 +8,7 @@ class Equipment() :Parcelable {
     lateinit var id:String
     lateinit var name:String
     var uniqueName:String = ""
+    var seq:Int = 0
     var type:Int = 0 // 0 Bao; 1 Wu; 2 Jia, >10 huizhang
     var rarity:Int = 0//5 30, 6 40，7 50，8 ~
     var xiuwei:Int = 0
@@ -19,6 +20,7 @@ class Equipment() :Parcelable {
         id = parcel.readString()!!
         name = parcel.readString()!!
         uniqueName = parcel.readString()!!
+        seq = parcel.readInt()
         type = parcel.readInt()
         rarity = parcel.readInt()
         xiuwei = parcel.readInt()
@@ -31,6 +33,7 @@ class Equipment() :Parcelable {
         parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeString(uniqueName)
+        parcel.writeInt(seq)
         parcel.writeInt(type)
         parcel.writeInt(rarity)
         parcel.writeInt(xiuwei)

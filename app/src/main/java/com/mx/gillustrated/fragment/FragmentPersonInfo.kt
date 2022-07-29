@@ -1,7 +1,5 @@
 package com.mx.gillustrated.fragment
 
-import android.bluetooth.BluetoothProfile
-import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,13 +13,12 @@ import butterknife.OnClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.component.CultivationHome
+import com.mx.gillustrated.dialog.FragmentDialogPerson
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
-import java.util.*
 
-class FragmentPersonInfo  : Fragment(){
+class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCallback)  : Fragment(){
 
     lateinit var mContext: CultivationActivity
 
@@ -34,8 +31,17 @@ class FragmentPersonInfo  : Fragment(){
     @BindView(R.id.et_profile)
     lateinit var etProfile:EditText
 
+    @BindView(R.id.et_linggen)
+    lateinit var etLingGen:EditText
+
+    @BindView(R.id.et_tianfu)
+    lateinit var etTianFu:EditText
+
     @BindView(R.id.btn_assign)
     lateinit var btnAssign:Button
+
+    @BindView(R.id.btn_be)
+    lateinit var btnBe:Button
 
     @BindView(R.id.sch_singled)
     lateinit var mSwitchSingled:Switch
@@ -63,7 +69,28 @@ class FragmentPersonInfo  : Fragment(){
     @OnClick(R.id.btn_profile)
     fun onProfileClickHandler(){
         mPerson.profile = etProfile.text.toString().toInt()
+        mCallback.update(2)
         Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show()
+    }
+
+    @OnClick(R.id.btn_props)
+    fun onPropsClickHandler(){
+        CultivationHelper.updatePersonInborn(mPerson, etLingGen.text.toString().toInt(), etTianFu.text.toString().toInt())
+        mCallback.update(1)
+        Toast.makeText(context, "重置成功", Toast.LENGTH_SHORT).show()
+    }
+
+    @OnClick(R.id.btn_be)
+    fun onBeClickHandler(){
+        val partner = mContext.getOnlinePersonDetail(mPerson.partner) ?: mContext.getOfflinePersonDetail(mPerson.partner)
+        mPerson.partner = null
+        mPerson.partnerName = null
+        if(partner?.partner == mPerson.id){
+            partner.partner = null
+            partner.partnerName = null
+        }
+        updateView()
+        Toast.makeText(context, "BE成功", Toast.LENGTH_SHORT).show()
     }
 
     @OnCheckedChanged(R.id.sch_singled)
@@ -109,5 +136,12 @@ class FragmentPersonInfo  : Fragment(){
             etName.isEnabled = false
         }
         etName.setText(CultivationHelper.showing(mPerson.partnerName ?: ""))
+
+        if (mPerson.partner == null){
+            btnBe.visibility = View.GONE
+        }else{
+            btnBe.visibility = View.VISIBLE
+        }
+
     }
 }
