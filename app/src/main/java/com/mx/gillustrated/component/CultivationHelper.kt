@@ -12,6 +12,8 @@ object CultivationHelper {
 
     lateinit var mConfig:Config
     lateinit var mBattleRound:BattleRound
+    var maxFemaleProfile = 0 // 默认0号 1001开始不随机使用
+    var maxMaleProfile = 0 // 默认0号 1001开始不随机使用
     var pinyinMode:Boolean = false //是否pinyin模式
     var mCurrentXun:Long = 0//当前时间
     var mHistoryTempData:MutableList<HistoryInfo> = Collections.synchronizedList(mutableListOf())
@@ -237,7 +239,7 @@ object CultivationHelper {
         result.jinJieColor = initJingJie.color
         result.jingJieSuccess = initJingJie.success
         result.jinJieMax = initJingJie.max
-        result.profile = if(fav) 1001 else 0
+        result.profile = if(fav) 1001 else getRandomProfile(result.gender)
         result.isFav = fav
         result.tianfus = tianFus
         result.lifetime = lifetime + (tianFus.find { it.type == 3 }?.bonus ?: 0)
@@ -256,6 +258,16 @@ object CultivationHelper {
         }
 
         return result
+    }
+
+    fun getRandomProfile(gender: NameUtil.Gender, profile:Int = 0):Int{
+        if (gender == NameUtil.Gender.Female && profile == 0 && maxFemaleProfile > 1) {
+            return Random().nextInt(maxFemaleProfile - 1) + 1
+        }
+        else if (gender == NameUtil.Gender.Male && profile == 0 && maxMaleProfile > 1) {
+            return Random().nextInt(maxMaleProfile - 1) + 1
+        }
+        return profile
     }
 
     fun updatePersonInborn(person: Person, lingGenWeight: Int = 1, tianFuWeight: Int = 1){
@@ -410,10 +422,10 @@ object CultivationHelper {
         val zhuan = person.lifeTurn
         val jingJieLevel = getJingJieLevel(person.jingJieId)
 
-        val extraHP = 5 * lingGenLevel + jingJieLevel.first + 4 * jingJieLevel.second + property[0]
-        val attack =  0 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[1]
-        val defence =  0 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[2]
-        val speed =  5 * ( lingGenLevel + 1) + property[3]
+        val extraHP = 5 * lingGenLevel + jingJieLevel.first + 5 * jingJieLevel.second + property[0]
+        val attack =  0 * zhuan + 2 * lingGenLevel + 5 * jingJieLevel.second +  property[1] // yuan 2, hua 4, he 4,di 5, tai 6, zhun 7, di 8
+        val defence =  0 * zhuan + 2 * lingGenLevel + 5 * jingJieLevel.second +  property[2]
+        val speed =  5 * ( lingGenLevel + 1) + property[3] // 5 ~ 45
 
         val multipleSpeed = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.1f)
         val multiplePrimary = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.5f)

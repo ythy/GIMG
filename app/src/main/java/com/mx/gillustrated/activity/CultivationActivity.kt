@@ -29,6 +29,9 @@ import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonInfo
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
+import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
+import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
+import com.mx.gillustrated.component.CultivationHelper.showing
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.util.CultivationBakUtil
 import com.mx.gillustrated.util.JsonFileReader
@@ -50,8 +53,7 @@ class CultivationActivity : BaseActivity() {
     private var mSpeed = 10L//流失速度
     private val mInitPersonCount = 1000//初始化Person数量
     var readRecord = true
-    var maxFemaleProfile = 0 // 默认0号 1001开始不随机使用
-    var maxMaleProfile = 0 // 默认0号 1001开始不随机使用
+
     var mPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var mDeadPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var mAlliance:ConcurrentHashMap<String, Alliance> = ConcurrentHashMap()
@@ -90,12 +92,7 @@ class CultivationActivity : BaseActivity() {
             mPersons.forEach { p->
                 val it = p.value
                 it.lingGenName = if (it.lingGenId == "") it.lingGenName else CultivationHelper.getTianName(it.lingGenId)
-                if (it.gender == NameUtil.Gender.Female && it.profile == 0 && maxFemaleProfile > 1) {
-                    it.profile = Random().nextInt(maxFemaleProfile) + 1
-                }
-                if (it.gender == NameUtil.Gender.Male && it.profile == 0 && maxMaleProfile > 1) {
-                    it.profile = Random().nextInt(maxMaleProfile) + 1
-                }
+                it.profile = CultivationHelper.getRandomProfile(it.gender, it.profile)
                 it.HP = Math.min(it.HP, it.maxHP)
                 it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null && getOfflinePersonDetail(f) == null }.toMutableList()
             }
@@ -364,11 +361,11 @@ class CultivationActivity : BaseActivity() {
     fun setTimeLooper(flag:Boolean){
         if(flag){
             mBtnTime.tag = "ON"
-            mBtnTime.text = "Stop"
+            mBtnTime.text = resources.getString(R.string.cultivation_stop)
             mThreadRunnable = true
         }else{
             mBtnTime.tag = "OFF"
-            mBtnTime.text = "Run"
+            mBtnTime.text = resources.getString(R.string.cultivation_start)
             mThreadRunnable = false
         }
     }
@@ -546,8 +543,8 @@ class CultivationActivity : BaseActivity() {
         mHistory.invalidateViews()
     }
 
-    fun getYearString(xun:Long = mCurrentXun):String{
-       return "${xun / 12}年"
+    private fun getYearString(xun:Long = mCurrentXun):String{
+       return "${xun / 12}${showing("年")}"
     }
 
     private fun addMultiPerson(count:Int){
@@ -898,12 +895,13 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleSingleHandler(){
-        val random = Random()
-        val persons = mPersons.filter { random.nextInt(2) == 0 && CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
-        if(persons.isEmpty() || persons.size < 10){
-            Toast.makeText(this, "persons less than 10", Toast.LENGTH_SHORT).show()
+        val personsAll = mPersons.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
+        personsAll.shuffle()
+        if(personsAll.size < 20){
+            Toast.makeText(this, "persons less than 20", Toast.LENGTH_SHORT).show()
             return
         }
+        val persons = personsAll.subList(0, personsAll.size/2)
         setTimeLooper(false)
         mHistoryData.clear()
         CultivationHelper.mHistoryTempData.clear()
@@ -1158,9 +1156,9 @@ class CultivationActivity : BaseActivity() {
             else -> "小"
         }
         if(randomSize == 0){
-            writeHistory( "${description}\ud83d\ude21\u706b\u0020\u6240\u6709\u4f19\u4f34\u5bff\u547d\u964d\u4f4e$level", null, 0 )
+            writeHistory( "$description\ud83d\ude21\u706b\u0020\u6240\u6709\u4f19\u4f34\u5bff\u547d\u964d\u4f4e$level", null, 0 )
         }
-        val text = "${description}\ud83d\ude21\u706b\u0020\u5bff\u547d\u964d\u4f4e$level"
+        val text = "$description\ud83d\ude21\u706b\u0020\u5bff\u547d\u964d\u4f4e$level"
         effectPersons.forEach {
             it.value.lifetime -= level
             if(randomSize > 0){
@@ -1171,7 +1169,10 @@ class CultivationActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_cultivation, menu)
+        if(pinyinMode)
+            menuInflater.inflate(R.menu.menu_cultivation, menu)
+        else
+            menuInflater.inflate(R.menu.menu_cultivation_cn, menu)
         return true
     }
 
@@ -1226,8 +1227,8 @@ class CultivationActivity : BaseActivity() {
                     activity.mProgressDialog.dismiss()
                     if(msg.obj != null){
                         Toast.makeText(activity, "读取完成", Toast.LENGTH_SHORT).show()
-                        activity.maxFemaleProfile = msg.arg1
-                        activity.maxMaleProfile = msg.arg2
+                        maxFemaleProfile = msg.arg1
+                        maxMaleProfile = msg.arg2
                         activity.init(msg.obj.toString())
                     }else{
                         activity.init(null)

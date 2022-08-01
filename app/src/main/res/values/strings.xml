@@ -51,4 +51,13 @@
     <string name="menu_web_view">H5</string>
     <string name="menu_game">Xian</string>
     <string name="menu_theme">主题</string>
+
+    <string name="cultivation_menu">菜单</string>
+    <string name="cultivation_multi">1000人</string>
+    <string name="cultivation_list">人物</string>
+    <string name="cultivation_clan">家族</string>
+    <string name="cultivation_bang">帮派</string>
+    <string name="cultivation_save">保存</string>
+    <string name="cultivation_stop">暂停</string>
+    <string name="cultivation_start">开始</string>
 </resources>

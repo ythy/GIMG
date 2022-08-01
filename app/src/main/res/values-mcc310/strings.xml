@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">GIllustrator</string>
+    <string name="cultivation_menu">MENU</string>
+    <string name="cultivation_multi">Multi</string>
+    <string name="cultivation_list">List</string>
+    <string name="cultivation_clan">Clan</string>
+    <string name="cultivation_bang">Bang</string>
+    <string name="cultivation_save">Save</string>
+    <string name="cultivation_stop">Stop</string>
+    <string name="cultivation_start">Run</string>
+</resources>

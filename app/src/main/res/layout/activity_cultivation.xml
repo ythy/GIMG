@@ -56,45 +56,45 @@
             android:layout_height="40dp"
             android:id="@+id/btn_menu"
             style="@style/ButtonSmall"
-            android:text="MENU"/>
+            android:text="@string/cultivation_menu"/>
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:id="@+id/btn_multi"
             style="@style/ButtonSmall"
-            android:text="multi"
+            android:text="@string/cultivation_multi"
             tools:targetApi="lollipop" />
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:id="@+id/btn_list"
             style="@style/ButtonSmall"
-            android:text="List"/>
+            android:text="@string/cultivation_list"/>
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:id="@+id/btn_clan"
             style="@style/ButtonSmall"
-            android:text="Clan"/>
+            android:text="@string/cultivation_clan"/>
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:id="@+id/btn_alliance"
             style="@style/ButtonSmall"
-            android:text="Bang"/>
+            android:text="@string/cultivation_bang"/>
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:id="@+id/btn_time"
             style="@style/ButtonSmall"
             android:tag="ON"
-            android:text="Stop"/>
+            android:text="@string/cultivation_stop"/>
         <Button
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:id="@+id/btn_save"
             style="@style/ButtonSmall"
-            android:text="Save"/>
+            android:text="@string/cultivation_save"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

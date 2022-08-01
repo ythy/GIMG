@@ -48,7 +48,7 @@ class CultivationPersonListAdapter constructor(context: Context, private val lis
         }
         val person = list[arg0]
         val lifeTurn = if(person.lifeTurn == 0) "" else ".${person.lifeTurn}"
-        component.name.text = "${CultivationHelper.showing(person.name)}$lifeTurn(${person.gender})"
+        component.name.text = "${CultivationHelper.showing(person.name)}$lifeTurn(${CultivationHelper.showing(person.gender.props)})"
         component.age.text = "${person.lifetime-person.age}"
         component.jingjie.text = CultivationHelper.showing(person.jinJieName)
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))
