@@ -55,6 +55,7 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
         val matchResult2 = "(${EnemyNames[1]}|${PinyinUtil.convert(EnemyNames[1])})[0-9]+(hao|号)".toRegex().find(history)
         val matchResult3 = "(${EnemyNames[2]}|${PinyinUtil.convert(EnemyNames[2])})[0-9]+(hao|号)".toRegex().find(history)
         val matchResult4 = "(${EnemyNames[3]}|${PinyinUtil.convert(EnemyNames[3])})[0-9]+(hao|号)".toRegex().find(history)
+        val matchResult5 = "(${EnemyNames[4]}|${PinyinUtil.convert(EnemyNames[4])})[0-9]+(hao|号)".toRegex().find(history)
         when {
             matchResult1 != null -> {
                 val spannable = SpannableString(history)
@@ -74,6 +75,11 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
             matchResult4 != null -> {
                 val spannable = SpannableString(history)
                 spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[4])), matchResult4.range.start, matchResult4.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
+            }
+            matchResult5 != null -> {
+                val spannable = SpannableString(history)
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[5])), matchResult5.range.start, matchResult5.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
             }
 

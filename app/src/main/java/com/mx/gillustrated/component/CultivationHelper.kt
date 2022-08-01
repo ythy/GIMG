@@ -166,11 +166,13 @@ object CultivationHelper {
                 parent.first.lingGenType.type == 1 -> firestNumber = 50
                 parent.first.lingGenType.type == 2 -> firestNumber = 5
                 parent.first.lingGenType.type == 3 -> firestNumber = 2
+                parent.first.lingGenType.type == 4 -> firestNumber = 1
             }
             when {
                 parent.second.lingGenType.type == 1 -> secondNumber = 50
                 parent.second.lingGenType.type == 2 -> secondNumber = 5
                 parent.second.lingGenType.type == 3 -> secondNumber = 2
+                parent.second.lingGenType.type == 4 -> secondNumber = 1
             }
         }
         val selectNumber = Random().nextInt(200 + firestNumber + secondNumber)
@@ -293,10 +295,11 @@ object CultivationHelper {
         enemy.HP = 10 + 10 * random.nextInt(50 * basis)
         enemy.maxHP = enemy.HP
         enemy.attack = 100 * basis + 10 * random.nextInt(20 * basis)
-        enemy.defence = 10 + 5 * random.nextInt(10 * basis)
-        enemy.speed = 10 + 5 * random.nextInt(50 * basis)
+        enemy.defence = 10 + 1 * random.nextInt(20 * basis)
+        enemy.speed = 10 + 1 * random.nextInt(40 * basis)
         enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
-        enemy.lifetime = 1000L + 1000 * random.nextInt(10 / basis) // max 10000
+        enemy.maxHit = 50 + random.nextInt(51)
+        enemy.remainHit = enemy.maxHit
         return enemy
     }
 
@@ -306,7 +309,7 @@ object CultivationHelper {
         var hp1 = props1[0]
         var hp2  = props2[0]
         val random = Random()
-        val randomSpeed = 50
+        val randomSpeed = 200
         while (true){
             val first = props1[4] + random.nextInt(randomSpeed) > props2[4] + random.nextInt(randomSpeed)
             if(first){
@@ -340,7 +343,7 @@ object CultivationHelper {
             writeHistory("${person.name}($hp1) 🔪 ${enemy.name}($hp2)", person)
             person.xiuXei += xiuwei
         }else{
-            writeHistory("${enemy.name}($hp2/${(enemy.lifetime + enemy.birthDay - mCurrentXun)/12}-${enemy.attack}:${enemy.defence}:${enemy.speed}) 🔪 ${person.name}($hp1)", person)
+            writeHistory("${enemy.name}($hp2/${enemy.remainHit}-${enemy.attack}:${enemy.defence}:${enemy.speed}) 🔪 ${person.name}($hp1)", person)
             person.xiuXei -= xiuwei
         }
         person.HP += hp1 - props1[0]
@@ -398,21 +401,24 @@ object CultivationHelper {
         return firstWin
     }
 
+    //定义功率
     fun getProperty(person: Person):MutableList<Int>{
         val property = person.extraProperty.mapIndexed { index, it ->
             it + person.allianceProperty[index] + person.equipmentProperty[index]
         }
-        val lingGenLevel = person.lingGenType.color // 0 until 6
+        val lingGenLevel = person.lingGenType.color // 0 until 8
         val zhuan = person.lifeTurn
         val jingJieLevel = getJingJieLevel(person.jingJieId)
 
         val extraHP = 5 * lingGenLevel + jingJieLevel.first + 4 * jingJieLevel.second + property[0]
         val attack =  0 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[1]
         val defence =  0 * zhuan + 2 * lingGenLevel + 2 * jingJieLevel.second +  property[2]
-        val speed =  2 * lingGenLevel + property[3]
+        val speed =  5 * ( lingGenLevel + 1) + property[3]
 
+        val multipleSpeed = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.1f)
+        val multiplePrimary = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.5f)
         return mutableListOf(person.HP + extraHP, person.maxHP + extraHP,
-                attack, defence, speed)
+                Math.round(attack * multiplePrimary), Math.round(defence * multiplePrimary), Math.round(speed * multipleSpeed))
     }
 
     //type 11,12,13,14 -> B,C,S,E
@@ -574,7 +580,7 @@ object CultivationHelper {
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿")
     data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int, var TianFuWeight:Int, var LingGenWeight:Int)
 
-    val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u5c71\u6d77", "\u541e\u566c")
+    val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u5c71\u6d77", "\u541e\u566c", "\u673a\u7532")
     val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA")
     private val LevelMapper = mapOf(
             1 to "初期", 2 to "中期", 3 to "后期", 4 to "圆满"

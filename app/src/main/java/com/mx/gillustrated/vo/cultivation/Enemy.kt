@@ -14,7 +14,8 @@ class Enemy() :Parcelable {
     var speed:Int = 0
     var attackFrequency:Int = 12 //xun
     var birthDay:Long = 0 //xun
-    var lifetime:Long = 0 //xun
+    var maxHit:Int = 0
+    var remainHit:Int = 0
     var isDead:Boolean = false
     var seq:Int = 0
 
@@ -29,7 +30,8 @@ class Enemy() :Parcelable {
         speed = parcel.readInt()
         attackFrequency = parcel.readInt()
         birthDay = parcel.readLong()
-        lifetime = parcel.readLong()
+        maxHit = parcel.readInt()
+        remainHit = parcel.readInt()
         isDead = parcel.readByte() != 0.toByte()
         seq = parcel.readInt()
     }
@@ -45,7 +47,8 @@ class Enemy() :Parcelable {
         parcel.writeInt(speed)
         parcel.writeInt(attackFrequency)
         parcel.writeLong(birthDay)
-        parcel.writeLong(lifetime)
+        parcel.writeInt(maxHit)
+        parcel.writeInt(remainHit)
         parcel.writeByte(if (isDead) 1 else 0)
         parcel.writeInt(seq)
     }

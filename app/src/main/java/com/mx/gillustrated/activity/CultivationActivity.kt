@@ -739,20 +739,19 @@ class CultivationActivity : BaseActivity() {
         val random = Random()
         mEnemys.filter { !it.value.isDead }.forEach { e->
             val it = e.value
-            if(xun - it.birthDay >= it.lifetime){
-                writeHistory("${it.name} 消失", null, 0)
-                it.isDead = true
-            }else{
-                if(random.nextInt(it.attackFrequency) == 0){
-                    val persons = mPersons.map { it.value }.toMutableList()
-                    persons.shuffle()
-                    val person = persons[0]
-                    val result = CultivationHelper.battleEnemy(person, it, it.HP * 1000)
-                    if(result){
-                        writeHistory("${it.name} 消失", null, 0)
-                        it.isDead = true
-                        CultivationHelper.gainJiEquipment(person, 14, it.type, it.seq)
-                    }
+            if(random.nextInt(it.attackFrequency) == 0){
+                it.remainHit--
+                val persons = mPersons.map { it.value }.toMutableList()
+                persons.shuffle()
+                val person = persons[0]
+                val result = CultivationHelper.battleEnemy(person, it, it.HP * 1000)
+                if(result){
+                    writeHistory("${it.name} 消失", null, 0)
+                    it.isDead = true
+                    CultivationHelper.gainJiEquipment(person, 14, it.type, it.seq)
+                }else if(it.remainHit <= 0){
+                    writeHistory("${it.name} 消失", null, 0)
+                    it.isDead = true
                 }
             }
         }
@@ -792,27 +791,29 @@ class CultivationActivity : BaseActivity() {
     // update every 10 years
     private fun updateHP(){
         for ((_: String, it: Person) in mPersons) {
-            if(it.HP >= it.maxHP )
-                continue
-            if(CultivationHelper.getProperty(it)[0] < -10){
-                val count = Math.abs(CultivationHelper.getProperty(it)[0])
-                it.HP = Math.min(it.maxHP, it.HP + count)
-                it.lifetime -= count
-            }else{
-                it.HP++
+            it.HP += it.lingGenType.color + 1
+            val currentHP = CultivationHelper.getProperty(it)[0]
+            if(currentHP < -10){
+                val supplement = Math.abs(currentHP)
+                if(it.lifetime - it.age - supplement > 200){
+                    it.lifetime -= supplement
+                    it.HP += supplement
+                }
             }
+            if(it.HP > it.maxHP )
+                it.HP = it.maxHP
         }
     }
 
     private fun eventEnemyHandler(){
-        val type = Random().nextInt(4)
+        val type = Random().nextInt(5)
         mBattleRound.enemy[type]++
         val enemy = CultivationHelper.generateEnemy(type)
         mEnemys[enemy.id] = enemy
         writeHistory("====================================", null, 0)
-        writeHistory("====================================", null, 0)
-        writeHistory("${enemy.name}天降 - (${enemy.HP}/${enemy.lifetime/12})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
-        writeHistory("====================================", null, 0)
+        writeHistory("↑↑============================↑↑", null, 0)
+        writeHistory("${enemy.name}天降 - (${enemy.HP}/${enemy.remainHit})${enemy.attack}-${enemy.defence}-${enemy.speed}", null, 0)
+        writeHistory("↓↓============================↓↓", null, 0)
         writeHistory("====================================", null, 0)
     }
 
@@ -888,6 +889,7 @@ class CultivationActivity : BaseActivity() {
             mPersons.clear()
             mDeadPersons.clear()
             mAlliance.clear()
+            mBattleRound = BattleRound()
             createAlliance()
             val message = Message.obtain()
             message.what = 4

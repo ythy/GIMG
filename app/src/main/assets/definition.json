@@ -63,6 +63,14 @@
       "randomBasic": 2000,
       "qiBasic": 200,
       "color": 7
+    },
+    {
+      "id": "1000009",
+      "name": "斗",
+      "type": 4,
+      "randomBasic": 5000,
+      "qiBasic": 300,
+      "color": 8
     }
   ],
 
@@ -774,6 +782,30 @@
       "name": "\u767d\u864e\u7075\u6839",
       "property": [0,10,20,10,0,0,0,0],
       "type": 3
+    },
+    {
+      "id": "1010015",
+      "name": "\u7384\u6b66\u7075\u6839",
+      "property": [50,10,20,0,0,0,0,0],
+      "type": 3
+    },
+    {
+      "id": "1010501",
+      "name": "\u7389\u8861\u7075\u6839",
+      "property": [0,20,20,20,0,0,0,0],
+      "type": 4
+    },
+    {
+      "id": "1010502",
+      "name": "\u5f00\u9633\u7075\u6839",
+      "property": [0,40,0,20,0,0,0,0],
+      "type": 4
+    },
+    {
+      "id": "1010503",
+      "name": "\u6447\u5149\u7075\u6839",
+      "property": [0,30,10,20,0,0,0,0],
+      "type": 4
     }
   ],
 
@@ -1690,7 +1722,7 @@
       "name": "\u8fdc\u53e4\u5fbd\u7ae0",
       "type": 14,
       "rarity": 4,
-      "maxCount": 20,
+      "maxCount": 30,
       "xiuwei": 10,
       "success": 0,
       "property": [0,0,0,0,0,0,0,0]
@@ -1699,7 +1731,7 @@
       "name": "\u5c71\u6d77\u5fbd\u7ae0",
       "type": 14,
       "rarity": 5,
-      "maxCount": 20,
+      "maxCount": 30,
       "xiuwei": 20,
       "success": 0,
       "property": [0,0,0,0,0,0,0,0]
@@ -1708,8 +1740,17 @@
       "name": "\u541e\u566c\u5fbd\u7ae0",
       "type": 14,
       "rarity": 6,
-      "maxCount": 20,
+      "maxCount": 30,
       "xiuwei": 30,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },{
+      "id": "7006405",
+      "name": "\u673a\u7532\u5fbd\u7ae0",
+      "type": 14,
+      "rarity": 7,
+      "maxCount": 30,
+      "xiuwei": 40,
       "success": 0,
       "property": [0,0,0,0,0,0,0,0]
     }
