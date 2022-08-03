@@ -59,27 +59,27 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
         when {
             matchResult1 != null -> {
                 val spannable = SpannableString(history)
-                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[1])), matchResult1.range.start, matchResult1.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[2])), matchResult1.range.start, matchResult1.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
             }
             matchResult2 != null -> {
                 val spannable = SpannableString(history)
-                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[2])), matchResult2.range.start, matchResult2.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[3])), matchResult2.range.start, matchResult2.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
             }
             matchResult3 != null -> {
                 val spannable = SpannableString(history)
-                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[3])), matchResult3.range.start, matchResult3.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[4])), matchResult3.range.start, matchResult3.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
             }
             matchResult4 != null -> {
                 val spannable = SpannableString(history)
-                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[4])), matchResult4.range.start, matchResult4.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[5])), matchResult4.range.start, matchResult4.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
             }
             matchResult5 != null -> {
                 val spannable = SpannableString(history)
-                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[5])), matchResult5.range.start, matchResult5.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[6])), matchResult5.range.start, matchResult5.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)
             }
 

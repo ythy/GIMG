@@ -774,13 +774,13 @@
     {
       "id": "1010013",
       "name": "\u6731\u96c0\u7075\u6839",
-      "property": [0,20,10,10,0,0,0,0],
+      "property": [0,20,0,20,0,0,0,0],
       "type": 3
     },
     {
       "id": "1010014",
       "name": "\u767d\u864e\u7075\u6839",
-      "property": [0,10,20,10,0,0,0,0],
+      "property": [0,20,10,10,0,0,0,0],
       "type": 3
     },
     {
@@ -1281,7 +1281,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "金",
-      "property": [0,10,0,0,0,0,0,0],
+      "property": [0,20,0,0,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1290,7 +1290,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "水",
-      "property": [0,0,10,0,0,0,0,0],
+      "property": [0,0,20,0,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1299,7 +1299,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "木",
-      "property": [50,0,0,0,0,0,0,0],
+      "property": [50,0,0,10,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1308,7 +1308,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "火",
-      "property": [0,5,0,5,0,0,0,0],
+      "property": [0,10,0,10,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1317,7 +1317,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "土",
-      "property": [0,5,5,0,0,0,0,0],
+      "property": [0,10,10,0,0,0,0,0],
       "speedG1": 20
     },
     {
@@ -1327,9 +1327,9 @@
       "level": 10,
       "lifetime": 0,
       "maxPerson": 20,
-      "xiuwei": 20,
-      "property": [0,10,10,0,0,0,0,0],
-      "speedG1": 20
+      "xiuwei": 30,
+      "property": [0,10,10,10,0,0,0,0],
+      "speedG1": 30
     },
     {
       "id": "6000107",
@@ -1338,9 +1338,9 @@
       "level": 10,
       "lifetime": -50,
       "maxPerson": 20,
-      "xiuwei": 60,
-      "property": [0,20,0,0,0,0,0,0],
-      "speedG1": 20
+      "xiuwei": 80,
+      "property": [0,30,0,0,0,0,0,0],
+      "speedG1": 30
     },
     {
       "id": "6000108",
@@ -1349,9 +1349,9 @@
       "level": 20,
       "lifetime": 0,
       "maxPerson": 10,
-      "xiuwei": 40,
+      "xiuwei": 60,
       "property": [0,30,10,0,0,0,0,0],
-      "speedG1": 20
+      "speedG1": 40
     },
     {
       "id": "6000109",
@@ -1360,9 +1360,9 @@
       "level": 20,
       "lifetime": 50,
       "maxPerson": 10,
-      "xiuwei": 20,
-      "property": [50,10,10,0,0,0,0,0],
-      "speedG1": 20
+      "xiuwei": 30,
+      "property": [50,10,20,0,0,0,0,0],
+      "speedG1": 40
     },
     {
       "id": "6000110",
@@ -1371,10 +1371,10 @@
       "level": 20,
       "lifetime": 20,
       "maxPerson": 10,
-      "xiuwei": 20,
+      "xiuwei": 30,
       "xiuweiMulti": 50,
-      "property": [20,10,10,10,0,0,0,0],
-      "speedG1": 20
+      "property": [50,10,10,10,0,0,0,0],
+      "speedG1": 40
     },
     {
       "id": "6000111",
@@ -1384,9 +1384,9 @@
       "lifetime": 50,
       "success": 10,
       "maxPerson": 5,
-      "xiuwei": 40,
+      "xiuwei": 60,
       "property": [50,20,10,10,0,0,0,0],
-      "speedG1": 30
+      "speedG1": 50
     },
     {
       "id": "6000201",
@@ -1395,7 +1395,7 @@
       "lifetime": 100,
       "xiuwei": 100,
       "property": [0,30,20,10,0,0,0,0],
-      "speedG1": 50
+      "speedG1": 60
     },
     {
       "id": "6000202",
@@ -1404,7 +1404,7 @@
       "lifetime": 100,
       "xiuweiMulti": 200,
       "property": [0,20,30,10,0,0,0,0],
-      "speedG1": 50
+      "speedG1": 60
     },
     {
       "id": "6000203",
@@ -1414,7 +1414,7 @@
       "xiuwei": 50,
       "xiuweiMulti": 100,
       "property": [0,20,20,20,0,0,0,0],
-      "speedG1": 50
+      "speedG1": 60
     },
     {
       "id": "6000204",
@@ -1422,19 +1422,19 @@
       "type": 1,
       "lifetime": 100,
       "success": 5,
-      "xiuwei": 40,
-      "xiuweiMulti": 80,
+      "xiuwei": 30,
+      "xiuweiMulti": 100,
       "property": [50,30,10,10,0,0,0,0],
-      "speedG1": 50
+      "speedG1": 60
     },
     {
       "id": "6000311",
       "name": "剑",
       "type": 2,
-      "xiuwei": 20,
-      "xiuweiMulti": 40,
+      "xiuwei": 30,
+      "xiuweiMulti": 50,
       "property": [0,50,0,10,0,0,0,0],
-      "speedG1": 20
+      "speedG1": 60
     },
     {
       "id": "6000401",
@@ -1443,8 +1443,8 @@
       "lifetime": 100,
       "xiuwei": 100,
       "xiuweiMulti": 200,
-      "property": [50,30,30,20,0,0,0,0],
-      "speedG1": 50
+      "property": [50,30,20,20,0,0,0,0],
+      "speedG1": 80
     },
     {
       "id": "6000402",
@@ -1453,8 +1453,8 @@
       "lifetime": 100,
       "xiuwei": 100,
       "xiuweiMulti": 300,
-      "property": [50,60,10,10,0,0,0,0],
-      "speedG1": 50
+      "property": [50,60,10,20,0,0,0,0],
+      "speedG1": 100
     },
     {
       "id": "6000403",
@@ -1463,8 +1463,8 @@
       "lifetime": 100,
       "xiuwei": 150,
       "xiuweiMulti": 200,
-      "property": [20,80,0,20,0,0,0,0],
-      "speedG1": 50
+      "property": [50,70,0,20,0,0,0,0],
+      "speedG1": 100
     }
   ],
   "equipment": [
@@ -1753,6 +1753,39 @@
       "xiuwei": 40,
       "success": 0,
       "property": [0,0,0,0,0,0,0,0]
+    }
+  ],
+
+  "teji": [
+    {
+      "id": "8001001",
+      "name": "\u8fde\u51fb",
+      "description": "\u5982\u9898",
+      "rarity": 5
+    },
+    {
+      "id": "8001002",
+      "name": "\u540c\u5f52",
+      "description": "\u5982\u9898",
+      "rarity": 7
+    },
+    {
+      "id": "8001003",
+      "name": "\u91d1\u521a\u4e0d\u706d\u4f53",
+      "description": "\u7edd\u5883\u6b8b1\u6b21",
+      "rarity": 5
+    },
+    {
+      "id": "8001004",
+      "name": "\u9146\u90fd\u4e0d\u706d\u4f53",
+      "description": "\u7edd\u5883\u6b8b2\u6b21",
+      "rarity": 6
+    },
+    {
+      "id": "8001005",
+      "name": "\u7384\u9ec4\u4e0d\u706d\u4f53",
+      "description": "\u7edd\u5883\u6b8b3\u6b21",
+      "rarity": 7
     }
   ]
 

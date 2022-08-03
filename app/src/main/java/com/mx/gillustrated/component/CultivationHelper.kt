@@ -1,6 +1,8 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
+import android.util.Log
+import com.j256.ormlite.stmt.query.In
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
@@ -317,120 +319,107 @@ object CultivationHelper {
 
     fun battleEnemy(person: Person, enemy: Enemy, xiuwei:Int):Boolean{
         val props1 = getProperty(person)
-        val props2 = mutableListOf(enemy.HP, enemy.maxHP, enemy.attack, enemy.defence, enemy.speed)
-        var hp1 = props1[0]
-        var hp2  = props2[0]
-        val random = Random()
-        val randomSpeed = 200
-        while (true){
-            val first = props1[4] + random.nextInt(randomSpeed) > props2[4] + random.nextInt(randomSpeed)
-            if(first){
-                val hpReduced2 = Math.max(1, props1[2] - props2[3])
-                hp2 -= hpReduced2
-                if(hp2 > 0){
-                    val hpReduced1 = Math.max(1, props2[2] - props1[3])
-                    hp1 -= hpReduced1
-                    if(hp1 <= 0){
-                        break
-                    }
-                }else{
-                    break
-                }
-            }else{
-                val hpReduced1 = Math.max(1, props2[2] - props1[3])
-                hp1 -= hpReduced1
-                if(hp1 > 0){
-                    val hpReduced2 = Math.max(1, props1[2] - props2[3])
-                    hp2 -= hpReduced2
-                    if(hp2 <= 0){
-                        break
-                    }
-                }else{
-                    break
-                }
-            }
-        }
-        val firstWin = hp1 >= hp2
+        val battlePerson = BattleObject(props1[0], props1[2], props1[3], props1[4], 0, person.teji)
+        val battleEnemy = BattleObject(enemy.HP, enemy.attack, enemy.defence, enemy.speed, 1)
+        startBattle(battlePerson, battleEnemy,200, 1000)
+
+        val firstWin = battlePerson.hp > 0
         if(firstWin){
-            writeHistory("${person.name}($hp1) 🔪 ${enemy.name}($hp2)", person)
+            writeHistory("${person.name}(${battlePerson.hp})  ${props1[0] - battlePerson.hp}🔪${enemy.HP - battleEnemy.hp}  ${enemy.name}(${battleEnemy.hp})", person)
             person.xiuXei += xiuwei
         }else{
-            writeHistory("${enemy.name}($hp2/${enemy.remainHit}-${enemy.attack}:${enemy.defence}:${enemy.speed}) 🔪 ${person.name}($hp1)", person)
+            writeHistory("${enemy.name}(${battleEnemy.hp}/${enemy.remainHit}-${enemy.attack}:${enemy.defence}:${enemy.speed})  ${enemy.HP - battleEnemy.hp}🔪${props1[0] - battlePerson.hp}  ${person.name}(${battlePerson.hp})", person)
             person.xiuXei -= xiuwei
         }
-        person.HP += hp1 - props1[0]
-        enemy.HP += hp2 - props2[0]
+        person.HP = battlePerson.hp -  props1[5]
+        enemy.HP = battleEnemy.hp
+
         return firstWin
+    }
+
+    //0: 2-3-4
+    private fun startBattle(props1:BattleObject, props2:BattleObject, randomBasis:Int, round: Int){
+        val random = Random()
+        var loopCount = round
+        val battlePersons = mutableListOf(props1, props2)
+        while (loopCount > 0){
+            val attackFirstIndex = if (props1.speed + random.nextInt(randomBasis) > props2.speed + random.nextInt(randomBasis)) 0 else 1
+            val attackLaterIndex = Math.abs(attackFirstIndex - 1)
+            val end1 = battleProcess(battlePersons[attackFirstIndex], battlePersons[attackLaterIndex])
+            if(end1)
+                break
+            else{
+                val end2 = battleProcess(battlePersons[attackLaterIndex], battlePersons[attackFirstIndex])
+                if(end2)
+                    break
+            }
+            loopCount--
+        }
+    }
+
+    //0: 2-3-4
+    private fun battleProcess(attacker:BattleObject, defender:BattleObject):Boolean{
+        val hpReduced = Math.max(1, attacker.attack - defender.defence)
+        defender.hp -= hpReduced
+        if(attacker.kills.find { it == "8001001" } != null && defender.hp > 0){
+            val hpReduced2 = Math.max(1, attacker.attack - defender.defence)
+            defender.hp -= hpReduced2
+        }
+        if(defender.kills.find { it == "8001003" } != null && defender.goneCount < 1 && defender.hp <= 0){
+            defender.hp = 1
+            defender.goneCount++
+        }else  if(defender.kills.find { it == "8001004" } != null && defender.goneCount < 2 && defender.hp <= 0){
+            defender.hp = 1
+            defender.goneCount++
+        }else  if(defender.kills.find { it == "8001005" } != null && defender.goneCount < 3 && defender.hp <= 0){
+            defender.hp = 1
+            defender.goneCount++
+        }
+        if(defender.kills.find { it == "8001002" } != null && defender.hp <= 0 && attacker.type == 0){
+            attacker.hp = 1
+        }
+        return  defender.hp <= 0
     }
 
     fun battle(person1: Person, person2: Person, round:Int, xiuwei:Int):Boolean{
+
         val props1 = getProperty(person1)
         val props2 = getProperty(person2)
-        var hp1 = props1[0]
-        var hp2  = props2[0]
-        val random = Random()
-        val randomSpeed = 20
-        for (it in 0 until round){
-            val first = props1[4] + random.nextInt(randomSpeed) > props2[4] + random.nextInt(randomSpeed)
-            if(first){
-                val hpReduced2 = Math.max(1, props1[2] - props2[3])
-                hp2 -= hpReduced2
-                if(hp2 > 0){
-                    val hpReduced1 = Math.max(1, props2[2] - props1[3])
-                    hp1 -= hpReduced1
-                    if(hp1 <= 0){
-                        break
-                    }
-                }else{
-                    break
-                }
-            }else{
-                val hpReduced1 = Math.max(1, props2[2] - props1[3])
-                hp1 -= hpReduced1
-                if(hp1 > 0){
-                    val hpReduced2 = Math.max(1, props1[2] - props2[3])
-                    hp2 -= hpReduced2
-                    if(hp2 <= 0){
-                        break
-                    }
-                }else{
-                    break
-                }
-            }
-        }
-        val firstWin = hp1 >= hp2
+        val battlePerson1 = BattleObject(props1[0], props1[2], props1[3], props1[4], 0, person1.teji)
+        val battlePerson2 = BattleObject(props2[0], props2[2], props2[3], props2[4], 0, person2.teji)
+        startBattle(battlePerson1, battlePerson2,40, round)
+
+        val firstWin = battlePerson1.hp > battlePerson2.hp
         if(firstWin){
-            writeHistory("${person1.name}($hp1) 🔪 ${person2.name}($hp2)", person1)
+            writeHistory("${person1.name}(${battlePerson1.hp})  ${props1[0] - battlePerson1.hp}🔪${props2[0] - battlePerson2.hp}  ${person2.name}(${battlePerson2.hp})", person1)
             person1.xiuXei += xiuwei / 4
             person2.xiuXei -= xiuwei
         }else{
-            writeHistory("${person2.name}($hp2) 🔪 ${person1.name}($hp1)", person2)
+            writeHistory("${person2.name}(${battlePerson2.hp})  ${props2[0] - battlePerson2.hp}🔪${props1[0] - battlePerson1.hp}  ${person1.name}(${battlePerson1.hp})", person2)
             person2.xiuXei += xiuwei / 4
             person1.xiuXei -= xiuwei
         }
-        person1.HP += hp1 - props1[0]
-        person2.HP += hp2 - props2[0]
+        person1.HP = battlePerson1.hp - props1[5]
+        person2.HP = battlePerson2.hp - props2[5]
+
         return firstWin
     }
 
-    //定义功率
+    //定义功率 5 extraHP
     fun getProperty(person: Person):MutableList<Int>{
         val property = person.extraProperty.mapIndexed { index, it ->
             it + person.allianceProperty[index] + person.equipmentProperty[index]
         }
-        val lingGenLevel = person.lingGenType.color // 0 until 8
-        val zhuan = person.lifeTurn
         val jingJieLevel = getJingJieLevel(person.jingJieId)
+        val extraHP = jingJieLevel.first + 10 * jingJieLevel.second + property[0] // 0 ~ 70 + 80
+        val attack =  5 * jingJieLevel.second +  property[1] // yuan 2, hua 4, he 4,di 5, tai 6, zhun 7, di 8 // 0 ~ 40
+        val defence = 5 * jingJieLevel.second +  property[2] // 0 ~ 40
+        val speed =   5 * jingJieLevel.second + property[3] // 0 ~ 40
 
-        val extraHP = 5 * lingGenLevel + jingJieLevel.first + 5 * jingJieLevel.second + property[0]
-        val attack =  0 * zhuan + 2 * lingGenLevel + 5 * jingJieLevel.second +  property[1] // yuan 2, hua 4, he 4,di 5, tai 6, zhun 7, di 8
-        val defence =  0 * zhuan + 2 * lingGenLevel + 5 * jingJieLevel.second +  property[2]
-        val speed =  5 * ( lingGenLevel + 1) + property[3] // 5 ~ 45
-
-        val multipleSpeed = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.1f)
-        val multiplePrimary = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.5f)
+        //val multipleSpeed = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.1f)
+       // val multiplePrimary = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.5f)
         return mutableListOf(person.HP + extraHP, person.maxHP + extraHP,
-                Math.round(attack * multiplePrimary), Math.round(defence * multiplePrimary), Math.round(speed * multipleSpeed))
+                attack, defence, speed, extraHP)
     }
 
     //type 11,12,13,14 -> B,C,S,E
@@ -606,6 +595,22 @@ object CultivationHelper {
     // type 1 人物信息
     data class HistoryInfo(var content:String, var person:Person?, var type:Int = 0)
 
+    class BattleObject(h: Int, a: Int, d: Int, s: Int, t:Int) {
+
+        constructor(h: Int, a: Int, d: Int, s: Int, t:Int, k:MutableList<String>):this(h,a,d,s,t){
+            kills = k
+        }
+
+        var attack: Int = a
+        var defence:Int = d
+        var speed:Int = s
+        var hp:Int = h
+        var type:Int = t
+        var kills:MutableList<String> = mutableListOf()
+        var goneCount:Int = 0//gone次数
+
+
+    }
 
 
 }

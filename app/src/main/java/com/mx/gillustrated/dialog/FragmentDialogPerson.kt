@@ -26,6 +26,7 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.fragment.FragmentEquipment
 import com.mx.gillustrated.fragment.FragmentPersonEvent
 import com.mx.gillustrated.fragment.FragmentPersonInfo
+import com.mx.gillustrated.fragment.FragmentTeJi
 import com.mx.gillustrated.util.CommonUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
@@ -223,17 +224,20 @@ class FragmentDialogPerson : DialogFragment() {
         his.arguments = bundle
         val info = FragmentPersonInfo(innerCallback)
         info.arguments = bundle
+        val teji = FragmentTeJi()
+        teji.arguments = bundle
         mFragments.clear()
         mFragments.add(equip)
-        mFragments.add(his)
         mFragments.add(info)
+        mFragments.add(teji)
+        mFragments.add(his)
         mViewPager.adapter = PersonPagerAdapter(childFragmentManager, mFragments)
         mViewPager.currentItem = 0
     }
 
     private fun updateViewPager(){
-        if(mViewPager.currentItem == 1){
-            val fragment:FragmentPersonEvent = mFragments[1] as FragmentPersonEvent
+        if(mViewPager.currentItem == 3){
+            val fragment:FragmentPersonEvent = mFragments[3] as FragmentPersonEvent
             fragment.updateEvent()
         }
     }

@@ -915,7 +915,7 @@ class CultivationActivity : BaseActivity() {
             while (true){
                 writeHistory("Single Battle ${roundNumber}轮 Start", null, 0)
                 roundNumber++
-                val result = roundHandler(persons, 20, 200000)
+                val result = roundHandler(persons, 40, 200000)
                 if(result)
                     break
             }
