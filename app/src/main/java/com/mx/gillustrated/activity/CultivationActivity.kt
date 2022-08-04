@@ -6,7 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.util.Log
+
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +16,7 @@ import butterknife.*
 import com.google.gson.Gson
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CultivationHistoryAdapter
+import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName2
@@ -741,11 +742,14 @@ class CultivationActivity : BaseActivity() {
                 val persons = mPersons.map { it.value }.toMutableList()
                 persons.shuffle()
                 val person = persons[0]
-                val result = CultivationHelper.battleEnemy(person, it, it.HP * 1000)
+                val result = CultivationBattleHelper.battleEnemy(person, it, it.HP * 1000)
                 if(result){
                     writeHistory("${it.name} 消失", null, 0)
                     it.isDead = true
                     CultivationHelper.gainJiEquipment(person, 14, it.type, it.seq)
+                    if(it.type > 1){
+                        gainTeji(person, 10)
+                    }
                 }else if(it.remainHit <= 0){
                     writeHistory("${it.name} 消失", null, 0)
                     it.isDead = true
@@ -1013,7 +1017,7 @@ class CultivationActivity : BaseActivity() {
             }
             val firstPerson = persons[i]
             val secondPerson = persons[i + 1]
-            val result = CultivationHelper.battle(firstPerson, secondPerson, round, xiuWei)
+            val result = CultivationBattleHelper.battlePerson(firstPerson, secondPerson, round, xiuWei)
             if(result){
                 passIds.add(secondPerson.id)
             }else{
@@ -1055,7 +1059,7 @@ class CultivationActivity : BaseActivity() {
             var firstIndex = 0
             var secondIndex = 0
             while (true){
-                val result = CultivationHelper.battle(firstAlliancePersons[firstIndex],
+                val result =  CultivationBattleHelper.battlePerson(firstAlliancePersons[firstIndex],
                         secondAlliancePersons[secondIndex], round, xiuWei)
                 if(result){
                     secondIndex++
@@ -1107,7 +1111,7 @@ class CultivationActivity : BaseActivity() {
             var firstIndex = 0
             var secondIndex = 0
             while (true){
-                val result = CultivationHelper.battle(firstClanPersons[firstIndex],
+                val result =  CultivationBattleHelper.battlePerson(firstClanPersons[firstIndex],
                         secondClanPersons[secondIndex], round, xiuWei)
                 if(result){
                     secondIndex++
@@ -1168,6 +1172,23 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
+    private fun temple(){
+        mPersons.forEach { (_: String, u: Person) ->
+            gainTeji(u)
+        }
+    }
+
+    private fun gainTeji(person: Person, weight:Int = 1){
+        CultivationHelper.createTeji(weight).forEach { t->
+            if(!person.teji.contains(t)){
+                person.teji.add(t)
+                val commonText = "\u83b7\u5f97\u7279\u6280 : ${mConfig.teji.find { f-> f.id == t }?.name}"
+                addPersonEvent(person, "${getYearString()} ${getPersonBasicString(person, false)} $commonText")
+                writeHistory("${getPersonBasicString(person)} $commonText", person)
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if(pinyinMode)
             menuInflater.inflate(R.menu.menu_cultivation, menu)
@@ -1200,6 +1221,10 @@ class CultivationActivity : BaseActivity() {
             R.id.menu_add_fixed ->{
                 addFixedcPerson()
             }
+            R.id.menu_enemy_list->{
+                temple()
+            }
+
 
         }
         return true

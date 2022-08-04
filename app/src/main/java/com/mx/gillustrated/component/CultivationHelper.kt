@@ -1,8 +1,6 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
-import android.util.Log
-import com.j256.ormlite.stmt.query.In
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
@@ -208,6 +206,17 @@ object CultivationHelper {
         return Triple(lingGen, lingGenId, lingGenName)
     }
 
+     fun createTeji(weight:Int = 1):MutableList<String>{
+        val result = mutableListOf<String>()
+        mConfig.teji.forEach {
+            if(Random().nextInt( it.weight / weight ) == 0){
+                result.add(it.id)
+            }
+        }
+        return result
+    }
+
+
     fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?,
                               lifetime:Long = 100, parent:Pair<Person, Person>? = null, fav:Boolean = false, mix:PersonFixedInfoMix? = null): Person {
         val personGender = gender ?: when (Random().nextInt(2)) {
@@ -244,6 +253,7 @@ object CultivationHelper {
         result.profile = if(fav) 1001 else getRandomProfile(result.gender)
         result.isFav = fav
         result.tianfus = tianFus
+        result.teji = Collections.synchronizedList(createTeji())
         result.lifetime = lifetime + (tianFus.find { it.type == 3 }?.bonus ?: 0)
         result.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
         result.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
@@ -315,94 +325,6 @@ object CultivationHelper {
         enemy.maxHit = 50 + random.nextInt(51)
         enemy.remainHit = enemy.maxHit
         return enemy
-    }
-
-    fun battleEnemy(person: Person, enemy: Enemy, xiuwei:Int):Boolean{
-        val props1 = getProperty(person)
-        val battlePerson = BattleObject(props1[0], props1[2], props1[3], props1[4], 0, person.teji)
-        val battleEnemy = BattleObject(enemy.HP, enemy.attack, enemy.defence, enemy.speed, 1)
-        startBattle(battlePerson, battleEnemy,200, 1000)
-
-        val firstWin = battlePerson.hp > 0
-        if(firstWin){
-            writeHistory("${person.name}(${battlePerson.hp})  ${props1[0] - battlePerson.hp}🔪${enemy.HP - battleEnemy.hp}  ${enemy.name}(${battleEnemy.hp})", person)
-            person.xiuXei += xiuwei
-        }else{
-            writeHistory("${enemy.name}(${battleEnemy.hp}/${enemy.remainHit}-${enemy.attack}:${enemy.defence}:${enemy.speed})  ${enemy.HP - battleEnemy.hp}🔪${props1[0] - battlePerson.hp}  ${person.name}(${battlePerson.hp})", person)
-            person.xiuXei -= xiuwei
-        }
-        person.HP = battlePerson.hp -  props1[5]
-        enemy.HP = battleEnemy.hp
-
-        return firstWin
-    }
-
-    //0: 2-3-4
-    private fun startBattle(props1:BattleObject, props2:BattleObject, randomBasis:Int, round: Int){
-        val random = Random()
-        var loopCount = round
-        val battlePersons = mutableListOf(props1, props2)
-        while (loopCount > 0){
-            val attackFirstIndex = if (props1.speed + random.nextInt(randomBasis) > props2.speed + random.nextInt(randomBasis)) 0 else 1
-            val attackLaterIndex = Math.abs(attackFirstIndex - 1)
-            val end1 = battleProcess(battlePersons[attackFirstIndex], battlePersons[attackLaterIndex])
-            if(end1)
-                break
-            else{
-                val end2 = battleProcess(battlePersons[attackLaterIndex], battlePersons[attackFirstIndex])
-                if(end2)
-                    break
-            }
-            loopCount--
-        }
-    }
-
-    //0: 2-3-4
-    private fun battleProcess(attacker:BattleObject, defender:BattleObject):Boolean{
-        val hpReduced = Math.max(1, attacker.attack - defender.defence)
-        defender.hp -= hpReduced
-        if(attacker.kills.find { it == "8001001" } != null && defender.hp > 0){
-            val hpReduced2 = Math.max(1, attacker.attack - defender.defence)
-            defender.hp -= hpReduced2
-        }
-        if(defender.kills.find { it == "8001003" } != null && defender.goneCount < 1 && defender.hp <= 0){
-            defender.hp = 1
-            defender.goneCount++
-        }else  if(defender.kills.find { it == "8001004" } != null && defender.goneCount < 2 && defender.hp <= 0){
-            defender.hp = 1
-            defender.goneCount++
-        }else  if(defender.kills.find { it == "8001005" } != null && defender.goneCount < 3 && defender.hp <= 0){
-            defender.hp = 1
-            defender.goneCount++
-        }
-        if(defender.kills.find { it == "8001002" } != null && defender.hp <= 0 && attacker.type == 0){
-            attacker.hp = 1
-        }
-        return  defender.hp <= 0
-    }
-
-    fun battle(person1: Person, person2: Person, round:Int, xiuwei:Int):Boolean{
-
-        val props1 = getProperty(person1)
-        val props2 = getProperty(person2)
-        val battlePerson1 = BattleObject(props1[0], props1[2], props1[3], props1[4], 0, person1.teji)
-        val battlePerson2 = BattleObject(props2[0], props2[2], props2[3], props2[4], 0, person2.teji)
-        startBattle(battlePerson1, battlePerson2,40, round)
-
-        val firstWin = battlePerson1.hp > battlePerson2.hp
-        if(firstWin){
-            writeHistory("${person1.name}(${battlePerson1.hp})  ${props1[0] - battlePerson1.hp}🔪${props2[0] - battlePerson2.hp}  ${person2.name}(${battlePerson2.hp})", person1)
-            person1.xiuXei += xiuwei / 4
-            person2.xiuXei -= xiuwei
-        }else{
-            writeHistory("${person2.name}(${battlePerson2.hp})  ${props2[0] - battlePerson2.hp}🔪${props1[0] - battlePerson1.hp}  ${person1.name}(${battlePerson1.hp})", person2)
-            person2.xiuXei += xiuwei / 4
-            person1.xiuXei -= xiuwei
-        }
-        person1.HP = battlePerson1.hp - props1[5]
-        person2.HP = battlePerson2.hp - props2[5]
-
-        return firstWin
     }
 
     //定义功率 5 extraHP
@@ -594,23 +516,5 @@ object CultivationHelper {
 
     // type 1 人物信息
     data class HistoryInfo(var content:String, var person:Person?, var type:Int = 0)
-
-    class BattleObject(h: Int, a: Int, d: Int, s: Int, t:Int) {
-
-        constructor(h: Int, a: Int, d: Int, s: Int, t:Int, k:MutableList<String>):this(h,a,d,s,t){
-            kills = k
-        }
-
-        var attack: Int = a
-        var defence:Int = d
-        var speed:Int = s
-        var hp:Int = h
-        var type:Int = t
-        var kills:MutableList<String> = mutableListOf()
-        var goneCount:Int = 0//gone次数
-
-
-    }
-
 
 }

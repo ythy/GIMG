@@ -9,21 +9,24 @@ class TeJi() : Parcelable {
     lateinit var name:String
     var description:String = ""
     var rarity:Int = 0
+    var weight:Int = 0
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
         name = parcel.readString()
         rarity = parcel.readInt()
+        weight = parcel.readInt()
     }
 
     override fun toString(): String {
-        return CultivationHelper.showing("$name-$description")
+        return CultivationHelper.showing("$name-$rarity")
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeInt(rarity)
+        parcel.writeInt(weight)
     }
 
     override fun describeContents(): Int {

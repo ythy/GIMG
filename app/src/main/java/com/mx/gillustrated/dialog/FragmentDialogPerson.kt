@@ -320,7 +320,7 @@ class FragmentDialogPerson : DialogFragment() {
 
     private fun getProperty():String{
         val result = CultivationHelper.getProperty(mPerson)
-        return "${result[0]}/${result[1]} ${result[2]}-${result[3]}-${result[4]}"
+        return "${result[0]}/${result[1]} ${result[2]}-${result[3]}-${result[4]} (${mPerson.teji.size})"
     }
 
     private fun setFamily(){
