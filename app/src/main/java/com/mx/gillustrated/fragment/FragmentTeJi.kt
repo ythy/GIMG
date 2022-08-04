@@ -41,10 +41,39 @@ class FragmentTeJi: Fragment() {
                     override fun onItemSelected(teJi: TeJi) {
                         updateTeji(teJi)
                     }
-                })
+                }, 3)
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_teji")
     }
+
+    @OnClick(R.id.btn_add_teji_spec)
+    fun onAddSpecClickHandler(){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogTeJi.
+                newInstance( object : FragmentDialogTeJi.TeJiSelectorCallback{
+                    override fun onItemSelected(teJi: TeJi) {
+                        updateTeji(teJi)
+                    }
+                }, 1)
+        newFragment.isCancelable = true
+        newFragment.show(ft, "dialog_teji")
+    }
+
+    @OnClick(R.id.btn_add_teji_key)
+    fun onAddKeyClickHandler(){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogTeJi.
+                newInstance( object : FragmentDialogTeJi.TeJiSelectorCallback{
+                    override fun onItemSelected(teJi: TeJi) {
+                        updateTeji(teJi)
+                    }
+                }, 2)
+        newFragment.isCancelable = true
+        newFragment.show(ft, "dialog_teji")
+    }
+
 
 
     lateinit var mContext: CultivationActivity
@@ -84,9 +113,11 @@ class FragmentTeJi: Fragment() {
             result.name = teji.name
             result.description = teji.description
             result.rarity = teji.rarity
+            result.weight = teji.weight
+            result.type = teji.type
             result
         }.toMutableList()
-        tejis.sortBy { it.rarity }
+        tejis.sortByDescending { it.rarity }
         mTeJi.clear()
         mTeJi.addAll(tejis)
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()

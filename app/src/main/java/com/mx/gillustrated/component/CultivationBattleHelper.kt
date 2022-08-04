@@ -85,10 +85,29 @@ object CultivationBattleHelper {
             if(current.kills.find { it == "8002004" } != null && round == 1){
                 opponent.hp -= 50
             }
+            if(current.kills.find { it == "8002006" } != null && round == 1){//weakness 30
+                opponent.attack -= Math.round(opponent.attackBasis * 0.3f)
+                opponent.defence -= Math.round(opponent.defenceBasis * 0.3f)
+                opponent.speed -= Math.round(opponent.speedBasis * 0.3f)
+            }
+            if(current.kills.find { it == "8002007" } != null && round == 1){//weakness 50
+                opponent.attack -= Math.round(opponent.attackBasis * 0.5f)
+                opponent.defence -= Math.round(opponent.defenceBasis * 0.5f)
+                opponent.speed -=  Math.round(opponent.speedBasis * 0.5f)
+            }
+            if(current.kills.find { it == "8002008" } != null && round == 1){//gain 30
+                current.attack += Math.round(current.attackBasis * 0.3f)
+                current.defence += Math.round(current.defenceBasis * 0.3f)
+                current.speed += Math.round(current.speedBasis * 0.3f)
+            }
+            if(current.kills.find { it == "8002009" } != null && round == 1){//gain 50
+                current.attack += Math.round(current.attackBasis * 0.5f)
+                current.defence += Math.round(current.defenceBasis * 0.5f)
+                current.speed += Math.round(current.speedBasis * 0.5f)
+            }
             if(current.kills.find { it == "8002005" } != null){
                 current.hp += 20
-                if(current.hp > current.maxhp)
-                    current.hp = current.maxhp
+                current.hp = Math.min(current.hp, current.maxhp)
             }
 
         }
@@ -98,13 +117,10 @@ object CultivationBattleHelper {
     private fun afterHPChangedPossibleEveryPoint(battlePersons:MutableList<BattleObject>):Boolean{
         battlePersons.forEachIndexed { index, current ->
             val opponent = battlePersons[Math.abs(index - 1)]
-            if(current.kills.find { it == "8001003" } != null && current.goneCount < 1 && current.hp <= 0){
-                current.hp = 1
+            if(current.kills.find { it == "8001003" } != null && current.hp <= 0 && isTrigger(20)){
+                current.hp = current.maxhp
                 current.goneCount++
-            }else  if(current.kills.find { it == "8001004" } != null && current.goneCount < 2 && current.hp <= 0){
-                current.hp = 1
-                current.goneCount++
-            }else  if(current.kills.find { it == "8001005" } != null && current.goneCount < 3 && current.hp <= 0){
+            }else if(current.kills.find { it == "8001001" } != null && current.hp <= 0 && isTrigger()){
                 current.hp = 1
                 current.goneCount++
             }
@@ -122,8 +138,14 @@ object CultivationBattleHelper {
 
     private fun battlingOpponent(attacker: BattleObject, defender: BattleObject){
         inBattles(attacker, defender)
-        if(attacker.kills.find { it == "8001001" } != null && isTrigger() && defender.hp > 0){
+        if(defender.kills.find { it == "8003008" } != null && defender.hp > 0 && attacker.hp > 0 && isTrigger() ){//anti-attack
+            inBattles(defender, attacker)
+        }
+        if(attacker.kills.find { it == "8003007" } != null && defender.hp > 0 && attacker.hp > 0 && isTrigger() ){
             inBattles(attacker, defender)
+            if(defender.kills.find { it == "8003008" } != null && defender.hp > 0 && attacker.hp > 0 && isTrigger() ){//anti-attack
+                inBattles(defender, attacker)
+            }
         }
     }
 
@@ -131,16 +153,37 @@ object CultivationBattleHelper {
         if(defender.kills.find { it == "8003001" } != null && isTrigger()){
             return
         }
-        var minReduce = 1
-        var attackerValue = attacker.attack
-        if(attacker.kills.find { it == "8003002" } != null && isTrigger()){
-            attackerValue = Math.round( attacker.attack.toFloat() * 2.0f)
+        val attackerValue = attacker.attack
+        var defenderValue = defender.defence
+        if(attacker.kills.find { it == "8003005" } != null && isTrigger()){
+            defenderValue = 0
         }
+        var attackResult = attackerValue - defenderValue
+        if(attacker.kills.find { it == "8003002" } != null && attackResult > 0 && isTrigger() ){
+            attackResult = Math.round( attackResult * 2.0f)
+        }
+        var minReduce = 1
         if(attacker.kills.find { it == "8003003" } != null ){
             minReduce = 10
         }
-        val hpReduced = Math.max(minReduce, attackerValue - defender.defence)
-        defender.hp -= hpReduced
+        val hpReduced = Math.max(minReduce, attackResult)
+
+        var extraReduce = 0
+        if(attacker.kills.find { it == "8001005" } != null ){
+            extraReduce += 40
+        }
+        if(attacker.kills.find { it == "8001004" } != null ){
+            extraReduce += 20
+        }
+        defender.hp -= hpReduced + extraReduce
+
+        if(defender.kills.find { it == "8003009" } != null && attacker.type == 0 && isTrigger() ){// anti-shake
+            attacker.hp -= Math.round( hpReduced * 0.5f)
+        }
+        if(attacker.kills.find { it == "8003006" } != null ){
+            attacker.hp += Math.round( hpReduced * 0.5f)
+            attacker.hp = Math.min(attacker.hp, attacker.maxhp)
+        }
     }
 
     private fun getSpeed(props:BattleObject, randomBasis:Int):Int{
@@ -165,9 +208,12 @@ object CultivationBattleHelper {
         var attack: Int = a
         var defence:Int = d
         var speed:Int = s
+        val attackBasis:Int = a
+        val defenceBasis:Int = d
+        val speedBasis:Int = s
         var hp:Int = h
-        var maxhp:Int = m
-        var type:Int = t
+        val maxhp:Int = m
+        val type:Int = t
         var kills:MutableList<String> = mutableListOf()
         var goneCount:Int = 0//gone次数
 

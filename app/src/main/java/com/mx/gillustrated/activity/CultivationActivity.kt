@@ -53,7 +53,7 @@ class CultivationActivity : BaseActivity() {
     private var mHistoryThreadRunnable = true
     private var mSpeed = 10L//流失速度
     private val mInitPersonCount = 1000//初始化Person数量
-    var readRecord = true
+    private var readRecord = true
 
     var mPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var mDeadPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
