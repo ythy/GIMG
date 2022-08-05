@@ -1753,6 +1753,26 @@
       "xiuwei": 40,
       "success": 0,
       "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7006501",
+      "name": "\u674e\u5143\u9738\u4e4b\u9b42",
+      "type": 15,
+      "rarity": 6,
+      "maxCount": 30,
+      "xiuwei": 50,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7006502",
+      "name": "\u6697\u5f71\u4e4b\u9b42",
+      "type": 15,
+      "rarity": 7,
+      "maxCount": 30,
+      "xiuwei": 60,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
     }
   ],
 
@@ -1793,6 +1813,14 @@
       "id": "8001005",
       "name": "\u9644\u9b54-\u5929\u706b",
       "description": "40\u706b\u4f24\u5bb3\u9644\u52a0",
+      "type": 1,
+      "rarity": 8,
+      "weight": 200000
+    },
+    {
+      "id": "8001006",
+      "name": "\u795e\u8ff9",
+      "description": "\u4e0d\u53d7\u8d1f\u9762\u5f71\u54cd",
       "type": 1,
       "rarity": 8,
       "weight": 200000

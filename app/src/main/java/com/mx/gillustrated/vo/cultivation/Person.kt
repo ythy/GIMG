@@ -61,6 +61,7 @@ class Person() :Parcelable {
         var extraSpeed:Int = 0 //tianfu
         var extraXuiweiMulti:Int = 0 //tianfu + alliance  初始和读取更新
         var allianceName:String = "" // alliance
+        var type = 0// 标注boss用 boss > 1
 
         constructor(parcel: Parcel) : this() {
                 id = parcel.readString()!!
@@ -118,6 +119,7 @@ class Person() :Parcelable {
                 extraSpeed = parcel.readInt()
                 extraXuiweiMulti = parcel.readInt()
                 allianceName = parcel.readString()
+                type = parcel.readInt()
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -175,6 +177,7 @@ class Person() :Parcelable {
                 parcel.writeInt(extraSpeed)
                 parcel.writeInt(extraXuiweiMulti)
                 parcel.writeString(allianceName)
+                parcel.writeInt(type)
         }
 
         override fun describeContents(): Int {

@@ -42,7 +42,7 @@ class FragmentPersonEvent : Fragment(){
 
     fun init(){
         val id = this.arguments!!.getString("id", "")
-        mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
+        mPerson = mContext.getPersonData(id)!!
         mListView.adapter = ArrayAdapter(this.context!!, R.layout.list_simple_item_text1,
             android.R.id.text1, mEventDataString)
         updateEvent()

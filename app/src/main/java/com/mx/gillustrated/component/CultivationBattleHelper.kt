@@ -31,7 +31,7 @@ object CultivationBattleHelper {
         val props1 = CultivationHelper.getProperty(person1)
         val props2 = CultivationHelper.getProperty(person2)
         val battlePerson1 = BattleObject(props1[0], props1[1], props1[2], props1[3], props1[4], 0, person1.teji)
-        val battlePerson2 = BattleObject(props2[0], props1[1], props2[2], props2[3], props2[4], 0, person2.teji)
+        val battlePerson2 = BattleObject(props2[0], props2[1], props2[2], props2[3], props2[4], 0, person2.teji)
         startBattle(battlePerson1, battlePerson2,40, round)
 
         val firstWin = battlePerson1.hp > battlePerson2.hp
@@ -52,7 +52,6 @@ object CultivationBattleHelper {
 
     //0: 2-3-4
     private fun startBattle(props1: BattleObject, props2: BattleObject, randomBasis:Int, round: Int){
-        val random = Random()
         var loopCount = 0
         val battlePersons = mutableListOf(props1, props2)
         while (loopCount++ < round){
@@ -85,12 +84,12 @@ object CultivationBattleHelper {
             if(current.kills.find { it == "8002004" } != null && round == 1){
                 opponent.hp -= 50
             }
-            if(current.kills.find { it == "8002006" } != null && round == 1){//weakness 30
+            if(current.kills.find { it == "8002006" } != null && opponent.kills.find { it == "8001006" } == null && round == 1){//weakness 30
                 opponent.attack -= Math.round(opponent.attackBasis * 0.3f)
                 opponent.defence -= Math.round(opponent.defenceBasis * 0.3f)
                 opponent.speed -= Math.round(opponent.speedBasis * 0.3f)
             }
-            if(current.kills.find { it == "8002007" } != null && round == 1){//weakness 50
+            if(current.kills.find { it == "8002007" } != null && opponent.kills.find { it == "8001006" } == null && round == 1){//weakness 50
                 opponent.attack -= Math.round(opponent.attackBasis * 0.5f)
                 opponent.defence -= Math.round(opponent.defenceBasis * 0.5f)
                 opponent.speed -=  Math.round(opponent.speedBasis * 0.5f)
@@ -124,7 +123,8 @@ object CultivationBattleHelper {
                 current.hp = 1
                 current.goneCount++
             }
-            if(current.kills.find { it == "8001002" } != null && current.hp <= 0 && opponent.type == 0){
+            if(current.kills.find { it == "8001002" } != null  && current.hp <= 0
+               && opponent.kills.find { it == "8001006" } == null && opponent.type == 0){
                 opponent.hp = 1
             }
         }
@@ -177,7 +177,7 @@ object CultivationBattleHelper {
         }
         defender.hp -= hpReduced + extraReduce
 
-        if(defender.kills.find { it == "8003009" } != null && attacker.type == 0 && isTrigger() ){// anti-shake
+        if(defender.kills.find { it == "8003009" } != null && attacker.type == 0 && attacker.kills.find { it == "8001006" } == null && isTrigger() ){// anti-shake
             attacker.hp -= Math.round( hpReduced * 0.5f)
         }
         if(attacker.kills.find { it == "8003006" } != null ){

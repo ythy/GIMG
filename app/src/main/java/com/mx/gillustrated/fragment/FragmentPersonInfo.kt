@@ -120,7 +120,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
        // val draw = CultivationHome(mContext)
        // mHome.addView(draw)
         val id = this.arguments!!.getString("id", "")
-        mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
+        mPerson = mContext.getPersonData(id)!!
         mSwitchSingled.isChecked = mPerson.singled
         mSwitchDink.isChecked = mPerson.dink
         etProfile.setText(mPerson.profile.toString())

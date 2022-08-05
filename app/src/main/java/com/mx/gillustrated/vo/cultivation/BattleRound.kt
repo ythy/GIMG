@@ -5,4 +5,5 @@ class BattleRound {
     var clan = 0
     var single = 0
     var enemy = mutableListOf(0,0,0,0,0,0,0,0,0,0)
+    var boss = mutableListOf(0,0,0,0,0,0,0,0,0,0)
 }

@@ -93,7 +93,7 @@ class FragmentTeJi: Fragment() {
 
     fun init(){
         val id = this.arguments!!.getString("id", "")
-        mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
+        mPerson = mContext.getPersonData(id)!!
         mListView.adapter = CultivationTeJiAdapter(this.context!!, mTeJi, object : CultivationTeJiAdapter.TeJiAdapterCallback {
             override fun onDeleteHandler(teji: TeJi) {
                 mPerson.teji.removeIf {

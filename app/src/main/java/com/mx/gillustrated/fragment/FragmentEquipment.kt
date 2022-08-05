@@ -93,7 +93,7 @@ class FragmentEquipment: Fragment() {
 
     fun init(){
         val id = this.arguments!!.getString("id", "")
-        mPerson = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)!!
+        mPerson = mContext.getPersonData(id)!!
         mListView.adapter = CultivationEquipmentAdapter(this.context!!, mEquipments, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
             override fun onDeleteHandler(equipment: Equipment) {
                 mPerson.equipment.removeIf {
@@ -124,7 +124,15 @@ class FragmentEquipment: Fragment() {
             result
         }.toMutableList()
         mEquipments.clear()
-        equipments.sortWith(compareBy<Equipment> {it.type}.thenBy { it.rarity })
+        equipments.sortWith(compareBy <Equipment> {
+            val extra = if( it.type <= 10 ) -10 else if( it.type < 20 && it.type != 12)  20 - 2 * it.type else 0
+            it.type + extra
+        }.thenByDescending {
+            if(it.seq == 0)
+                it.rarity
+            else
+                -it.seq
+        })
         mEquipments.addAll(equipments)
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()

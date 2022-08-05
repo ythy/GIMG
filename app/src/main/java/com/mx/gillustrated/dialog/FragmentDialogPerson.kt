@@ -175,7 +175,7 @@ class FragmentDialogPerson : DialogFragment() {
     fun init(){
         mContext = activity as CultivationActivity
         val id = this.arguments!!.getString("id", "")
-        val person = mContext.getOnlinePersonDetail(id) ?: mContext.getOfflinePersonDetail(id)
+        val person = mContext.getPersonData(id)
         if(person == null){
             onCloseHandler()
             return

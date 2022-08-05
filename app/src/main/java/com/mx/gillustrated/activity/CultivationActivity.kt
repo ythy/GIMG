@@ -60,6 +60,7 @@ class CultivationActivity : BaseActivity() {
     var mAlliance:ConcurrentHashMap<String, Alliance> = ConcurrentHashMap()
     var mClans:ConcurrentHashMap<String, Clan> = ConcurrentHashMap()
     private var mEnemys:ConcurrentHashMap<String, Enemy> = ConcurrentHashMap()
+    var mBoss:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     private var mHistoryData = mutableListOf<CultivationHelper.HistoryInfo>()
     private val mTimeHandler:TimeHandler = TimeHandler(this)
 
@@ -347,6 +348,12 @@ class CultivationActivity : BaseActivity() {
         return alliance
     }
 
+    fun getPersonData(id: String):Person?{
+        if(id == null)
+            return null
+        return  getOnlinePersonDetail(id) ?: getOfflinePersonDetail(id) ?: mBoss[id]
+    }
+
     fun getOnlinePersonDetail(id:String?):Person?{
         if(id == null)
             return null
@@ -496,6 +503,7 @@ class CultivationActivity : BaseActivity() {
         //randomEvent(fixedPerson) 暂时不启用
         updateClans(currentXun)
         updateEnemys(currentXun)
+        updateBoss(currentXun)
     }
 
     //1旬一月
@@ -739,8 +747,7 @@ class CultivationActivity : BaseActivity() {
             val it = e.value
             if(random.nextInt(it.attackFrequency) == 0){
                 it.remainHit--
-                val persons = mPersons.map { it.value }.toMutableList()
-                persons.shuffle()
+                val persons = mPersons.map { it.value }.shuffled()
                 val person = persons[0]
                 val result = CultivationBattleHelper.battleEnemy(person, it, it.HP * 1000)
                 if(result){
@@ -748,11 +755,27 @@ class CultivationActivity : BaseActivity() {
                     it.isDead = true
                     CultivationHelper.gainJiEquipment(person, 14, it.type, it.seq)
                     if(it.type > 1){
-                        gainTeji(person, 10)
+                        gainTeji(person, 20 * it.type)
                     }
                 }else if(it.remainHit <= 0){
                     writeHistory("${it.name} 消失", null, 0)
                     it.isDead = true
+                }
+            }
+        }
+    }
+
+    private fun updateBoss(xun:Long){
+        if(xun % 12 == 0L) {
+            mBoss.map(Map.Entry<String, Person>::value).filter { (xun - it.lastBirthDay) / 12 < it.lifetime }.forEach { u ->
+                val targets = mPersons.map { it.value }.shuffled()
+                val person = targets[0]
+                val result = CultivationBattleHelper.battlePerson(person, u, 10, 10000000 * u.type)
+                if (result) {
+                    u.lifetime = 0
+                    writeHistory("${u.name} 倒", u, 0)
+                    gainTeji(person, 500 * u.type)
+                    CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
                 }
             }
         }
@@ -1172,9 +1195,18 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun temple(){
-        mPersons.forEach { (_: String, u: Person) ->
-            gainTeji(u)
+    private fun addBossHandler(){
+        if(mBoss.map(Map.Entry<String, Person>::value).none { (mCurrentXun - it.lastBirthDay) / 12 < it.lifetime }){
+            val boss = if(Random().nextInt(2) == 0)
+                    CultivationHelper.generateLiYuanBa(mAlliance["6000101"]!!) else
+                    CultivationHelper.generateShadowMao(mAlliance["6000105"]!!)
+            mBoss[boss.id] = boss
+            mBattleRound.boss[boss.type - 1]++
+            writeHistory("====================================", null, 0)
+            writeHistory("↑↑============================↑↑", null, 0)
+            writeHistory("${boss.name}天降", boss, 0)
+            writeHistory("↓↓============================↓↓", null, 0)
+            writeHistory("====================================", null, 0)
         }
     }
 
@@ -1222,9 +1254,8 @@ class CultivationActivity : BaseActivity() {
                 addFixedcPerson()
             }
             R.id.menu_enemy_list->{
-                temple()
+               addBossHandler()
             }
-
 
         }
         return true

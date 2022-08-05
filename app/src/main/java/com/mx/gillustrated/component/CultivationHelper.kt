@@ -244,12 +244,7 @@ object CultivationHelper {
         }
         result.birthDay.add(birthDay)
         result.lastBirthDay = mCurrentXun
-        val initJingJie = mConfig.jingJieType[0]
-        result.jingJieId = initJingJie.id
-        result.jinJieName = getJinJieName(initJingJie.name)
-        result.jinJieColor = initJingJie.color
-        result.jingJieSuccess = initJingJie.success
-        result.jinJieMax = initJingJie.max
+        setPersonJingjie(result)
         result.profile = if(fav) 1001 else getRandomProfile(result.gender)
         result.isFav = fav
         result.tianfus = tianFus
@@ -298,7 +293,14 @@ object CultivationHelper {
         person.extraXuiweiMulti =  getExtraXuiweiMulti(person)
     }
 
-
+    fun setPersonJingjie(person: Person, level: Int = 0){
+        val initJingJie = mConfig.jingJieType[level]
+        person.jingJieId = initJingJie.id
+        person.jinJieName = getJinJieName(initJingJie.name)
+        person.jinJieColor = initJingJie.color
+        person.jingJieSuccess = initJingJie.success
+        person.jinJieMax = initJingJie.max
+    }
 
     fun getPersonBasicString(person:Person, detail:Boolean = true):String{
         return if(detail)
@@ -325,6 +327,34 @@ object CultivationHelper {
         enemy.maxHit = 50 + random.nextInt(51)
         enemy.remainHit = enemy.maxHit
         return enemy
+    }
+
+    fun generateLiYuanBa(alliance: Alliance):Person{
+        val person = getPersonInfo(Pair("李", "\u5143\u9738"), NameUtil.Gender.Male, 20000, null, false,
+                PersonFixedInfoMix(null, null, 1000, 1000))
+        joinFixedAlliance(person, alliance)
+        person.teji.addAll(listOf("8001004", "8001006", "8002001", "8002003", "8002008", "8003002", "8003007"))
+        person.equipment.addAll(listOf("7002802,0"))
+        updatePersonEquipment(person)
+        setPersonJingjie(person, 30)
+        person.HP = 777
+        person.maxHP = 777
+        person.type = 1
+        return person
+    }
+
+    fun generateShadowMao(alliance: Alliance):Person{
+        val person = getPersonInfo(Pair("毛", "\u6b23(\u6697\u5f71)"), NameUtil.Gender.Male, 20000, null, false,
+                PersonFixedInfoMix(null, null, 4000, 4000))
+        joinFixedAlliance(person, alliance)
+        person.teji.addAll(listOf("8001005", "8001006", "8002002", "8002004", "8002009", "8003002", "8003007"))//必连
+        person.equipment.addAll(listOf("7002801,0"))
+        updatePersonEquipment(person)
+        setPersonJingjie(person, 60)
+        person.HP = 999
+        person.maxHP = 999
+        person.type = 2
+        return person
     }
 
     //定义功率 5 extraHP
