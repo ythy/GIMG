@@ -41,7 +41,7 @@ class FragmentTeJi: Fragment() {
                     override fun onItemSelected(teJi: TeJi) {
                         updateTeji(teJi)
                     }
-                }, 3)
+                }, mutableListOf(3))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_teji")
     }
@@ -55,7 +55,7 @@ class FragmentTeJi: Fragment() {
                     override fun onItemSelected(teJi: TeJi) {
                         updateTeji(teJi)
                     }
-                }, 1)
+                }, mutableListOf(1,4))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_teji")
     }
@@ -69,7 +69,7 @@ class FragmentTeJi: Fragment() {
                     override fun onItemSelected(teJi: TeJi) {
                         updateTeji(teJi)
                     }
-                }, 2)
+                }, mutableListOf(2))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_teji")
     }

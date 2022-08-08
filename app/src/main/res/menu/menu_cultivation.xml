@@ -40,4 +40,8 @@
         android:id="@+id/menu_add_fixed"
         android:orderInCategory="600"
         android:title="customPerson"/>
+    <item
+        android:id="@+id/menu_grace"
+        android:orderInCategory="410"
+        android:title="putiantongqing"/>
 </menu>

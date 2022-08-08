@@ -11,6 +11,8 @@ class TeJi() : Parcelable {
     var rarity:Int = 0
     var weight:Int = 0
     var type:Int = 0
+    var target:Int = 0// 0: normal, // 1 except boss and shenji
+    var round:Int = 0
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -18,6 +20,8 @@ class TeJi() : Parcelable {
         rarity = parcel.readInt()
         weight = parcel.readInt()
         type = parcel.readInt()
+        target = parcel.readInt()
+        round = parcel.readInt()
     }
 
     override fun toString(): String {
@@ -30,6 +34,8 @@ class TeJi() : Parcelable {
         parcel.writeInt(rarity)
         parcel.writeInt(weight)
         parcel.writeInt(type)
+        parcel.writeInt(target)
+        parcel.writeInt(round)
     }
 
     override fun describeContents(): Int {

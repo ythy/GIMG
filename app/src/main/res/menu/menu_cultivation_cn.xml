@@ -32,4 +32,8 @@
         android:id="@+id/menu_add_fixed"
         android:orderInCategory="600"
         android:title="定制人物"/>
+    <item
+        android:id="@+id/menu_grace"
+        android:orderInCategory="410"
+        android:title="普天同庆"/>
 </menu>

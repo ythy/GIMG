@@ -3,6 +3,7 @@ package com.mx.gillustrated.dialog
 import com.mx.gillustrated.vo.cultivation.TeJi
 import android.os.Build
 import android.os.Bundle
+import android.util.Range
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +19,10 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationHelper
 
 @RequiresApi(Build.VERSION_CODES.N)
-class FragmentDialogTeJi constructor(val callback:TeJiSelectorCallback, val mType:Int): DialogFragment()  {
+class FragmentDialogTeJi constructor(private val callback:TeJiSelectorCallback, private val mType: MutableList<Int>): DialogFragment()  {
 
     companion object{
-        fun newInstance(callback:TeJiSelectorCallback, type:Int): FragmentDialogTeJi {
+        fun newInstance(callback:TeJiSelectorCallback, type:MutableList<Int>): FragmentDialogTeJi {
             return FragmentDialogTeJi(callback, type)
         }
     }
@@ -49,7 +50,7 @@ class FragmentDialogTeJi constructor(val callback:TeJiSelectorCallback, val mTyp
     }
 
     fun init(){
-        val list = CultivationHelper.mConfig.teji.filter { it.type == mType }.sortedBy { it.rarity }
+        val list = CultivationHelper.mConfig.teji.filter { mType.contains(it.type) }.sortedBy { it.rarity }
         mCurrentSelected = list[0]
         val adapter = ArrayAdapter<TeJi>(context!!,
                 android.R.layout.simple_spinner_item, list)

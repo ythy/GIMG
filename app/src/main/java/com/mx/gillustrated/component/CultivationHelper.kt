@@ -17,8 +17,8 @@ object CultivationHelper {
     var pinyinMode:Boolean = false //是否pinyin模式
     var mCurrentXun:Long = 0//当前时间
     var mHistoryTempData:MutableList<HistoryInfo> = Collections.synchronizedList(mutableListOf())
-    fun writeHistory(content:String, person: Person?, type:Int = 1){
-        mHistoryTempData.add(0, HistoryInfo(content, person, type))
+    fun writeHistory(content:String, person: Person?, type:Int = 1, battleId: String = ""){
+        mHistoryTempData.add(0, HistoryInfo(content, person, type, battleId))
     }
 
     fun joinAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>){
@@ -208,7 +208,7 @@ object CultivationHelper {
 
      fun createTeji(weight:Int = 1):MutableList<String>{
         val result = mutableListOf<String>()
-        mConfig.teji.forEach {
+        mConfig.teji.filter { it.type != 4 }.forEach {
             if(Random().nextInt( it.weight / weight ) == 0){
                 result.add(it.id)
             }
@@ -336,9 +336,9 @@ object CultivationHelper {
         person.teji.addAll(listOf("8001004", "8001006", "8002001", "8002003", "8002008", "8003002", "8003007"))
         person.equipment.addAll(listOf("7002802,0"))
         updatePersonEquipment(person)
-        setPersonJingjie(person, 30)
-        person.HP = 777
-        person.maxHP = 777
+        setPersonJingjie(person, 50)
+        person.HP = 1111
+        person.maxHP = 1111
         person.type = 1
         return person
     }
@@ -354,6 +354,20 @@ object CultivationHelper {
         person.HP = 999
         person.maxHP = 999
         person.type = 2
+        return person
+    }
+
+    fun generateShadowQiu(alliance: Alliance):Person{
+        val person = getPersonInfo(Pair("\u7403\u7403", "(\u6eda\u5706)"), NameUtil.Gender.Female, 20000, null, false,
+                PersonFixedInfoMix(null, null, 4000, 4000))
+        joinFixedAlliance(person, alliance)
+        person.teji.addAll(listOf("8001005", "8001006", "8003002", "8004001"))//必
+        person.equipment.addAll(listOf("7002801,0"))
+        updatePersonEquipment(person)
+        setPersonJingjie(person, 50)
+        person.HP = 777
+        person.maxHP = 777
+        person.type = 3
         return person
     }
 
@@ -528,13 +542,15 @@ object CultivationHelper {
             null
     }
 
+    // type 1 人物信息, 2 流程信息
+    data class HistoryInfo(var content:String, var person:Person?, var type:Int = 0, var battleId:String = "")
 
     val SpecPersonFirstName2:MutableList<String> = mutableListOf("主", "廿一", "廿三")
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿")
     data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int, var TianFuWeight:Int, var LingGenWeight:Int)
 
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u5c71\u6d77", "\u541e\u566c", "\u673a\u7532")
-    val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA")
+    val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA", "#C18135")
     private val LevelMapper = mapOf(
             1 to "初期", 2 to "中期", 3 to "后期", 4 to "圆满"
     )
@@ -544,7 +560,6 @@ object CultivationHelper {
             "DiJing" to "帝境", "ShengJing" to "圣境"
     )
 
-    // type 1 人物信息
-    data class HistoryInfo(var content:String, var person:Person?, var type:Int = 0)
+
 
 }

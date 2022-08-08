@@ -60,7 +60,7 @@ class CultivationActivity : BaseActivity() {
     var mAlliance:ConcurrentHashMap<String, Alliance> = ConcurrentHashMap()
     var mClans:ConcurrentHashMap<String, Clan> = ConcurrentHashMap()
     private var mEnemys:ConcurrentHashMap<String, Enemy> = ConcurrentHashMap()
-    var mBoss:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
+    private var mBoss:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     private var mHistoryData = mutableListOf<CultivationHelper.HistoryInfo>()
     private val mTimeHandler:TimeHandler = TimeHandler(this)
 
@@ -178,9 +178,9 @@ class CultivationActivity : BaseActivity() {
     @OnItemClick(R.id.lv_history)
     fun onListItemClick(position:Int){
         val row = mHistoryData[position]
+        val ft = supportFragmentManager.beginTransaction()
         if(row.type == 1){
             val person = row.person!!
-            val ft = supportFragmentManager.beginTransaction()
             // Create and show the dialog.
             val newFragment = FragmentDialogPerson.newInstance()
             newFragment.isCancelable = false
@@ -188,6 +188,13 @@ class CultivationActivity : BaseActivity() {
             bundle.putString("id", person.id)
             newFragment.arguments = bundle
             newFragment.show(ft, "dialog_person_info")
+        }else if(row.type == 2){
+            val newFragment = FragmentDialogBattleInfo.newInstance()
+            newFragment.isCancelable = true
+            val bundle = Bundle()
+            bundle.putString("id", row.battleId)
+            newFragment.arguments = bundle
+            newFragment.show(ft, "dialog_battle_info")
         }
     }
 
@@ -770,11 +777,12 @@ class CultivationActivity : BaseActivity() {
             mBoss.map(Map.Entry<String, Person>::value).filter { (xun - it.lastBirthDay) / 12 < it.lifetime }.forEach { u ->
                 val targets = mPersons.map { it.value }.shuffled()
                 val person = targets[0]
-                val result = CultivationBattleHelper.battlePerson(person, u, 10, 10000000 * u.type)
+                val result = CultivationBattleHelper.battlePerson(person, u, 10, 5000000 * Math.min(2, u.type))
                 if (result) {
                     u.lifetime = 0
+                    mAlliance[u.allianceId]?.personList?.remove(u.id)
                     writeHistory("${u.name} 倒", u, 0)
-                    gainTeji(person, 500 * u.type)
+                    gainTeji(person, Math.min(1000, 500 * u.type))
                     CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
                 }
             }
@@ -1067,8 +1075,8 @@ class CultivationActivity : BaseActivity() {
             }
             val firstAlliance = alliance[i]
             val secondAlliance = alliance[i+1]
-            val firstAlliancePersons = firstAlliance.personList.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
-            val secondAlliancePersons = secondAlliance.personList.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
+            val firstAlliancePersons = firstAlliance.personList.filter { it.value.type == 0 && CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
+            val secondAlliancePersons = secondAlliance.personList.filter { it.value.type == 0 && CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
 
             if(firstAlliancePersons.size == 0){
                 passIds.add(firstAlliance.id)
@@ -1197,9 +1205,11 @@ class CultivationActivity : BaseActivity() {
 
     private fun addBossHandler(){
         if(mBoss.map(Map.Entry<String, Person>::value).none { (mCurrentXun - it.lastBirthDay) / 12 < it.lifetime }){
-            val boss = if(Random().nextInt(2) == 0)
-                    CultivationHelper.generateLiYuanBa(mAlliance["6000101"]!!) else
-                    CultivationHelper.generateShadowMao(mAlliance["6000105"]!!)
+            val boss = when (Random().nextInt(3)) {
+                0 -> CultivationHelper.generateLiYuanBa(mAlliance["6000101"]!!)
+                1 -> CultivationHelper.generateShadowMao(mAlliance["6000105"]!!)
+                else -> CultivationHelper.generateShadowQiu(mAlliance["6000105"]!!)
+            }
             mBoss[boss.id] = boss
             mBattleRound.boss[boss.type - 1]++
             writeHistory("====================================", null, 0)
@@ -1256,6 +1266,13 @@ class CultivationActivity : BaseActivity() {
             R.id.menu_enemy_list->{
                addBossHandler()
             }
+            R.id.menu_grace->{
+                mPersons.forEach { (_: String, u: Person) ->
+                    u.xiuXei = Math.max(u.xiuXei, 0)
+                }
+                Toast.makeText(this, "不用谢", Toast.LENGTH_SHORT).show()
+            }
+
 
         }
         return true
