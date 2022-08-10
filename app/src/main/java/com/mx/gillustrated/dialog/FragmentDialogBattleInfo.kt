@@ -45,6 +45,34 @@ class FragmentDialogBattleInfo  : DialogFragment() {
         this.dismiss()
     }
 
+    @OnClick(R.id.iv_profile_1)
+    fun onName1ClickHandler(){
+        if(mBattle.attacker == null)
+            return
+        val ft = activity!!.supportFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogPerson.newInstance()
+        newFragment.isCancelable = false
+        val bundle = Bundle()
+        bundle.putString("id", mBattle.attacker!!.id)
+        newFragment.arguments = bundle
+        newFragment.show(ft, "dialog_person_info")
+    }
+
+    @OnClick(R.id.iv_profile_2)
+    fun onName2ClickHandler(){
+        if(mBattle.defender == null)
+            return
+        val ft = activity!!.supportFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogPerson.newInstance()
+        newFragment.isCancelable = false
+        val bundle = Bundle()
+        bundle.putString("id", mBattle.defender!!.id)
+        newFragment.arguments = bundle
+        newFragment.show(ft, "dialog_person_info")
+    }
+
     lateinit var dialogView1:DialogView1
     lateinit var dialogView2:DialogView2
     lateinit var mBattle:BattleInfo
@@ -72,21 +100,30 @@ class FragmentDialogBattleInfo  : DialogFragment() {
 
     private fun showTitle(){
         setProfile(mBattle.attacker, mBattle.attackerValue, dialogView1)
-        setProfile(mBattle.defender, mBattle.defenderValue, dialogView2)
+        setProfile(mBattle.defender, mBattle.defenderValue, dialogView2, false)
     }
 
-    private fun setProfile(person: Person?, battleValue:BattleObject, view:DialogView){
-        val spannable = SpannableString(showing(battleValue.name) + "(${battleValue.hp - battleValue.hpBasis})")
+    private fun setProfile(person: Person?, battleValue:BattleObject, view:DialogView, left:Boolean = true){
+
+        val spannable = SpannableString(showing(battleValue.name))
         if(battleValue.name == mBattle.winnerName){
             spannable.setSpan(ForegroundColorSpan(Color.parseColor("#108A5E")), 0,  showing(battleValue.name).length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }else{
             spannable.setSpan(ForegroundColorSpan(Color.parseColor("#BF7C92")), 0,  showing(battleValue.name).length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         view.name.setText(spannable, TextView.BufferType.SPANNABLE)
-        view.hp.text = "${battleValue.hp}/${battleValue.maxhp}"
-        view.attack.text = "${battleValue.attack}/${battleValue.attackBasis}"
-        view.defence.text = "${battleValue.defence}/${battleValue.defenceBasis}"
-        view.speed.text = "${battleValue.speed}/${battleValue.speedBasis}"
+
+        if(left){
+            view.hp.text = "${battleValue.hpBasis}→${battleValue.hp}"
+            view.attack.text = "${battleValue.attackInit}→${battleValue.attack}"
+            view.defence.text = "${battleValue.defenceInit}→${battleValue.defence}"
+            view.speed.text = "${battleValue.speedInit}→${battleValue.speed}"
+        }else{
+            view.hp.text = "${battleValue.hp}←${battleValue.hpBasis}"
+            view.attack.text = "${battleValue.attack}←${battleValue.attackInit}"
+            view.defence.text = "${battleValue.defence}←${battleValue.defenceInit}"
+            view.speed.text = "${battleValue.speed}←${battleValue.speedInit}"
+        }
 
         if(person == null)
             return

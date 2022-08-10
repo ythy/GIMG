@@ -190,7 +190,7 @@ class CultivationActivity : BaseActivity() {
             newFragment.show(ft, "dialog_person_info")
         }else if(row.type == 2){
             val newFragment = FragmentDialogBattleInfo.newInstance()
-            newFragment.isCancelable = true
+            newFragment.isCancelable = false
             val bundle = Bundle()
             bundle.putString("id", row.battleId)
             newFragment.arguments = bundle

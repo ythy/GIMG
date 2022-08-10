@@ -371,7 +371,7 @@ object CultivationHelper {
         return person
     }
 
-    //定义功率 5 extraHP
+    //0 ~ 5
     fun getProperty(person: Person):MutableList<Int>{
         val property = person.extraProperty.mapIndexed { index, it ->
             it + person.allianceProperty[index] + person.equipmentProperty[index]

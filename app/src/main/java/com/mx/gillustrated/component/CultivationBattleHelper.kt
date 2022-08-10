@@ -15,7 +15,7 @@ object CultivationBattleHelper {
         val battleEnemy = BattleObject(enemy.HP, enemy.maxHP, enemy.attack, enemy.defence, enemy.speed, 1)
         val battleId = UUID.randomUUID().toString()
         battlePerson.battleId = battleId
-        battlePerson.name = person.name
+        replenishInfo(person, battlePerson)
         battleEnemy.battleId = battleId
         battleEnemy.name = enemy.name
         mBattles[battleId] = BattleInfo(battleId, person, null, battlePerson, battleEnemy)
@@ -50,9 +50,9 @@ object CultivationBattleHelper {
         val battlePerson2 = BattleObject(props2[0], props2[1], props2[2], props2[3], props2[4], 0, person2.teji)
         val battleId = UUID.randomUUID().toString()
         battlePerson1.battleId = battleId
-        battlePerson1.name = person1.name
+        replenishInfo(person1, battlePerson1)
         battlePerson2.battleId = battleId
-        battlePerson2.name = person2.name
+        replenishInfo(person2, battlePerson2)
         mBattles[battleId] = BattleInfo(battleId, person1, person2, battlePerson1, battlePerson2)
         addBattleDetail(battleId, "\u6218\u6597\u5f00\u59cb")
         startBattle(battlePerson1, battlePerson2,40, round)
@@ -306,6 +306,13 @@ object CultivationBattleHelper {
             battleInfo.details.add(BattleInfoSeq(battleInfo.round, battleInfo.seq, content, teji))
     }
 
+    private fun replenishInfo(person: Person, battlePerson:BattleObject){
+        battlePerson.name = person.name
+        battlePerson.attackBasis -= person.equipmentProperty[1]
+        battlePerson.defenceBasis -= person.equipmentProperty[2]
+        battlePerson.speedBasis -= person.equipmentProperty[3]
+    }
+
     private fun tejiDetail(id:String):TeJi{
         return CultivationHelper.mConfig.teji.find { it.id == id }!!
     }
@@ -338,15 +345,17 @@ object CultivationBattleHelper {
         var extraDamage:Int = 0
         var minDamage:Int = 1
 
-        val attackBasis:Int = a
-        val defenceBasis:Int = d
-        val speedBasis:Int = s
+        var attackBasis:Int = a
+        var defenceBasis:Int = d
+        var speedBasis:Int = s
         val hpBasis:Int = h
         val maxhp:Int = m
         val type:Int = t
         var kills:MutableList<String> = mutableListOf()
         var battleId:String = ""
         var name: String = ""
-
+        val attackInit:Int = a
+        val defenceInit:Int = d
+        val speedInit:Int = s
     }
 }
