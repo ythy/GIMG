@@ -12,13 +12,11 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import butterknife.OnItemClick
+import butterknife.*
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
+import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 
@@ -102,6 +100,9 @@ class FragmentDialogPersonList  : DialogFragment() {
         newFragment.show(ft, "dialog_person_info")
     }
 
+    @BindView(R.id.et_name)
+    lateinit var etName:EditText
+
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     lateinit var mContext:CultivationActivity
     private var mThreadRunnable:Boolean = true
@@ -129,7 +130,7 @@ class FragmentDialogPersonList  : DialogFragment() {
     private fun registerTimeLooper(){
         Thread(Runnable {
             while (true){
-                Thread.sleep(5000)
+                Thread.sleep(2000)
                 if(mThreadRunnable){
                     val message = Message.obtain()
                     message.what = 1
@@ -158,7 +159,13 @@ class FragmentDialogPersonList  : DialogFragment() {
 
     private fun setOnlineList(){
         mPersonData.clear()
-        mPersonData.addAll(mContext.mPersons.map { it.value })
+        val filterString = etName.text.toString()
+        if(filterString == "" )
+            mPersonData.addAll(mContext.mPersons.map { it.value })
+        else
+            mPersonData.addAll(mContext.mPersons.map { it.value }.filter {
+                it.name.startsWith(filterString, true) || PinyinUtil.convert(it.name).startsWith(filterString, true)
+            })
 
         mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
                 .thenByDescending { it.jingJieId }

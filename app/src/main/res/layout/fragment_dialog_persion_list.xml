@@ -5,6 +5,16 @@
     android:minWidth="300dp" android:minHeight="600dp">
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/et_name"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="1">
         <ListView
