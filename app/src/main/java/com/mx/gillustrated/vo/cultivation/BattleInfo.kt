@@ -7,4 +7,7 @@ class BattleInfo constructor(var id:String, var attacker:Person?, var defender: 
     var details = mutableListOf<BattleInfoSeq>()
     var seq:Int = 0 // 临时
     var round:Int = 0 // 临时
+    var winnerName:String = ""
+    var looserName:String = ""
+
 }

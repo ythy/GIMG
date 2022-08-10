@@ -1,9 +1,13 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +18,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.mx.gillustrated.R
+import com.mx.gillustrated.adapter.CultivationBattleAdapter
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationBattleHelper.BattleObject
@@ -55,8 +60,11 @@ class FragmentDialogBattleInfo  : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mListView.adapter = ArrayAdapter(this.context!!, R.layout.list_simple_item_text1,
-                android.R.id.text1, mBattle.details)
+        mBattle.details.forEach {
+            it.winner = mBattle.winnerName
+            it.looser = mBattle.looserName
+        }
+        mListView.adapter = CultivationBattleAdapter(this.context!!, mBattle.details)
         dialogView1 = DialogView1(view)
         dialogView2 = DialogView2(view)
         showTitle()
@@ -68,7 +76,13 @@ class FragmentDialogBattleInfo  : DialogFragment() {
     }
 
     private fun setProfile(person: Person?, battleValue:BattleObject, view:DialogView){
-        view.name.text = showing(battleValue.name) + " ${battleValue.hpBasis}(${battleValue.hp - battleValue.hpBasis})"
+        val spannable = SpannableString(showing(battleValue.name) + "(${battleValue.hp - battleValue.hpBasis})")
+        if(battleValue.name == mBattle.winnerName){
+            spannable.setSpan(ForegroundColorSpan(Color.parseColor("#108A5E")), 0,  showing(battleValue.name).length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }else{
+            spannable.setSpan(ForegroundColorSpan(Color.parseColor("#BF7C92")), 0,  showing(battleValue.name).length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        view.name.setText(spannable, TextView.BufferType.SPANNABLE)
         view.hp.text = "${battleValue.hp}/${battleValue.maxhp}"
         view.attack.text = "${battleValue.attack}/${battleValue.attackBasis}"
         view.defence.text = "${battleValue.defence}/${battleValue.defenceBasis}"

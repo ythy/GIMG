@@ -24,12 +24,16 @@ object CultivationBattleHelper {
 
         val firstWin = battlePerson.hp > 0
         if(firstWin){
-            addBattleDetail(battleId, "${person.name}\u83b7\u80dc, \u6b8bHP:${battlePerson.hp}")
+            mBattles[battleId]!!.winnerName = person.name
+            mBattles[battleId]!!.looserName = enemy.name
+            addBattleDetail(battleId, "${showName(battlePerson)}\u83b7\u80dc, \u6b8bHP:${battlePerson.hp}")
             CultivationHelper.writeHistory("${person.name}(${battlePerson.hp})  ${props1[0] - battlePerson.hp}🔪${enemy.HP - battleEnemy.hp}  ${enemy.name}(${battleEnemy.hp})", person, 2, battleId)
             person.xiuXei += xiuwei
         }else{
+            mBattles[battleId]!!.winnerName = enemy.name
+            mBattles[battleId]!!.looserName = person.name
             addBattleDetail(battleId, "${enemy.name}\u83b7\u80dc, \u6b8bHP:${battleEnemy.hp}")
-            CultivationHelper.writeHistory("${enemy.name}(${battleEnemy.hp}/${enemy.remainHit}-${enemy.attack}:${enemy.defence}:${enemy.speed})  ${enemy.HP - battleEnemy.hp}🔪${props1[0] - battlePerson.hp}  ${person.name}(${battlePerson.hp})", person, 2, battleId)
+            CultivationHelper.writeHistory(" ${enemy.name}(${battleEnemy.hp}/${enemy.remainHit}-${enemy.attack}:${enemy.defence}:${enemy.speed})  ${enemy.HP - battleEnemy.hp}🔪${props1[0] - battlePerson.hp}  ${person.name}(${battlePerson.hp})", person, 2, battleId)
             person.xiuXei -= xiuwei
         }
         person.HP = battlePerson.hp -  props1[5]
@@ -56,12 +60,16 @@ object CultivationBattleHelper {
         mBattles[battleId]!!.round = 0
         val firstWin = battlePerson1.hp > battlePerson2.hp
         if(firstWin){
-            addBattleDetail(battleId, "${person1.name}\u83b7\u80dc, \u6b8bHP:${battlePerson1.hp}")
+            mBattles[battleId]!!.winnerName = person1.name
+            mBattles[battleId]!!.looserName = person2.name
+            addBattleDetail(battleId, "${showName(battlePerson1)}\u83b7\u80dc, \u6b8bHP:${battlePerson1.hp}")
             CultivationHelper.writeHistory("${person1.name}(${battlePerson1.hp})  ${props1[0] - battlePerson1.hp}🔪${props2[0] - battlePerson2.hp}  ${person2.name}(${battlePerson2.hp})", person1, 2, battleId)
             person1.xiuXei += xiuwei / 4
             person2.xiuXei -= xiuwei
         }else{
-            addBattleDetail(battleId, "${person2.name}\u83b7\u80dc, \u6b8bHP:${battlePerson2.hp}")
+            mBattles[battleId]!!.winnerName = person2.name
+            mBattles[battleId]!!.looserName = person1.name
+            addBattleDetail(battleId, "${showName(battlePerson2)}\u83b7\u80dc, \u6b8bHP:${battlePerson2.hp}")
             CultivationHelper.writeHistory("${person2.name}(${battlePerson2.hp})  ${props2[0] - battlePerson2.hp}🔪${props1[0] - battlePerson1.hp}  ${person1.name}(${battlePerson1.hp})", person2, 2, battleId)
             person2.xiuXei += xiuwei / 4
             person1.xiuXei -= xiuwei
@@ -76,6 +84,9 @@ object CultivationBattleHelper {
     private fun startBattle(props1: BattleObject, props2: BattleObject, randomBasis:Int, round: Int){
         var loopCount = 0
         val battlePersons = mutableListOf(props1, props2)
+        preBattleRound(battlePersons)
+        if(afterHPChangedPossibleEveryPoint(battlePersons))
+            return
         while (loopCount++ < round){
             mBattles[props1.battleId]!!.round++
             mBattles[props1.battleId]!!.seq = 0
@@ -84,14 +95,77 @@ object CultivationBattleHelper {
                 break
             val attackFirstIndex = if ( getSpeed(props1, randomBasis) > getSpeed(props2, randomBasis)) 0 else 1
             val attackLaterIndex = Math.abs(attackFirstIndex - 1)
-            addBattleDetail(props1.battleId, "${battlePersons[attackFirstIndex].name}\u7684\u56de\u5408")
+            addBattleDetail(props1.battleId, "${showName(battlePersons[attackFirstIndex])}\u7684\u56de\u5408")
             battlingOpponent(battlePersons[attackFirstIndex], battlePersons[attackLaterIndex])
             if(afterHPChangedPossibleEveryPoint(battlePersons))
                 break
-            addBattleDetail(props1.battleId, "${battlePersons[attackLaterIndex].name}\u7684\u56de\u5408")
+            addBattleDetail(props1.battleId, "${showName(battlePersons[attackLaterIndex])}\u7684\u56de\u5408")
             battlingOpponent(battlePersons[attackLaterIndex], battlePersons[attackFirstIndex])
             if(afterHPChangedPossibleEveryPoint(battlePersons))
                 break
+        }
+    }
+
+    private fun preBattleRound(battlePersons:MutableList<BattleObject>){
+        val battleId = battlePersons[0].battleId
+        battlePersons.forEachIndexed { index, current ->
+            val opponent = battlePersons[Math.abs(index - 1)]
+            if (hasTeji("8003003", current)) {
+                current.minDamage = 10
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8003003").name}\u6548\u679c, \u6700\u5c0f\u4f24\u5bb310", "8003003")
+            }
+            if (hasTeji("8001005", current)) {
+                current.extraDamage += 40
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001005").name}\u6548\u679c, \u9644\u52a0\u4f24\u5bb340", "8001005")
+            }
+            if (hasTeji("8001004", current)) {
+                current.extraDamage += 20
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001004").name}\u6548\u679c, \u9644\u52a0\u4f24\u5bb320", "8001004")
+            }
+            if(hasTeji("8002003", current)){
+                opponent.hp -= 30
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002003").name}\u6548\u679c, ${showName(opponent)}HP-30", "8002003")
+            }
+            if(hasTeji("8002004", current)){
+                opponent.hp -= 50
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002004").name}\u6548\u679c, ${showName(opponent)}HP-50", "8002004")
+            }
+            if(hasTeji("8002006", current)){//weakness 20
+                opponent.attack -= Math.round(opponent.attackBasis * 0.2f)
+                opponent.defence -= Math.round(opponent.defenceBasis * 0.2f)
+                opponent.speed -= Math.round(opponent.speedBasis * 0.2f)
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002006").name}\u6548\u679c, ${showName(opponent)}\u865a\u5f3120%", "8002006")
+            }
+            if(hasTeji("8002007", current)){//weakness 50
+                opponent.attack -= Math.round(opponent.attackBasis * 0.5f)
+                opponent.defence -= Math.round(opponent.defenceBasis * 0.5f)
+                opponent.speed -=  Math.round(opponent.speedBasis * 0.5f)
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002007").name}\u6548\u679c, ${showName(opponent)}\u865a\u5f3150%", "8002007")
+            }
+            if(hasTeji("8002008", current)){//gain 20
+                current.attack += Math.round(current.attackBasis * 0.2f)
+                current.defence += Math.round(current.defenceBasis * 0.2f)
+                current.speed += Math.round(current.speedBasis * 0.2f)
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002008").name}\u6548\u679c, \u5c5e\u6027\u589e\u5f3a20%", "8002008")
+            }
+            if(hasTeji("8002009", current)){//gain 50
+                current.attack += Math.round(current.attackBasis * 0.5f)
+                current.defence += Math.round(current.defenceBasis * 0.5f)
+                current.speed += Math.round(current.speedBasis * 0.5f)
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002009").name}\u6548\u679c, \u5c5e\u6027\u589e\u5f3a50%", "8002009")
+            }
+            if(hasTeji("8004001", current) && current.status.none { it in 1..100 }){
+                current.attack += Math.round(current.attackBasis * 1f)
+                current.defence += Math.round(current.defenceBasis * 1f)
+                current.speed += Math.round(current.speedBasis * 1f)
+                current.status.add(1)
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8004001").name}\u53d1\u52a8, 80%\u6982\u7387\u8ffd\u51fb", "8004001")
+            }
+            if(hasTeji("8004002", current) && current.status.none { it in 1..100 }){
+                current.speed += Math.round(current.speedBasis * 1f)
+                current.status.add(2)
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8004002").name}\u53d1\u52a8, 80%\u6982\u7387\u5c01\u5370", "8004002")
+            }
         }
     }
 
@@ -99,68 +173,23 @@ object CultivationBattleHelper {
         val battleId = battlePersons[0].battleId
         battlePersons.forEachIndexed { index, current ->
             val opponent = battlePersons[Math.abs(index - 1)]
-            if(current.kills.find { it == "8002001" } != null){
+            if(hasTeji("8002001", current)){
                 opponent.hp -= 10
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8002001").name}\u6548\u679c, ${opponent.name}HP-10")
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002001").name}\u6548\u679c, ${showName(opponent)}HP-10", "8002001")
             }
-            if(current.kills.find { it == "8002002" } != null){
+            if(hasTeji("8002002", current)){
                 opponent.hp -= 20
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8002002").name}\u6548\u679c, ${opponent.name}HP-20")
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002002").name}\u6548\u679c, ${showName(opponent)}HP-20", "8002002")
             }
-            if(current.kills.find { it == "8002003" } != null && round == 1){
-                opponent.hp -= 30
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8002003").name}\u6548\u679c, ${opponent.name}HP-30")
-            }
-            if(current.kills.find { it == "8002004" } != null && round == 1){
-                opponent.hp -= 50
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8002004").name}\u6548\u679c, ${opponent.name}HP-50")
-            }
-            if(current.kills.find { it == "8002006" } != null && round == 1){//weakness 20
-                opponent.attack -= Math.round(opponent.attackBasis * 0.2f)
-                opponent.defence -= Math.round(opponent.defenceBasis * 0.2f)
-                opponent.speed -= Math.round(opponent.speedBasis * 0.2f)
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8002006").name}\u6548\u679c, ${opponent.name}\u865a\u5f3120%")
-            }
-            if(current.kills.find { it == "8002007" } != null && round == 1){//weakness 50
-                opponent.attack -= Math.round(opponent.attackBasis * 0.5f)
-                opponent.defence -= Math.round(opponent.defenceBasis * 0.5f)
-                opponent.speed -=  Math.round(opponent.speedBasis * 0.5f)
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8002007").name}\u6548\u679c, ${opponent.name}\u865a\u5f3150%")
-            }
-            if(current.kills.find { it == "8002008" } != null && round == 1){//gain 20
-                current.attack += Math.round(current.attackBasis * 0.2f)
-                current.defence += Math.round(current.defenceBasis * 0.2f)
-                current.speed += Math.round(current.speedBasis * 0.2f)
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8002008").name}\u6548\u679c, \u5c5e\u6027\u589e\u5f3a20%")
-            }
-            if(current.kills.find { it == "8002009" } != null && round == 1){//gain 50
-                current.attack += Math.round(current.attackBasis * 0.5f)
-                current.defence += Math.round(current.defenceBasis * 0.5f)
-                current.speed += Math.round(current.speedBasis * 0.5f)
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8002009").name}\u6548\u679c, \u5c5e\u6027\u589e\u5f3a50%")
-            }
-            if(current.kills.find { it == "8004001" } != null && current.status.none { it in 1..100 }){
-                current.attack += Math.round(current.attackBasis * 1f)
-                current.defence += Math.round(current.defenceBasis * 1f)
-                current.speed += Math.round(current.speedBasis * 1f)
-                current.status.add(1)
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8004001").name}\u53d1\u52a8, 80%\u6982\u7387\u8ffd\u51fb")
-            }
-            if(current.kills.find { it == "8004002" } != null && current.status.none { it in 1..100 }){
-                current.speed += Math.round(current.speedBasis * 1f)
-                current.status.add(2)
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8004002").name}\u53d1\u52a8, 80%\u6982\u7387\u5c01\u5370")
-            }
-            if(current.kills.find { it == "8002005" } != null){
+            if(hasTeji("8002005", current)){
                 current.hp += 20
                 current.hp = Math.min(current.hp, current.maxhp)
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8002005").name}\u6548\u679c, HP+20")
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002005").name}\u6548\u679c, HP+20", "8002005")
             }
-            if(current.kills.find { it == "8001007" } != null && opponent.kills.find { it == "8001006" } == null
-                    && opponent.type == 0 && isTrigger(20) ){//kill immediately
+            if(hasTeji("8001007", current) && isTrigger(20, opponent) ){//kill immediately
                 if(opponent.hp > 0) {
                     opponent.hp = 0
-                    addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8001007").name}\u53d1\u52a8, HP0")
+                    addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001007").name}\u53d1\u52a8, HP0", "8001007")
                 }
             }
         }
@@ -171,19 +200,18 @@ object CultivationBattleHelper {
         val battleId = battlePersons[0].battleId
         battlePersons.forEachIndexed { index, current ->
             val opponent = battlePersons[Math.abs(index - 1)]
-            if(current.kills.find { it == "8001003" } != null && current.hp <= 0 && isTrigger(20)){
+            if(hasTeji("8001003", current) && current.hp <= 0 && isTrigger(20)){
                 current.hp = current.maxhp
                 current.goneCount++
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8001003").name}\u53d1\u52a8, HP\u5168\u6062\u590d")
-            }else if(current.kills.find { it == "8001001" } != null && current.hp <= 0 && isTrigger()){
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001003").name}\u53d1\u52a8, HP\u5168\u6062\u590d", "8001003")
+            }else if(hasTeji("8001001", current) && current.hp <= 0 && isTrigger()){
                 current.hp = 1
                 current.goneCount++
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8001001").name}\u53d1\u52a8, HP1")
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001001").name}\u53d1\u52a8, HP1", "8001001")
             }
-            if(current.kills.find { it == "8001002" } != null  && current.hp <= 0
-               && opponent.kills.find { it == "8001006" } == null && opponent.type == 0){
+            if(hasTeji("8001002", current) && current.hp <= 0 && isTrigger(100, opponent)){
                 opponent.hp = 1
-                addBattleDetail(battleId, "${current.name}\u7279\u6280:${tejiDetail("8001002").name}\u53d1\u52a8, ${opponent.name}HP1")
+                addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001002").name}\u53d1\u52a8, ${showName(opponent)}HP1", "8001002")
             }
         }
 
@@ -196,8 +224,8 @@ object CultivationBattleHelper {
 
     private fun battlingOpponent(attacker: BattleObject, defender: BattleObject){
         battleCycle(attacker, defender)
-        if(attacker.kills.find { it == "8003007" } != null && defender.hp > 0 && attacker.hp > 0 && isTrigger() ){
-            addBattleDetail(attacker.battleId, "${attacker.name}\u7279\u6280:${tejiDetail("8003007").name}\u53d1\u52a8")
+        if(hasTeji("8003007", attacker) && defender.hp > 0 && attacker.hp > 0 && isTrigger() ){
+            addBattleDetail(attacker.battleId, "${showName(attacker)}\u7279\u6280:${tejiDetail("8003007").name}\u53d1\u52a8", "8003007")
             battleCycle(attacker, defender)
         }
     }
@@ -210,12 +238,12 @@ object CultivationBattleHelper {
                     break
                 if(attacker.hp <= 0 || defender.hp <= 0)
                     break
-                addBattleDetail(attacker.battleId, "${attacker.name}\u8ffd\u51fb\u53d1\u52a8")
+                addBattleDetail(attacker.battleId, "${showName(attacker)}\u8ffd\u51fb\u53d1\u52a8")
                 inBattles(attacker, defender)
             }
         }
-        if(defender.kills.find { it == "8003008" } != null && defender.hp > 0 && attacker.hp > 0 && isTrigger() ){//anti-attack
-            addBattleDetail(defender.battleId, "${defender.name}\u7279\u6280:${tejiDetail("8003008").name}\u53d1\u52a8")
+        if(hasTeji("8003008", defender) && defender.hp > 0 && attacker.hp > 0 && isTrigger() ){//anti-attack
+            addBattleDetail(defender.battleId, "${showName(defender)}\u7279\u6280:${tejiDetail("8003008").name}\u53d1\u52a8", "8003008")
             inBattles(defender, attacker)
         }
     }
@@ -223,78 +251,76 @@ object CultivationBattleHelper {
     private fun inBattles(attacker: BattleObject, defender: BattleObject){
         val battleId = attacker.battleId
         if(defender.status.contains(2) && isTrigger(80)){//封
-            addBattleDetail(battleId, "${defender.name}\u5c01\u5370\u53d1\u52a8, ${attacker.name}\u65e0\u6cd5\u884c\u52a8")
+            addBattleDetail(battleId, "${showName(defender)}\u5c01\u5370\u53d1\u52a8, ${showName(attacker)}\u65e0\u6cd5\u884c\u52a8")
             return
         }
-        if(defender.kills.find { it == "8003001" } != null && isTrigger()){
-            addBattleDetail(battleId, "${defender.name}\u7279\u6280:${tejiDetail("8003001").name}\u53d1\u52a8, ${attacker.name}\u653b\u51fb\u88ab\u56de\u907f")
+        if(hasTeji("8003001", defender) && isTrigger()){
+            addBattleDetail(battleId, "${showName(defender)}\u7279\u6280:${tejiDetail("8003001").name}\u53d1\u52a8, ${showName(attacker)}\u653b\u51fb\u88ab\u56de\u907f", "8003001")
             return
         }
         val attackerValue = attacker.attack
         var defenderValue = defender.defence
-        if(attacker.kills.find { it == "8003005" } != null && isTrigger()){
+        if(hasTeji("8003005", attacker) && isTrigger()){
             defenderValue = 0
-            addBattleDetail(battleId, "${attacker.name}\u7279\u6280:${tejiDetail("8003005").name}\u53d1\u52a8, ${defender.name}\u9632\u5fa10")
+            addBattleDetail(battleId, "${showName(attacker)}\u7279\u6280:${tejiDetail("8003005").name}\u53d1\u52a8, ${showName(defender)}\u9632\u5fa10", "8003005")
         }
         var attackResult = attackerValue - defenderValue
-        if(attacker.kills.find { it == "8003002" } != null && attackResult > 0 && isTrigger() ){
+        if(hasTeji("8003002", attacker) && attackResult > 0 && isTrigger() ){
             attackResult = Math.round( attackResult * 2.0f)
-            addBattleDetail(battleId, "${attacker.name}\u7279\u6280:${tejiDetail("8003002").name}\u53d1\u52a8, \u4f24\u5bb3\u7ed3\u679c2\u500d")
+            addBattleDetail(battleId, "${showName(attacker)}\u7279\u6280:${tejiDetail("8003002").name}\u53d1\u52a8, \u4f24\u5bb3\u7ed3\u679c2\u500d", "8003002")
         }
-        var minReduce = 1
-        if(attacker.kills.find { it == "8003003" } != null ){
-            minReduce = 10
-            addBattleDetail(battleId, "${attacker.name}\u7279\u6280:${tejiDetail("8003003").name}\u6548\u679c, \u6700\u5c0f\u4f24\u5bb310")
-        }
-        val hpReduced = Math.max(minReduce, attackResult)
 
-        var extraReduce = 0
-        if(attacker.kills.find { it == "8001005" } != null ){
-            extraReduce += 40
-            addBattleDetail(battleId, "${attacker.name}\u7279\u6280:${tejiDetail("8001005").name}\u6548\u679c, \u9644\u52a0\u4f24\u5bb340")
-        }
-        if(attacker.kills.find { it == "8001004" } != null ){
-            extraReduce += 20
-            addBattleDetail(battleId, "${attacker.name}\u7279\u6280:${tejiDetail("8001004").name}\u6548\u679c, \u9644\u52a0\u4f24\u5bb320")
-        }
-        defender.hp -= hpReduced + extraReduce
-        addBattleDetail(battleId, "${attacker.name}\u7684\u653b\u51fb，${defender.name}HP-${hpReduced + extraReduce}")
+        val hpReduced = Math.max(attacker.minDamage, attackResult)
+        defender.hp -= hpReduced + attacker.extraDamage
+        addBattleDetail(battleId, "${showName(attacker)}\u7684\u653b\u51fb，${showName(defender)}HP-${hpReduced + attacker.extraDamage}")
 
-        if(defender.kills.find { it == "8003009" } != null && attacker.type == 0 && attacker.kills.find { it == "8001006" } == null && isTrigger() ){// anti-shake
+        if(hasTeji("8003009", defender) && isTrigger(50, attacker) ){// anti-shake
             val antiValue = Math.round( hpReduced * 0.5f)
             attacker.hp -= antiValue
-            addBattleDetail(battleId, "${defender.name}\u7279\u6280:${tejiDetail("8003009").name}\u53d1\u52a8, ${attacker.name}HP-$antiValue")
+            addBattleDetail(battleId, "${showName(defender)}\u7279\u6280:${tejiDetail("8003009").name}\u53d1\u52a8, ${showName(attacker)}HP-$antiValue", "8003009")
         }
-        if(attacker.kills.find { it == "8003006" } != null ){
+        if(hasTeji("8003006", attacker)){
             val xiValue = Math.round( hpReduced * 0.5f)
             attacker.hp += xiValue
             attacker.hp = Math.min(attacker.hp, attacker.maxhp)
-            addBattleDetail(battleId, "${attacker.name}\u7279\u6280:${tejiDetail("8003006").name}\u53d1\u52a8, HP+$xiValue")
+            addBattleDetail(battleId, "${showName(attacker)}\u7279\u6280:${tejiDetail("8003006").name}\u53d1\u52a8, HP+$xiValue", "8003006")
         }
     }
 
     private fun getSpeed(props:BattleObject, randomBasis:Int):Int{
         var propsSpeed = props.speed
-        if(props.kills.find { it == "8003004" } != null && isTrigger()){
+        if(hasTeji("8003004", props) && isTrigger()){
             propsSpeed = Math.round( props.speed.toFloat() * 2.0f)
-            addBattleDetail(props.battleId, "${props.name}\u7279\u6280:${tejiDetail("8003004").name}\u53d1\u52a8, \u901f\u5ea6\u63d0\u5347\u4e3a$propsSpeed")
+            addBattleDetail(props.battleId, "${showName(props)}\u7279\u6280:${tejiDetail("8003004").name}\u53d1\u52a8, \u901f\u5ea6\u63d0\u5347\u4e3a$propsSpeed", "8003004")
         }
         return propsSpeed + Random().nextInt(randomBasis)
 
     }
 
-    private fun addBattleDetail(id:String, content:String){
+    private fun addBattleDetail(id:String, content:String, teji:String? = null){
         val battleInfo =  mBattles[id]!!
         battleInfo.seq++
-        battleInfo.details.add(BattleInfoSeq(battleInfo.round, battleInfo.seq, content))
+        if(teji == null)
+            battleInfo.details.add(BattleInfoSeq(battleInfo.round, battleInfo.seq, content))
+        else
+            battleInfo.details.add(BattleInfoSeq(battleInfo.round, battleInfo.seq, content, teji))
     }
 
     private fun tejiDetail(id:String):TeJi{
         return CultivationHelper.mConfig.teji.find { it.id == id }!!
     }
 
-    private fun isTrigger(chance:Int = 50):Boolean{
-        return Random().nextInt(100) < chance
+    private fun hasTeji(id: String, person:BattleObject):Boolean{
+        return person.kills.find { it == id } != null
+    }
+
+    private fun isTrigger(chance:Int = 50, opponent:BattleObject? = null):Boolean{
+        val exception = if(opponent != null) opponent.type == 0 || hasTeji("8001006", opponent) else false
+        return !exception && ( Random().nextInt(100) < chance )
+    }
+
+    private fun showName(person:BattleObject):String{
+        return "<${person.name}>"
     }
 
     class BattleObject(h: Int, m:Int, a: Int, d: Int, s: Int, t:Int) {
@@ -306,17 +332,21 @@ object CultivationBattleHelper {
         var attack: Int = a
         var defence:Int = d
         var speed:Int = s
+        var hp:Int = h
+        var goneCount:Int = 0//gone次数
+        var status:MutableList<Int> = mutableListOf() // 1 ~ 100，变
+        var extraDamage:Int = 0
+        var minDamage:Int = 1
+
         val attackBasis:Int = a
         val defenceBasis:Int = d
         val speedBasis:Int = s
-        var hp:Int = h
         val hpBasis:Int = h
         val maxhp:Int = m
         val type:Int = t
         var kills:MutableList<String> = mutableListOf()
-        var goneCount:Int = 0//gone次数
-        var status:MutableList<Int> = mutableListOf() // 1 ~ 100，变
         var battleId:String = ""
         var name: String = ""
+
     }
 }
