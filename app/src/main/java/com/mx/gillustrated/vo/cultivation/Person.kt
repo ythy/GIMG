@@ -28,8 +28,8 @@ class Person() :Parcelable {
         var singled:Boolean = false
         var dink:Boolean = false
 
-        var HP:Int = 10
-        var maxHP:Int = 10
+        var HP:Int = 100
+        var maxHP:Int = 100
         var extraProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//update once deps tian linggen
 
         var equipment:MutableList<String> =  Collections.synchronizedList(mutableListOf())
