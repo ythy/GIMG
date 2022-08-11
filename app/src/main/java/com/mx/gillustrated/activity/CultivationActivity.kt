@@ -463,9 +463,6 @@ class CultivationActivity : BaseActivity() {
                 if (it.isFav || (lastJingJieDigt.second >= 6 && lastJingJieDigt.third == 4)) {
                     writeHistory("${getPersonBasicString(it)} $commonText", it)
                 }
-                if (lastJingJieDigt.second >= 7 && lastJingJieDigt.third == 4) {
-                    addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
-                }
                 it.jingJieId = next.id
                 it.jinJieName = CultivationHelper.getJinJieName(next.name)
                 it.jingJieSuccess = next.success
@@ -475,7 +472,6 @@ class CultivationActivity : BaseActivity() {
                 it.lifetime += next.lifetime * (100 + (allianceNow?.lifetime ?: 0)) / 100
             } else {
                 val commonText = "转转成功，${personDataString[2]} $random/$totalSuccess"
-                addPersonEvent(it, "${getYearString()} ${getPersonBasicString(it, false)} $commonText")
                 writeHistory("${getPersonBasicString(it)} $commonText", it)
                 it.jingJieId = mConfig.jingJieType[0].id
                 it.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name)
