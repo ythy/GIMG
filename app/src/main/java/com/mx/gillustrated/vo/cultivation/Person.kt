@@ -37,6 +37,7 @@ class Person() :Parcelable {
         var equipmentSuccess:Int = 0 //
         var equipmentProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//
         var teji:MutableList<String> =  Collections.synchronizedList(mutableListOf())
+        var follower:MutableList<String> =  Collections.synchronizedList(mutableListOf())
 
         var jingJieId:String = ""
         var jingJieSuccess:Int = 0
@@ -97,6 +98,7 @@ class Person() :Parcelable {
                 equipmentSuccess = parcel.readInt()
                 equipmentProperty = parcel.createIntArray().toMutableList()
                 teji = Collections.synchronizedList(parcel.createStringArrayList())
+                follower = Collections.synchronizedList(parcel.createStringArrayList())
 
                 jingJieId = parcel.readString()
                 jingJieSuccess = parcel.readInt()
@@ -155,6 +157,7 @@ class Person() :Parcelable {
                 parcel.writeInt(equipmentSuccess)
                 parcel.writeIntArray(equipmentProperty.toIntArray())
                 parcel.writeStringList(teji)
+                parcel.writeStringList(follower)
 
                 parcel.writeString(jingJieId)
                 parcel.writeInt(jingJieSuccess)

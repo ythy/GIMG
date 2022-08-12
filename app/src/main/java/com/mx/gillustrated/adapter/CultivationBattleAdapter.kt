@@ -57,8 +57,8 @@ class CultivationBattleAdapter constructor(mContext: Context, private val list: 
         val history = "$round${showing(list[arg0].content)}"
         val battle = list[arg0]
 
-        val matchResultWinner = "<${showing(battle.winner).replace("(", "\\(").replace(")", "\\)")}>".toRegex().find(history)
-        val matchResultLooser = "<${showing(battle.looser).replace("(", "\\(").replace(")", "\\)")}>".toRegex().find(history)
+        val matchResultWinner = "<${showing(battle.winner).replace("(", "\\(").replace(")", "\\)")}(-[^>]+)?>".toRegex().find(history)
+        val matchResultLooser = "<${showing(battle.looser).replace("(", "\\(").replace(")", "\\)")}(-[^>]+)?>".toRegex().find(history)
          var matchResultTeji: MatchResult? = null
         if (battle.teji != null) {
             matchResultTeji = showing(CultivationHelper.mConfig.teji.find { it.id == battle.teji }?.name!!).toRegex().find(history)

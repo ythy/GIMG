@@ -8,5 +8,6 @@ data class Config constructor(val lingGenType: List<LingGen>, val jingJieType:Li
                               val alliance: List<AllianceConfig>,
                               val equipment: List<Equipment>,
                               val teji: List<TeJi>,
-                              val status: List<Status>
+                              val status: List<Status>,
+                              val follower:List<Follower>
 )

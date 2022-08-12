@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/spinner_follower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:paddingEnd="20dp"
+            tools:ignore="RtlSymmetry" />
+        <ImageButton
+            android:id="@+id/btn_save"
+            android:layout_marginStart="10dp"
+            style="@style/ImageButtonSmall"
+            android:background="@drawable/material_done" />
+    </LinearLayout>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="1"
+        android:cacheColorHint="#00000000"
+        android:layout_margin="5dp"
+        android:divider="?attr/colorGridSecondary"
+        android:dividerHeight="1px"
+        android:fastScrollEnabled="true"
+        android:id="@+id/lv_follower">
+    </ListView>
+</LinearLayout>
