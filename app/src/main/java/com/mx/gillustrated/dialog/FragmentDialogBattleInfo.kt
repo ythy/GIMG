@@ -105,7 +105,7 @@ class FragmentDialogBattleInfo  : DialogFragment() {
 
     private fun setProfile(person: Person?, battleValue:BattleObject, view:DialogView, left:Boolean = true){
 
-        val spannable = SpannableString(showing(battleValue.name))
+        val spannable = SpannableString(showing(battleValue.name)+"(${battleValue.follower.size})")
         if(battleValue.name == mBattle.winnerName){
             spannable.setSpan(ForegroundColorSpan(Color.parseColor("#108A5E")), 0,  showing(battleValue.name).length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }else{

@@ -457,7 +457,7 @@ object CultivationBattleHelper {
                 status.add("${it.name}${remainStatusRound(person, it.id)}")
             }
         }
-        val name = if (person.type == 2) "<${person.name}>${person.hp}" else "<${person.name}>"
+        val name = if (person.type == 2) "<${person.name}>" else "<${person.name}>"
         return if (status.isEmpty() || !showStatus) name else  "$name(${status.joinToString()})"
     }
 
