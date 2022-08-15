@@ -84,7 +84,7 @@ class FragmentFollower: Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mSpinner.adapter = adapter
         mSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val follower = parent.selectedItem as Follower
                 mCurrentSelected = follower
             }

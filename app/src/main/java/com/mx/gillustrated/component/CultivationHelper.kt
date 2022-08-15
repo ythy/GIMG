@@ -494,7 +494,7 @@ object CultivationHelper {
     }
 
     fun showing(input:String):String{
-        return if (pinyinMode) PinyinUtil.convert(input) else input
+        return if (pinyinMode) PinyinUtil.convert(input.trim()) else input.trim()
     }
 
     fun getJinJieName(input:String):String{
