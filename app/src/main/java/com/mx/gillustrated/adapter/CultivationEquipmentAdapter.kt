@@ -1,16 +1,14 @@
 package com.mx.gillustrated.adapter
 
-import android.content.ComponentCallbacks
+
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
+import android.widget.BaseExpandableListAdapter
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
@@ -18,35 +16,79 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.vo.cultivation.Equipment
 
-class CultivationEquipmentAdapter constructor(mContext: Context, private val list: List<Equipment>, private val callbacks: EquipmentAdapterCallback) : BaseAdapter() {
-    private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
+class CultivationEquipmentAdapter constructor(mContext: Context, private val grouplist: List<Equipment>, private val callbacks: EquipmentAdapterCallback) : BaseExpandableListAdapter() {
 
-    override fun getCount(): Int {
-        return list.size
+    override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
+        return false
     }
 
-    override fun getItem(arg0: Int): Any {
-        return list[arg0]
+    override fun hasStableIds(): Boolean {
+       return true
     }
 
-    override fun getItemId(arg0: Int): Long {
-        return arg0.toLong()
+    override fun getGroup(groupPosition: Int): Equipment {
+        return grouplist[groupPosition]
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
-        var convertView = convertViews
-        lateinit var component: ViewHolder
+    override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
+        var convertView = convertView
+        lateinit var component: ViewHolderGroup
 
         if (convertView == null) {
             convertView = layoutInflater.inflate(
-                    R.layout.adapter_cultivation_equipment, arg2, false)
-            component = ViewHolder(convertView)
+                    R.layout.adapter_cultivation_equipment, parent, false)
+            component = ViewHolderGroup(convertView)
             convertView!!.tag = component
         } else
-            component = convertView.tag as ViewHolder
+            component = convertView.tag as ViewHolderGroup
 
-        val values = list[arg0]
+        val values = getGroup(groupPosition)
+        val child = values.children
+        if(child.size == 1)
+            component.name.text = CultivationHelper.showing(values.name)
+        else
+            component.name.text = "${CultivationHelper.showing(values.name)}(${child.size})"
+
+        component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
+        component.xiuwei.text = child.sumBy { it.xiuwei }.toString()
+        component.success.text = child.sumBy { it.success }.toString()
+        val properties = mutableListOf(0,0,0,0)
+        child.forEach {
+            (0 until 4).forEach { index ->
+                properties[index] += it.property[index]
+            }
+        }
+        component.props.text = properties.joinToString()
+
+
+        return convertView
+    }
+
+    override fun getChildrenCount(groupPosition: Int): Int {
+        return getGroup(groupPosition).children.size
+    }
+
+    override fun getChild(groupPosition: Int, childPosition: Int): Equipment {
+        return getGroup(groupPosition).children[childPosition]
+    }
+
+    override fun getGroupId(groupPosition: Int): Long {
+       return groupPosition.toLong()
+    }
+
+    override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
+        var convertView = convertView
+        lateinit var component: ViewHolderChild
+
+        if (convertView == null) {
+            convertView = layoutInflater.inflate(
+                    R.layout.adapter_cultivation_equipment_child, parent, false)
+            component = ViewHolderChild(convertView)
+            convertView!!.tag = component
+        } else
+            component = convertView.tag as ViewHolderChild
+
+        val values = getChild(groupPosition, childPosition)
         component.name.text = CultivationHelper.showing(values.uniqueName)
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         component.xiuwei.text = "${values.xiuwei}"
@@ -54,12 +96,43 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val lis
         component.props.text = values.property.take(4).joinToString()
 
         component.del.setOnClickListener{
-            callbacks.onDeleteHandler(values)
+            callbacks.onDeleteHandler(values, false)
         }
         return convertView
     }
 
-    internal class ViewHolder(view: View) {
+    override fun getChildId(groupPosition: Int, childPosition: Int): Long {
+       return childPosition.toLong()
+    }
+
+    override fun getGroupCount(): Int {
+       return grouplist.size
+    }
+
+    private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
+
+
+    internal class ViewHolderGroup(view: View) {
+
+        @BindView(R.id.tv_name)
+        lateinit var name: TextView
+
+        @BindView(R.id.tv_xiuwei)
+        lateinit var xiuwei: TextView
+
+        @BindView(R.id.tv_success)
+        lateinit var success: TextView
+
+        @BindView(R.id.tv_props)
+        lateinit var props: TextView
+
+
+        init {
+            ButterKnife.bind(this, view)
+        }
+    }
+
+    internal class ViewHolderChild(view: View) {
 
         @BindView(R.id.tv_name)
         lateinit var name: TextView
@@ -83,7 +156,7 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val lis
     }
 
     interface EquipmentAdapterCallback {
-        fun onDeleteHandler(equipment: Equipment)
+        fun onDeleteHandler(equipment: Equipment, group:Boolean)
     }
 
 }

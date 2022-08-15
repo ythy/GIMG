@@ -222,7 +222,7 @@ object CultivationBattleHelper {
                     val opponent = getBattleObject(allOpponent)
                     if(opponent.hp > 0) {
                         opponent.hp = 0
-                        addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001007").name}\u53d1\u52a8, HP0", "8001007")
+                        addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001007").name}\u53d1\u52a8, ${showName(opponent)}HP0", "8001007")
                     }
                 }
             }
@@ -255,6 +255,15 @@ object CultivationBattleHelper {
 
         if(getKeyBattleObject(battlePersons[0]).hp <= 0 && getKeyBattleObject(battlePersons[1]).hp <= 0){
             getKeyBattleObject(battlePersons[Random().nextInt(2)]).hp = 1
+        }
+
+        battlePersons.forEach { b->
+           b.forEach {
+               if(it.type == 2 && it.hp <= 0 && !it.isDead){
+                   it.isDead = true
+                   addBattleDetail(battleId, "${showName(it)}\u88ab\u51fb\u5012")
+               }
+           }
         }
 
         return getKeyBattleObject(battlePersons[0]).hp <= 0 || getKeyBattleObject(battlePersons[1]).hp <= 0
@@ -476,6 +485,7 @@ object CultivationBattleHelper {
         var statusRound:HashMap<String, Int> = HashMap()
         var extraDamage:Int = 0
         var minDamage:Int = 1
+        var isDead:Boolean = false
 
         var follower = mutableListOf<BattleObject>()
         var attackBasis:Int = a

@@ -2,13 +2,12 @@ package com.mx.gillustrated.fragment
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.Range
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
-import android.widget.ListView
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import butterknife.BindView
@@ -29,7 +28,7 @@ class FragmentEquipment: Fragment() {
     private val mConfigEquipments = CultivationHelper.mConfig.equipment
 
     @BindView(R.id.lv_equipment)
-    lateinit var mListView: ListView
+    lateinit var mListView: ExpandableListView
 
 
     @OnClick(R.id.btn_add_equipment)
@@ -78,7 +77,7 @@ class FragmentEquipment: Fragment() {
 
     lateinit var mContext: CultivationActivity
     lateinit var mPerson: Person
-    private val mEquipments: MutableList<Equipment> = mutableListOf()
+    private val mEquipmentGroups: MutableList<Equipment> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_vp_equipment, container, false)
@@ -94,17 +93,6 @@ class FragmentEquipment: Fragment() {
     fun init(){
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getPersonData(id)!!
-        mListView.adapter = CultivationEquipmentAdapter(this.context!!, mEquipments, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
-            override fun onDeleteHandler(equipment: Equipment) {
-                mPerson.equipment.removeIf {
-                    val idInLoop = it.split(",")[0]
-                    val roundInLoop = it.split(",")[1].toInt()
-                    idInLoop == equipment.id && roundInLoop == equipment.seq
-                }
-                CultivationHelper.updatePersonEquipment(mPerson)
-                updateList()
-            }
-        })
         updateList()
     }
 
@@ -123,7 +111,7 @@ class FragmentEquipment: Fragment() {
             result.property = equipment.property
             result
         }.toMutableList()
-        mEquipments.clear()
+        mEquipmentGroups.clear()
         equipments.sortWith(compareBy <Equipment> {
             val extra = if( it.type <= 10 ) -10 else if( it.type < 20 && it.type != 12)  20 - 2 * it.type else 0
             it.type + extra
@@ -133,9 +121,26 @@ class FragmentEquipment: Fragment() {
             else
                 -it.seq
         })
-        mEquipments.addAll(equipments)
-        (mListView.adapter as BaseAdapter).notifyDataSetChanged()
-        mListView.invalidateViews()
+        val groups = equipments.groupBy{ it.id }.map {
+            it.value[0].children.addAll(it.value)
+            it.value[0]
+        }
+        mEquipmentGroups.addAll(groups)
+        mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
+            override fun onDeleteHandler(equipment: Equipment, group:Boolean) {
+                mPerson.equipment.removeIf {
+                    val idInLoop = it.split(",")[0]
+                    val roundInLoop = it.split(",")[1].toInt()
+                    if(group){
+                        idInLoop == equipment.id
+                    }else{
+                        idInLoop == equipment.id && roundInLoop == equipment.seq
+                    }
+                }
+                CultivationHelper.updatePersonEquipment(mPerson)
+                updateList()
+            }
+        }))
     }
 
     fun updateEquipment(equipment:Equipment, autoCheck:Boolean = true){
