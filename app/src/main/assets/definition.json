@@ -1793,16 +1793,16 @@
       "description": "50%\u590d\u6d3b\u590d\u6d3b1\u8840",
       "type": 1,
       "chance": 50,
-      "rarity": 6,
-      "weight": 100000
+      "rarity": 8,
+      "weight": 5000000
     },
     {
       "id": "8001002",
       "name": "\u540c\u5f52",
       "description": "\u5bf9\u65b9\u8840\u91cf1",
       "type": 1,
-      "rarity": 5,
-      "weight": 80000
+      "rarity": 6,
+      "weight": 1000000
     },
     {
       "id": "8001003",
@@ -1811,7 +1811,7 @@
       "type": 1,
       "chance": 20,
       "rarity": 7,
-      "weight": 100000
+      "weight": 3000000
     },
     {
       "id": "8001004",
@@ -1819,7 +1819,7 @@
       "description": "20\u706b\u4f24\u5bb3\u9644\u52a0",
       "type": 1,
       "rarity": 6,
-      "weight": 100000
+      "weight": 1000000
     },
     {
       "id": "8001005",
@@ -1827,7 +1827,7 @@
       "description": "40\u706b\u4f24\u5bb3\u9644\u52a0",
       "type": 1,
       "rarity": 7,
-      "weight": 200000
+      "weight": 2000000
     },
     {
       "id": "8001006",
@@ -1835,7 +1835,7 @@
       "description": "\u4e0d\u53d7\u8d1f\u9762\u5f71\u54cd",
       "type": 1,
       "rarity": 8,
-      "weight": 300000
+      "weight": 3000000
     },
     {
       "id": "8001007",
@@ -1844,7 +1844,7 @@
       "type": 1,
       "chance": 20,
       "rarity": 8,
-      "weight": 300000
+      "weight": 5000000
     },
     {
       "id": "8002001",
@@ -1852,7 +1852,7 @@
       "description": "10,\u6bcf\u56de\u5408,\u5148\u5236,\u81f4\u6b7b",
       "type": 2,
       "rarity": 6,
-      "weight": 100000
+      "weight": 1000000
     },
     {
       "id": "8002002",
@@ -1860,7 +1860,7 @@
       "description": "20,\u6bcf\u56de\u5408,\u5148\u5236.\u81f4\u6b7b",
       "type": 2,
       "rarity": 7,
-      "weight": 200000
+      "weight": 2000000
     },
     {
       "id": "8002003",
@@ -1868,7 +1868,7 @@
       "description": "30,\u4e00\u6b21,\u5148\u5236.\u81f4\u6b7b",
       "type": 2,
       "rarity": 6,
-      "weight": 100000
+      "weight": 1000000
     },
     {
       "id": "8002004",
@@ -1876,7 +1876,7 @@
       "description": "50,\u4e00\u6b21,\u5148\u5236.\u81f4\u6b7b",
       "type": 2,
       "rarity": 7,
-      "weight": 200000
+      "weight": 2000000
     },
     {
       "id": "8002005",
@@ -1884,39 +1884,39 @@
       "description": "20,\u6bcf\u56de\u5408,\u5148\u5236",
       "type": 2,
       "rarity": 6,
-      "weight": 100000
+      "weight": 1000000
     },
     {
       "id": "8002006",
       "name": "\u9ed1\u591c\u9886\u57df",
       "description": "20%,\u865a\u5f31,\u5148\u5236",
       "type": 2,
-      "rarity": 6,
-      "weight": 200000
+      "rarity": 7,
+      "weight": 2000000
     },
     {
       "id": "8002007",
       "name": "\u6781\u591c\u9886\u57df",
       "description": "50%,\u865a\u5f31,\u5148\u5236",
       "type": 2,
-      "rarity": 8,
-      "weight": 500000
+      "rarity": 9,
+      "weight": 5000000
     },
     {
       "id": "8002008",
       "name": "\u9b4f\u738b\u9886\u57df",
       "description": "20,\u5f3a\u5316,\u5148\u5236",
       "type": 2,
-      "rarity": 6,
-      "weight": 200000
+      "rarity": 7,
+      "weight": 2000000
     },
     {
       "id": "8002009",
       "name": "\u79e6\u738b\u9886\u57df",
       "description": "50,\u5f3a\u5316,\u5148\u5236",
       "type": 2,
-      "rarity": 8,
-      "weight": 500000
+      "rarity": 9,
+      "weight": 5000000
     },
     {
       "id": "8003001",
@@ -1924,8 +1924,8 @@
       "description": "50%\u6982\u7387\u56de\u907f",
       "type": 3,
       "chance": 50,
-      "rarity": 4,
-      "weight": 50000
+      "rarity": 6,
+      "weight": 800000
     },
     {
       "id": "8003002",
@@ -1933,16 +1933,16 @@
       "description": "50%\u6982\u7387\u66b4\u51fb2.0",
       "type": 3,
       "chance": 50,
-      "rarity": 6,
-      "weight": 200000
+      "rarity": 5,
+      "weight": 500000
     },
     {
       "id": "8003003",
       "name": "\u6ce2\u7eb9",
       "description": "10,\u6700\u5c0f\u4f24\u5bb3",
       "type": 3,
-      "rarity": 5,
-      "weight": 80000
+      "rarity": 4,
+      "weight": 100000
     },
     {
       "id": "8003004",
@@ -1950,8 +1950,8 @@
       "description": "50%\u6982\u7387\u63d0\u901f2.0",
       "type": 3,
       "chance": 50,
-      "rarity": 4,
-      "weight": 50000
+      "rarity": 5,
+      "weight": 500000
     },
     {
       "id": "8003005",
@@ -1959,8 +1959,8 @@
       "description": "50%\u6982\u7387\u9632\u5fa1\u65e0\u89c6",
       "type": 3,
       "chance": 50,
-      "rarity": 5,
-      "weight": 80000
+      "rarity": 4,
+      "weight": 300000
     },
     {
       "id": "8003006",
@@ -1969,7 +1969,7 @@
       "type": 3,
       "chance": 50,
       "rarity": 8,
-      "weight": 500000
+      "weight": 5000000
     },
     {
       "id": "8003007",
@@ -1977,8 +1977,8 @@
       "description": "50%\u6982\u7387",
       "type": 3,
       "chance": 50,
-      "rarity": 6,
-      "weight": 200000
+      "rarity": 5,
+      "weight": 500000
     },
     {
       "id": "8003008",
@@ -1987,7 +1987,7 @@
       "type": 3,
       "chance": 50,
       "rarity": 5,
-      "weight": 100000
+      "weight": 500000
     },
     {
       "id": "8003009",
@@ -1996,7 +1996,7 @@
       "type": 3,
       "chance": 50,
       "rarity": 7,
-      "weight": 200000
+      "weight": 1500000
     },
     {
       "id": "8004001",
