@@ -20,7 +20,6 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.dialog.FragmentDialogEquipment
 import com.mx.gillustrated.vo.cultivation.Equipment
 import com.mx.gillustrated.vo.cultivation.Person
-import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.N)
 class FragmentEquipment: Fragment() {
@@ -97,12 +96,12 @@ class FragmentEquipment: Fragment() {
     }
 
     fun updateList(){
-        val equipments = mPerson.equipment.map {
-            val equipment = mConfigEquipments.find { e-> e.id == it.split(",")[0] }!!
+        val equipments = mPerson.equipmentList.map {
+            val equipment = mConfigEquipments.find { e-> e.id == it.first}!!
             val result = Equipment()
             result.id = equipment.id
             result.name = equipment.name
-            result.seq = it.split(",")[1].toInt()
+            result.seq = it.second
             result.uniqueName = if(result.seq > 0) "${equipment.name}-${result.seq}" else equipment.name
             result.type = equipment.type
             result.rarity = equipment.rarity
@@ -128,13 +127,11 @@ class FragmentEquipment: Fragment() {
         mEquipmentGroups.addAll(groups)
         mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
             override fun onDeleteHandler(equipment: Equipment, group:Boolean) {
-                mPerson.equipment.removeIf {
-                    val idInLoop = it.split(",")[0]
-                    val roundInLoop = it.split(",")[1].toInt()
+                mPerson.equipmentList.removeIf {
                     if(group){
-                        idInLoop == equipment.id
+                        it.first == equipment.id
                     }else{
-                        idInLoop == equipment.id && roundInLoop == equipment.seq
+                        it.first == equipment.id && it.second == equipment.seq
                     }
                 }
                 CultivationHelper.updatePersonEquipment(mPerson)
@@ -144,15 +141,17 @@ class FragmentEquipment: Fragment() {
     }
 
     fun updateEquipment(equipment:Equipment, autoCheck:Boolean = true){
-        if( mPerson.equipment.find { it.split(",")[0] == equipment.id } != null)
+        if( mPerson.equipmentList.find { it.first == equipment.id } != null)
             return
         if(autoCheck){
-            val exist = mPerson.equipment.find { e-> mConfigEquipments.find { c-> c.id == e.split(",")[0] }?.type == equipment.type }
+            val exist = mPerson.equipmentList.find { e-> mConfigEquipments.find {
+                c-> c.id == e.first }?.type == equipment.type
+            }
             if(equipment.type > 0 && exist != null){
-                mPerson.equipment.remove(exist)
+                mPerson.equipmentList.remove(exist)
             }
         }
-        mPerson.equipment.add("${equipment.id},0")
+        mPerson.equipmentList.add(Triple(equipment.id, 0, ""))
         CultivationHelper.updatePersonEquipment(mPerson)
         updateList()
     }

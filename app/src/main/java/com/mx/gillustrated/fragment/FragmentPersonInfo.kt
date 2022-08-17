@@ -25,6 +25,13 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 //    @BindView(R.id.ll_home)
 //    lateinit var mHome:LinearLayout
 
+    @BindView(R.id.et_name_first)
+    lateinit var etFirstName:EditText
+
+    @BindView(R.id.et_name_last)
+    lateinit var etLastName:EditText
+
+
     @BindView(R.id.et_name)
     lateinit var etName:EditText
 
@@ -78,6 +85,27 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         CultivationHelper.updatePersonInborn(mPerson, etLingGen.text.toString().toInt(), etTianFu.text.toString().toInt())
         mCallback.update(1)
         Toast.makeText(context, "重置成功", Toast.LENGTH_SHORT).show()
+    }
+
+    @OnClick(R.id.btn_name)
+    fun onSaveClickHandler(){
+        val first = etFirstName.text.toString()
+        val second  = etLastName.text.toString()
+        mPerson.name = first + second
+        mPerson.lastName = first
+        mContext.mPersons.forEach { (_: String, u: Person) ->
+            if(u.partner == mPerson.id){
+                u.partnerName = mPerson.name
+            }
+            if(u.parent?.first == mPerson.id){
+                u.parentName = Pair(mPerson.name, u.parentName!!.second)
+            }
+            if(u.parent?.second == mPerson.id){
+                u.parentName = Pair(u.parentName!!.first, mPerson.name)
+            }
+        }
+        mCallback.update(3)
+        Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show()
     }
 
     @OnClick(R.id.btn_be)
@@ -143,5 +171,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
             btnBe.visibility = View.VISIBLE
         }
 
+        etFirstName.setText(CultivationHelper.showing(mPerson.lastName))
+        etLastName.setText(CultivationHelper.showing(mPerson.name.substring(mPerson.lastName.length)))
     }
 }

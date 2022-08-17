@@ -251,6 +251,7 @@ class CultivationActivity : BaseActivity() {
                 if(it.value.children.isNotEmpty())
                     it.value.children = Collections.synchronizedList(it.value.children)
                 it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
+                it.value.equipmentList = Collections.synchronizedList(it.value.equipmentList)
             }
             mAlliance.putAll(backup.alliance.mapValues {
                 it.value.toAlliance(mPersons)
@@ -269,7 +270,6 @@ class CultivationActivity : BaseActivity() {
             it.value.allianceProperty =  mAlliance[it.value.allianceId]!!.property
             it.value.allianceName = mAlliance[it.value.allianceId]!!.name
             it.value.extraXuiweiMulti = CultivationHelper.getExtraXuiweiMulti(it.value,  mAlliance[it.value.allianceId]!!)
-            it.value.equipment.removeIf { e-> e.split(",").size != 2}
             CultivationHelper.updatePersonEquipment(it.value)
         }
         if(out == null){

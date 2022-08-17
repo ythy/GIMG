@@ -334,7 +334,7 @@ object CultivationHelper {
                 PersonFixedInfoMix(null, null, 1000, 1000))
         joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001004", "8001006", "8002001", "8002003", "8002008", "8003002", "8003007"))
-        person.equipment.addAll(listOf("7002802,0"))
+        person.equipmentList.addAll(listOf(Triple("7002802", 0, "")))
         updatePersonEquipment(person)
         setPersonJingjie(person, 50)
         person.HP = 1111
@@ -348,7 +348,7 @@ object CultivationHelper {
                 PersonFixedInfoMix(null, null, 4000, 4000))
         joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8002002", "8002004", "8002009", "8003002", "8003007"))//必连
-        person.equipment.addAll(listOf("7002801,0"))
+        person.equipmentList.addAll(listOf(Triple("7002801", 0, "")))
         updatePersonEquipment(person)
         setPersonJingjie(person, 60)
         person.HP = 999
@@ -362,7 +362,7 @@ object CultivationHelper {
                 PersonFixedInfoMix(null, null, 4000, 4000))
         joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8003002", "8004001"))//必
-        person.equipment.addAll(listOf("7002801,0"))
+        person.equipmentList.addAll(listOf(Triple("7002801", 0, "")))
         updatePersonEquipment(person)
         setPersonJingjie(person, 50)
         person.HP = 777
@@ -391,12 +391,12 @@ object CultivationHelper {
     //type 11,12,13,14 -> B,C,S,E
     fun gainJiEquipment(person:Person, type:Int, level:Int = 0, round:Int = 0){
         val equipment = mConfig.equipment.filter{ it.type == type}.sortedBy { it.id }[level]
-        person.equipment.add("${equipment.id},$round")
+        person.equipmentList.add(Triple(equipment.id, round, ""))
         updatePersonEquipment(person)
     }
 
     fun updatePersonEquipment(person:Person){
-        val equipments = person.equipment.mapNotNull { mConfig.equipment.find { e-> e.id == it.split(",")[0] } }
+        val equipments = person.equipmentList.mapNotNull { mConfig.equipment.find { e-> e.id == it.first } }
         person.equipmentXiuwei = 0
         person.equipmentSuccess = 0
         person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)

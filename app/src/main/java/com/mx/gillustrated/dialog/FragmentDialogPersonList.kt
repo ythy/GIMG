@@ -19,6 +19,7 @@ import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
+import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
@@ -106,7 +107,7 @@ class FragmentDialogPersonList  : DialogFragment() {
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     lateinit var mContext:CultivationActivity
     private var mThreadRunnable:Boolean = true
-    private var mPersonData = mutableListOf<Person>()
+    private var mPersonData =  Collections.synchronizedList(mutableListOf<Person>())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
