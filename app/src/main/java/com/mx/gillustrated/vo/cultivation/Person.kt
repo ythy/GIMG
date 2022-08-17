@@ -38,6 +38,7 @@ class Person() :Parcelable {
         var equipmentProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//
         var teji:MutableList<String> =  Collections.synchronizedList(mutableListOf())
         var follower:MutableList<String> =  Collections.synchronizedList(mutableListOf())
+        var followerList:MutableList<Triple<String, String, String>> =  Collections.synchronizedList(mutableListOf())
 
         var jingJieId:String = ""
         var jingJieSuccess:Int = 0
@@ -94,13 +95,16 @@ class Person() :Parcelable {
                 extraProperty = parcel.createIntArray().toMutableList()
 
                 equipmentList = mutableListOf<Triple<String, Int, String>>().apply {
-                        parcel.readList(this, Pair::class.java.classLoader)
+                        parcel.readList(this, Triple::class.java.classLoader)
                 }
                 equipmentXiuwei = parcel.readInt()
                 equipmentSuccess = parcel.readInt()
                 equipmentProperty = parcel.createIntArray().toMutableList()
                 teji = Collections.synchronizedList(parcel.createStringArrayList())
                 follower = Collections.synchronizedList(parcel.createStringArrayList())
+                followerList = mutableListOf<Triple<String, String, String>>().apply {
+                        parcel.readList(this, Triple::class.java.classLoader)
+                }
 
                 jingJieId = parcel.readString()
                 jingJieSuccess = parcel.readInt()
@@ -160,6 +164,7 @@ class Person() :Parcelable {
                 parcel.writeIntArray(equipmentProperty.toIntArray())
                 parcel.writeStringList(teji)
                 parcel.writeStringList(follower)
+                parcel.writeList(followerList)
 
                 parcel.writeString(jingJieId)
                 parcel.writeInt(jingJieSuccess)

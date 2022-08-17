@@ -97,18 +97,9 @@ class FragmentEquipment: Fragment() {
 
     fun updateList(){
         val equipments = mPerson.equipmentList.map {
-            val equipment = mConfigEquipments.find { e-> e.id == it.first}!!
-            val result = Equipment()
-            result.id = equipment.id
-            result.name = equipment.name
-            result.seq = it.second
-            result.uniqueName = if(result.seq > 0) "${equipment.name}-${result.seq}" else equipment.name
-            result.type = equipment.type
-            result.rarity = equipment.rarity
-            result.xiuwei = equipment.xiuwei
-            result.success = equipment.success
-            result.property = equipment.property
-            result
+            val equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()
+            equipment.uniqueName = if(equipment.seq > 0) "${equipment.name}-${equipment.seq}" else equipment.name
+            equipment
         }.toMutableList()
         mEquipmentGroups.clear()
         equipments.sortWith(compareBy <Equipment> {

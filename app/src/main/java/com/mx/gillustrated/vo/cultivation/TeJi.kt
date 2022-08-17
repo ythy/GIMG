@@ -30,6 +30,20 @@ class TeJi() : Parcelable {
         return CultivationHelper.showing("$name-$rarity")
     }
 
+    fun copy():TeJi{
+        val teJi = TeJi()
+        teJi.id = this.id
+        teJi.name = this.name
+        teJi.rarity = this.rarity
+        teJi.description = this.description
+        teJi.weight = this.weight
+        teJi.type = this.type
+        teJi.chance = this.chance
+        teJi.status = this.status
+        teJi.statusRound = this.statusRound
+        return teJi
+    }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(name)

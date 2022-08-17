@@ -15,6 +15,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationFollowerAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Follower
 import com.mx.gillustrated.vo.cultivation.Person
 
@@ -31,9 +32,8 @@ class FragmentFollower: Fragment() {
 
     @OnClick(R.id.btn_save)
     fun onSaveClick(){
-        if( mPerson.follower.find { it == mCurrentSelected.id } != null)
-            return
-        mPerson.follower.add(mCurrentSelected.id)
+        val name = NameUtil.getChineseName(null, mCurrentSelected.gender)
+        mPerson.followerList.add(Triple(mCurrentSelected.id, name.first + name.second, ""))
         updateList()
     }
 
@@ -59,8 +59,8 @@ class FragmentFollower: Fragment() {
         initSpinner()
         mListView.adapter = CultivationFollowerAdapter(this.context!!, mFollowers, object : CultivationFollowerAdapter.FollowerAdapterCallback {
             override fun onDeleteHandler(follower: Follower) {
-                mPerson.follower.removeIf {
-                    it == follower.id
+                mPerson.followerList.removeIf {
+                    it.first == follower.id && it.second == follower.uniqueName
                 }
                 updateList()
             }
@@ -70,7 +70,11 @@ class FragmentFollower: Fragment() {
 
     fun updateList(){
         mFollowers.clear()
-        mFollowers.addAll(mConfigFollower.filter { mPerson.follower.contains(it.id) })
+        mFollowers.addAll(mPerson.followerList.map {
+            val follower =   mConfigFollower.find { f-> f.id == it.first }!!.copy()
+            follower.uniqueName = it.second
+            follower
+        }.sortedBy { it.rarity })
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
     }

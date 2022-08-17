@@ -8,7 +8,6 @@ import java.util.*
 class Equipment() :Parcelable {
     lateinit var id:String
     lateinit var name:String
-    var uniqueName:String = ""
     var seq:Int = 0
     var type:Int = 0 // 0 Bao; 1 Wu; 2 Jia, >10 huizhang
     var rarity:Int = 0//5 30, 6 40，7 50，8 ~
@@ -16,6 +15,8 @@ class Equipment() :Parcelable {
     var success:Int = 0
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
     var maxCount:Int = 1//重复计算属性上限，默认1
+    //以下字段不在配置里
+    var uniqueName:String = ""
     var children:MutableList<Equipment> = mutableListOf()
 
     constructor(parcel: Parcel) : this() {
@@ -55,6 +56,21 @@ class Equipment() :Parcelable {
         return CultivationHelper.showing("$name:($xiuwei/$success)(${property.take(4).joinToString()})")
     }
 
+    fun copy():Equipment{
+        val equipment = Equipment()
+        equipment.id = this.id
+        equipment.name = this.name
+        equipment.rarity = this.rarity
+        equipment.uniqueName = this.uniqueName
+        equipment.seq = this.seq
+        equipment.type = this.type
+        equipment.xiuwei = this.xiuwei
+        equipment.success = this.success
+        equipment.property = this.property
+        equipment.maxCount = this.maxCount
+        equipment.children = this.children
+        return equipment
+    }
 
     companion object CREATOR : Parcelable.Creator<Equipment> {
         override fun createFromParcel(parcel: Parcel): Equipment {

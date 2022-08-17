@@ -430,11 +430,12 @@ object CultivationBattleHelper {
         battlePerson.defenceBasis -= person.equipmentProperty[2]
         battlePerson.speedBasis -= person.equipmentProperty[3]
 
-        if(person.follower.isNotEmpty()){
-            battlePerson.follower = mConfig.follower.filter { f-> person.follower.contains(f.id) }.map {
-                val props = it.property
-                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, it.teji)
-                result.name = "${person.name}-${it.name}"
+        if(person.followerList.isNotEmpty()){
+            battlePerson.follower = person.followerList.map {
+                val follower = mConfig.follower.find { f-> f.id == it.first }!!
+                val props = follower.property
+                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji)
+                result.name = "${person.name}-${follower.name}${it.second}"
                 result.battleId = battlePerson.battleId
                 result
             }.toMutableList()

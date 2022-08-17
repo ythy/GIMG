@@ -107,15 +107,7 @@ class FragmentTeJi: Fragment() {
 
     fun updateList(){
         val tejis = mPerson.teji.map {
-            val teji = mConfigTeji.find { e-> e.id == it}!!
-            val result = TeJi()
-            result.id = teji.id
-            result.name = teji.name
-            result.description = teji.description
-            result.rarity = teji.rarity
-            result.weight = teji.weight
-            result.type = teji.type
-            result
+            mConfigTeji.find { e-> e.id == it}!!.copy()
         }.toMutableList()
         tejis.sortByDescending { it.rarity }
         mTeJi.clear()

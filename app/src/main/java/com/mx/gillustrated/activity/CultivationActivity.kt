@@ -252,6 +252,7 @@ class CultivationActivity : BaseActivity() {
                     it.value.children = Collections.synchronizedList(it.value.children)
                 it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
                 it.value.equipmentList = Collections.synchronizedList(it.value.equipmentList)
+                it.value.followerList = Collections.synchronizedList(it.value.followerList)
             }
             mAlliance.putAll(backup.alliance.mapValues {
                 it.value.toAlliance(mPersons)

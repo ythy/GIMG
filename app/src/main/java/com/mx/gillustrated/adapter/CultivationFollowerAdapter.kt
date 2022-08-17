@@ -47,7 +47,7 @@ class CultivationFollowerAdapter constructor(mContext: Context, private val list
             component = convertView.tag as ViewHolder
 
         val values = list[arg0]
-        component.name.text = CultivationHelper.showing(values.name)
+        component.name.text = CultivationHelper.showing(values.name + values.uniqueName)
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         if(values.teji.isEmpty())
             component.teji.text = ""

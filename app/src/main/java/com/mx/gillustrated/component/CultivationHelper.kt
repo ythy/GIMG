@@ -216,7 +216,6 @@ object CultivationHelper {
         return result
     }
 
-
     fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?,
                               lifetime:Long = 100, parent:Pair<Person, Person>? = null, fav:Boolean = false, mix:PersonFixedInfoMix? = null): Person {
         val personGender = gender ?: when (Random().nextInt(2)) {
