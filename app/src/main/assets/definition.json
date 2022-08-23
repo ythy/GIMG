@@ -2097,6 +2097,7 @@
       "name": "\u5bb6\u4e01",
       "gender": "Male",
       "rarity": 1,
+      "commission": 10,
       "property": [50,20,10,10,0,0,0,0]
     },
     {
@@ -2104,6 +2105,7 @@
       "name": "\u4f8d\u536b",
       "gender": "Default",
       "rarity": 2,
+      "commission": 20,
       "property": [80,40,20,20,0,0,0,0]
     },
     {
@@ -2111,6 +2113,7 @@
       "name": "\u6b66\u5a62",
       "gender": "Female",
       "rarity": 5,
+      "commission": 50,
       "property": [120,80,40,40,0,0,0,0],
       "teji": ["8003001"]
     },
@@ -2119,6 +2122,7 @@
       "name": "\u5251\u795e",
       "gender": "Male",
       "rarity": 6,
+      "commission": 80,
       "property": [150,100,40,40,0,0,0,0],
       "teji": ["8003002"]
     },
@@ -2127,8 +2131,33 @@
       "name": "\u5251\u5723",
       "gender": "Male",
       "rarity": 8,
+      "commission": 200,
       "property": [200,150,60,60,0,0,0,0],
       "teji": ["8002004", "8001007", "8003007"]
+    },
+    {
+      "id": "9000006",
+      "name": "\u5723\u5973",
+      "gender": "Female",
+      "rarity": 9,
+      "commission": 300,
+      "property": [300,200,50,50,0,0,0,0],
+      "teji": ["8002007", "8002004", "8002005", "8003001"]
+    },
+    {
+      "id": "9000007",
+      "name": "\u55bd\u5570",
+      "gender": "Default",
+      "rarity": 4,
+      "teji": ["8003005"],
+      "property": [50,50,10,10,0,0,0,0]
+    }
+  ],
+  "career": [
+    {
+      "id": "6100001",
+      "name": "\u5251\u5723",
+      "rarity": 8
     }
   ]
 

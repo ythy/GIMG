@@ -325,6 +325,11 @@ object CultivationHelper {
         enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
         enemy.maxHit = 50 + random.nextInt(51)
         enemy.remainHit = enemy.maxHit
+        for (index in 1 until basis * 2 + 1){
+            val follower = mConfig.follower.find { f-> f.id == "9000007" }!!.copy()
+            follower.uniqueName = "${index}号"
+            enemy.followerList.add(follower)
+        }
         return enemy
     }
 
@@ -334,6 +339,7 @@ object CultivationHelper {
         joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001004", "8001006", "8002001", "8002003", "8002008", "8003002", "8003007"))
         person.equipmentList.addAll(listOf(Triple("7002802", 0, "")))
+        person.followerList.addAll(mutableListOf(Triple("9000002", "1号", ""), Triple("9000002", "2号", "")))
         updatePersonEquipment(person)
         setPersonJingjie(person, 50)
         person.HP = 1111
@@ -348,6 +354,7 @@ object CultivationHelper {
         joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8002002", "8002004", "8002009", "8003002", "8003007"))//必连
         person.equipmentList.addAll(listOf(Triple("7002801", 0, "")))
+        person.followerList.addAll(mutableListOf(Triple("9000002", "1号", ""), Triple("9000002", "2号", "")))
         updatePersonEquipment(person)
         setPersonJingjie(person, 60)
         person.HP = 999
@@ -362,6 +369,7 @@ object CultivationHelper {
         joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8003002", "8004001"))//必
         person.equipmentList.addAll(listOf(Triple("7002801", 0, "")))
+        person.followerList.addAll(mutableListOf(Triple("9000002", "1号", ""), Triple("9000002", "2号", "")))
         updatePersonEquipment(person)
         setPersonJingjie(person, 50)
         person.HP = 777
@@ -384,7 +392,7 @@ object CultivationHelper {
         //val multipleSpeed = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.1f)
        // val multiplePrimary = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.5f)
         return mutableListOf(person.HP + extraHP, person.maxHP + extraHP,
-                attack, defence, speed, extraHP)
+                person.attack + attack,  person.defence + defence, person.speed + speed, extraHP)
     }
 
     //type 11,12,13,14 -> B,C,S,E

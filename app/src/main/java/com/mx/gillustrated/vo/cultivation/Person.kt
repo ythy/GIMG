@@ -27,9 +27,13 @@ class Person() :Parcelable {
         var lifeTurn:Int = 0//
         var singled:Boolean = false
         var dink:Boolean = false
+        var gold:Long = 0L
 
         var HP:Int = 100
         var maxHP:Int = 100
+        var attack:Int = 20
+        var defence:Int = 20
+        var speed:Int = 20
         var extraProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//update once deps tian linggen
 
         var equipmentList:MutableList<Triple<String, Int, String>> =  Collections.synchronizedList(mutableListOf())
@@ -37,7 +41,6 @@ class Person() :Parcelable {
         var equipmentSuccess:Int = 0 //
         var equipmentProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//
         var teji:MutableList<String> =  Collections.synchronizedList(mutableListOf())
-        var follower:MutableList<String> =  Collections.synchronizedList(mutableListOf())
         var followerList:MutableList<Triple<String, String, String>> =  Collections.synchronizedList(mutableListOf())
 
         var jingJieId:String = ""
@@ -89,6 +92,7 @@ class Person() :Parcelable {
                 lifeTurn = parcel.readInt()
                 singled = parcel.readByte() != 0.toByte()
                 dink = parcel.readByte() != 0.toByte()
+                gold = parcel.readLong()
 
                 HP = parcel.readInt()
                 maxHP = parcel.readInt()
@@ -101,7 +105,6 @@ class Person() :Parcelable {
                 equipmentSuccess = parcel.readInt()
                 equipmentProperty = parcel.createIntArray().toMutableList()
                 teji = Collections.synchronizedList(parcel.createStringArrayList())
-                follower = Collections.synchronizedList(parcel.createStringArrayList())
                 followerList = mutableListOf<Triple<String, String, String>>().apply {
                         parcel.readList(this, Triple::class.java.classLoader)
                 }
@@ -153,6 +156,7 @@ class Person() :Parcelable {
                 parcel.writeInt(lifeTurn)
                 parcel.writeByte(if (singled) 1 else 0)
                 parcel.writeByte(if (dink) 1 else 0)
+                parcel.writeLong(gold)
 
                 parcel.writeInt(HP)
                 parcel.writeInt(maxHP)
@@ -163,7 +167,6 @@ class Person() :Parcelable {
                 parcel.writeInt(equipmentSuccess)
                 parcel.writeIntArray(equipmentProperty.toIntArray())
                 parcel.writeStringList(teji)
-                parcel.writeStringList(follower)
                 parcel.writeList(followerList)
 
                 parcel.writeString(jingJieId)

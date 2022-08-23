@@ -4,6 +4,10 @@
         android:id="@+id/menu_reset"
         android:orderInCategory="100"
         android:title="reset"/>
+    <item
+        android:id="@+id/menu_reset_wtf"
+        android:orderInCategory="110"
+        android:title="resetWTF"/>
     <!--<item-->
         <!--android:id="@+id/menu_disaster"-->
         <!--android:orderInCategory="200"-->

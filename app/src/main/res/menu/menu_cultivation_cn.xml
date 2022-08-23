@@ -5,6 +5,10 @@
         android:orderInCategory="100"
         android:title="重启"/>
     <item
+        android:id="@+id/menu_reset_wtf"
+        android:orderInCategory="110"
+        android:title="重置装备随从"/>
+    <item
         android:id="@+id/menu_battle_bang"
         android:orderInCategory="300"
         android:title="帮战"/>

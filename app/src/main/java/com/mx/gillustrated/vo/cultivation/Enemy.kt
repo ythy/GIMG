@@ -2,6 +2,7 @@ package com.mx.gillustrated.vo.cultivation
 
 import android.os.Parcel
 import android.os.Parcelable
+import java.util.*
 
 class Enemy() :Parcelable {
     lateinit var id:String
@@ -18,6 +19,7 @@ class Enemy() :Parcelable {
     var remainHit:Int = 0
     var isDead:Boolean = false
     var seq:Int = 0
+    var followerList:MutableList<Follower> =  Collections.synchronizedList(mutableListOf())
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -34,6 +36,7 @@ class Enemy() :Parcelable {
         remainHit = parcel.readInt()
         isDead = parcel.readByte() != 0.toByte()
         seq = parcel.readInt()
+        followerList = Collections.synchronizedList(parcel.createTypedArrayList(Follower))
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -51,6 +54,7 @@ class Enemy() :Parcelable {
         parcel.writeInt(remainHit)
         parcel.writeByte(if (isDead) 1 else 0)
         parcel.writeInt(seq)
+        parcel.writeTypedList(followerList)
     }
 
     override fun describeContents(): Int {

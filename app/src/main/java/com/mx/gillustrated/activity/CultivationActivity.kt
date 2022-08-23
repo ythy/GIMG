@@ -753,7 +753,7 @@ class CultivationActivity : BaseActivity() {
                 it.remainHit--
                 val persons = mPersons.map { it.value }.shuffled()
                 val person = persons[0]
-                val result = CultivationBattleHelper.battleEnemy(person, it, it.HP * 1000)
+                val result = CultivationBattleHelper.battleEnemy(mPersons, person, it, it.HP * 1000)
                 if(result){
                     writeHistory("${it.name} 消失", null, 0)
                     it.isDead = true
@@ -774,7 +774,7 @@ class CultivationActivity : BaseActivity() {
             mBoss.map(Map.Entry<String, Person>::value).filter { (xun - it.lastBirthDay) / 12 < it.lifetime }.forEach { u ->
                 val targets = mPersons.map { it.value }.shuffled()
                 val person = targets[0]
-                val result = CultivationBattleHelper.battlePerson(person, u, 10, 5000000 * Math.min(2, u.type))
+                val result = CultivationBattleHelper.battlePerson(mPersons, person, u, 10, 5000000 * Math.min(2, u.type))
                 if (result) {
                     u.lifetime = 0
                     mAlliance[u.allianceId]?.personList?.remove(u.id)
@@ -1045,7 +1045,7 @@ class CultivationActivity : BaseActivity() {
             }
             val firstPerson = persons[i]
             val secondPerson = persons[i + 1]
-            val result = CultivationBattleHelper.battlePerson(firstPerson, secondPerson, round, xiuWei)
+            val result = CultivationBattleHelper.battlePerson(null, firstPerson, secondPerson, round, xiuWei)
             if(result){
                 passIds.add(secondPerson.id)
             }else{
@@ -1087,7 +1087,7 @@ class CultivationActivity : BaseActivity() {
             var firstIndex = 0
             var secondIndex = 0
             while (true){
-                val result =  CultivationBattleHelper.battlePerson(firstAlliancePersons[firstIndex],
+                val result =  CultivationBattleHelper.battlePerson(null, firstAlliancePersons[firstIndex],
                         secondAlliancePersons[secondIndex], round, xiuWei)
                 if(result){
                     secondIndex++
@@ -1139,7 +1139,7 @@ class CultivationActivity : BaseActivity() {
             var firstIndex = 0
             var secondIndex = 0
             while (true){
-                val result =  CultivationBattleHelper.battlePerson(firstClanPersons[firstIndex],
+                val result =  CultivationBattleHelper.battlePerson(mPersons, firstClanPersons[firstIndex],
                         secondClanPersons[secondIndex], round, xiuWei)
                 if(result){
                     secondIndex++
@@ -1228,6 +1228,18 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
+    private fun resetCustomBonus(){
+        mPersons.forEach { (_: String, u: Person) ->
+            u.followerList.clear()
+            //u.teji.clear()
+            u.equipmentList.removeIf {
+                val equipment = mConfig.equipment.find { e-> it.first == e.id }
+                equipment?.type ?: 0 <= 10
+            }
+        }
+        Toast.makeText(this, "重置完成", Toast.LENGTH_SHORT).show()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if(pinyinMode)
             menuInflater.inflate(R.menu.menu_cultivation, menu)
@@ -1269,7 +1281,9 @@ class CultivationActivity : BaseActivity() {
                 }
                 Toast.makeText(this, "不用谢", Toast.LENGTH_SHORT).show()
             }
-
+            R.id.menu_reset_wtf->{
+                resetCustomBonus()
+            }
 
         }
         return true

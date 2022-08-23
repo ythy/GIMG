@@ -10,20 +10,22 @@ object CultivationBattleHelper {
 
     var mBattles:ConcurrentHashMap<String, BattleInfo> = ConcurrentHashMap()
 
-    fun battleEnemy(person: Person, enemy: Enemy, xiuwei:Int):Boolean{
+    fun battleEnemy(allPersons:ConcurrentHashMap<String, Person>, person: Person, enemy: Enemy, xiuwei:Int):Boolean{
         val props1 = CultivationHelper.getProperty(person)
         val battlePerson = BattleObject(props1[0], props1[1], props1[2], props1[3], props1[4], 0, person.teji)
         val battleEnemy = BattleObject(enemy.HP, enemy.maxHP, enemy.attack, enemy.defence, enemy.speed, 1)
         val battleId = UUID.randomUUID().toString()
         battlePerson.battleId = battleId
-        replenishInfo(person, battlePerson)
+        replenishInfo(allPersons, person, battlePerson)
         battleEnemy.battleId = battleId
-        battleEnemy.name = enemy.name
+        replenishEnemyInfo(enemy, battleEnemy)
         mBattles[battleId] = BattleInfo(battleId, person, null, battlePerson, battleEnemy)
         addBattleDetail(battleId, "\u6218\u6597\u5f00\u59cb")
         val firstList = mutableListOf(battlePerson)
         firstList.addAll(battlePerson.follower)
-        startBattle(firstList, mutableListOf(battleEnemy) ,100, 1000)
+        val enemyList = mutableListOf(battleEnemy)
+        enemyList.addAll(battleEnemy.follower)
+        startBattle(firstList, enemyList ,100, 1000)
 
         val firstWin = battlePerson.hp > 0
         if(firstWin){
@@ -45,7 +47,7 @@ object CultivationBattleHelper {
         return firstWin
     }
 
-    fun battlePerson(person1: Person, person2: Person, round:Int, xiuwei:Int):Boolean{
+    fun battlePerson(allPersons:ConcurrentHashMap<String, Person>?, person1: Person, person2: Person, round:Int, xiuwei:Int):Boolean{
 
         val props1 = CultivationHelper.getProperty(person1)
         val props2 = CultivationHelper.getProperty(person2)
@@ -53,9 +55,9 @@ object CultivationBattleHelper {
         val battlePerson2 = BattleObject(props2[0], props2[1], props2[2], props2[3], props2[4], 0, person2.teji)
         val battleId = UUID.randomUUID().toString()
         battlePerson1.battleId = battleId
-        replenishInfo(person1, battlePerson1)
+        replenishInfo(allPersons, person1, battlePerson1)
         battlePerson2.battleId = battleId
-        replenishInfo(person2, battlePerson2)
+        replenishInfo(allPersons, person2, battlePerson2)
         mBattles[battleId] = BattleInfo(battleId, person1, person2, battlePerson1, battlePerson2)
         addBattleDetail(battleId, "\u6218\u6597\u5f00\u59cb")
         val firstList = mutableListOf(battlePerson1)
@@ -259,8 +261,10 @@ object CultivationBattleHelper {
 
         battlePersons.forEach { b->
            b.forEach {
-               if(it.type == 2 && it.hp <= 0 && !it.isDead){
+               if(it.type >= 2 && it.hp <= 0 && !it.isDead){
                    it.isDead = true
+                   if(it.followerReference != null)
+                       it.followerReference!!.isDead = true
                    addBattleDetail(battleId, "${showName(it)}\u88ab\u51fb\u5012")
                }
            }
@@ -309,8 +313,8 @@ object CultivationBattleHelper {
             addBattleDetail(battleId, "${showName(defender)}\u7279\u6280:${tejiDetail("8003001").name}\u53d1\u52a8, ${showName(attacker)}\u653b\u51fb\u88ab\u56de\u907f", "8003001")
             return
         }
-        val attackerValue = attacker.attack
-        var defenderValue = defender.defence
+        val attackerValue = getBattleValue(attacker.attack)
+        var defenderValue = getBattleValue(defender.defence)
         if(hasTeji("8003005", attacker) && isTrigger(tejiDetail("8003005").chance, attacker)){
             defenderValue = 0
             addBattleDetail(battleId, "${showName(attacker)}\u7279\u6280:${tejiDetail("8003005").name}\u53d1\u52a8, ${showName(defender)}\u9632\u5fa10", "8003005")
@@ -360,13 +364,17 @@ object CultivationBattleHelper {
         return speedList.maxBy { it }!! + Random().nextInt(randomBasis)
     }
 
+    private fun getBattleValue(origin:Int, randomBasis:Int = 20):Int{
+        val calculatorValue =  origin + (randomBasis - Random().nextInt(randomBasis * 2))
+        return Math.max(0, calculatorValue)
+    }
+
     private fun getBattleObject(list: MutableList<BattleObject>):BattleObject{
         if(list.size == 1)
             return list[0]
         else{
-            val follower = list.find { it.hp >0 && it.type == 2 }
-            val person = list.find { it.type != 2 }!!
-            return follower ?: person
+            val live = list.filter { it.hp >0 }
+            return if (live.isEmpty()) getKeyBattleObject(list) else live.shuffled()[0]
         }
     }
 
@@ -374,7 +382,7 @@ object CultivationBattleHelper {
         if(list.size == 1)
             return list[0]
         else{
-            return list.find { it.type != 2 }!!
+            return list.find { it.type < 2 }!!
         }
     }
 
@@ -424,7 +432,19 @@ object CultivationBattleHelper {
             battleInfo.details.add(BattleInfoSeq(battleInfo.round, battleInfo.seq, content, teji))
     }
 
-    private fun replenishInfo(person: Person, battlePerson:BattleObject){
+    private fun replenishEnemyInfo(enemy: Enemy, battleEnemy:BattleObject){
+        battleEnemy.name = enemy.name
+        battleEnemy.follower = enemy.followerList.filter { !it.isDead }.map { follower->
+            val props = follower.property
+            val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji)
+            result.name = "${enemy.name}-${follower.name}${follower.uniqueName}"
+            result.followerReference = follower
+            result.battleId = battleEnemy.battleId
+            result
+        }.toMutableList()
+    }
+
+    private fun replenishInfo(allPersons:ConcurrentHashMap<String, Person>?, person: Person, battlePerson:BattleObject){
         battlePerson.name = person.name
         battlePerson.attackBasis -= person.equipmentProperty[1]
         battlePerson.defenceBasis -= person.equipmentProperty[2]
@@ -439,6 +459,17 @@ object CultivationBattleHelper {
                 result.battleId = battlePerson.battleId
                 result
             }.toMutableList()
+        }
+        if(allPersons == null)
+            return
+        val partner = allPersons[person.partner ?: "none"]
+        if(partner != null){
+            val partnerProps = CultivationHelper.getProperty(partner)
+            val partnerBattleObject = BattleObject(partnerProps[0], partnerProps[0], partnerProps[1], partnerProps[2], partnerProps[3],
+                    3, partner.teji)
+            partnerBattleObject.name = "${person.name}-${partner.name}"
+            partnerBattleObject.battleId = battlePerson.battleId
+            battlePerson.follower.add(partnerBattleObject)
         }
     }
 
@@ -494,12 +525,13 @@ object CultivationBattleHelper {
         var speedBasis:Int = s
         val hpBasis:Int = h
         val maxhp:Int = m
-        val type:Int = t // enemy = 1, follower = 2
+        val type:Int = t //normal = 0, enemy = 1, follower = 2, partner = 3
         var kills:MutableList<String> = mutableListOf()
         var battleId:String = ""
         var name: String = ""
         val attackInit:Int = a
         val defenceInit:Int = d
         val speedInit:Int = s
+        var followerReference:Follower? = null
     }
 }
