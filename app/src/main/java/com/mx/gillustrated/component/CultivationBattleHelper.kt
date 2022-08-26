@@ -370,19 +370,19 @@ object CultivationBattleHelper {
     }
 
     private fun getBattleObject(list: MutableList<BattleObject>):BattleObject{
-        if(list.size == 1)
-            return list[0]
+        return if(list.size == 1)
+            list[0]
         else{
             val live = list.filter { it.hp >0 }
-            return if (live.isEmpty()) getKeyBattleObject(list) else live.shuffled()[0]
+            if (live.isEmpty()) getKeyBattleObject(list) else live.shuffled()[0]
         }
     }
 
     private fun getKeyBattleObject(list: MutableList<BattleObject>):BattleObject{
-        if(list.size == 1)
-            return list[0]
+        return if(list.size == 1)
+            list[0]
         else{
-            return list.find { it.type < 2 }!!
+            list.find { it.type < 2 }!!
         }
     }
 

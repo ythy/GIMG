@@ -98,6 +98,7 @@ class FragmentEquipment: Fragment() {
     fun updateList(){
         val equipments = mPerson.equipmentList.map {
             val equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()
+            equipment.seq = it.second
             equipment.uniqueName = if(equipment.seq > 0) "${equipment.name}-${equipment.seq}" else equipment.name
             equipment
         }.toMutableList()

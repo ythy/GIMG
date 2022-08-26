@@ -80,8 +80,7 @@ class FragmentFollower: Fragment() {
     }
 
     fun initSpinner(){
-        val list = mConfigFollower.toMutableList()
-        list.sortBy { it.rarity }
+        val list = mConfigFollower.filter { it.type == 0 }.sortedBy { it.rarity }
         mCurrentSelected = list[0]
         val adapter = ArrayAdapter<Follower>(context!!,
                 android.R.layout.simple_spinner_item, list)

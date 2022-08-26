@@ -17,6 +17,7 @@ import com.google.gson.Gson
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CultivationHistoryAdapter
 import com.mx.gillustrated.component.CultivationBattleHelper
+import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName2
@@ -837,7 +838,7 @@ class CultivationActivity : BaseActivity() {
     private fun eventEnemyHandler(){
         val type = Random().nextInt(5)
         mBattleRound.enemy[type]++
-        val enemy = CultivationHelper.generateEnemy(type)
+        val enemy = CultivationEnemyHelper.generateEnemy(type)
         mEnemys[enemy.id] = enemy
         writeHistory("====================================", null, 0)
         writeHistory("↑↑============================↑↑", null, 0)
@@ -1203,9 +1204,9 @@ class CultivationActivity : BaseActivity() {
     private fun addBossHandler(){
         if(mBoss.map(Map.Entry<String, Person>::value).none { (mCurrentXun - it.lastBirthDay) / 12 < it.lifetime }){
             val boss = when (Random().nextInt(3)) {
-                0 -> CultivationHelper.generateLiYuanBa(mAlliance["6000101"]!!)
-                1 -> CultivationHelper.generateShadowMao(mAlliance["6000105"]!!)
-                else -> CultivationHelper.generateShadowQiu(mAlliance["6000105"]!!)
+                0 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
+                1 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000105"]!!)
+                else -> CultivationEnemyHelper.generateShadowQiu(mAlliance["6000105"]!!)
             }
             mBoss[boss.id] = boss
             mBattleRound.boss[boss.type - 1]++
@@ -1236,6 +1237,7 @@ class CultivationActivity : BaseActivity() {
                 val equipment = mConfig.equipment.find { e-> it.first == e.id }
                 equipment?.type ?: 0 <= 10
             }
+            CultivationHelper.updatePersonEquipment(u)
         }
         Toast.makeText(this, "重置完成", Toast.LENGTH_SHORT).show()
     }

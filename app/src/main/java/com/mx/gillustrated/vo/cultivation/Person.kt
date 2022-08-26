@@ -52,6 +52,7 @@ class Person() :Parcelable {
         var allianceSuccess:Int = 0 //alliance 增益 初始和读取更新
         var allianceProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//alliance 初始和读取更新
 
+
         //extra props
         var lastBirthDay:Long = 0
         var lastTotalXun:Long = 0

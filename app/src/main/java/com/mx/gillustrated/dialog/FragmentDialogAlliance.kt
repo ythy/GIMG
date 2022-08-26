@@ -136,7 +136,7 @@ class FragmentDialogAlliance : DialogFragment() {
 
         mPersonList.clear()
         mPersonList.addAll(mAlliance.personList.map { it.value }.toMutableList())
-        mPersonList.sortByDescending { it.maxXiuWei }
+        mPersonList.sortWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId })
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
 

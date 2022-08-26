@@ -16,6 +16,7 @@ class Follower() : Parcelable {
     var gender = NameUtil.Gender.Male
     var unique:Boolean = false
     var commission: Int = 0
+    var type:Int = 0 // 0 normal, 1 spec can not add manually
     //以下字段不在配置里
     var uniqueName: String = "" //unique为true时为空
     var isDead:Boolean = false
@@ -27,6 +28,7 @@ class Follower() : Parcelable {
         rarity = parcel.readInt()
         unique = parcel.readByte() != 0.toByte()
         commission = parcel.readInt()
+        type = parcel.readInt()
         uniqueName = parcel.readString()
         isDead = parcel.readByte() != 0.toByte()
     }
@@ -46,6 +48,7 @@ class Follower() : Parcelable {
         follower.gender = this.gender
         follower.unique = this.unique
         follower.commission = this.commission
+        follower.type = this.type
         follower.uniqueName = this.uniqueName
         follower.isDead = this.isDead
         return follower
@@ -58,6 +61,7 @@ class Follower() : Parcelable {
         parcel.writeInt(rarity)
         parcel.writeByte(if (unique) 1 else 0)
         parcel.writeInt(commission)
+        parcel.writeInt(type)
         parcel.writeString(uniqueName)
         parcel.writeByte(if (isDead) 1 else 0)
     }

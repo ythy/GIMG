@@ -114,7 +114,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
         mAllianceListData.addAll(mContext.mAlliance.map { it.value })
         mAllianceListData.forEach {
             it.totalXiuwei = it.personList.reduceValuesToLong(1000,
-                    { p: Person -> p.maxXiuWei }, 0, { left, right -> left + right })
+                    { p: Person -> p.lifeTurn.toLong() }, 0, { left, right -> left + right })
         }
         mAllianceListData.sortByDescending { it.totalXiuwei }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
