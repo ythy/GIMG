@@ -42,11 +42,13 @@ class Person() :Parcelable {
         var equipmentProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//
         var teji:MutableList<String> =  Collections.synchronizedList(mutableListOf())
         var followerList:MutableList<Triple<String, String, String>> =  Collections.synchronizedList(mutableListOf())
+        var careerList:MutableList<Triple<String, Int, String>> =  Collections.synchronizedList(mutableListOf())
 
         var jingJieId:String = ""
         var jingJieSuccess:Int = 0
         var xiuXei:Int = 0
         var maxXiuWei:Long = 0
+        var pointXiuWei:Long = 0
         var allianceId:String = ""
         var allianceXiuwei:Int = 0 //alliance 增益 zhu / speed； 每轮更新
         var allianceSuccess:Int = 0 //alliance 增益 初始和读取更新
@@ -67,7 +69,10 @@ class Person() :Parcelable {
         var extraSpeed:Int = 0 //tianfu
         var extraXuiweiMulti:Int = 0 //tianfu + alliance  初始和读取更新
         var allianceName:String = "" // alliance
+
+        //不需要保存
         var type = 0// 标注boss用 boss > 1
+        var remainHit = 0// 标注boss attack round
 
         constructor(parcel: Parcel) : this() {
                 id = parcel.readString()!!
@@ -109,11 +114,15 @@ class Person() :Parcelable {
                 followerList = mutableListOf<Triple<String, String, String>>().apply {
                         parcel.readList(this, Triple::class.java.classLoader)
                 }
+                careerList = mutableListOf<Triple<String, Int, String>>().apply {
+                        parcel.readList(this, Triple::class.java.classLoader)
+                }
 
                 jingJieId = parcel.readString()
                 jingJieSuccess = parcel.readInt()
                 xiuXei = parcel.readInt()
                 maxXiuWei = parcel.readLong()
+                pointXiuWei = parcel.readLong()
                 allianceId = parcel.readString()
                 allianceXiuwei = parcel.readInt()
                 allianceSuccess = parcel.readInt()
@@ -132,6 +141,7 @@ class Person() :Parcelable {
                 extraXuiweiMulti = parcel.readInt()
                 allianceName = parcel.readString()
                 type = parcel.readInt()
+                remainHit = parcel.readInt()
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -169,11 +179,13 @@ class Person() :Parcelable {
                 parcel.writeIntArray(equipmentProperty.toIntArray())
                 parcel.writeStringList(teji)
                 parcel.writeList(followerList)
+                parcel.writeList(careerList)
 
                 parcel.writeString(jingJieId)
                 parcel.writeInt(jingJieSuccess)
                 parcel.writeInt(xiuXei)
                 parcel.writeLong(maxXiuWei)
+                parcel.writeLong(pointXiuWei)
                 parcel.writeString(allianceId)
                 parcel.writeInt(allianceXiuwei)
                 parcel.writeInt(allianceSuccess)
@@ -192,6 +204,7 @@ class Person() :Parcelable {
                 parcel.writeInt(extraXuiweiMulti)
                 parcel.writeString(allianceName)
                 parcel.writeInt(type)
+                parcel.writeInt(remainHit)
         }
 
         override fun describeContents(): Int {

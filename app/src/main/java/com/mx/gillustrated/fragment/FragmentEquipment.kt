@@ -37,7 +37,7 @@ class FragmentEquipment: Fragment() {
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
                     override fun onItemSelected(equipment: Equipment) {
-                        updateEquipment(equipment)
+                        updateEquipment(equipment, false)
                     }
                 }, Range(1, 1))
         newFragment.isCancelable = true
@@ -65,7 +65,7 @@ class FragmentEquipment: Fragment() {
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
                     override fun onItemSelected(equipment: Equipment) {
-                        updateEquipment(equipment)
+                        updateEquipment(equipment, false)
                     }
                 }, Range(2, 2))
         newFragment.isCancelable = true
@@ -112,7 +112,9 @@ class FragmentEquipment: Fragment() {
             else
                 -it.seq
         })
-        val groups = equipments.groupBy{ it.id }.map {
+        val groups = equipments.groupBy{ it.type * 10000 + (if( it.type <= 10) 0 else it.rarity) }
+        .map {
+            it.value[0].children.clear()
             it.value[0].children.addAll(it.value)
             it.value[0]
         }

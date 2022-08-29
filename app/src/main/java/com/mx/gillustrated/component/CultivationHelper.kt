@@ -206,7 +206,7 @@ object CultivationHelper {
         return Triple(lingGen, lingGenId, lingGenName)
     }
 
-     fun createTeji(weight:Int = 1):MutableList<String>{
+     fun getTeji(weight:Int = 1):MutableList<String>{
         val result = mutableListOf<String>()
         mConfig.teji.filter { it.type != 4 }.forEach {
             if(Random().nextInt( it.weight / weight ) == 0){
@@ -214,6 +214,48 @@ object CultivationHelper {
             }
         }
         return result
+    }
+
+    fun getCareer():MutableList<String>{
+        val result = mutableListOf<String>()
+        mConfig.career.sortedByDescending { it.rarity }.forEach {
+            if(result.isEmpty() && Random().nextInt( it.weight ) == 0){
+                result.add(it.id)
+            }
+        }
+        return result
+    }
+
+    fun makeEquipment(type: Int, weight: Int):Equipment?{
+        val list = mConfig.equipment.filter { it.type == type && it.rarity < weight }.map {
+            it.copy()
+        }.shuffled()
+        return if(list.isEmpty())
+            null
+        else{
+            val equipment = list[0]
+            val success = Random().nextInt( (Math.pow(equipment.rarity.toDouble(), 5.0) / Math.log(weight.toDouble())).toInt() ) == 0
+            if(success)
+                equipment
+            else
+                null
+        }
+    }
+
+    fun makeFollower(weight: Int):Follower?{
+        val list = mConfig.follower.filter { it.rarity < weight }.map {
+            it.copy()
+        }.shuffled()
+        return if(list.isEmpty())
+            null
+        else{
+            val follower = list[0]
+            val success = Random().nextInt( (Math.pow(follower.rarity.toDouble(), 5.0) / Math.log(weight.toDouble())).toInt() ) == 0
+            if(success)
+                follower
+            else
+                null
+        }
     }
 
     fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?,
@@ -247,7 +289,8 @@ object CultivationHelper {
         result.profile = if(fav) 1001 else getRandomProfile(result.gender)
         result.isFav = fav
         result.tianfus = tianFus
-        result.teji = Collections.synchronizedList(createTeji())
+        result.teji = Collections.synchronizedList(getTeji())
+        result.careerList = Collections.synchronizedList(getCareer().map { Triple(it, 0, "") })
         result.lifetime = lifetime + (tianFus.find { it.type == 3 }?.bonus ?: 0)
         result.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
         result.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
@@ -433,6 +476,10 @@ object CultivationHelper {
 
     fun showing(input:String):String{
         return if (pinyinMode) PinyinUtil.convert(input.trim()) else input.trim()
+    }
+
+    fun isTrigger(weight:Int = 2):Boolean{
+        return Random().nextInt(weight) == 0
     }
 
     fun getJinJieName(input:String):String{

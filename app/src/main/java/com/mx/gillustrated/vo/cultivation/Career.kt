@@ -1,5 +1,7 @@
 package com.mx.gillustrated.vo.cultivation
 
+import com.mx.gillustrated.component.CultivationHelper
+
 class Career {
     lateinit var id:String
     lateinit var name:String
@@ -21,5 +23,9 @@ class Career {
         career.upgradeBasicXiuwei = this.upgradeBasicXiuwei
         career.upgradeBasicSuccess = this.upgradeBasicSuccess
         return career
+    }
+
+    override fun toString(): String {
+        return "${CultivationHelper.showing(name)}-$level"
     }
 }

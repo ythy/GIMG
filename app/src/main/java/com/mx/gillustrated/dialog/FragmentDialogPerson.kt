@@ -305,7 +305,11 @@ class FragmentDialogPerson : DialogFragment() {
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
         mDialogView.age.text = "${mPerson.age}/${mPerson.lifetime}"
-        mDialogView.neigong.text = mPerson.maxXiuWei.toString()
+        mDialogView.career.text = mPerson.careerList.map {
+            val obj = CultivationHelper.mConfig.career.find { c-> c.id == it.first }!!.copy()
+            obj.level = it.second
+            obj
+        }.joinToString()
         mDialogView.props.text =  getProperty()
         mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.name ?: "")
         mDialogView.jingjie.text = CultivationHelper.showing(mPerson.jinJieName)
@@ -419,7 +423,7 @@ class FragmentDialogPerson : DialogFragment() {
         lateinit var xiuweiAdd:TextView
 
         @BindView(R.id.tv_neigong)
-        lateinit var neigong:TextView
+        lateinit var career:TextView
 
         @BindView(R.id.tv_clan)
         lateinit var clan:TextView

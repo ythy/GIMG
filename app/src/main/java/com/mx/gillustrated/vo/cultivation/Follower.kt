@@ -17,6 +17,7 @@ class Follower() : Parcelable {
     var unique:Boolean = false
     var commission: Int = 0
     var type:Int = 0 // 0 normal, 1 spec can not add manually
+    var max:Int = 1//max number can be auto added
     //以下字段不在配置里
     var uniqueName: String = "" //unique为true时为空
     var isDead:Boolean = false
@@ -31,6 +32,7 @@ class Follower() : Parcelable {
         type = parcel.readInt()
         uniqueName = parcel.readString()
         isDead = parcel.readByte() != 0.toByte()
+        max = parcel.readInt()
     }
 
     override fun toString(): String {
@@ -51,6 +53,7 @@ class Follower() : Parcelable {
         follower.type = this.type
         follower.uniqueName = this.uniqueName
         follower.isDead = this.isDead
+        follower.max = this.max
         return follower
     }
 
@@ -64,6 +67,7 @@ class Follower() : Parcelable {
         parcel.writeInt(type)
         parcel.writeString(uniqueName)
         parcel.writeByte(if (isDead) 1 else 0)
+        parcel.writeInt(max)
     }
 
     override fun describeContents(): Int {

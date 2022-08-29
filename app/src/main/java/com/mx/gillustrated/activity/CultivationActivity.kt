@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.util.Log
 
 import android.view.KeyEvent
 import android.view.Menu
@@ -30,6 +31,7 @@ import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
 import com.mx.gillustrated.component.CultivationHelper.SpecPersonInfo
+import com.mx.gillustrated.component.CultivationHelper.isTrigger
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
 import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
@@ -254,6 +256,12 @@ class CultivationActivity : BaseActivity() {
                 it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
                 it.value.equipmentList = Collections.synchronizedList(it.value.equipmentList)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
+                if(it.value.careerList.isEmpty()){
+                    it.value.careerList = Collections.synchronizedList(CultivationHelper.getCareer().map { c->Triple(c, 0, "") })
+                    it.value.pointXiuWei = it.value.maxXiuWei
+                }else{
+                    it.value.careerList = Collections.synchronizedList(it.value.careerList)
+                }
             }
             mAlliance.putAll(backup.alliance.mapValues {
                 it.value.toAlliance(mPersons)
@@ -357,7 +365,7 @@ class CultivationActivity : BaseActivity() {
         return alliance
     }
 
-    fun getPersonData(id: String):Person?{
+    fun getPersonData(id: String?):Person?{
         if(id == null)
             return null
         return  getOnlinePersonDetail(id) ?: getOfflinePersonDetail(id) ?: mBoss[id]
@@ -450,6 +458,7 @@ class CultivationActivity : BaseActivity() {
         val currentJinJie = CultivationHelper.getJingJie(it.jingJieId)
         val xiuweiGrow = CultivationHelper.getXiuweiGrow(it, mAlliance)
         it.maxXiuWei += xiuweiGrow
+        it.pointXiuWei += xiuweiGrow
         it.xiuXei += xiuweiGrow
         if (it.xiuXei < currentJinJie.max) {
             return
@@ -501,11 +510,13 @@ class CultivationActivity : BaseActivity() {
         if(currentXun % 120 == 0L) {
             updatePartnerChildren()
             updateHP()
+            updateCareer()
         }
         if(currentXun % 240 == 0L) {
             CultivationHelper.updatePartner(mPersons)
         }
-        //randomEvent(fixedPerson) 暂时不启用
+        randomEvent(currentXun)
+        updateCareerEffect(currentXun)
         updateClans(currentXun)
         updateEnemys(currentXun)
         updateBoss(currentXun)
@@ -680,24 +691,21 @@ class CultivationActivity : BaseActivity() {
         return false
     }
 
-    private fun randomEvent(persons:List<Person>){
-        mConfig.events.forEach {
-            val extraRate = 200/persons.size
-            val random = Random().nextInt(it.weight * Math.max(1, extraRate))   //人少概率降低，200概率正常
-            if(random == 0 && persons.isNotEmpty()){
-                val personRandom = Random().nextInt(persons.size)
-                val person = persons[personRandom]
-                addPersonEvent(person,"${getYearString()} " + it.name.replace("P", getPersonBasicString(person, false)).replace("B", it.bonus.toString()), it)
-                when {
-                    it.type == 1 -> {
-                        person.xiuXei += it.bonus
-                        person.maxXiuWei += it.bonus
-                    }
-                    it.type == 2 -> person.jingJieSuccess += it.bonus
-                    it.type == 3 -> person.lifetime += it.bonus
-                }
-                writeHistory( "${getYearString()} " + it.name.replace("P", getPersonBasicString(person)).replace("B", it.bonus.toString()), person)
-            }
+    private fun randomEvent(xun: Long){
+        if(xun % 120 == 0L && isTrigger(20)) {
+           eventEnemyHandler()
+        }
+        if(xun % 1200 == 0L  && isTrigger(10)) {
+            addBossHandler()
+        }
+        if(xun % 2500 == 0L && isTrigger(5)) {
+            battleSingleHandler(false)
+        }
+        if(xun % 4500 == 0L && isTrigger(5)) {
+            battleBangHandler(false)
+        }
+        if(xun % 6500 == 0L && isTrigger(20)) {
+            battleClanHandler(false)
         }
     }
 
@@ -772,7 +780,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun updateBoss(xun:Long){
         if(xun % 12 == 0L) {
-            mBoss.map(Map.Entry<String, Person>::value).filter { (xun - it.lastBirthDay) / 12 < it.lifetime }.forEach { u ->
+            mBoss.map(Map.Entry<String, Person>::value).filter { (xun - it.lastBirthDay) / 12 < it.lifetime && it.remainHit > 0  }.forEach { u ->
                 val targets = mPersons.map { it.value }.shuffled()
                 val person = targets[0]
                 val result = CultivationBattleHelper.battlePerson(mPersons, person, u, 10, 5000000 * Math.min(2, u.type))
@@ -782,6 +790,11 @@ class CultivationActivity : BaseActivity() {
                     writeHistory("${u.name} 倒", u, 0)
                     gainTeji(person, Math.min(1000, 500 * u.type))
                     CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
+                }else{
+                    u.remainHit --
+                    if(u.remainHit <= 0){
+                        writeHistory("${u.name} 消失", u, 0)
+                    }
                 }
             }
         }
@@ -832,6 +845,64 @@ class CultivationActivity : BaseActivity() {
             }
             if(it.HP > it.maxHP )
                 it.HP = it.maxHP
+        }
+    }
+
+    private fun updateCareer(){
+        for ((_: String, person: Person) in mPersons) {
+            var changed = false
+            val list = person.careerList.map { t->
+                val career = mConfig.career.find { c-> c.id == t.first }!!
+                career.level = t.second
+                career
+            }
+            list.forEach {
+                if(person.pointXiuWei > it.upgradeBasicXiuwei){
+                    person.pointXiuWei -= it.upgradeBasicXiuwei
+                    val success =  Math.max(it.upgradeBasicSuccess / (it.level + 1), 1)
+                    if(Random().nextInt(100) < success){
+                        changed = true
+                        it.level ++
+                    }
+                }
+            }
+            if(changed){
+                person.careerList = Collections.synchronizedList(list.map { Triple(it.id, it.level, "") })
+            }
+        }
+    }
+
+    private fun updateCareerEffect(xun:Long){
+        if(xun % 120 == 0L) {
+            for ((_: String, person: Person) in mPersons) {
+                person.careerList.map { t->
+                    val obj = mConfig.career.find { c-> c.id == t.first }!!
+                    obj.level = t.second
+                    obj
+                }.forEach { career->
+                    if(career.id == "6100001" || career.id == "6100002" || career.id == "6100003"){
+                        val equipmentType = if (career.id == "6100001") 0 else if (career.id == "6100002") 1 else 2
+                        val equipment = CultivationHelper.makeEquipment(equipmentType, career.level)
+                        if(equipment != null && person.equipmentList.find { it.first == equipment.id } == null){
+                            person.equipmentList.add(Triple(equipment.id, 0, ""))
+                            val commonText = "\u5236\u9020 : ${equipment.name}"
+                            CultivationHelper.updatePersonEquipment(person)
+                            addPersonEvent(person, "${getYearString()} ${getPersonBasicString(person, false)} $commonText")
+                            writeHistory("${getPersonBasicString(person)} $commonText", person)
+                        }
+                    }
+                    if(career.id == "6100004"){
+                        val follower = CultivationHelper.makeFollower(career.level)
+                        if(follower != null && person.followerList.filter { it.first == follower.id }.size < follower.max){
+                            val name = NameUtil.getChineseName(null, follower.gender)
+                            person.followerList.add(Triple(follower.id, name.first + name.second, ""))
+                            val commonText = "\u53ec\u5524\u968f\u4ece : ${follower.name + name.first + name.second}"
+                            addPersonEvent(person, "${getYearString()} ${getPersonBasicString(person, false)} $commonText")
+                            writeHistory("${getPersonBasicString(person)} $commonText", person)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -927,7 +998,7 @@ class CultivationActivity : BaseActivity() {
         }).start()
     }
 
-    private fun battleSingleHandler(){
+    private fun battleSingleHandler(block:Boolean = true){
         val personsAll = mPersons.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
         personsAll.shuffle()
         if(personsAll.size < 20){
@@ -936,10 +1007,12 @@ class CultivationActivity : BaseActivity() {
         }
         val persons = personsAll.subList(0, personsAll.size/2)
         setTimeLooper(false)
-        mHistoryData.clear()
-        CultivationHelper.mHistoryTempData.clear()
-        (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
-        mHistory.invalidateViews()
+        if(block){
+            mHistoryData.clear()
+            CultivationHelper.mHistoryTempData.clear()
+            (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
+            mHistory.invalidateViews()
+        }
         Thread(Runnable {
             Thread.sleep(500)
             mBattleRound.single++
@@ -960,23 +1033,29 @@ class CultivationActivity : BaseActivity() {
             CultivationHelper.gainJiEquipment(persons[1], 13, 1, mBattleRound.single)
             writeHistory("第${mBattleRound.single}届 Single Battle Runner: ${persons[1].allianceName} - ${persons[1].name}", persons[1])
             writeHistory("第${mBattleRound.single}届 Single Battle Winner: ${persons[0].allianceName} - ${persons[0].name}", persons[0])
+            if(!block){
+                Thread.sleep(5000)
+            }
             val message = Message.obtain()
             message.what = 8
+            message.arg1 = if (block) 0 else 1
             mTimeHandler.sendMessage(message)
         }).start()
     }
 
-    private fun battleClanHandler(){
+    private fun battleClanHandler(block: Boolean = true){
         val clans = mClans.filter { it.value.clanPersonList.size > 0 }.map { it.value }.toMutableList()
         if(clans.isEmpty() || clans.size < 4){
             Toast.makeText(this, "Clan less than 4", Toast.LENGTH_SHORT).show()
             return
         }
         setTimeLooper(false)
-        mHistoryData.clear()
-        CultivationHelper.mHistoryTempData.clear()
-        (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
-        mHistory.invalidateViews()
+        if(block){
+            mHistoryData.clear()
+            CultivationHelper.mHistoryTempData.clear()
+            (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
+            mHistory.invalidateViews()
+        }
         Thread(Runnable {
             Thread.sleep(500)
             mBattleRound.clan++
@@ -994,23 +1073,29 @@ class CultivationActivity : BaseActivity() {
                 CultivationHelper.gainJiEquipment(it.value, 12, 0, mBattleRound.clan)
             }
             writeHistory("Clan Battle Winner: ${clans[0].name}", null, 0)
+            if(!block){
+                Thread.sleep(5000)
+            }
             val message = Message.obtain()
             message.what = 8
+            message.arg1 = if (block) 0 else 1
             mTimeHandler.sendMessage(message)
         }).start()
     }
 
-    private fun battleBangHandler(){
+    private fun battleBangHandler(block: Boolean = true){
         val alliances = mAlliance.filter { it.value.personList.isNotEmpty() }.map { it.value }.toMutableList()
         if(alliances.isEmpty() || alliances.size < 4){
             Toast.makeText(this, "Bang less than 4", Toast.LENGTH_SHORT).show()
             return
         }
         setTimeLooper(false)
-        mHistoryData.clear()
-        CultivationHelper.mHistoryTempData.clear()
-        (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
-        mHistory.invalidateViews()
+        if(block){
+            mHistoryData.clear()
+            CultivationHelper.mHistoryTempData.clear()
+            (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
+            mHistory.invalidateViews()
+        }
         Thread(Runnable {
             Thread.sleep(500)
             mBattleRound.bang++
@@ -1031,8 +1116,12 @@ class CultivationActivity : BaseActivity() {
             }
             writeHistory("第${mBattleRound.bang}届 Bang Battle Runner: ${alliances[1].name}", null, 0)
             writeHistory("第${mBattleRound.bang}届 Bang Battle Winner: ${alliances[0].name}", null, 0)
+            if(!block){
+                Thread.sleep(5000)
+            }
             val message = Message.obtain()
             message.what = 8
+            message.arg1 = if (block) 0 else 1
             mTimeHandler.sendMessage(message)
         }).start()
     }
@@ -1202,24 +1291,22 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun addBossHandler(){
-        if(mBoss.map(Map.Entry<String, Person>::value).none { (mCurrentXun - it.lastBirthDay) / 12 < it.lifetime }){
-            val boss = when (Random().nextInt(3)) {
-                0 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
-                1 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000105"]!!)
-                else -> CultivationEnemyHelper.generateShadowQiu(mAlliance["6000105"]!!)
-            }
-            mBoss[boss.id] = boss
-            mBattleRound.boss[boss.type - 1]++
-            writeHistory("====================================", null, 0)
-            writeHistory("↑↑============================↑↑", null, 0)
-            writeHistory("${boss.name}天降", boss, 0)
-            writeHistory("↓↓============================↓↓", null, 0)
-            writeHistory("====================================", null, 0)
+        val boss = when (Random().nextInt(3)) {
+            0 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
+            1 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000105"]!!)
+            else -> CultivationEnemyHelper.generateShadowQiu(mAlliance["6000105"]!!)
         }
+        mBoss[boss.id] = boss
+        mBattleRound.boss[boss.type - 1]++
+        writeHistory("====================================", null, 0)
+        writeHistory("↑↑============================↑↑", null, 0)
+        writeHistory("${boss.name}天降", boss, 0)
+        writeHistory("↓↓============================↓↓", null, 0)
+        writeHistory("====================================", null, 0)
     }
 
     private fun gainTeji(person: Person, weight:Int = 1){
-        CultivationHelper.createTeji(weight).forEach { t->
+        CultivationHelper.getTeji(weight).forEach { t->
             if(!person.teji.contains(t)){
                 person.teji.add(t)
                 val commonText = "\u83b7\u5f97\u7279\u6280 : ${mConfig.teji.find { f-> f.id == t }?.name}"
@@ -1336,6 +1423,8 @@ class CultivationActivity : BaseActivity() {
                     activity.updateHistory()
                 }else if(msg.what == 8){
                     Toast.makeText(activity, "Battle end", Toast.LENGTH_SHORT).show()
+                    if(msg.arg1 == 1)
+                        activity.setTimeLooper(true)
                 }
             }
         }

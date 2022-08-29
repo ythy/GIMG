@@ -58,6 +58,7 @@ object CultivationEnemyHelper {
         person.HP = 1111
         person.maxHP = 1111
         person.type = 1
+        person.remainHit = 100
         return person
     }
 
@@ -77,6 +78,7 @@ object CultivationEnemyHelper {
         person.HP = 999
         person.maxHP = 999
         person.type = 2
+        person.remainHit = 100
         return person
     }
 
@@ -97,6 +99,7 @@ object CultivationEnemyHelper {
         person.HP = 777
         person.maxHP = 777
         person.type = 3
+        person.remainHit = 100
         return person
     }
 
