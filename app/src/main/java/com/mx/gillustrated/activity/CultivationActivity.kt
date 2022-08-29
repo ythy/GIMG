@@ -692,16 +692,16 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun randomEvent(xun: Long){
-        if(xun % 120 == 0L && isTrigger(20)) {
+        if(xun % 120 == 0L && isTrigger(50)) {
            eventEnemyHandler()
         }
-        if(xun % 1200 == 0L  && isTrigger(10)) {
+        if(xun % 1200 == 0L  && isTrigger(20)) {
             addBossHandler()
         }
-        if(xun % 2500 == 0L && isTrigger(5)) {
+        if(xun % 2500 == 0L && isTrigger(10)) {
             battleSingleHandler(false)
         }
-        if(xun % 4500 == 0L && isTrigger(5)) {
+        if(xun % 4500 == 0L && isTrigger(10)) {
             battleBangHandler(false)
         }
         if(xun % 6500 == 0L && isTrigger(20)) {
@@ -719,9 +719,9 @@ class CultivationActivity : BaseActivity() {
                 val children = it.children.filter { c-> getOnlinePersonDetail(c) != null }
                 val baseNumber = if(children.isEmpty()) 10L else Math.pow((children.size * 2).toDouble(), 5.0).toLong()
                 if(partner != null && baseNumber < Int.MAX_VALUE){
-                    if(Random().nextInt(baseNumber.toInt()) == 0){
+                    if(isTrigger(baseNumber.toInt())){
                         val child = if(mAlliance[partner.allianceId]!!.type == 2 && partner.ancestorLevel <= 1 && mPersons[partner.ancestorId] != null ){
-                            if(Random().nextInt(2) == 0){
+                            if(isTrigger()){
                                 val allianceList = mutableListOf(mAlliance[partner.allianceId]!!)
                                 fixedPersonGenerate(mutableListOf(SpecPersonInfo(Pair(partner.lastName, null), NameUtil.Gender.Male, 0,1,1)),
                                         allianceList, Pair(partner, it))[0]
@@ -755,10 +755,9 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updateEnemys(xun:Long){
-        val random = Random()
         mEnemys.filter { !it.value.isDead }.forEach { e->
             val it = e.value
-            if(random.nextInt(it.attackFrequency) == 0){
+            if(isTrigger(it.attackFrequency)){
                 it.remainHit--
                 val persons = mPersons.map { it.value }.shuffled()
                 val person = persons[0]
