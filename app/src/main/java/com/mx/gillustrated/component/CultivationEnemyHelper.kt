@@ -55,10 +55,10 @@ object CultivationEnemyHelper {
         }
         CultivationHelper.updatePersonEquipment(person)
         CultivationHelper.setPersonJingjie(person, 50)
-        person.HP = 1111
-        person.maxHP = 1111
+        person.HP = 1200
+        person.maxHP = 1200
         person.type = 1
-        person.remainHit = 100
+        person.remainHit = 60
         return person
     }
 
@@ -68,17 +68,17 @@ object CultivationEnemyHelper {
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8002002", "8002004", "8002009", "8003002", "8003007"))//必连
         person.equipmentList.addAll(listOf(Triple("7002801", 0, "")))
-        repeat(4) {
+        repeat(5) {
             person.followerList.add(Triple("9000002", "${it + 1}号", ""))
             if(it == 0)
                 person.followerList.add(Triple("9000003", "${it + 1}号", ""))
         }
         CultivationHelper.updatePersonEquipment(person)
         CultivationHelper.setPersonJingjie(person, 60)
-        person.HP = 999
-        person.maxHP = 999
+        person.HP = 1400
+        person.maxHP = 1400
         person.type = 2
-        person.remainHit = 100
+        person.remainHit = 80
         return person
     }
 
@@ -88,7 +88,7 @@ object CultivationEnemyHelper {
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8003002", "8004001"))//必
         person.equipmentList.addAll(listOf(Triple("7002801", 0, "")))
-        repeat(4) {
+        repeat(6) {
             person.followerList.add(Triple("9000002", "${it + 1}号", ""))
             if(it == 0)
                 person.followerList.add(Triple("9000003", "${it + 1}号", ""))
@@ -96,8 +96,8 @@ object CultivationEnemyHelper {
 
         CultivationHelper.updatePersonEquipment(person)
         CultivationHelper.setPersonJingjie(person, 50)
-        person.HP = 777
-        person.maxHP = 777
+        person.HP = 1600
+        person.maxHP = 1600
         person.type = 3
         person.remainHit = 100
         return person

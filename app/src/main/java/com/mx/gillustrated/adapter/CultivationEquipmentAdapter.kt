@@ -44,18 +44,25 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val gro
 
         val values = getGroup(groupPosition)
         val child = values.children
-        if(child.size == 1)
+        if(values.type <= 10)
             component.name.text = CultivationHelper.showing(values.name)
         else
-            component.name.text = "${CultivationHelper.showing(values.name)}(${child.size})"
+            component.name.text = "${CultivationHelper.showing(values.name)}(${child.size}/${values.maxCount})"
 
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
-        component.xiuwei.text = child.sumBy { it.xiuwei }.toString()
-        component.success.text = child.sumBy { it.success }.toString()
+        if(values.type <= 10){
+            component.xiuwei.text = child.sumBy { it.xiuwei }.toString()
+            component.success.text = child.sumBy { it.success }.toString()
+        }else{
+            component.xiuwei.text = child.filterIndexed { index, equipment -> index < equipment.maxCount }.sumBy { it.xiuwei }.toString()
+            component.success.text = child.filterIndexed { index, equipment -> index < equipment.maxCount }.sumBy { it.success }.toString()
+        }
         val properties = mutableListOf(0,0,0,0)
-        child.forEach {
-            (0 until 4).forEach { index ->
-                properties[index] += it.property[index]
+        child.forEachIndexed { i, equipment ->
+            if(equipment.type <= 10 || (equipment.type > 10 && i < equipment.maxCount)){
+                (0 until 4).forEach { index ->
+                    properties[index] += equipment.property[index]
+                }
             }
         }
         component.props.text = properties.joinToString()

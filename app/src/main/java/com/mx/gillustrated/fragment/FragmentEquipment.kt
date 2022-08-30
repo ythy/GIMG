@@ -101,17 +101,12 @@ class FragmentEquipment: Fragment() {
             equipment.seq = it.second
             equipment.uniqueName = if(equipment.seq > 0) "${equipment.name}-${equipment.seq}" else equipment.name
             equipment
-        }.toMutableList()
+        }.sortedWith(compareByDescending<Equipment> {
+            if(it.type <= 10 ) it.type + 100 + 10 * ( 10 - it.type ) // +100 : type<=10整体排序靠前; 10 * x  type越小加得越多
+            else it.type
+        }.thenByDescending { it.rarity }.thenBy { it.seq })
+
         mEquipmentGroups.clear()
-        equipments.sortWith(compareBy <Equipment> {
-            val extra = if( it.type <= 10 ) -10 else if( it.type < 20 && it.type != 12)  20 - 2 * it.type else 0
-            it.type + extra
-        }.thenByDescending {
-            if(it.seq == 0)
-                it.rarity
-            else
-                -it.seq
-        })
         val groups = equipments.groupBy{ it.type * 10000 + (if( it.type <= 10) 0 else it.rarity) }
         .map {
             it.value[0].children.clear()

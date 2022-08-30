@@ -535,10 +535,10 @@ object CultivationHelper {
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿")
     data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int, var TianFuWeight:Int, var LingGenWeight:Int)
 
-    val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u5c71\u6d77", "\u541e\u566c", "\u673a\u7532")
-    val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA", "#C18135")
+    val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
+    val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA", "#C18135", "#A5529E")
     private val LevelMapper = mapOf(
-            1 to "初期", 2 to "中期", 3 to "后期", 4 to "圆满"
+            1 to "初期", 2 to "中期", 3 to "后期", 4 to "\u5706\u6ee1"
     )
     private val NameMapper = mapOf(
             "LianQi" to "炼气", "ZhuJi" to "筑基","JinDan" to "金丹","YuanYing" to "元婴","HuaShen" to "化神","LianXu" to "炼虚","HeTi" to "合体",

@@ -692,19 +692,19 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun randomEvent(xun: Long){
-        if(xun % 120 == 0L && isTrigger(50)) {
+        if(xun % 1000 == 0L && isTrigger(10)) {
            eventEnemyHandler()
         }
-        if(xun % 1200 == 0L  && isTrigger(20)) {
+        if(xun % 1200 == 0L  && isTrigger(40)) {
             addBossHandler()
         }
-        if(xun % 2500 == 0L && isTrigger(10)) {
+        if(xun % 7200 == 0L && isTrigger(40)) {
             battleSingleHandler(false)
         }
-        if(xun % 4500 == 0L && isTrigger(10)) {
+        if(xun % 8400 == 0L && isTrigger(40)) {
             battleBangHandler(false)
         }
-        if(xun % 6500 == 0L && isTrigger(20)) {
+        if(xun % 9600 == 0L && isTrigger(80)) {
             battleClanHandler(false)
         }
     }
@@ -906,7 +906,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun eventEnemyHandler(){
-        val type = Random().nextInt(5)
+        val type = Random().nextInt(6)
         mBattleRound.enemy[type]++
         val enemy = CultivationEnemyHelper.generateEnemy(type)
         mEnemys[enemy.id] = enemy
