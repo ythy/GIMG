@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.util.Log
 
 import android.view.KeyEvent
 import android.view.Menu
@@ -515,7 +514,11 @@ class CultivationActivity : BaseActivity() {
         if(currentXun % 240 == 0L) {
             CultivationHelper.updatePartner(mPersons)
         }
-        randomEvent(currentXun)
+        if(currentXun % 12000 == 0L){
+            bePerson()
+        }else{
+            randomEvent(currentXun)
+        }
         updateCareerEffect(currentXun)
         updateClans(currentXun)
         updateEnemys(currentXun)
@@ -849,17 +852,32 @@ class CultivationActivity : BaseActivity() {
 
     private fun updateCareer(){
         for ((_: String, person: Person) in mPersons) {
-            var changed = false
             val list = person.careerList.map { t->
                 val career = mConfig.career.find { c-> c.id == t.first }!!
                 career.level = t.second
                 career
             }
+            var addonCareer:String? = null
+            var changed = false
+            if(list.all { it.level >= it.maxLevel }){
+                if(person.pointXiuWei > 20000000) {
+                    person.pointXiuWei -= 20000000
+                    if(isTrigger(Math.pow(5.0, person.careerList.size.toDouble()).toInt())){
+                        addonCareer = CultivationHelper.getCareer()[0]
+                        if(person.careerList.find { f-> f.first == addonCareer } == null){
+                            val commonText = "\u83b7\u5f97\u804c\u4e1a : ${mConfig.career.find { f-> f.id == addonCareer }?.name}"
+                            addPersonEvent(person, "${getYearString()} ${getPersonBasicString(person, false)} $commonText")
+                            writeHistory("${getPersonBasicString(person)} $commonText", person)
+                        }else{
+                            addonCareer = null
+                        }
+                    }
+                }
+            }
             list.forEach {
-                if(person.pointXiuWei > it.upgradeBasicXiuwei){
+                if(it.level < it.maxLevel && person.pointXiuWei > it.upgradeBasicXiuwei){
                     person.pointXiuWei -= it.upgradeBasicXiuwei
-                    val success =  Math.max(it.upgradeBasicSuccess / (it.level + 1), 1)
-                    if(Random().nextInt(100) < success){
+                    if(isTrigger(it.level)){
                         changed = true
                         it.level ++
                     }
@@ -867,6 +885,9 @@ class CultivationActivity : BaseActivity() {
             }
             if(changed){
                 person.careerList = Collections.synchronizedList(list.map { Triple(it.id, it.level, "") })
+            }
+            if(addonCareer != null){
+                person.careerList.add(Triple(addonCareer, 0, ""))
             }
         }
     }
@@ -899,6 +920,9 @@ class CultivationActivity : BaseActivity() {
                             addPersonEvent(person, "${getYearString()} ${getPersonBasicString(person, false)} $commonText")
                             writeHistory("${getPersonBasicString(person)} $commonText", person)
                         }
+                    }
+                    if(career.id == "6100005" && isTrigger(2)){
+                        gainTeji(person, career.level)
                     }
                 }
             }
@@ -1318,6 +1342,8 @@ class CultivationActivity : BaseActivity() {
     private fun resetCustomBonus(){
         mPersons.forEach { (_: String, u: Person) ->
             u.followerList.clear()
+            u.careerList = Collections.synchronizedList(CultivationHelper.getCareer().map { c->Triple(c, 0, "") })
+            u.pointXiuWei = u.maxXiuWei
             //u.teji.clear()
             u.equipmentList.removeIf {
                 val equipment = mConfig.equipment.find { e-> it.first == e.id }
@@ -1416,7 +1442,7 @@ class CultivationActivity : BaseActivity() {
                         activity.setTimeLooper(true)
                     }
                 }else if(msg.what == 6){
-                    Toast.makeText(activity, "操作完成", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "BE操作完成", Toast.LENGTH_SHORT).show()
                     activity.setTimeLooper(true)
                 }else if(msg.what == 7){
                     activity.updateHistory()

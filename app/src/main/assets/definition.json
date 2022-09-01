@@ -2150,32 +2150,40 @@
       "name": "\u6b66\u8005",
       "rarity": 1,
       "weight": 1,
-      "upgradeBasicXiuwei": 20000000,
-      "upgradeBasicSuccess": 10
+      "maxLevel": 100,
+      "upgradeBasicXiuwei": 10000000
     },
     {
       "id": "6100002",
       "name": "\u5251\u5320",
       "rarity": 5,
       "weight": 10,
-      "upgradeBasicXiuwei": 20000000,
-      "upgradeBasicSuccess": 10
+      "maxLevel": 100,
+      "upgradeBasicXiuwei": 20000000
     },
     {
       "id": "6100003",
       "name": "\u7532\u5320",
       "rarity": 6,
       "weight": 20,
-      "upgradeBasicXiuwei": 20000000,
-      "upgradeBasicSuccess": 10
+      "maxLevel": 100,
+      "upgradeBasicXiuwei": 20000000
     },
     {
       "id": "6100004",
       "name": "\u5524\u5e08",
       "rarity": 8,
       "weight": 100,
-      "upgradeBasicXiuwei": 20000000,
-      "upgradeBasicSuccess": 10
+      "maxLevel": 100,
+      "upgradeBasicXiuwei": 40000000
+    },
+    {
+      "id": "6100005",
+      "name": "\u7075\u4f53",
+      "rarity": 10,
+      "weight": 500,
+      "maxLevel": 120,
+      "upgradeBasicXiuwei": 50000000
     }
   ]
 

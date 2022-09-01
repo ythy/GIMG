@@ -102,11 +102,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:id="@+id/tv_clan"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
                 android:id="@+id/tv_neigong"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -119,6 +114,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:id="@+id/tv_clan"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -7,8 +7,8 @@ class Career {
     lateinit var name:String
     var rarity:Int = 0
     var weight:Int = 0
+    var maxLevel:Int = 100
     var upgradeBasicXiuwei:Long = 0L
-    var upgradeBasicSuccess:Int = 0
     // 以下字段不在配置里
     var level:Int = 0
 
@@ -20,12 +20,13 @@ class Career {
         career.name = this.name
         career.rarity = this.rarity
         career.weight = this.weight
+        career.maxLevel = this.maxLevel
         career.upgradeBasicXiuwei = this.upgradeBasicXiuwei
-        career.upgradeBasicSuccess = this.upgradeBasicSuccess
+        career.level = this.level
         return career
     }
 
     override fun toString(): String {
-        return "${CultivationHelper.showing(name)}-$level"
+        return "${CultivationHelper.showing(name)}$level"
     }
 }

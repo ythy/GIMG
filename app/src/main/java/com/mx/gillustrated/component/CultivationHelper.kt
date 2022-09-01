@@ -209,7 +209,7 @@ object CultivationHelper {
      fun getTeji(weight:Int = 1):MutableList<String>{
         val result = mutableListOf<String>()
         mConfig.teji.filter { it.type != 4 }.forEach {
-            if(Random().nextInt( it.weight / weight ) == 0){
+            if(isTrigger( it.weight / Math.max(1, weight))){
                 result.add(it.id)
             }
         }
@@ -227,7 +227,7 @@ object CultivationHelper {
     }
 
     fun makeEquipment(type: Int, weight: Int):Equipment?{
-        val list = mConfig.equipment.filter { it.type == type && it.rarity < weight }.map {
+        val list = mConfig.equipment.filter { it.type == type && it.rarity * 10 < weight }.map {
             it.copy()
         }.shuffled()
         return if(list.isEmpty())
@@ -243,7 +243,7 @@ object CultivationHelper {
     }
 
     fun makeFollower(weight: Int):Follower?{
-        val list = mConfig.follower.filter { it.rarity < weight }.map {
+        val list = mConfig.follower.filter { it.rarity * 10 < weight }.map {
             it.copy()
         }.shuffled()
         return if(list.isEmpty())
@@ -444,8 +444,9 @@ object CultivationHelper {
             synchronized(females){
                 val man = males[Random().nextInt(males.size)]
                 val manAge = man.age
-                val woman = females.sortedBy { Math.abs(manAge - it.age) }[0]
-                if(man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId)
+                val womanPair = females.map { Pair(it.id, it.age) }.sortedBy { Math.abs(manAge - it.second) }[0]
+                val woman = allPerson[womanPair.first]
+                if(woman == null || ( man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId))
                     return
                 createPartner(man, woman)
             }
@@ -479,8 +480,9 @@ object CultivationHelper {
     }
 
     fun isTrigger(weight:Int = 2):Boolean{
-        return Random().nextInt(weight) == 0
+        return Random().nextInt(Math.max(1, weight)) == 0
     }
+
 
     fun getJinJieName(input:String):String{
         if(pinyinMode)
