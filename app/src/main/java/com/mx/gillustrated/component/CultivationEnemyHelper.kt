@@ -103,4 +103,22 @@ object CultivationEnemyHelper {
         return person
     }
 
+    fun generateYaoWang(alliance: Alliance): Person {
+        val person = CultivationHelper.getPersonInfo(Pair("王", "一"), NameUtil.Gender.Female, 20000, null, false,
+                CultivationHelper.PersonFixedInfoMix(null, null, 6000, 6000))
+        CultivationHelper.joinFixedAlliance(person, alliance)
+        person.teji.addAll(listOf("8001005", "8001006", "8002009", "8003002", "8004002"))
+        person.equipmentList.addAll(listOf(Triple("7002901", 0, ""), Triple("7003601", 0, "")))
+        repeat(2) {
+            person.followerList.add(Triple("9000003", "${it + 1}号", ""))
+        }
+        CultivationHelper.updatePersonEquipment(person)
+        CultivationHelper.setPersonJingjie(person, 60)
+        person.HP = 5000
+        person.maxHP = 5000
+        person.type = 4
+        person.remainHit = 500
+        return person
+    }
+
 }

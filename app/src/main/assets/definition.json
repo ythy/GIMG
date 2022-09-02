@@ -1833,6 +1833,16 @@
       "xiuwei": 60,
       "success": 0,
       "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7006504",
+      "name": "\u738b\u4e4b\u9b42",
+      "type": 15,
+      "rarity": 9,
+      "maxCount": 50,
+      "xiuwei": 80,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
     }
   ],
 

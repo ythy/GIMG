@@ -197,7 +197,7 @@ class CultivationActivity : BaseActivity() {
             bundle.putString("id", person.id)
             newFragment.arguments = bundle
             newFragment.show(ft, "dialog_person_info")
-        }else if(row.type == 2){
+        }else if(row.type == 2 && CultivationBattleHelper.mBattles[row.battleId] != null){
             val newFragment = FragmentDialogBattleInfo.newInstance()
             newFragment.isCancelable = false
             val bundle = Bundle()
@@ -528,6 +528,11 @@ class CultivationActivity : BaseActivity() {
                 mDeadPersons.clear()
                 saveAllData(false)
             }
+            currentXun % 44000 == 0L -> {
+                if(mPersons.size > 300){
+                    addBossHandler(true)
+                }
+            }
             currentXun % 12000 == 0L -> bePerson()
             else -> randomEvent(currentXun)
         }
@@ -569,10 +574,13 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updateHistory(){
-        if(mHistoryData.size > 500 && mThreadRunnable)
+        if(mHistoryData.size > 500 && mThreadRunnable){
             mHistoryData.clear()
+            CultivationBattleHelper.mBattles.clear()
+        }
         val tempList = CultivationHelper.mHistoryTempData.toList()
         CultivationHelper.mHistoryTempData.clear()
+
         if(pinyinMode){
             tempList.forEach {
                 it.content = PinyinUtil.convert(it.content)
@@ -872,8 +880,8 @@ class CultivationActivity : BaseActivity() {
             var addonCareer:String? = null
             var changed = false
             if(list.all { it.level >= it.maxLevel }){
-                if(person.pointXiuWei > 20000000) {
-                    person.pointXiuWei -= 20000000
+                if(person.pointXiuWei > 50000000) {
+                    person.pointXiuWei -= 50000000
                     if(isTrigger(Math.pow(5.0, person.careerList.size.toDouble()).toInt())){
                         addonCareer = CultivationHelper.getCareer()[0]
                         if(person.careerList.find { f-> f.first == addonCareer } == null){
@@ -1290,12 +1298,13 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun addBossHandler(){
-        val boss = when (Random().nextInt(3)) {
-            0 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
-            1 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000105"]!!)
-            else -> CultivationEnemyHelper.generateShadowQiu(mAlliance["6000105"]!!)
-        }
+    private fun addBossHandler(ss:Boolean = false){
+        val boss = if(ss)  CultivationEnemyHelper.generateYaoWang(mAlliance["6000105"]!!)
+            else when (Random().nextInt(3)) {
+                0 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
+                1 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000105"]!!)
+                else -> CultivationEnemyHelper.generateShadowQiu(mAlliance["6000105"]!!)
+            }
         mBoss[boss.id] = boss
         mBattleRound.boss[boss.type - 1]++
         writeHistory("====================================", null, 0)
