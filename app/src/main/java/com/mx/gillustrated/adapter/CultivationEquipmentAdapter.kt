@@ -50,24 +50,30 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val gro
             component.name.text = "${CultivationHelper.showing(values.name)}(${child.size}/${values.maxCount})"
 
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
-        if(values.type <= 10){
-            component.xiuwei.text = child.sumBy { it.xiuwei }.toString()
-            component.success.text = child.sumBy { it.success }.toString()
-        }else{
-            component.xiuwei.text = child.filterIndexed { index, equipment -> index < equipment.maxCount }.sumBy { it.xiuwei }.toString()
-            component.success.text = child.filterIndexed { index, equipment -> index < equipment.maxCount }.sumBy { it.success }.toString()
-        }
         val properties = mutableListOf(0,0,0,0)
-        child.forEachIndexed { i, equipment ->
-            if(equipment.type <= 10 || (equipment.type > 10 && i < equipment.maxCount)){
+        if(values.type == 1 || values.type == 2 || values.type == 3 ){
+            val maxEquipment = child.maxBy { it.rarity }!!
+            component.xiuwei.text = maxEquipment.xiuwei.toString()
+            component.success.text = maxEquipment.success.toString()
+            (0 until 4).forEach { index ->
+                properties[index] += maxEquipment.property[index]
+            }
+        }else{
+            val filterChildren = child.filterIndexed { index, equipment ->
+                if(equipment.type <= 10)
+                    true
+                else
+                    index < equipment.maxCount
+            }
+            component.xiuwei.text = filterChildren.sumBy { it.xiuwei }.toString()
+            component.success.text = filterChildren.sumBy { it.success }.toString()
+            filterChildren.forEach { equipment->
                 (0 until 4).forEach { index ->
                     properties[index] += equipment.property[index]
                 }
             }
         }
         component.props.text = properties.joinToString()
-
-
         return convertView
     }
 

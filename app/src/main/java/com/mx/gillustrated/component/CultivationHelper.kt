@@ -382,19 +382,27 @@ object CultivationHelper {
         person.equipmentSuccess = 0
         person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
         if(equipments.isNotEmpty()){
-            equipments.groupBy { it.id }.forEach { (_, u) ->
+            equipments.filter { it.type != 1 && it.type != 2 && it.type != 3 }.groupBy { it.id }.forEach { (_, u) ->
                 for (index in 0 until u.size){
-                    val equipment = u[index]
-                    if( index + 1 > equipment.maxCount ){
+                    val effectEquipment = u[index]
+                    if( index > effectEquipment.maxCount ){
                         break
                     }
-                    person.equipmentXiuwei += equipment.xiuwei
-                    person.equipmentSuccess += equipment.success
-                    equipment.property.forEachIndexed { pi, pp ->
-                        person.equipmentProperty[pi] += pp
-                    }
+                    summationEquipmentValues(person, effectEquipment)
                 }
             }
+            equipments.filter { it.type == 1 || it.type == 2 || it.type == 3 }.groupBy { it.type }.forEach { (_, u) ->
+                val effectEquipment = u.maxBy { it.rarity }!!
+                summationEquipmentValues(person, effectEquipment)
+            }
+        }
+    }
+
+    private fun summationEquipmentValues(person: Person, effectEquipment: Equipment){
+        person.equipmentXiuwei += effectEquipment.xiuwei
+        person.equipmentSuccess += effectEquipment.success
+        effectEquipment.property.forEachIndexed { pi, pp ->
+            person.equipmentProperty[pi] += pp
         }
     }
 

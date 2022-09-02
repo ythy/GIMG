@@ -47,7 +47,7 @@ object CultivationEnemyHelper {
                 CultivationHelper.PersonFixedInfoMix(null, null, 1000, 1000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001004", "8001006", "8002001", "8002003", "8002008", "8003002", "8003007"))
-        person.equipmentList.addAll(listOf(Triple("7002802", 0, "")))
+        person.equipmentList.addAll(listOf(Triple("7002901", 0, "")))
         repeat(4) {
             person.followerList.add(Triple("9000002", "${it + 1}号", ""))
             if(it == 0)
@@ -67,7 +67,7 @@ object CultivationEnemyHelper {
                 CultivationHelper.PersonFixedInfoMix(null, null, 4000, 4000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8002002", "8002004", "8002009", "8003002", "8003007"))//必连
-        person.equipmentList.addAll(listOf(Triple("7002801", 0, "")))
+        person.equipmentList.addAll(listOf(Triple("7002901", 0, "")))
         repeat(5) {
             person.followerList.add(Triple("9000002", "${it + 1}号", ""))
             if(it == 0)
@@ -87,7 +87,7 @@ object CultivationEnemyHelper {
                 CultivationHelper.PersonFixedInfoMix(null, null, 4000, 4000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8003002", "8004001"))//必
-        person.equipmentList.addAll(listOf(Triple("7002801", 0, "")))
+        person.equipmentList.addAll(listOf(Triple("7002901", 0, "")))
         repeat(6) {
             person.followerList.add(Triple("9000002", "${it + 1}号", ""))
             if(it == 0)

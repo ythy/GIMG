@@ -1266,7 +1266,7 @@
       "tianfu": 1,
       "level": 10,
       "lifetime": 0,
-      "maxPerson": 20,
+      "maxPerson": 30,
       "xiuwei": 30,
       "property": [0,10,10,10,0,0,0,0],
       "speedG1": 30
@@ -1277,7 +1277,7 @@
       "tianfu": 1,
       "level": 10,
       "lifetime": -50,
-      "maxPerson": 20,
+      "maxPerson": 30,
       "xiuwei": 80,
       "property": [0,30,0,0,0,0,0,0],
       "speedG1": 30
@@ -1288,7 +1288,7 @@
       "tianfu": 2,
       "level": 20,
       "lifetime": 0,
-      "maxPerson": 10,
+      "maxPerson": 20,
       "xiuwei": 60,
       "property": [0,30,10,0,0,0,0,0],
       "speedG1": 40
@@ -1299,7 +1299,7 @@
       "tianfu": 2,
       "level": 20,
       "lifetime": 50,
-      "maxPerson": 10,
+      "maxPerson": 20,
       "xiuwei": 30,
       "property": [50,10,20,0,0,0,0,0],
       "speedG1": 40
@@ -1310,7 +1310,7 @@
       "tianfu": 2,
       "level": 20,
       "lifetime": 20,
-      "maxPerson": 10,
+      "maxPerson": 20,
       "xiuwei": 30,
       "xiuweiMulti": 50,
       "property": [50,10,10,10,0,0,0,0],
@@ -1411,7 +1411,7 @@
     {
       "id": "7001001",
       "name": "\u516b\u54ab\u955c",
-      "type": 0,
+      "type": 9,
       "rarity": 9,
       "xiuwei": 0,
       "success": 20,
@@ -1420,7 +1420,7 @@
     {
       "id": "7001002",
       "name": "\u516b\u5c3a\u743c\u52fe\u7389",
-      "type": 0,
+      "type": 9,
       "rarity": 9,
       "xiuwei": 500,
       "success": 0,
@@ -1429,7 +1429,7 @@
     {
       "id": "7001003",
       "name": "\u661f\u5c18\u73e0",
-      "type": 0,
+      "type": 9,
       "rarity": 8,
       "xiuwei": 0,
       "success": 10,
@@ -1472,6 +1472,15 @@
       "property": [0,0,0,0,0,0,0,0]
     },
     {
+      "id": "7001009",
+      "name": "\u9ed1\u767d\u5760",
+      "type": 0,
+      "rarity": 9,
+      "xiuwei": 200,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
+    },
+    {
       "id": "7002201",
       "name": "\u9f99\u6cc9",
       "type": 1,
@@ -1505,25 +1514,16 @@
       "rarity": 5,
       "xiuwei": 0,
       "success": 0,
-      "property": [0,50,0,5,0,0,0,0]
+      "property": [0,50,0,0,0,0,0,0]
     },
     {
       "id": "7002601",
-      "name": "\u9b4f\u6b66\u9752\u8679",
+      "name": "\u83ab\u90aa",
       "type": 1,
       "rarity": 6,
       "xiuwei": 0,
       "success": 0,
       "property": [0,80,0,0,0,0,0,0]
-    },
-    {
-      "id": "7002602",
-      "name": "\u56db\u6cd5\u9752\u4e91",
-      "type": 1,
-      "rarity": 6,
-      "xiuwei": 0,
-      "success": 0,
-      "property": [0,70,0,10,0,0,0,0]
     },
     {
       "id": "7002701",
@@ -1535,25 +1535,7 @@
       "property": [0,100,0,0,0,0,0,0]
     },
     {
-      "id": "7002702",
-      "name": "\u83ab\u90aa",
-      "type": 1,
-      "rarity": 7,
-      "xiuwei": 0,
-      "success": 0,
-      "property": [0,80,0,20,0,0,0,0]
-    },
-    {
       "id": "7002801",
-      "name": "\u501a\u5929\u5251",
-      "type": 1,
-      "rarity": 8,
-      "xiuwei": 0,
-      "success": 0,
-      "property": [0,120,0,30,0,0,0,0]
-    },
-    {
-      "id": "7002802",
       "name": "\u5c60\u9f99\u5200",
       "type": 1,
       "rarity": 8,
@@ -1562,8 +1544,17 @@
       "property": [0,150,0,0,0,0,0,0]
     },
     {
+      "id": "7002901",
+      "name": "\u501a\u5929\u5251",
+      "type": 1,
+      "rarity": 9,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [0,200,0,0,0,0,0,0]
+    },
+    {
       "id": "7003201",
-      "name": "\u5e03\u7532",
+      "name": "\u5e03\u8863",
       "type": 2,
       "rarity": 2,
       "xiuwei": 0,
@@ -1572,7 +1563,7 @@
     },
     {
       "id": "7003301",
-      "name": "\u6728\u7532",
+      "name": "\u7d27\u8eab\u8863",
       "type": 2,
       "rarity": 3,
       "xiuwei": 0,
@@ -1581,7 +1572,7 @@
     },
     {
       "id": "7003401",
-      "name": "\u94c1\u7532",
+      "name": "\u591c\u9b54\u62ab\u98ce",
       "type": 2,
       "rarity": 4,
       "xiuwei": 0,
@@ -1590,7 +1581,7 @@
     },
     {
       "id": "7003501",
-      "name": "\u94dc\u7532",
+      "name": "\u6b7b\u4ea1\u6597\u7bf7",
       "type": 2,
       "rarity": 5,
       "xiuwei": 0,
@@ -1599,16 +1590,16 @@
     },
     {
       "id": "7003601",
-      "name": "\u94f6\u7532",
+      "name": "\u795e\u8c15\u62ab\u98ce",
       "type": 2,
       "rarity": 6,
       "xiuwei": 0,
       "success": 0,
-      "property": [0,0,70,0,0,0,0,0]
+      "property": [0,0,80,0,0,0,0,0]
     },
     {
       "id": "7003701",
-      "name": "\u91d1\u7532",
+      "name": "\u4e7e\u5764\u62a4\u5fc3\u7532",
       "type": 2,
       "rarity": 7,
       "xiuwei": 0,
@@ -1617,12 +1608,93 @@
     },
     {
       "id": "7003801",
-      "name": "\u94bb\u7532",
+      "name": "\u8749\u7ffc\u91d1\u4e1d\u7532",
       "type": 2,
       "rarity": 8,
       "xiuwei": 0,
       "success": 0,
       "property": [0,0,150,0,0,0,0,0]
+    },
+    {
+      "id": "7003901",
+      "name": "\u7d2b\u91d1\u78d0\u9f99\u7532",
+      "type": 2,
+      "rarity": 9,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [0,0,200,0,0,0,0,0]
+    },
+    {
+      "id": "7004201",
+      "name": "\u7f0e\u5e26",
+      "type": 3,
+      "rarity": 2,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [50,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7004301",
+      "name": "\u6c34\u6676\u8170\u5e26",
+      "type": 3,
+      "rarity": 3,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [100,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7004401",
+      "name": "\u516b\u5366\u7f0e\u5e26",
+      "type": 3,
+      "rarity": 4,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [150,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7004501",
+      "name": "\u5e7b\u5f69\u7389\u5e26",
+      "type": 3,
+      "rarity": 5,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [200,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7004601",
+      "name": "\u73e0\u7fe0\u7389\u73af",
+      "type": 3,
+      "rarity": 6,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [250,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7004701",
+      "name": "\u4e7e\u5764\u7d2b\u7389\u5e26",
+      "type": 3,
+      "rarity": 7,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [300,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7004801",
+      "name": "\u7409\u7483\u5bd2\u7389\u5e26",
+      "type": 3,
+      "rarity": 8,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [400,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7004901",
+      "name": "\u78d0\u9f99\u51e4\u7fd4\u5e26",
+      "type": 3,
+      "rarity": 9,
+      "xiuwei": 0,
+      "success": 0,
+      "property": [500,0,0,0,0,0,0,0]
     },
     {
       "id": "7006101",
@@ -1920,7 +1992,7 @@
       "description": "10,\u6700\u5c0f\u4f24\u5bb3",
       "type": 3,
       "rarity": 4,
-      "weight": 100000
+      "weight": 200000
     },
     {
       "id": "8003004",
@@ -2184,6 +2256,14 @@
       "weight": 500,
       "maxLevel": 120,
       "upgradeBasicXiuwei": 50000000
+    },
+    {
+      "id": "6100006",
+      "name": "\u5e26\u5320",
+      "rarity": 8,
+      "weight": 100,
+      "maxLevel": 100,
+      "upgradeBasicXiuwei": 40000000
     }
   ]
 

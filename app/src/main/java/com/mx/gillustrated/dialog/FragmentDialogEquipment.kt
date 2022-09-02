@@ -19,10 +19,10 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.vo.cultivation.Equipment
 
 @RequiresApi(Build.VERSION_CODES.N)
-class FragmentDialogEquipment constructor(private val callback:EquipmentSelectorCallback, private val mType:Range<Int>): DialogFragment()  {
+class FragmentDialogEquipment constructor(private val callback:EquipmentSelectorCallback, private val mType:MutableList<Int>): DialogFragment()  {
 
     companion object{
-        fun newInstance(callback:EquipmentSelectorCallback, type:Range<Int>): FragmentDialogEquipment {
+        fun newInstance(callback:EquipmentSelectorCallback, type:MutableList<Int>): FragmentDialogEquipment {
             return FragmentDialogEquipment(callback, type)
         }
     }

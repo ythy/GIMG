@@ -37,9 +37,9 @@ class FragmentEquipment: Fragment() {
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
                     override fun onItemSelected(equipment: Equipment) {
-                        updateEquipment(equipment, false)
+                        updateEquipment(equipment)
                     }
-                }, Range(1, 1))
+                }, mutableListOf(1))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_equipment")
     }
@@ -51,9 +51,9 @@ class FragmentEquipment: Fragment() {
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
                     override fun onItemSelected(equipment: Equipment) {
-                        updateEquipment(equipment, false)
+                        updateEquipment(equipment)
                     }
-                }, Range(0, 0))
+                }, mutableListOf(0, 9))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_equipment")
     }
@@ -65,9 +65,9 @@ class FragmentEquipment: Fragment() {
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
                     override fun onItemSelected(equipment: Equipment) {
-                        updateEquipment(equipment, false)
+                        updateEquipment(equipment)
                     }
-                }, Range(2, 2))
+                }, mutableListOf(2,3))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_equipment")
     }
@@ -129,17 +129,9 @@ class FragmentEquipment: Fragment() {
         }))
     }
 
-    fun updateEquipment(equipment:Equipment, autoCheck:Boolean = true){
+    fun updateEquipment(equipment:Equipment){
         if( mPerson.equipmentList.find { it.first == equipment.id } != null)
             return
-        if(autoCheck){
-            val exist = mPerson.equipmentList.find { e-> mConfigEquipments.find {
-                c-> c.id == e.first }?.type == equipment.type
-            }
-            if(equipment.type > 0 && exist != null){
-                mPerson.equipmentList.remove(exist)
-            }
-        }
         mPerson.equipmentList.add(Triple(equipment.id, 0, ""))
         CultivationHelper.updatePersonEquipment(mPerson)
         updateList()

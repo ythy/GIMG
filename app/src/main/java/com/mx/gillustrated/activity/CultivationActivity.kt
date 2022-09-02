@@ -85,8 +85,14 @@ class CultivationActivity : BaseActivity() {
 
     @OnClick(R.id.btn_save)
     fun onSaveClickHandler(){
+        saveAllData()
+    }
+
+    fun saveAllData(setBusyProgression:Boolean = true){
+        if(setBusyProgression){
+            mProgressDialog.show()
+        }
         setTimeLooper(false)
-        mProgressDialog.show()
         Thread(Runnable {
             Thread.sleep(500)
             val backupInfo = BakInfo()
@@ -105,6 +111,7 @@ class CultivationActivity : BaseActivity() {
             CultivationBakUtil.saveDataToFiles(Gson().toJson(backupInfo))
             val message = Message.obtain()
             message.what = 2
+            message.arg1 = if(setBusyProgression) 0 else 1
             mTimeHandler.sendMessage(message)
         }).start()
     }
@@ -254,6 +261,7 @@ class CultivationActivity : BaseActivity() {
                     it.value.children = Collections.synchronizedList(it.value.children)
                 it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
                 it.value.equipmentList = Collections.synchronizedList(it.value.equipmentList)
+                CultivationHelper.updatePersonEquipment(it.value)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
                 if(it.value.careerList.isEmpty()){
                     it.value.careerList = Collections.synchronizedList(CultivationHelper.getCareer().map { c->Triple(c, 0, "") })
@@ -514,14 +522,18 @@ class CultivationActivity : BaseActivity() {
         if(currentXun % 240 == 0L) {
             CultivationHelper.updatePartner(mPersons)
         }
-        if(currentXun % 12000 == 0L){
-            bePerson()
-        }else{
-            randomEvent(currentXun)
+        //以下辅助操作
+        when {
+            currentXun % 100000 == 0L -> {
+                mDeadPersons.clear()
+                saveAllData(false)
+            }
+            currentXun % 12000 == 0L -> bePerson()
+            else -> randomEvent(currentXun)
         }
         updateCareerEffect(currentXun)
         updateClans(currentXun)
-        updateEnemys(currentXun)
+        updateEnemys()
         updateBoss(currentXun)
     }
 
@@ -757,7 +769,7 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun updateEnemys(xun:Long){
+    private fun updateEnemys(){
         mEnemys.filter { !it.value.isDead }.forEach { e->
             val it = e.value
             if(isTrigger(it.attackFrequency)){
@@ -900,8 +912,8 @@ class CultivationActivity : BaseActivity() {
                     obj.level = t.second
                     obj
                 }.forEach { career->
-                    if(career.id == "6100001" || career.id == "6100002" || career.id == "6100003"){
-                        val equipmentType = if (career.id == "6100001") 0 else if (career.id == "6100002") 1 else 2
+                    if(career.id == "6100001" || career.id == "6100002" || career.id == "6100003" || career.id == "6100006"){
+                        val equipmentType = if (career.id == "6100001") 0 else if (career.id == "6100002") 1 else if (career.id == "6100003") 2 else 3
                         val equipment = CultivationHelper.makeEquipment(equipmentType, career.level)
                         if(equipment != null && person.equipmentList.find { it.first == equipment.id } == null){
                             person.equipmentList.add(Triple(equipment.id, 0, ""))
@@ -1050,9 +1062,7 @@ class CultivationActivity : BaseActivity() {
             }
             persons[0].xiuXei += 200000
             persons[1].xiuXei += 100000
-            addPersonEvent(persons[0],"${getYearString()} ${getPersonBasicString(persons[0], false)} Single Battle Winner")
             CultivationHelper.gainJiEquipment(persons[0], 13, 0, mBattleRound.single)
-            addPersonEvent(persons[1],"${getYearString()} ${getPersonBasicString(persons[1], false)} Single Battle Runner")
             CultivationHelper.gainJiEquipment(persons[1], 13, 1, mBattleRound.single)
             writeHistory("第${mBattleRound.single}届 Single Battle Runner: ${persons[1].allianceName} - ${persons[1].name}", persons[1])
             writeHistory("第${mBattleRound.single}届 Single Battle Winner: ${persons[0].allianceName} - ${persons[0].name}", persons[0])
@@ -1280,39 +1290,6 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    //暂时不用
-    private fun disasterHandler(randomSize:Int = 0){
-        val effectPersons = if(randomSize == 0)
-            mPersons
-        else
-            mPersons.filter { Random().nextInt(randomSize) == 0 }
-
-        val random = Random().nextInt(10)
-        val level = when (random) {
-            0 -> 500
-            in 1..2 -> 200
-            in 3..5 -> 100
-            else -> 50
-        }
-        val description = when (random) {
-            0 -> "超大"
-            in 1..2 -> "大"
-            in 3..5 -> "中"
-            else -> "小"
-        }
-        if(randomSize == 0){
-            writeHistory( "$description\ud83d\ude21\u706b\u0020\u6240\u6709\u4f19\u4f34\u5bff\u547d\u964d\u4f4e$level", null, 0 )
-        }
-        val text = "$description\ud83d\ude21\u706b\u0020\u5bff\u547d\u964d\u4f4e$level"
-        effectPersons.forEach {
-            it.value.lifetime -= level
-            if(randomSize > 0){
-                writeHistory( "${getPersonBasicString(it.value)} $text", it.value )
-            }
-            addPersonEvent(it.value,"${getYearString()} $text")
-        }
-    }
-
     private fun addBossHandler(){
         val boss = when (Random().nextInt(3)) {
             0 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
@@ -1329,9 +1306,11 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun gainTeji(person: Person, weight:Int = 1){
+        var gained = false
         CultivationHelper.getTeji(weight).forEach { t->
-            if(!person.teji.contains(t)){
+            if(!person.teji.contains(t) && !gained){
                 person.teji.add(t)
+                gained = true
                 val commonText = "\u83b7\u5f97\u7279\u6280 : ${mConfig.teji.find { f-> f.id == t }?.name}"
                 addPersonEvent(person, "${getYearString()} ${getPersonBasicString(person, false)} $commonText")
                 writeHistory("${getPersonBasicString(person)} $commonText", person)
@@ -1344,10 +1323,14 @@ class CultivationActivity : BaseActivity() {
             u.followerList.clear()
             u.careerList = Collections.synchronizedList(CultivationHelper.getCareer().map { c->Triple(c, 0, "") })
             u.pointXiuWei = u.maxXiuWei
-            //u.teji.clear()
+            u.teji.clear()
             u.equipmentList.removeIf {
                 val equipment = mConfig.equipment.find { e-> it.first == e.id }
                 equipment?.type ?: 0 <= 10
+            }
+            u.events.removeIf {
+                it.content.contains("\u83b7\u5f97") || it.content.contains("\u5236\u9020")
+                        || it.content.contains("\u53ec\u5524") || it.content.contains("Battle")
             }
             CultivationHelper.updatePersonEquipment(u)
         }
@@ -1418,7 +1401,9 @@ class CultivationActivity : BaseActivity() {
                     val xun = msg.obj.toString().toLong()
                     activity.xunHandler(xun)
                 }else if(msg.what == 2){
-                    activity.mProgressDialog.dismiss()
+                    if(msg.arg1 == 0){
+                        activity.mProgressDialog.dismiss()
+                    }
                     activity.setTimeLooper(true)
                     Toast.makeText(activity, "保存完成", Toast.LENGTH_SHORT).show()
                 }else if(msg.what == 3){
