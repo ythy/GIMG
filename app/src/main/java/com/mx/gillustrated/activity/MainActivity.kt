@@ -69,7 +69,8 @@ class MainActivity : BaseActivity() {
                 } else if (msg.what == 5) {
                     Toast.makeText(mainActivity, "删除完成", Toast.LENGTH_SHORT).show()
                 } else if (msg.what == 6){
-                    mainActivity.mMainActivityTop.setGameList(mainActivity.mGameType, msg.data.getParcelableArrayList("list") )
+                    mainActivity.mMainActivityTop.setGameList(mainActivity.mGameType,
+                            msg.data!!.getParcelableArrayList<GameInfo>("list")!!.toList() )
                 }
             }
 

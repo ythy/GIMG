@@ -13,7 +13,6 @@ import androidx.core.app.NotificationCompat
 import android.app.NotificationChannel
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import com.mx.gillustrated.R
 
 
@@ -24,16 +23,12 @@ import com.mx.gillustrated.R
 @RequiresApi(Build.VERSION_CODES.O)
 class StopService : Service() {
 
-    private var stopNotification: Notification? = null
-
-
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("SSSSSSSSSSSS", "onCreate")
         runNotification()
     }
 

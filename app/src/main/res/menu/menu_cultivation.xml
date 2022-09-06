@@ -48,4 +48,8 @@
         android:id="@+id/menu_grace"
         android:orderInCategory="410"
         android:title="putiantongqing"/>
+    <item
+        android:id="@+id/menu_setting"
+        android:orderInCategory="610"
+        android:title="setting"/>
 </menu>

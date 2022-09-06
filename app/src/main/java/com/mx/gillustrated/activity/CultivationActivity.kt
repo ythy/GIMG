@@ -544,6 +544,7 @@ class CultivationActivity : BaseActivity() {
         when {
             currentXun % 100000 == 0L -> {
                 mDeadPersons.clear()
+                addSpecPerson()
                 saveAllData(false)
             }
             currentXun % 44000 == 0L -> {
@@ -1415,6 +1416,12 @@ class CultivationActivity : BaseActivity() {
             }
             R.id.menu_reset_wtf->{
                 resetCustomBonus()
+            }
+            R.id.menu_setting->{
+                val ft = supportFragmentManager.beginTransaction()
+                val newFragment = FragmentDialogSetting.newInstance()
+                newFragment.isCancelable = true
+                newFragment.show(ft, "dialog_setting")
             }
 
         }
