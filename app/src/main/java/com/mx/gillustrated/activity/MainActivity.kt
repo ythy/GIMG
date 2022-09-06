@@ -19,10 +19,8 @@ import com.mx.gillustrated.vo.GameInfo
 import androidx.appcompat.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.Message
+import android.os.*
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -70,7 +68,8 @@ class MainActivity : BaseActivity() {
                     Toast.makeText(mainActivity, "生成头像完成", Toast.LENGTH_SHORT).show()
                 } else if (msg.what == 5) {
                     Toast.makeText(mainActivity, "删除完成", Toast.LENGTH_SHORT).show()
-
+                } else if (msg.what == 6){
+                    mainActivity.mMainActivityTop.setGameList(mainActivity.mGameType, msg.data.getParcelableArrayList("list") )
                 }
             }
 
@@ -243,22 +242,24 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setGameList() {
-        ServiceUtils.createConnect(object : DBCall<List<GameInfo>>() {
-            override fun enqueue(): List<GameInfo> {
-                return mOrmHelper.gameInfoDao.queryForAll()
-            }
-        }).doOnNext { list ->
-            if (list.isNotEmpty()) {
-                mMainActivityTop.setGameList(mGameType, list)
-            } else {
-                object : Thread() {
-                    override fun run() {
-                        DataBakUtil.getDataFromFiles(mOrmHelper)
-                        mainHandler.sendEmptyMessage(1)
-                    }
-                }.start()
-            }
-        }.subscribe()
+        Thread{
+            ServiceUtils.createConnect(object : DBCall<List<GameInfo>>() {
+                override fun enqueue(): List<GameInfo> {
+                    return mOrmHelper.gameInfoDao.queryForAll()
+                }
+            }).doOnNext { list ->
+                if (list.isNotEmpty()) {
+                    val msg = Message.obtain()
+                    msg.data.putParcelableArrayList("list", list as ArrayList<out Parcelable>)
+                    msg.what = 6
+                    mainHandler.sendMessage(msg)
+                } else {
+                    DataBakUtil.getDataFromFiles(mOrmHelper)
+                    mainHandler.sendEmptyMessage(1)
+                }
+            }.subscribe()
+        }.start()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -287,6 +288,7 @@ class MainActivity : BaseActivity() {
             R.id.action_game-> {
                 val intent = Intent(this, CultivationActivity::class.java)
                 startActivity(intent)
+                this.finish()
             }
             R.id.action_theme-> {
                 val ft = supportFragmentManager.beginTransaction()

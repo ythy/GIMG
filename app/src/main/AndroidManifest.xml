@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.READ_CLIPS" />
     <uses-permission android:name="android.permission.WRITE_CLIPS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -73,6 +74,11 @@
             android:name=".activity.CultivationActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <service
+            android:name=".service.StopService"
+            android:enabled="true">
+        </service>
     </application>
 	
     

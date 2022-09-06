@@ -2,16 +2,17 @@ package com.mx.gillustrated.activity
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.BaseInputConnection
 import android.widget.*
+import androidx.annotation.RequiresApi
 import butterknife.*
 import com.google.gson.Gson
 import com.mx.gillustrated.R
@@ -36,6 +37,7 @@ import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
 import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
 import com.mx.gillustrated.component.CultivationHelper.showing
 import com.mx.gillustrated.dialog.*
+import com.mx.gillustrated.service.StopService
 import com.mx.gillustrated.util.CultivationBakUtil
 import com.mx.gillustrated.util.JsonFileReader
 import com.mx.gillustrated.util.NameUtil
@@ -51,8 +53,11 @@ import java.util.concurrent.*
 @TargetApi(Build.VERSION_CODES.N)
 class CultivationActivity : BaseActivity() {
 
+
+
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
+    private var isStop = false//
     private var mSpeed = 10L//流失速度
     private val mInitPersonCount = 1000//初始化Person数量
     private var readRecord = true
@@ -231,22 +236,29 @@ class CultivationActivity : BaseActivity() {
         }).start()
     }
 
-    override fun onPause() {
-        super.onPause()
-        setTimeLooper(false)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if(mCurrentXun > 0){
-            setTimeLooper(true)
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onStop() {
+        super.onStop()
+        if(!isFinishing){
+            isStop = true
+            val serviceIntent = Intent(this, StopService::class.java)
+            this.startForegroundService(serviceIntent)
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        isStop = false
+        val serviceIntent = Intent(this, StopService::class.java)
+        stopService(serviceIntent)
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
         mThreadRunnable = false
         mHistoryThreadRunnable = false
+        isStop = false
     }
 
 
@@ -392,12 +404,16 @@ class CultivationActivity : BaseActivity() {
 
     fun setTimeLooper(flag:Boolean){
         if(flag){
-            mBtnTime.tag = "ON"
-            mBtnTime.text = resources.getString(R.string.cultivation_stop)
+            if(!isStop){
+                mBtnTime.tag = "ON"
+                mBtnTime.text = resources.getString(R.string.cultivation_stop)
+            }
             mThreadRunnable = true
         }else{
-            mBtnTime.tag = "OFF"
-            mBtnTime.text = resources.getString(R.string.cultivation_start)
+            if(!isStop) {
+                mBtnTime.tag = "OFF"
+                mBtnTime.text = resources.getString(R.string.cultivation_start)
+            }
             mThreadRunnable = false
         }
     }
@@ -432,13 +448,15 @@ class CultivationActivity : BaseActivity() {
             return true
         }else if(matchName.find(person.name) != null){
             return true
+        }else if(person.lifeTurn >= 81){
+            return true
         }
         return false
     }
 
     private fun xunHandler(currentXun:Long) {
         val year = getYearString(currentXun)
-        if(mDate.text != year) {
+        if(!isStop && mDate.text != year) {
             mDate.text = year
         }
         mExecutor.execute {
@@ -574,6 +592,8 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updateHistory(){
+        if(isStop)
+            return
         if(mHistoryData.size > 500 && mThreadRunnable){
             mHistoryData.clear()
             CultivationBattleHelper.mBattles.clear()
@@ -1045,7 +1065,7 @@ class CultivationActivity : BaseActivity() {
         val personsAll = mPersons.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
         personsAll.shuffle()
         if(personsAll.size < 20){
-            Toast.makeText(this, "persons less than 20", Toast.LENGTH_SHORT).show()
+            showToast("persons less than 20")
             return
         }
         val persons = personsAll.subList(0, personsAll.size/2)
@@ -1087,7 +1107,7 @@ class CultivationActivity : BaseActivity() {
     private fun battleClanHandler(block: Boolean = true){
         val clans = mClans.filter { it.value.clanPersonList.size > 0 }.map { it.value }.toMutableList()
         if(clans.isEmpty() || clans.size < 4){
-            Toast.makeText(this, "Clan less than 4", Toast.LENGTH_SHORT).show()
+            showToast("Clan less than 4")
             return
         }
         setTimeLooper(false)
@@ -1127,7 +1147,7 @@ class CultivationActivity : BaseActivity() {
     private fun battleBangHandler(block: Boolean = true){
         val alliances = mAlliance.filter { it.value.personList.isNotEmpty() }.map { it.value }.toMutableList()
         if(alliances.isEmpty() || alliances.size < 4){
-            Toast.makeText(this, "Bang less than 4", Toast.LENGTH_SHORT).show()
+            showToast("Bang less than 4")
             return
         }
         setTimeLooper(false)
@@ -1343,7 +1363,13 @@ class CultivationActivity : BaseActivity() {
             }
             CultivationHelper.updatePersonEquipment(u)
         }
-        Toast.makeText(this, "重置完成", Toast.LENGTH_SHORT).show()
+        showToast("重置完成")
+    }
+
+    fun showToast(content:String){
+        if(isStop)
+            return
+        Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -1385,7 +1411,7 @@ class CultivationActivity : BaseActivity() {
                 mPersons.forEach { (_: String, u: Person) ->
                     u.xiuXei = Math.max(u.xiuXei, 0)
                 }
-                Toast.makeText(this, "不用谢", Toast.LENGTH_SHORT).show()
+                showToast("不用谢")
             }
             R.id.menu_reset_wtf->{
                 resetCustomBonus()
@@ -1405,7 +1431,7 @@ class CultivationActivity : BaseActivity() {
 
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
-                val activity = reference.get()!!
+                val activity = reference.get() ?: return
                 if(msg.what == 1){
                     val xun = msg.obj.toString().toLong()
                     activity.xunHandler(xun)
@@ -1413,12 +1439,12 @@ class CultivationActivity : BaseActivity() {
                     if(msg.arg1 == 0){
                         activity.mProgressDialog.dismiss()
                     }
+                    activity.showToast("保存完成")
                     activity.setTimeLooper(true)
-                    Toast.makeText(activity, "保存完成", Toast.LENGTH_SHORT).show()
                 }else if(msg.what == 3){
                     activity.mProgressDialog.dismiss()
                     if(msg.obj != null){
-                        Toast.makeText(activity, "读取完成", Toast.LENGTH_SHORT).show()
+                        activity.showToast("读取完成")
                         maxFemaleProfile = msg.arg1
                         maxMaleProfile = msg.arg2
                         activity.init(msg.obj.toString())
@@ -1426,28 +1452,29 @@ class CultivationActivity : BaseActivity() {
                         activity.init(null)
                     }
                 }else if(msg.what == 4){
-                    Toast.makeText(activity, "重启完成", Toast.LENGTH_SHORT).show()
+                    activity.showToast("重启完成")
                     activity.startWorld()
                 }else if(msg.what == 5){
                     activity.combinedPersonRelationship(msg.obj as Person)
                     if(msg.arg1 == 0){
-                        Toast.makeText(activity, "加入完成", Toast.LENGTH_SHORT).show()
+                        activity.showToast("加入完成")
                         activity.mProgressDialog.dismiss()
                         activity.setTimeLooper(true)
                     }
                 }else if(msg.what == 6){
-                    Toast.makeText(activity, "BE操作完成", Toast.LENGTH_SHORT).show()
+                    activity.showToast("BE操作完成")
                     activity.setTimeLooper(true)
                 }else if(msg.what == 7){
                     activity.updateHistory()
                 }else if(msg.what == 8){
-                    Toast.makeText(activity, "Battle end", Toast.LENGTH_SHORT).show()
+                    activity.showToast("Battle end")
                     if(msg.arg1 == 1)
                         activity.setTimeLooper(true)
                 }
             }
         }
     }
+
 
 
 }
