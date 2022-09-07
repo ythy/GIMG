@@ -444,11 +444,12 @@ class CultivationActivity : BaseActivity() {
 
     private fun isDeadException(person:Person):Boolean{
         val matchName = "(李逍遥|阿奴)".toRegex()
+        val lifeTurn = mSP.getInt("cultivation_jie", 81)
         if(person.isFav){
             return true
         }else if(matchName.find(person.name) != null){
             return true
-        }else if(person.lifeTurn >= 81){
+        }else if(person.lifeTurn >= lifeTurn){
             return true
         }
         return false
@@ -542,7 +543,7 @@ class CultivationActivity : BaseActivity() {
         }
         //以下辅助操作
         when {
-            currentXun % 100000 == 0L -> {
+            currentXun % 100000 == 0L && isStop -> {
                 mDeadPersons.clear()
                 addSpecPerson()
                 saveAllData(false)
@@ -552,7 +553,7 @@ class CultivationActivity : BaseActivity() {
                     addBossHandler(true)
                 }
             }
-            currentXun % 12000 == 0L -> bePerson()
+            currentXun % 12000 == 0L && isStop -> bePerson()
             else -> randomEvent(currentXun)
         }
         updateCareerEffect(currentXun)
@@ -836,6 +837,7 @@ class CultivationActivity : BaseActivity() {
                 }else{
                     u.remainHit --
                     if(u.remainHit <= 0){
+                        mAlliance[u.allianceId]?.personList?.remove(u.id)
                         writeHistory("${u.name} 消失", u, 0)
                     }
                 }
@@ -1420,7 +1422,7 @@ class CultivationActivity : BaseActivity() {
             R.id.menu_setting->{
                 val ft = supportFragmentManager.beginTransaction()
                 val newFragment = FragmentDialogSetting.newInstance()
-                newFragment.isCancelable = true
+                newFragment.isCancelable = false
                 newFragment.show(ft, "dialog_setting")
             }
 

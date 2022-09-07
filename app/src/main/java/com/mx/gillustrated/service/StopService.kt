@@ -17,7 +17,7 @@ import com.mx.gillustrated.R
 
 
 /**
- * Created by maoxin on 2017/11/20.
+ * Created by maoxin on 2022/09/05.
  */
 
 @RequiresApi(Build.VERSION_CODES.O)

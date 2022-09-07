@@ -16,19 +16,21 @@ import butterknife.*
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
+import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 import java.util.*
 
+//type 0 all; 1 fav; 2 carrer rarity>=8
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
-class FragmentDialogPersonList  : DialogFragment() {
+class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFragment() {
 
     companion object{
 
-        fun newInstance(): FragmentDialogPersonList {
-            return FragmentDialogPersonList()
+        fun newInstance(type:Int = 0): FragmentDialogPersonList {
+            return FragmentDialogPersonList(type)
         }
 
         class TimeHandler constructor(val context: FragmentDialogPersonList): Handler(){
@@ -72,6 +74,8 @@ class FragmentDialogPersonList  : DialogFragment() {
 
     @OnClick(R.id.btn_switch)
     fun onSwitchClickHandler(){
+        if (mType > 0)
+            return
         val tag = mSwitchBtn.tag
         if(tag == "ON"){
             mSwitchBtn.text = "offline"
@@ -160,11 +164,20 @@ class FragmentDialogPersonList  : DialogFragment() {
 
     private fun setOnlineList(){
         mPersonData.clear()
+        val persons = when (mType) {
+            1 -> mContext.mPersons.map { it.value }.filter { it.isFav }
+            2 -> mContext.mPersons.map { it.value }.filter { p->
+                val list = p.careerList.map { l-> CultivationHelper.mConfig.career.find{ c-> c.id == l.first} }
+                        .sortedByDescending { it?.rarity }
+                list.isNotEmpty() && list[0]?.rarity!! >= 8
+            }
+            else -> mContext.mPersons.map { it.value }
+        }
         val filterString = etName.text.toString()
         if(filterString == "" )
-            mPersonData.addAll(mContext.mPersons.map { it.value })
+            mPersonData.addAll(persons)
         else
-            mPersonData.addAll(mContext.mPersons.map { it.value }.filter {
+            mPersonData.addAll(persons.filter {
                 it.name.startsWith(filterString, true) || PinyinUtil.convert(it.name).startsWith(filterString, true)
             })
 
@@ -173,7 +186,8 @@ class FragmentDialogPersonList  : DialogFragment() {
                 .thenByDescending { it.xiuXei } )
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
-        mTotalText.text = mPersonData.size.toString()
+        val jie = mContext.mSP.getInt("cultivation_jie", 81)
+        mTotalText.text = "${mPersonData.size}-${mPersonData.count { it.lifeTurn >= jie }}"
     }
 
 }

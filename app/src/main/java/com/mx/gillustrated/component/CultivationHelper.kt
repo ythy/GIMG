@@ -243,7 +243,7 @@ object CultivationHelper {
     }
 
     fun makeFollower(weight: Int):Follower?{
-        val list = mConfig.follower.filter { it.rarity * 10 < weight }.map {
+        val list = mConfig.follower.filter { it.rarity * 10 < weight && it.type == 0 }.map {
             it.copy()
         }.shuffled()
         return if(list.isEmpty())

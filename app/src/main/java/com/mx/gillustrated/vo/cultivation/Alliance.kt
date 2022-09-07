@@ -112,7 +112,7 @@ class Alliance() : AllianceConfig(), Parcelable {
         config.id = super.id
         config.name = super.name
         config.lingGen = super.lingGen
-        config.persons = this.personList.filter { it.value.allianceId == super.id }.map { it.key }
+        config.persons = this.personList.filter { it.value.allianceId == super.id && it.value.type == 0}.map { it.key }
         return config
     }
 

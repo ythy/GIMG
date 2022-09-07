@@ -71,7 +71,7 @@ class Person() :Parcelable {
         var allianceName:String = "" // alliance
 
         //不需要保存
-        var type = 0// 标注boss用 boss > 1
+        var type = 0// 标注boss用 boss > 0
         var remainHit = 0// 标注boss attack round
 
         constructor(parcel: Parcel) : this() {
