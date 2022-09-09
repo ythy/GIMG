@@ -186,7 +186,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                 .thenByDescending { it.xiuXei } )
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
-        val jie = mContext.mSP.getInt("cultivation_jie", 81)
+        val jie = mContext.mSP.getInt("cultivation_jie", CultivationHelper.SP_JIE_TURN)
         mTotalText.text = "${mPersonData.size}-${mPersonData.count { it.lifeTurn >= jie }}"
     }
 

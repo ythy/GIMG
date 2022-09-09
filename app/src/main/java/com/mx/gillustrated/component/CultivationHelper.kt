@@ -538,6 +538,9 @@ object CultivationHelper {
             null
     }
 
+    const val SP_JIE_TURN = 81
+    val SP_EVENT_WEIGHT = listOf("1000-10","1200-40","7200-40","8400-40","9600-80")
+
     // type 1 人物信息, 2 流程信息
     data class HistoryInfo(var content:String, var person:Person?, var type:Int = 0, var battleId:String = "")
 

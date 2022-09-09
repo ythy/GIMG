@@ -444,7 +444,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun isDeadException(person:Person):Boolean{
         val matchName = "(李逍遥|阿奴)".toRegex()
-        val lifeTurn = mSP.getInt("cultivation_jie", 81)
+        val lifeTurn = mSP.getInt("cultivation_jie", CultivationHelper.SP_JIE_TURN)
         if(person.isFav){
             return true
         }else if(matchName.find(person.name) != null){
@@ -737,19 +737,23 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun randomEvent(xun: Long){
-        if(xun % 1000 == 0L && isTrigger(10)) {
+        val weight = mSP.getString("cultivation_random_event", CultivationHelper.SP_EVENT_WEIGHT.joinToString())!!.split(",").map {
+            val temp = it.split("-")
+            Pair(temp.first().trim().toInt(), temp.last().trim().toInt())
+        }
+        if(xun % weight[0].first == 0L && isTrigger(weight[0].second)) {
            eventEnemyHandler()
         }
-        if(xun % 1200 == 0L  && isTrigger(40)) {
+        if(xun % weight[1].first == 0L && isTrigger(weight[1].second)) {
             addBossHandler()
         }
-        if(xun % 7200 == 0L && isTrigger(40)) {
+        if(xun % weight[2].first == 0L && isTrigger(weight[2].second)) {
             battleSingleHandler(false)
         }
-        if(xun % 8400 == 0L && isTrigger(40)) {
+        if(xun % weight[3].first == 0L && isTrigger(weight[3].second)) {
             battleBangHandler(false)
         }
-        if(xun % 9600 == 0L && isTrigger(80)) {
+        if(xun % weight[4].first == 0L && isTrigger(weight[4].second)) {
             battleClanHandler(false)
         }
     }

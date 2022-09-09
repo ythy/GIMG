@@ -31,6 +31,8 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
     @BindView(R.id.et_name_last)
     lateinit var etLastName:EditText
 
+    @BindView(R.id.tv_age)
+    lateinit var tvAge:TextView
 
     @BindView(R.id.et_name)
     lateinit var etName:EditText
@@ -55,6 +57,15 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
     @BindView(R.id.sch_dink)
     lateinit var mSwitchDink:Switch
+
+    @OnClick(R.id.btn_life)
+    fun onLifetimeHandler(){
+        val success = mContext.addPersonLifetime(mPerson.id)
+        if(success){
+            Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
+            updateView()
+        }
+    }
 
     @OnClick(R.id.btn_assign)
     fun onAssignClickHandler(){
@@ -173,5 +184,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
         etFirstName.setText(CultivationHelper.showing(mPerson.lastName))
         etLastName.setText(CultivationHelper.showing(mPerson.name.substring(mPerson.lastName.length)))
+
+        tvAge.text = "${mPerson.age}/${mPerson.lifetime}"
     }
 }

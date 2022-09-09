@@ -8,24 +8,19 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import butterknife.*
-import com.j256.ormlite.stmt.query.In
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.PersonPagerAdapter
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.common.MConfig
-import com.mx.gillustrated.component.AutoWrapLinearLayout
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.fragment.*
-import com.mx.gillustrated.util.CommonUtil
-import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
 import java.lang.ref.WeakReference
@@ -53,13 +48,6 @@ class FragmentDialogPerson : DialogFragment() {
         }
     }
 
-    @OnClick(R.id.btn_life)
-    fun onLifetimeHandler(){
-        val success = mContext.addPersonLifetime(mPerson.id)
-        if(success){
-            Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     @OnClick(R.id.btn_close)
     fun onCloseHandler(){
@@ -301,10 +289,10 @@ class FragmentDialogPerson : DialogFragment() {
         }
         mSwitchFav.isChecked = mPerson.isFav
         val lifeTurn = if(mPerson.lifeTurn == 0) "" else ".${mPerson.lifeTurn}"
-        mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}$lifeTurn(${CultivationHelper.showing(mPerson.gender.props)})-${mPerson.ancestorLevel}"
+        mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}$lifeTurn"
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
-        mDialogView.age.text = "${mPerson.age}/${mPerson.lifetime}"
+        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}-${mPerson.ancestorLevel}/${mPerson.lifetime - mPerson.age}"
         mDialogView.career.text = mPerson.careerList.map {
             val obj = CultivationHelper.mConfig.career.find { c-> c.id == it.first }!!.copy()
             obj.level = it.second
@@ -325,7 +313,7 @@ class FragmentDialogPerson : DialogFragment() {
 
     private fun getProperty():String{
         val result = CultivationHelper.getProperty(mPerson)
-        return "${result[0]}/${result[1]} ${result[2]}-${result[3]}-${result[4]} (${mPerson.teji.size})"
+        return "${result[0]}/${result[1]} ${result[2]}-${result[3]}-${result[4]} ${mPerson.teji.size}-${mPerson.followerList.size}"
     }
 
     private fun setFamily(){
