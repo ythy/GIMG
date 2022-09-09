@@ -27,6 +27,9 @@ class Career {
     }
 
     override fun toString(): String {
-        return "${CultivationHelper.showing(name)}$level"
+        return if(level >= maxLevel)
+            CultivationHelper.showing(name)
+        else
+            "${CultivationHelper.showing(name)}$level"
     }
 }

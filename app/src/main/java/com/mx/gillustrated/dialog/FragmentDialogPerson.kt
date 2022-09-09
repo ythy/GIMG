@@ -289,10 +289,10 @@ class FragmentDialogPerson : DialogFragment() {
         }
         mSwitchFav.isChecked = mPerson.isFav
         val lifeTurn = if(mPerson.lifeTurn == 0) "" else ".${mPerson.lifeTurn}"
-        mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}$lifeTurn"
+        mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}$lifeTurn-${mPerson.ancestorLevel}"
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
-        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}-${mPerson.ancestorLevel}/${mPerson.lifetime - mPerson.age}"
+        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}/${mPerson.lifetime - mPerson.age}"
         mDialogView.career.text = mPerson.careerList.map {
             val obj = CultivationHelper.mConfig.career.find { c-> c.id == it.first }!!.copy()
             obj.level = it.second
@@ -313,7 +313,7 @@ class FragmentDialogPerson : DialogFragment() {
 
     private fun getProperty():String{
         val result = CultivationHelper.getProperty(mPerson)
-        return "${result[0]}/${result[1]} ${result[2]}-${result[3]}-${result[4]} ${mPerson.teji.size}-${mPerson.followerList.size}"
+        return "${result[0]}/${result[1]} ${result[2]}-${result[3]}-${result[4]}"
     }
 
     private fun setFamily(){
