@@ -1342,8 +1342,11 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun gainTeji(person: Person, weight:Int = 1){
+        val tejiCareer = person.careerList.find { it.first == "6100005" }
+        if(tejiCareer != null && person.teji.size > Math.max(5, tejiCareer.second / 10)  )
+            return
         var gained = false
-        CultivationHelper.getTeji(weight).forEach { t->
+        CultivationHelper.getTeji(weight) .forEach { t->
             if(!person.teji.contains(t) && !gained){
                 person.teji.add(t)
                 gained = true
