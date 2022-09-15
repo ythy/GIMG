@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
@@ -14,6 +15,7 @@ import butterknife.*
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.TextViewBox
 
 @RequiresApi(Build.VERSION_CODES.N)
 class FragmentDialogSetting : DialogFragment() {
@@ -24,53 +26,17 @@ class FragmentDialogSetting : DialogFragment() {
         }
     }
 
-    @BindView(R.id.tv_e1)
-    lateinit var mTvE1:TextView
+    @BindView(R.id.ll_parent_measure)
+    lateinit var measures: LinearLayout
 
-    @BindView(R.id.tv_e2)
-    lateinit var mTvE2:TextView
+    @BindView(R.id.tvb_battle)
+    lateinit var tvbBattle: TextViewBox
 
-    @BindView(R.id.tv_e3)
-    lateinit var mTvE3:TextView
+    @BindView(R.id.tvb_enemy)
+    lateinit var tvbEnemy: TextViewBox
 
-    @BindView(R.id.tv_e4)
-    lateinit var mTvE4:TextView
-
-    @BindView(R.id.tv_e5)
-    lateinit var mTvE5:TextView
-
-    @BindView(R.id.tv_e6)
-    lateinit var mTvE6:TextView
-
-    @BindView(R.id.tv_b1)
-    lateinit var mTvB1:TextView
-
-    @BindView(R.id.tv_b2)
-    lateinit var mTvB2:TextView
-
-    @BindView(R.id.tv_b3)
-    lateinit var mTvB3:TextView
-
-    @BindView(R.id.tv_b4)
-    lateinit var mTvB4:TextView
-
-    @BindView(R.id.tv_bang)
-    lateinit var mTvBang:TextView
-
-    @BindView(R.id.tv_clan)
-    lateinit var mTvClan:TextView
-
-    @BindView(R.id.tv_single)
-    lateinit var mTvSingle:TextView
-
-    @OnClick(R.id.tv_bang, R.id.tv_clan, R.id.tv_single, R.id.tv_b1, R.id.tv_b2, R.id.tv_b3, R.id.tv_b4,
-            R.id.tv_e1, R.id.tv_e2, R.id.tv_e3, R.id.tv_e4, R.id.tv_e5, R.id.tv_e6)
-    fun onDataClick(text:TextView){
-        val ft = mActivity.supportFragmentManager.beginTransaction()
-        val newFragment = FragmentDialogRank.newInstance(text.tag.toString().toInt())
-        newFragment.isCancelable = false
-        newFragment.show(ft, "dialog_rank_info")
-    }
+    @BindView(R.id.tvb_boss)
+    lateinit var tvbBoss: TextViewBox
 
     @BindView(R.id.et_jie)
     lateinit var mEtJie:EditText
@@ -166,22 +132,34 @@ class FragmentDialogSetting : DialogFragment() {
     }
 
     fun init() {
+        measures.measure(0,0)
         val battleRound = CultivationHelper.mBattleRound
-        mTvBang.text = "帮:${battleRound.bang}"
-        mTvClan.text = "族:${battleRound.clan}"
-        mTvSingle.text = "个:${battleRound.single}"
+        tvbBattle.setGap(20)
+        tvbBattle.setFixedWidth(measures.measuredWidth - 20)
+        tvbBattle.setCallback(object : TextViewBox.Callback {
+            override fun onClick(index: Int) {
+                openDialog(index)
+            }
+        })
+        tvbBattle.setDataProvider(listOf("帮:${battleRound.bang}", "族:${battleRound.clan}", "个:${battleRound.single}"), null)
 
-        mTvE1.text = "${CultivationHelper.EnemyNames[0]}:${battleRound.enemy[0]}"
-        mTvE2.text = "${CultivationHelper.EnemyNames[1]}:${battleRound.enemy[1]}"
-        mTvE3.text = "${CultivationHelper.EnemyNames[2]}:${battleRound.enemy[2]}"
-        mTvE4.text = "${CultivationHelper.EnemyNames[3]}:${battleRound.enemy[3]}"
-        mTvE5.text = "${CultivationHelper.EnemyNames[4]}:${battleRound.enemy[4]}"
-        mTvE6.text = "${CultivationHelper.EnemyNames[5]}:${battleRound.enemy[5]}"
+        tvbEnemy.setFixedWidth(measures.measuredWidth - 20)
+        tvbEnemy.setGap(20)
+        tvbEnemy.setCallback(object : TextViewBox.Callback {
+            override fun onClick(index: Int) {
+                openDialog(10 + index)
+            }
+        })
+        tvbEnemy.setDataProvider(CultivationHelper.EnemyNames.mapIndexed { index, s ->  "$s:${battleRound.enemy[index]}" }, null)
 
-        mTvB1.text = "霸:${battleRound.boss[0]}"
-        mTvB2.text = "暗:${battleRound.boss[1]}"
-        mTvB3.text = "滚:${battleRound.boss[2]}"
-        mTvB4.text = "王:${battleRound.boss[3]}"
+        tvbBoss.setFixedWidth(measures.measuredWidth - 20)
+        tvbBoss.setGap(20)
+        tvbBoss.setCallback(object : TextViewBox.Callback {
+            override fun onClick(index: Int) {
+                openDialog(20 + index)
+            }
+        })
+        tvbBoss.setDataProvider(listOf("霸:${battleRound.boss[0]}", "暗:${battleRound.boss[1]}", "滚:${battleRound.boss[2]}", "王:${battleRound.boss[3]}"), null)
 
         mEtJie.setText(mActivity.mSP.getInt("cultivation_jie", CultivationHelper.SP_JIE_TURN).toString())
         val eventWeight = mActivity.mSP.getString("cultivation_random_event", CultivationHelper.SP_EVENT_WEIGHT.joinToString())!!.split(",").map {
@@ -200,4 +178,10 @@ class FragmentDialogSetting : DialogFragment() {
         mClanWeight.setText(eventWeight[4].second)
     }
 
+    private fun openDialog(tag:Int){
+        val ft = mActivity.supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogRank.newInstance(tag)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_rank_info")
+    }
 }

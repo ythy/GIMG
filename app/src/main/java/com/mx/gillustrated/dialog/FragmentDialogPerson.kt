@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
@@ -20,6 +21,7 @@ import com.mx.gillustrated.adapter.PersonPagerAdapter
 import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.fragment.*
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
@@ -146,7 +148,7 @@ class FragmentDialogPerson : DialogFragment() {
         init()
     }
 
-    //RelativeLayout 需要
+//   // RelativeLayout 需要
 //    override fun onResume() {
 //        super.onResume()
 //        if(dialog?.window != null){
@@ -188,14 +190,14 @@ class FragmentDialogPerson : DialogFragment() {
 
     val innerCallback = object:IViewpageCallback{
         override fun update(type: Int) {
-           when (type){
-               1 -> {
-                   setTianfu()
-                   updateView()
-               }
-               2 -> setProfile()
-               3 -> updateView()
-           }
+            when (type){
+                1 -> {
+                    setTianfu()
+                    updateView()
+                }
+                2 -> setProfile()
+                3 -> updateView()
+            }
         }
 
     }
@@ -235,47 +237,46 @@ class FragmentDialogPerson : DialogFragment() {
         val person = mPerson
         try {
             val imageDir = File(Environment.getExternalStorageDirectory(),
-                   MConfig.SD_CULTIVATION_HEADER_PATH + "/" + person.gender)
+                    MConfig.SD_CULTIVATION_HEADER_PATH + "/" + person.gender)
             var file = File(imageDir.path, person.profile.toString() + ".png")
             if (!file.exists()) {
                 file = File(imageDir.path, person.profile.toString() + ".jpg")
             }
-           if (file.exists()) {
-               val bmp = MediaStore.Images.Media.getBitmap(mContext.contentResolver, Uri.fromFile(file))
-               mDialogView.profile.setImageBitmap(bmp)
-           } else
-               mDialogView.profile.setImageBitmap(null)
+            if (file.exists()) {
+                val bmp = MediaStore.Images.Media.getBitmap(mContext.contentResolver, Uri.fromFile(file))
+                mDialogView.profile.setImageBitmap(bmp)
+            } else
+                mDialogView.profile.setImageBitmap(null)
 
         } catch (e: Exception) {
-           e.printStackTrace()
+            e.printStackTrace()
         }
     }
 
     fun setTianfu(){
-        mDialogView.tianfu.removeAllViews()
+        //mDialogView.tianfu.removeAllViews()
         val tianFus = mPerson.tianfus
         if(tianFus.isNotEmpty()){
-            tianFus.forEach {
-                val data = it
-                val textView = TextView(this.context)
-                textView.text = data.name
-                textView.setTextColor(Color.parseColor(CommonColors[data.rarity]))
-                textView.setOnClickListener {
-                    var text = ""
-                    when {
-                        data.type == 1 -> text = "基础修为"
-                        data.type == 2 -> text = "修为加速"
-                        data.type == 3 -> text = "Life"
-                        data.type == 4 -> text = "突破"
-                        data.type == 5 -> text = "福源"
+
+            mDialogView.measures.measure(0,0)
+            mDialogView.tianfu.setFixedWidth(mDialogView.measures.measuredWidth - 100)
+            mDialogView.tianfu.setCallback(object : TextViewBox.Callback {
+                override fun onClick(index: Int) {
+                    val data = tianFus[index]
+                    val text = when (data.type) {
+                        1 -> "\u57fa\u7840\u4fee\u4e3a"
+                        2 -> "\u4fee\u4e3a\u52a0\u901f"
+                        3 -> "Life"
+                        4 -> "\u7a81\u7834"
+                        5 -> "\u798f\u6e90"
+                        else -> ""
                     }
-                    Toast.makeText(this.context, "${text}增加${data.bonus}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "${text}增加${data.bonus}", Toast.LENGTH_SHORT).show()
                 }
-                val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                layoutParams.marginEnd = 20
-                textView.layoutParams = layoutParams
-                mDialogView.tianfu.addView(textView)
-            }
+            })
+            mDialogView.tianfu.setDataProvider(
+                    tianFus.map { it.name },
+                    tianFus.map { CommonColors[it.rarity] })
 
         }
     }
@@ -405,7 +406,7 @@ class FragmentDialogPerson : DialogFragment() {
         lateinit var lingGen:TextView
 
         @BindView(R.id.ll_tianfu)
-        lateinit var tianfu:LinearLayout
+        lateinit var tianfu:TextViewBox
 
         @BindView(R.id.tv_xiuwei_add)
         lateinit var xiuweiAdd:TextView
@@ -421,6 +422,9 @@ class FragmentDialogPerson : DialogFragment() {
 
         @BindView(R.id.btn_be)
         lateinit var be:ImageButton
+
+        @BindView(R.id.ll_parent_measure)
+        lateinit var measures:LinearLayout
 
         init {
             ButterKnife.bind(this, view)
