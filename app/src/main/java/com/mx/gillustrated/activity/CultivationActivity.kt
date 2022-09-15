@@ -816,7 +816,7 @@ class CultivationActivity : BaseActivity() {
                     it.isDead = true
                     CultivationHelper.gainJiEquipment(person, 14, it.type, it.seq)
                     if(it.type > 1){
-                        gainTeji(person, 20 * it.type)
+                        gainTeji(person, 10 * it.type)
                     }
                 }else if(it.remainHit <= 0){
                     writeHistory("${it.name} 消失", null, 0)
@@ -836,7 +836,7 @@ class CultivationActivity : BaseActivity() {
                     u.lifetime = 0
                     mAlliance[u.allianceId]?.personList?.remove(u.id)
                     writeHistory("${u.name} 倒", u, 0)
-                    gainTeji(person, Math.min(1000, 500 * u.type))
+                    gainTeji(person, 50 * u.type)
                     CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
                 }else{
                     u.remainHit --
@@ -969,6 +969,8 @@ class CultivationActivity : BaseActivity() {
                         }
                     }
                     if(career.id == "6100005" && isTrigger(2)){
+                        if(person.teji.size > Math.max(5, career.level / 10)  )
+                            return
                         gainTeji(person, career.level)
                     }
                 }
@@ -1342,14 +1344,9 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun gainTeji(person: Person, weight:Int = 1){
-        val tejiCareer = person.careerList.find { it.first == "6100005" }
-        if(tejiCareer != null && person.teji.size > Math.max(5, tejiCareer.second / 10)  )
-            return
-        var gained = false
-        CultivationHelper.getTeji(weight) .forEach { t->
-            if(!person.teji.contains(t) && !gained){
+        CultivationHelper.getTeji(weight, false).forEach { t->
+            if(!person.teji.contains(t)){
                 person.teji.add(t)
-                gained = true
                 val commonText = "\u83b7\u5f97\u7279\u6280 : ${mConfig.teji.find { f-> f.id == t }?.name}"
                 addPersonEvent(person, "${getYearString()} ${getPersonBasicString(person, false)} $commonText")
                 writeHistory("${getPersonBasicString(person)} $commonText", person)
