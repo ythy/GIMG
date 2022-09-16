@@ -112,6 +112,11 @@ class CultivationActivity : BaseActivity() {
                 it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null && getOfflinePersonDetail(f) == null }.toMutableList()
             }
             backupInfo.persons = mPersons
+            mClans.map { it.key }.toMutableList().forEach { id ->
+                if(mPersons[id] == null){
+                    mClans.remove(id)
+                }
+            }
             backupInfo.clans = mClans.mapValues { it.value.toClanBak() }
             CultivationBakUtil.saveDataToFiles(Gson().toJson(backupInfo))
             val message = Message.obtain()
@@ -431,8 +436,8 @@ class CultivationActivity : BaseActivity() {
             alliance.zhuPerson = null
         if(mClans[it.ancestorId] != null){
             mClans[it.ancestorId]!!.clanPersonList.remove(it.id)
-            if(mClans[it.ancestorId]!!.zhu?.id == it.id){
-                mClans[it.ancestorId]!!.zhu = null
+            if(it.ancestorId == it.id){
+                mClans.remove(it.id)
             }
         }
         synchronized(it.birthDay){
@@ -853,11 +858,12 @@ class CultivationActivity : BaseActivity() {
         if(xun % 480 == 0L) {
             mPersons.filter { it.value.ancestorId != null }.map { it.value }.toMutableList()
                     .groupBy { it.ancestorId }.forEach { (t, u) ->
-                if (u.size >= 5) {
+                if (u.size >= 5 && mPersons[t] != null ) {
                     if (mClans[t] == null) {
                         val clan = Clan()
                         clan.id = t!!
                         clan.name = u[0].lastName
+                        clan.zhu = mPersons[t]
                         clan.createDate = xun
                         u.forEach { p ->
                             clan.clanPersonList[p.id] = p
@@ -871,10 +877,6 @@ class CultivationActivity : BaseActivity() {
             mClans.forEach {
                 if(it.value.clanPersonList.isEmpty()){
                     mClans.remove(it.key)
-                }else if(it.value.zhu == null){
-                    val temp = it.value.clanPersonList.map { c->c.value }.toMutableList()
-                    temp.sortBy { s-> s.ancestorLevel }
-                    it.value.zhu = temp[0]
                 }
             }
         }
@@ -1018,7 +1020,11 @@ class CultivationActivity : BaseActivity() {
 
         val allianceList3 = mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id }.toMutableList()
         val specPersonList3 =  SpecPersonFirstName3.map { props->
-            SpecPersonInfo(Pair(props.first.first, props.first.second), props.second, props.third, 50, 50)
+            val weight = when( props.third ){
+                3-> 100
+                else-> 50
+            }
+            SpecPersonInfo(Pair(props.first.first, props.first.second), props.second, props.third,  weight, weight)
         }.toMutableList()
         fixedPersonGenerate(specPersonList3, allianceList3)
 

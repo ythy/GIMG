@@ -259,7 +259,7 @@ class FragmentDialogPerson : DialogFragment() {
         if(tianFus.isNotEmpty()){
 
             mDialogView.measures.measure(0,0)
-            mDialogView.tianfu.setFixedWidth(mDialogView.measures.measuredWidth - 100)
+            mDialogView.tianfu.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
             mDialogView.tianfu.setCallback(object : TextViewBox.Callback {
                 override fun onClick(index: Int) {
                     val data = tianFus[index]

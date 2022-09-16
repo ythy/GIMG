@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import butterknife.*
@@ -134,8 +132,7 @@ class FragmentDialogSetting : DialogFragment() {
     fun init() {
         measures.measure(0,0)
         val battleRound = CultivationHelper.mBattleRound
-        tvbBattle.setGap(20)
-        tvbBattle.setFixedWidth(measures.measuredWidth - 20)
+        tvbBattle.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - 20, 20))
         tvbBattle.setCallback(object : TextViewBox.Callback {
             override fun onClick(index: Int) {
                 openDialog(index)
@@ -143,8 +140,7 @@ class FragmentDialogSetting : DialogFragment() {
         })
         tvbBattle.setDataProvider(listOf("帮:${battleRound.bang}", "族:${battleRound.clan}", "个:${battleRound.single}"), null)
 
-        tvbEnemy.setFixedWidth(measures.measuredWidth - 20)
-        tvbEnemy.setGap(20)
+        tvbEnemy.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - 20, 20))
         tvbEnemy.setCallback(object : TextViewBox.Callback {
             override fun onClick(index: Int) {
                 openDialog(10 + index)
@@ -152,8 +148,7 @@ class FragmentDialogSetting : DialogFragment() {
         })
         tvbEnemy.setDataProvider(CultivationHelper.EnemyNames.mapIndexed { index, s ->  "$s:${battleRound.enemy[index]}" }, null)
 
-        tvbBoss.setFixedWidth(measures.measuredWidth - 20)
-        tvbBoss.setGap(20)
+        tvbBoss.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - 20, 20))
         tvbBoss.setCallback(object : TextViewBox.Callback {
             override fun onClick(index: Int) {
                 openDialog(20 + index)

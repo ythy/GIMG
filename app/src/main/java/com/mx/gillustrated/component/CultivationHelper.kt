@@ -54,6 +54,9 @@ object CultivationHelper {
         person.allianceProperty = alliance.property
         person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
         person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
+        if(alliance.type == 3 && person.gender == NameUtil.Gender.Female){
+            person.singled = true
+        }
     }
 
     fun updateAllianceGain(allAlliance:ConcurrentHashMap<String, Alliance>, updated:Boolean = false){
@@ -514,18 +517,25 @@ object CultivationHelper {
 
     data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?, var tianFuWeight: Int = 1, var lingGenWeight:Int = 1)
 
-    val SpecPersonFirstName3:MutableList<Triple<Pair<String, String>, NameUtil.Gender, Int>> = mutableListOf(Triple(Pair("\u7389", "\u5e1d"), NameUtil.Gender.Male, 0), Triple(Pair("\u83e9","\u63d0"), NameUtil.Gender.Male, 0), Triple(Pair("\u6768","\u622c"), NameUtil.Gender.Male, 0),
-            Triple(Pair("\u54ea","\u5412"), NameUtil.Gender.Male, 0), Triple(Pair("\u592a\u4e0a","\u8001\u541b"), NameUtil.Gender.Male, 0),
-            Triple(Pair("\u9080","\u6708"), NameUtil.Gender.Female, 1),Triple(Pair("\u601c","\u661f"), NameUtil.Gender.Female, 1),Triple(Pair("\u82cf","\u6a31"), NameUtil.Gender.Female, 1),Triple(Pair("\u674e","\u7ea2\u8896"), NameUtil.Gender.Female, 1),
-            Triple(Pair("\u9ec4","\u84c9"), NameUtil.Gender.Female, 2),Triple(Pair("\u8d75","\u654f"), NameUtil.Gender.Female, 2),Triple(Pair("\u5468","\u82b7\u82e5"), NameUtil.Gender.Female, 2), Triple(Pair("\u6bb5","\u8a89"), NameUtil.Gender.Male, 2))
+    val SpecPersonFirstName3:MutableList<Triple<Pair<String, String>, NameUtil.Gender, Int>> = mutableListOf(
+            Triple(Pair("\u7389", "\u5e1d"), NameUtil.Gender.Male, 0), Triple(Pair("\u83e9","\u63d0"), NameUtil.Gender.Male, 0), Triple(Pair("\u6768","\u622c"), NameUtil.Gender.Male, 0),
+            Triple(Pair("\u54ea","\u5412"), NameUtil.Gender.Male, 0), Triple(Pair("\u592a\u4e0a","\u8001\u541b"), NameUtil.Gender.Male, 0), Triple(Pair("\u5ae6","\u5a25"), NameUtil.Gender.Female, 0),
+
+            Triple(Pair("\u9080","\u6708"), NameUtil.Gender.Female, 1),Triple(Pair("\u601c","\u661f"), NameUtil.Gender.Female, 1),Triple(Pair("\u82cf","\u6a31"), NameUtil.Gender.Female, 1),
+            Triple(Pair("\u674e","\u7ea2\u8896"), NameUtil.Gender.Female, 1),Triple(Pair("\u695a","\u7559\u9999"), NameUtil.Gender.Male, 1),Triple(Pair("\u98ce","\u56db\u5a18"), NameUtil.Gender.Female, 1),
+
+            Triple(Pair("\u9ec4","\u84c9"), NameUtil.Gender.Female, 2),Triple(Pair("\u8d75","\u654f"), NameUtil.Gender.Female, 2),Triple(Pair("\u5468","\u82b7\u82e5"), NameUtil.Gender.Female, 2),
+            Triple(Pair("\u6bb5","\u8a89"), NameUtil.Gender.Male, 2),Triple(Pair("\u5c0f","\u662d"), NameUtil.Gender.Female, 2),Triple(Pair("\u6728","\u5a49\u6e05"), NameUtil.Gender.Female, 2),
+
+            Triple(Pair("\u4f0f", "\u7fb2"), NameUtil.Gender.Male, 3), Triple(Pair("\u5973","\u5a32"), NameUtil.Gender.Female, 3), Triple(Pair("\u795e","\u519c"), NameUtil.Gender.Male, 3),
+            Triple(Pair("\u86a9", "\u5c24"), NameUtil.Gender.Male, 3), Triple(Pair("\u989b","\u987c"), NameUtil.Gender.Male, 3), Triple(Pair("\u5e1d","\u55be"), NameUtil.Gender.Male, 3),
+            Triple(Pair("\u9ec4","\u5e1d"), NameUtil.Gender.Male, 3)
+    )
 
 
     val SpecPersonFixedName:MutableList<Triple<Pair<String, String>, NameUtil.Gender, PersonFixedInfoMix>> = mutableListOf(
-            Triple(Pair("\u9ec4", "\u5e1d"), NameUtil.Gender.Male, PersonFixedInfoMix("1000007", mutableListOf("4000106", "4000206", "4000305", "4000404", "4000506")))
-            ,Triple(Pair("\u7384", "\u5973"), NameUtil.Gender.Female, PersonFixedInfoMix("1000007", mutableListOf("4000106", "4000206", "4000304", "4000404", "4000504")))
-            ,Triple(Pair("\u5b5f", "\u5a46"), NameUtil.Gender.Female, PersonFixedInfoMix("1000006", mutableListOf("4000104", "4000204", "4000305", "4000402", "4000506")))
-            ,Triple(Pair("\u7532", "\u6590\u59ec"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000103", "4000204", "4000305", "4000503")))
-            ,Triple(Pair("\u5c0f", "\u677e\u59ec"), NameUtil.Gender.Female, PersonFixedInfoMix("1000001", mutableListOf("4000104", "4000203", "4000305", "4000503")))
+            Triple(Pair("\u7384", "\u5973"), NameUtil.Gender.Female, PersonFixedInfoMix("1000007", mutableListOf("4000106", "4000206", "4000304", "4000404", "4000504")))
+            ,Triple(Pair("\u5b5f", "\u5a46"), NameUtil.Gender.Female, PersonFixedInfoMix("1000006", mutableListOf("4000104", "4000205", "4000305", "4000402", "4000506")))
             ,Triple(Pair("\u6bdb", "\u6b23"), NameUtil.Gender.Male, PersonFixedInfoMix("1000008", mutableListOf("4000109", "4000209", "4000305", "4000407", "4000506")))
     )
 

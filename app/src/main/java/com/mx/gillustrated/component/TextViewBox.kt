@@ -11,19 +11,15 @@ import android.widget.TextView
 class TextViewBox(context: Context?, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
     private var mCallback:Callback? = null
-    private var maxWidth:Int = 0
-    private var mGap:Int = 10
+    private lateinit var mConfig:TextViewBoxConfig
 
-    fun setFixedWidth(width:Int){
-        maxWidth = width
+
+    fun setConfig(config:TextViewBoxConfig){
+        mConfig = config
     }
 
     fun setCallback(callback: Callback){
         mCallback = callback
-    }
-
-    fun setGap(gap: Int){
-        mGap = gap
     }
 
 
@@ -36,7 +32,7 @@ class TextViewBox(context: Context?, attrs: AttributeSet?) : LinearLayout(contex
             val text = createTextView(s, index, index == 0, color?.get(index))
             parent.addView(text)
             parent.measure(0,0)
-            if(parent.measuredWidth >= maxWidth){
+            if(parent.measuredWidth >= mConfig.maxWidth){
                 parent.removeView(text)
                 parent = createParent(false)
                 this.addView(parent)
@@ -63,7 +59,7 @@ class TextViewBox(context: Context?, attrs: AttributeSet?) : LinearLayout(contex
         textView.layoutParams = param
         textView.text = text
         if(!isStart)
-            param.marginStart = mGap
+            param.marginStart = mConfig.horGap
         if(color != null)
             textView.setTextColor(Color.parseColor(color))
 
@@ -76,4 +72,15 @@ class TextViewBox(context: Context?, attrs: AttributeSet?) : LinearLayout(contex
     interface Callback{
         fun onClick(index:Int)
     }
+
+    class TextViewBoxConfig constructor(val maxWidth: Int){
+
+        var horGap: Int = 10
+
+        constructor(width: Int, gap: Int):this(width){
+            horGap = gap
+        }
+
+    }
+
 }
