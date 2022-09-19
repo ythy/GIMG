@@ -516,13 +516,16 @@ object CultivationHelper {
 
     val SpecPersonFirstName3:MutableList<Triple<Pair<String, String>, NameUtil.Gender, Int>> = mutableListOf(
             Triple(Pair("\u7389", "\u5e1d"), NameUtil.Gender.Male, 0), Triple(Pair("\u83e9","\u63d0"), NameUtil.Gender.Male, 0), Triple(Pair("\u6768","\u622c"), NameUtil.Gender.Male, 0),
-            Triple(Pair("\u54ea","\u5412"), NameUtil.Gender.Male, 0), Triple(Pair("\u592a\u4e0a","\u8001\u541b"), NameUtil.Gender.Male, 0), Triple(Pair("\u5ae6","\u5a25"), NameUtil.Gender.Female, 0),
+            Triple(Pair("\u54ea", "\u5412"), NameUtil.Gender.Male, 0), Triple(Pair("\u592a\u4e0a","\u8001\u541b"), NameUtil.Gender.Male, 0), Triple(Pair("\u5ae6","\u5a25"), NameUtil.Gender.Female, 0),
+            Triple(Pair("\u592a\u767d","\u91d1\u661f"), NameUtil.Gender.Male, 0),
 
             Triple(Pair("\u9080","\u6708"), NameUtil.Gender.Female, 1),Triple(Pair("\u601c","\u661f"), NameUtil.Gender.Female, 1),Triple(Pair("\u82cf","\u6a31"), NameUtil.Gender.Female, 1),
             Triple(Pair("\u674e","\u7ea2\u8896"), NameUtil.Gender.Female, 1),Triple(Pair("\u695a","\u7559\u9999"), NameUtil.Gender.Male, 1),Triple(Pair("\u98ce","\u56db\u5a18"), NameUtil.Gender.Female, 1),
+            Triple(Pair("\u674e","\u5bfb\u6b22"), NameUtil.Gender.Male, 1),
 
             Triple(Pair("\u9ec4","\u84c9"), NameUtil.Gender.Female, 2),Triple(Pair("\u8d75","\u654f"), NameUtil.Gender.Female, 2),Triple(Pair("\u5468","\u82b7\u82e5"), NameUtil.Gender.Female, 2),
-            Triple(Pair("\u6bb5","\u8a89"), NameUtil.Gender.Male, 2),Triple(Pair("\u5c0f","\u662d"), NameUtil.Gender.Female, 2),Triple(Pair("\u6728","\u5a49\u6e05"), NameUtil.Gender.Female, 2),
+            Triple(Pair("\u8427","\u5cf0"), NameUtil.Gender.Male, 2),Triple(Pair("\u5c0f","\u662d"), NameUtil.Gender.Female, 2),Triple(Pair("\u6728","\u5a49\u6e05"), NameUtil.Gender.Female, 2),
+            Triple(Pair("\u97e6","\u5c0f\u5b9d"), NameUtil.Gender.Male, 2),
 
             Triple(Pair("\u4f0f", "\u7fb2"), NameUtil.Gender.Male, 3), Triple(Pair("\u5973","\u5a32"), NameUtil.Gender.Female, 3), Triple(Pair("\u795e","\u519c"), NameUtil.Gender.Male, 3),
             Triple(Pair("\u86a9", "\u5c24"), NameUtil.Gender.Male, 3), Triple(Pair("\u989b","\u987c"), NameUtil.Gender.Male, 3), Triple(Pair("\u5e1d","\u55be"), NameUtil.Gender.Male, 3),

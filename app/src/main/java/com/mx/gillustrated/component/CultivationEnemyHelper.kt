@@ -108,8 +108,8 @@ object CultivationEnemyHelper {
                 CultivationHelper.PersonFixedInfoMix(null, null, 6000, 6000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8002009", "8003002", "8004002"))
-        person.equipmentList.addAll(listOf(Triple("7002901", 0, ""), Triple("7003601", 0, "")))
-        repeat(2) {
+        person.equipmentList.addAll(listOf(Triple("7002901", 0, ""), Triple("7003701", 0, "")))
+        repeat(4) {
             person.followerList.add(Triple("9000003", "${it + 1}号", ""))
         }
         CultivationHelper.updatePersonEquipment(person)

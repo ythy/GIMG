@@ -555,7 +555,7 @@ class CultivationActivity : BaseActivity() {
                 saveAllData(false)
             }
             currentXun % 44000 == 0L -> {
-                if(mPersons.size > 300){
+                if(mPersons.size > 350){
                     addBossHandler(true)
                 }
             }
