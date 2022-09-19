@@ -481,6 +481,8 @@ class CultivationActivity : BaseActivity() {
         if (it.age > it.lifetime ) {
             if(isDeadException(it)){
                 it.lifetime += 5000
+                it.lifeTurn = Math.max(0, it.lifeTurn - 1)
+                addPersonEvent(it,"${getYearString()} ${getPersonBasicString(it, false)} 转转-1,残:${it.lifeTurn}")
             }else{
                 if(getOnlinePersonDetail(it.id) != null)
                     deadHandler(it, currentXun)

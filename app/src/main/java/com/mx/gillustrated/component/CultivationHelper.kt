@@ -561,8 +561,8 @@ object CultivationHelper {
     // type 1 人物信息, 2 流程信息
     data class HistoryInfo(var content:String, var person:Person?, var type:Int = 0, var battleId:String = "")
 
-    val SpecPersonFirstName2:MutableList<String> = mutableListOf("主", "廿一", "廿三")
-    val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿")
+    val SpecPersonFirstName2:MutableList<String> = mutableListOf("主", "侍", "廿一", "廿二", "廿三")
+    val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿", "妃")
     data class SpecPersonInfo(var name:Pair<String, String?>, var gender: NameUtil.Gender?, var allianceIndex: Int, var TianFuWeight:Int, var LingGenWeight:Int)
 
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")

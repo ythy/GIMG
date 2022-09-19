@@ -1154,66 +1154,6 @@
       "weight": 2000
     }
   ],
-
-  "danYaoType": [
-    {
-      "id": "5000101",
-      "name": "Du1",
-      "type": 1,
-      "bonus": -20,
-      "rarity": 0
-    },
-    {
-      "id": "5000102",
-      "name": "Dan1",
-      "type": 1,
-      "bonus": 50,
-      "rarity": 1
-    },
-    {
-      "id": "5000103",
-      "name": "Du2",
-      "type": 1,
-      "bonus": -50,
-      "rarity": 1
-    },
-    {
-      "id": "5000104",
-      "name": "Du3",
-      "type": 1,
-      "bonus": -100,
-      "rarity": 2
-    },
-    {
-      "id": "5000105",
-      "name": "Du4",
-      "type": 1,
-      "bonus": -500,
-      "rarity": 3
-    },
-    {
-      "id": "5000106",
-      "name": "Du5",
-      "type": 1,
-      "bonus": -1000,
-      "rarity": 4
-    },
-    {
-      "id": "5000107",
-      "name": "Dan2",
-      "type": 1,
-      "bonus": 100,
-      "rarity": 2
-    },
-    {
-      "id": "5000108",
-      "name": "Dan3",
-      "type": 1,
-      "bonus": 500,
-      "rarity": 3
-    }
-  ],
-
   "alliance": [
     {
       "id": "6000101",

@@ -1,20 +1,17 @@
 package com.mx.gillustrated.fragment
 
-import android.os.Build
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
 import android.widget.ListView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
-import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.adapter.CultivationEventAdapter
 import com.mx.gillustrated.vo.cultivation.Person
 import com.mx.gillustrated.vo.cultivation.PersonEvent
 
@@ -25,7 +22,6 @@ class FragmentPersonEvent : Fragment(){
     @BindView(R.id.lv_events)
     lateinit var mListView: ListView
 
-    private var mEventDataString = mutableListOf<String>()
     private var mEventData = mutableListOf<PersonEvent>()
     lateinit var mPerson:Person
 
@@ -43,24 +39,21 @@ class FragmentPersonEvent : Fragment(){
     fun init(){
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getPersonData(id)!!
-        mListView.adapter = ArrayAdapter(this.context!!, R.layout.list_simple_item_text1,
-            android.R.id.text1, mEventDataString)
-        updateEvent()
+        mEventData = mPerson.events.toMutableList()
+        mEventData.sortByDescending { it.happenTime }
+        mListView.adapter = CultivationEventAdapter(this.context!!, mEventData, object : CultivationEventAdapter.EventAdapterCallback{
+            override fun onDeleteHandler(event: PersonEvent) {
+                mPerson.events.remove(event)
+                mEventData.remove(event)
+                (mListView.adapter as CultivationEventAdapter).notifyDataSetChanged()
+                mListView.invalidateViews()
+            }
+        })
     }
 
 
     fun updateEvent(){
-        val eventChanged = mEventData.size != mPerson.events.size
-        mPerson.events.forEach {
-            if(mEventData.find { e-> e.nid == it.nid} == null){
-                mEventData.add(it)
-                mEventDataString.add(0, CultivationHelper.showing(it.content))
-            }
-        }
-        if(eventChanged){
-            (mListView.adapter as BaseAdapter).notifyDataSetChanged()
-            mListView.invalidateViews()
-        }
+
     }
 
 }
