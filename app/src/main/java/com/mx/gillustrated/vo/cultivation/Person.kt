@@ -64,9 +64,9 @@ class Person() :Parcelable {
         var jinJieName = "" //  updated by xun
         var jinJieColor = 0 //  updated by xun
         var jinJieMax:Int = 0 // updated by xun
-        var extraXiuwei:Int = 0 //tianfu
-        var extraTupo:Int = 0 //tianfu
-        var extraSpeed:Int = 0 //tianfu
+        var extraXiuwei:Int = 0 //tianfu 初始和读取更新
+        var extraTupo:Int = 0 //tianfu 初始和读取更新
+        var extraSpeed:Int = 0 //tianfu 初始和读取更新
         var extraXuiweiMulti:Int = 0 //tianfu + alliance  初始和读取更新
         var allianceName:String = "" // alliance
 

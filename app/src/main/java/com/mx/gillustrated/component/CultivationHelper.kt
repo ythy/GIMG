@@ -290,9 +290,6 @@ object CultivationHelper {
         result.lingGenType = lingGen.first
         result.lingGenName = lingGen.third
         result.lingGenId = lingGen.second
-        if(lingGen.second != ""){
-            result.extraProperty = mConfig.lingGenTian.find { it.id == lingGen.second }?.property!!
-        }
         result.birthDay.add(birthDay)
         result.lastBirthDay = mCurrentXun
         setPersonJingjie(result)
@@ -302,10 +299,7 @@ object CultivationHelper {
         result.teji = Collections.synchronizedList(getTeji())
         result.careerList = Collections.synchronizedList(getCareer().map { Triple(it, 0, "") })
         result.lifetime = lifetime + (tianFus.find { it.type == 3 }?.bonus ?: 0)
-        result.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
-        result.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
-        result.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
-        result.extraXuiweiMulti =  getExtraXuiweiMulti(result)
+        updatePersonExtraProperty(result)
 
         if(parent != null){
             result.parent = Pair(parent.first.id, parent.second.id)
@@ -335,14 +329,8 @@ object CultivationHelper {
         person.lingGenType = lingGen.first
         person.lingGenName = lingGen.third
         person.lingGenId = lingGen.second
-        if(lingGen.second != ""){
-            person.extraProperty = mConfig.lingGenTian.find { it.id == lingGen.second }?.property!!
-        }
         person.tianfus = tianFus
-        person.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
-        person.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
-        person.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
-        person.extraXuiweiMulti =  getExtraXuiweiMulti(person)
+        updatePersonExtraProperty(person)
     }
 
     fun setPersonJingjie(person: Person, level: Int = 0){
@@ -361,6 +349,14 @@ object CultivationHelper {
             ""
     }
 
+    fun updatePersonExtraProperty(person: Person){
+        val tianFus = person.tianfus.map { mConfig.tianFuType.find { f->f.id == it.id }!! }
+        person.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
+        person.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
+        person.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
+        person.extraProperty = mConfig.lingGenTian.find { it.id == person.lingGenId }?.property ?: mutableListOf(0,0,0,0,0,0,0,0)
+        person.extraXuiweiMulti =  getExtraXuiweiMulti(person)
+    }
 
     //0 ~ 5
     fun getProperty(person: Person):MutableList<Int>{
@@ -441,7 +437,8 @@ object CultivationHelper {
     }
 
     fun getExtraXuiweiMulti(person:Person, alliance:Alliance? = null):Int{
-        val tianValue =  person.tianfus.find { it.type == 2 }?.bonus ?: 0
+        val tianfu = person.tianfus.find { it.type == 2 }
+        val tianValue = mConfig.tianFuType.find { it.id == tianfu?.id }?.bonus ?: 0
         val allianceValue = alliance?.xiuweiMulti ?: 0
         return tianValue + allianceValue
     }

@@ -279,6 +279,7 @@ class CultivationActivity : BaseActivity() {
                 it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
                 it.value.equipmentList = Collections.synchronizedList(it.value.equipmentList)
                 CultivationHelper.updatePersonEquipment(it.value)
+                CultivationHelper.updatePersonExtraProperty(it.value)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
                 if(it.value.careerList.isEmpty()){
                     it.value.careerList = Collections.synchronizedList(CultivationHelper.getCareer().map { c->Triple(c, 0, "") })
@@ -878,6 +879,9 @@ class CultivationActivity : BaseActivity() {
                 if(it.value.clanPersonList.isEmpty()){
                     mClans.remove(it.key)
                 }
+                else if(it.value.zhu == null &&  mPersons[it.value.id] != null){
+                    it.value.zhu = mPersons[it.value.id]
+                }
             }
         }
     }
@@ -1042,7 +1046,7 @@ class CultivationActivity : BaseActivity() {
         val personList = Collections.synchronizedList(mPersons.map { m-> m.value })
         val result = mutableListOf<Person?>()
         specPersonList.forEach {
-            if(personList.find { p-> p.name == it.name.first + it.name.second } == null){
+            if(personList.find { p-> p.allianceId == allianceList[it.allianceIndex].id && p.name == it.name.first + it.name.second } == null){
                 val person = CultivationHelper.getPersonInfo(it.name, it.gender, 100, parent, false, CultivationHelper.PersonFixedInfoMix(null, null, it.TianFuWeight, it.LingGenWeight))
                 result.add(person)
                 mPersons[person.id] = person

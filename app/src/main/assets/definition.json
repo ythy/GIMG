@@ -731,20 +731,20 @@
     },
     {
       "id": "1010006",
-      "name": "\u72d7\u72d7\u7075\u6839",
-      "property": [0,0,0,10,0,0,0,0],
+      "name": "\u706b\u51e4\u51f0\u7075\u6839",
+      "property": [50,0,0,0,0,0,0,0],
       "type": 1
     },
     {
       "id": "1010007",
-      "name": "\u5154\u5154\u7075\u6839",
-      "property": [0,0,0,10,0,0,0,0],
+      "name": "\u7409\u7483\u5854\u7075\u6839",
+      "property": [0,0,10,0,0,0,0,0],
       "type": 1
     },
     {
       "id": "1010008",
-      "name": "\u732b\u732b\u7075\u6839",
-      "property": [50,0,0,0,0,0,0,0],
+      "name": "\u660a\u5929\u9524\u7075\u6839",
+      "property": [0,10,0,0,0,0,0,0],
       "type": 1
     },
     {
@@ -893,7 +893,7 @@
       "id": "4000202",
       "name": "Clever2",
       "type": 2,
-      "bonus": 50,
+      "bonus": 30,
       "rarity": 1,
       "weight": 50
     },
@@ -901,7 +901,7 @@
       "id": "4000203",
       "name": "Clever3",
       "type": 2,
-      "bonus": 100,
+      "bonus": 50,
       "rarity": 2,
       "weight": 100
     },
@@ -909,7 +909,7 @@
       "id": "4000204",
       "name": "Clever4",
       "type": 2,
-      "bonus": 150,
+      "bonus": 80,
       "rarity": 3,
       "weight": 150
     },
@@ -917,7 +917,7 @@
       "id": "4000205",
       "name": "Clever5",
       "type": 2,
-      "bonus": 200,
+      "bonus": 100,
       "rarity": 4,
       "weight": 200
     },
@@ -925,7 +925,7 @@
       "id": "4000206",
       "name": "Clever6",
       "type": 2,
-      "bonus": 300,
+      "bonus": 150,
       "rarity": 5,
       "weight": 300
     },
@@ -933,7 +933,7 @@
       "id": "4000207",
       "name": "Clever7",
       "type": 2,
-      "bonus": 400,
+      "bonus": 200,
       "rarity": 6,
       "weight": 1000
     },
@@ -941,7 +941,7 @@
       "id": "4000208",
       "name": "Clever8",
       "type": 2,
-      "bonus": 500,
+      "bonus": 250,
       "rarity": 7,
       "weight": 3000
     },
@@ -949,7 +949,7 @@
       "id": "4000209",
       "name": "Clever9",
       "type": 2,
-      "bonus": 600,
+      "bonus": 300,
       "rarity": 8,
       "weight": 5000
     },
@@ -1278,7 +1278,7 @@
       "level": 10,
       "lifetime": -40,
       "maxPerson": 30,
-      "xiuwei": 80,
+      "xiuwei": 100,
       "property": [0,30,0,0,0,0,0,0],
       "speedG1": 30
     },
@@ -1325,6 +1325,7 @@
       "success": 10,
       "maxPerson": 5,
       "xiuwei": 60,
+      "xiuweiMulti": 50,
       "property": [50,20,10,10,0,0,0,0],
       "speedG1": 50
     },
@@ -1382,7 +1383,7 @@
       "type": 3,
       "lifetime": 50,
       "xiuwei": 100,
-      "xiuweiMulti": 200,
+      "xiuweiMulti": 150,
       "property": [50,30,20,20,0,0,0,0],
       "speedG1": 80
     },
@@ -1392,7 +1393,7 @@
       "type": 3,
       "lifetime": 50,
       "xiuwei": 150,
-      "xiuweiMulti": 200,
+      "xiuweiMulti": 150,
       "property": [50,60,10,20,0,0,0,0],
       "speedG1": 80
     },
@@ -1402,7 +1403,7 @@
       "type": 3,
       "lifetime": 50,
       "xiuwei": 150,
-      "xiuweiMulti": 200,
+      "xiuweiMulti": 150,
       "property": [50,70,0,20,0,0,0,0],
       "speedG1": 80
     },
@@ -1414,7 +1415,7 @@
       "xiuwei": 200,
       "xiuweiMulti": 200,
       "property": [50,100,10,30,0,0,0,0],
-      "speedG1": 80
+      "speedG1": 100
     }
   ],
   "equipment": [

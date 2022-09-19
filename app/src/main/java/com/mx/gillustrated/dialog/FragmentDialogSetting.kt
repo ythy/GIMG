@@ -2,6 +2,7 @@ package com.mx.gillustrated.dialog
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,7 +72,10 @@ class FragmentDialogSetting : DialogFragment() {
 
     @OnTextChanged(R.id.et_jie)
     fun onJieTextChangedHandler(text:CharSequence){
-        mActivity.mSP.edit().putInt("cultivation_jie", text.toString().toInt()).apply()
+        val current = text.toString()
+        if(current.toIntOrNull() != null && current.toInt() > 0){
+            mActivity.mSP.edit().putInt("cultivation_jie", current.toInt()).apply()
+        }
     }
 
     @OnClick(R.id.btn_save)
