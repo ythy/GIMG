@@ -13,7 +13,10 @@ import android.view.MenuItem
 import android.view.inputmethod.BaseInputConnection
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import butterknife.*
+import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CultivationHistoryAdapter
@@ -87,6 +90,12 @@ class CultivationActivity : BaseActivity() {
 
     @BindView(R.id.btn_time)
     lateinit var mBtnTime:Button
+
+    @BindView(R.id.navigation_cultivation)
+    lateinit var mNavigation:NavigationView
+
+    @BindView(R.id.drawer_layout)
+    lateinit var mDrawer:DrawerLayout
 
     @OnClick(R.id.btn_save)
     fun onSaveClickHandler(){
@@ -223,11 +232,11 @@ class CultivationActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cultivation)
         ButterKnife.bind(this)
-        initLayout()
-        loadConfig()
         if(Build.getSerial().contains("EMULATOR")){ //判断是否是模拟器
             pinyinMode = true
         }
+        initLayout()
+        loadConfig()
         mProgressDialog.show()
         Thread(Runnable {
             Thread.sleep(100)
@@ -325,6 +334,29 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun initLayout(){
+        if(pinyinMode)
+            mNavigation.inflateMenu(R.menu.menu_nav_left_cultivation)
+        else
+            mNavigation.inflateMenu(R.menu.menu_nav_left_cultivation_cn)
+
+        mNavigation.setNavigationItemSelectedListener { item ->
+            when(item.itemId){
+                R.id.menu_reset -> {
+                    resetHandler()
+                }
+                R.id.menu_grace->{
+                    mPersons.forEach { (_: String, u: Person) ->
+                        u.xiuXei = Math.max(u.xiuXei, 0)
+                    }
+                    showToast("不用谢")
+                }
+                R.id.menu_reset_wtf->{
+                    resetCustomBonus()
+                }
+            }
+            mDrawer.closeDrawer(GravityCompat.START)
+            false
+        }
         mHistory.adapter = CultivationHistoryAdapter(this, mHistoryData)
         mSpeedText.text = mSpeed.toString()
     }
@@ -1399,14 +1431,13 @@ class CultivationActivity : BaseActivity() {
         return true
     }
 
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         super.onOptionsItemSelected(item)
         when (item.itemId) {
-            R.id.menu_reset -> {
-                resetHandler()
-            }
             R.id.menu_battle_bang ->{
-               battleBangHandler()
+                battleBangHandler()
             }
             R.id.menu_battle_clan ->{
                 battleClanHandler()
@@ -1425,15 +1456,6 @@ class CultivationActivity : BaseActivity() {
             }
             R.id.menu_enemy_list->{
                addBossHandler()
-            }
-            R.id.menu_grace->{
-                mPersons.forEach { (_: String, u: Person) ->
-                    u.xiuXei = Math.max(u.xiuXei, 0)
-                }
-                showToast("不用谢")
-            }
-            R.id.menu_reset_wtf->{
-                resetCustomBonus()
             }
             R.id.menu_setting->{
                 val ft = supportFragmentManager.beginTransaction()

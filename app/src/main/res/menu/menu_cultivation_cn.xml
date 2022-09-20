@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
-        android:id="@+id/menu_reset"
-        android:orderInCategory="100"
-        android:title="重启"/>
-    <item
-        android:id="@+id/menu_reset_wtf"
-        android:orderInCategory="110"
-        android:title="重置装备随从"/>
-    <item
         android:id="@+id/menu_battle_bang"
         android:orderInCategory="300"
         android:title="帮战"/>
@@ -36,10 +28,6 @@
         android:id="@+id/menu_add_fixed"
         android:orderInCategory="600"
         android:title="定制人物"/>
-    <item
-        android:id="@+id/menu_grace"
-        android:orderInCategory="410"
-        android:title="普天同庆"/>
     <item
         android:id="@+id/menu_setting"
         android:orderInCategory="610"

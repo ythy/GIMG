@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item
-        android:id="@+id/menu_reset"
-        android:orderInCategory="100"
-        android:title="reset"/>
-    <item
-        android:id="@+id/menu_reset_wtf"
-        android:orderInCategory="110"
-        android:title="resetWTF"/>
-    <!--<item-->
-        <!--android:id="@+id/menu_disaster"-->
-        <!--android:orderInCategory="200"-->
-        <!--android:title="disaster"/>-->
-    <!--<item-->
-        <!--android:id="@+id/menu_disaster_all"-->
-        <!--android:orderInCategory="210"-->
-        <!--android:title="disasterAll"/>-->
+
     <item
         android:id="@+id/menu_battle_bang"
         android:orderInCategory="300"
@@ -44,10 +29,6 @@
         android:id="@+id/menu_add_fixed"
         android:orderInCategory="600"
         android:title="customPerson"/>
-    <item
-        android:id="@+id/menu_grace"
-        android:orderInCategory="410"
-        android:title="putiantongqing"/>
     <item
         android:id="@+id/menu_setting"
         android:orderInCategory="610"

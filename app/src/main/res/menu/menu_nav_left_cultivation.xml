@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_grace"
+            android:title="putiantongqing"/>
+        <item
+            android:id="@+id/menu_reset"
+            android:title="reset"/>
+        <item
+            android:id="@+id/menu_reset_wtf"
+            android:title="resetWTF"/>
+    </group>
+</menu>

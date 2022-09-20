@@ -1,111 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/BaseActivityStyle"
-    android:padding="5dp">
-
+    android:id="@+id/drawer_layout"
+    android:orientation="vertical"
+    >
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="match_parent"
+        style="@style/BaseActivityStyle"
+        android:padding="5dp"
+        android:orientation="vertical">
         <LinearLayout
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_date"/>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:gravity="center_vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:id="@+id/tv_speed"/>
-            <ImageButton
-                android:id="@+id/btn_add_speed"
-                style="@style/ImageButtonSmall"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/material_up" />
-            <ImageButton
-                android:id="@+id/btn_reduce_speed"
-                style="@style/ImageButtonSmall"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/material_down" />
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        >
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:id="@+id/btn_menu"
-            style="@style/ButtonSmall"
-            android:text="@string/cultivation_menu"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:id="@+id/btn_multi"
-            style="@style/ButtonSmall"
-            android:text="@string/cultivation_multi"
-            tools:targetApi="lollipop" />
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:id="@+id/btn_list"
-            style="@style/ButtonSmall"
-            android:text="@string/cultivation_list"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:id="@+id/btn_clan"
-            style="@style/ButtonSmall"
-            android:text="@string/cultivation_clan"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:id="@+id/btn_alliance"
-            style="@style/ButtonSmall"
-            android:text="@string/cultivation_bang"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:id="@+id/btn_time"
-            style="@style/ButtonSmall"
-            android:tag="ON"
-            android:text="@string/cultivation_stop"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:id="@+id/btn_save"
-            style="@style/ButtonSmall"
-            android:text="@string/cultivation_save"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:dividerHeight="0px"
-            android:id="@+id/lv_history"
+            android:layout_height="wrap_content"
             >
-        </ListView>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_date"/>
 
-</LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:id="@+id/tv_speed"/>
+                <ImageButton
+                    android:id="@+id/btn_add_speed"
+                    style="@style/ImageButtonSmall"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/material_up" />
+                <ImageButton
+                    android:id="@+id/btn_reduce_speed"
+                    style="@style/ImageButtonSmall"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/material_down" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            >
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_menu"
+                style="@style/ButtonSmall"
+                android:text="@string/cultivation_menu"/>
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_multi"
+                style="@style/ButtonSmall"
+                android:text="@string/cultivation_multi"
+                tools:targetApi="lollipop" />
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_list"
+                style="@style/ButtonSmall"
+                android:text="@string/cultivation_list"/>
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_clan"
+                style="@style/ButtonSmall"
+                android:text="@string/cultivation_clan"/>
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_alliance"
+                style="@style/ButtonSmall"
+                android:text="@string/cultivation_bang"/>
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_time"
+                style="@style/ButtonSmall"
+                android:tag="ON"
+                android:text="@string/cultivation_stop"/>
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_save"
+                style="@style/ButtonSmall"
+                android:text="@string/cultivation_save"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:dividerHeight="0px"
+                android:id="@+id/lv_history"
+                >
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_cultivation"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:itemTextColor="?attr/colorPrimary"
+        app:itemIconPadding="5dp" />
+</androidx.drawerlayout.widget.DrawerLayout>
