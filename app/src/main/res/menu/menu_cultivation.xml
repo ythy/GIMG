@@ -22,10 +22,6 @@
         android:orderInCategory="400"
         android:title="disaster"/>
     <item
-        android:id="@+id/menu_add_spec"
-        android:orderInCategory="500"
-        android:title="autoPersons"/>
-    <item
         android:id="@+id/menu_add_fixed"
         android:orderInCategory="600"
         android:title="customPerson"/>

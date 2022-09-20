@@ -123,4 +123,12 @@
         android:layout_gravity="start"
         app:itemTextColor="?attr/colorPrimary"
         app:itemIconPadding="5dp" />
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_cultivation_end"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        app:menu="@menu/menu_nav_right_cultivation"
+        app:itemTextColor="?attr/colorPrimary"
+        app:itemIconPadding="5dp" />
 </androidx.drawerlayout.widget.DrawerLayout>

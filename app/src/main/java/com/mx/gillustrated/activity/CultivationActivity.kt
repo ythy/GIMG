@@ -94,6 +94,9 @@ class CultivationActivity : BaseActivity() {
     @BindView(R.id.navigation_cultivation)
     lateinit var mNavigation:NavigationView
 
+    @BindView(R.id.navigation_cultivation_end)
+    lateinit var mNavigationEnd:NavigationView
+
     @BindView(R.id.drawer_layout)
     lateinit var mDrawer:DrawerLayout
 
@@ -339,19 +342,29 @@ class CultivationActivity : BaseActivity() {
         else
             mNavigation.inflateMenu(R.menu.menu_nav_left_cultivation_cn)
 
-        mNavigation.setNavigationItemSelectedListener { item ->
+        mNavigationEnd.setNavigationItemSelectedListener { item ->
             when(item.itemId){
                 R.id.menu_reset -> {
                     resetHandler()
                 }
+                R.id.menu_reset_wtf->{
+                    resetCustomBonus()
+                }
+            }
+            mDrawer.closeDrawer(GravityCompat.END)
+            false
+        }
+
+        mNavigation.setNavigationItemSelectedListener { item ->
+            when(item.itemId){
                 R.id.menu_grace->{
                     mPersons.forEach { (_: String, u: Person) ->
                         u.xiuXei = Math.max(u.xiuXei, 0)
                     }
                     showToast("不用谢")
                 }
-                R.id.menu_reset_wtf->{
-                    resetCustomBonus()
+                R.id.menu_add_spec ->{
+                    addSpecPerson()
                 }
             }
             mDrawer.closeDrawer(GravityCompat.START)
@@ -1448,14 +1461,11 @@ class CultivationActivity : BaseActivity() {
             R.id.menu_event_enemy ->{
                 eventEnemyHandler()
             }
-            R.id.menu_add_spec ->{
-                addSpecPerson()
+            R.id.menu_enemy_list->{
+               addBossHandler()
             }
             R.id.menu_add_fixed ->{
                 addFixedcPerson()
-            }
-            R.id.menu_enemy_list->{
-               addBossHandler()
             }
             R.id.menu_setting->{
                 val ft = supportFragmentManager.beginTransaction()
@@ -1463,7 +1473,6 @@ class CultivationActivity : BaseActivity() {
                 newFragment.isCancelable = false
                 newFragment.show(ft, "dialog_setting")
             }
-
         }
         return true
     }

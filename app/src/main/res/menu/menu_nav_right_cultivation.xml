@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/menu_grace"
-            android:title="putiantongqing"/>
+            android:id="@+id/menu_reset"
+            android:title="reset"/>
         <item
-            android:id="@+id/menu_add_spec"
-            android:title="autoPersons"/>
+            android:id="@+id/menu_reset_wtf"
+            android:title="resetWTF"/>
     </group>
 </menu>

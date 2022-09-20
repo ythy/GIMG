@@ -5,10 +5,7 @@
             android:id="@+id/menu_grace"
             android:title="普天同庆"/>
         <item
-            android:id="@+id/menu_reset"
-            android:title="重启"/>
-        <item
-            android:id="@+id/menu_reset_wtf"
-            android:title="重启WTF"/>
+            android:id="@+id/menu_add_spec"
+            android:title="预设人物"/>
     </group>
 </menu>
