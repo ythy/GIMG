@@ -176,8 +176,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/sch_fav"
                 android:checked="false"
-                android:textOn="Y"
-                android:textOff="N"
                 android:text="Fav"/>
         </LinearLayout>
         <LinearLayout

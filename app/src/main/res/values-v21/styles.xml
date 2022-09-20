@@ -57,7 +57,9 @@
     </style>
 
     <style name="BaseSwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:trackTint">?attr/colorPrimary</item>
+        <item name="android:thumbTint">?attr/colorPrimary</item>
         <item name="android:textColor">?attr/colorFontPrimary</item>
-        <item name="android:backgroundTint">?attr/colorPrimary</item>
     </style>
+
 </resources>

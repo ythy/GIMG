@@ -2,15 +2,30 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ListView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:cacheColorHint="#00000000"
-        android:layout_margin="5dp"
-        android:layout_marginTop="5dp"
-        android:divider="?attr/colorGridSecondary"
-        android:dividerHeight="1px"
-        android:fastScrollEnabled="true"
-        android:id="@+id/lv_events">
-    </ListView>
+        android:gravity="end"
+        android:orientation="vertical">
+        <Switch
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/sch_del"
+            android:layout_marginEnd="5dp"
+            android:checked="false"
+            android:text="Modify"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:cacheColorHint="#00000000"
+            android:layout_margin="5dp"
+            android:layout_marginTop="5dp"
+            android:divider="?attr/colorGridSecondary"
+            android:dividerHeight="1px"
+            android:fastScrollEnabled="true"
+            android:id="@+id/lv_events">
+        </ListView>
+    </LinearLayout>
+
 </FrameLayout>
