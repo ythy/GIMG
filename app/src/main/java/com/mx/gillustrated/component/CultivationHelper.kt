@@ -54,7 +54,7 @@ object CultivationHelper {
         person.allianceProperty = alliance.property
         person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
         person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
-        if(alliance.type == 3 && person.gender == NameUtil.Gender.Female){
+        if(alliance.type == 3){
             person.singled = true
         }
     }
@@ -391,7 +391,7 @@ object CultivationHelper {
             equipments.filter { it.type != 1 && it.type != 2 && it.type != 3 }.groupBy { it.id }.forEach { (_, u) ->
                 for (index in 0 until u.size){
                     val effectEquipment = u[index]
-                    if( index > effectEquipment.maxCount ){
+                    if( index > getEquipmentsMaxCount(effectEquipment, u.size)){
                         break
                     }
                     summationEquipmentValues(person, effectEquipment)
@@ -403,6 +403,12 @@ object CultivationHelper {
             }
         }
     }
+
+    fun getEquipmentsMaxCount(equipment: Equipment, size:Int):Int{
+        return Math.ceil( Math.sqrt(size.toDouble())).toInt()
+    }
+
+
 
     private fun summationEquipmentValues(person: Person, effectEquipment: Equipment){
         person.equipmentXiuwei += effectEquipment.xiuwei

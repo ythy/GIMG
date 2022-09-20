@@ -47,7 +47,7 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val gro
         if(values.type <= 10)
             component.name.text = CultivationHelper.showing(values.name)
         else
-            component.name.text = "${CultivationHelper.showing(values.name)}(${child.size}/${values.maxCount})"
+            component.name.text = "${CultivationHelper.showing(values.name)}(${child.size}/${CultivationHelper.getEquipmentsMaxCount(values, child.size)})"
 
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         val properties = mutableListOf(0,0,0,0)
@@ -63,7 +63,7 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val gro
                 if(equipment.type <= 10)
                     true
                 else
-                    index < equipment.maxCount
+                    index < CultivationHelper.getEquipmentsMaxCount(equipment, child.size)
             }
             component.xiuwei.text = filterChildren.sumBy { it.xiuwei }.toString()
             component.success.text = filterChildren.sumBy { it.success }.toString()

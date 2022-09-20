@@ -7,7 +7,6 @@
         <item name="android:checkboxStyle">@style/BaseCheckBoxStyle</item>
         <item name="editTextStyle">@style/BaseEditTextStyle</item>
         <item name="android:buttonStyle">@style/BaseButtonStyle</item>
-        <item name="android:switchStyle">@style/BaseSwitchStyle</item>
 
         <item name="android:spinnerItemStyle">@style/BaseSpinnerItemStyle</item>
         <item name="android:spinnerDropDownItemStyle">@style/BaseSpinnerDropDownItemStyle

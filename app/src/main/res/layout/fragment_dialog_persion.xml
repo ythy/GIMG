@@ -175,6 +175,7 @@
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/sch_fav"
+                style="@style/BaseSwitchStyle"
                 android:checked="false"
                 android:text="Fav"/>
         </LinearLayout>
