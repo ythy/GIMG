@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/group1" android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_battle_bang"
+            android:title="帮战"/>
+        <item
+            android:id="@+id/menu_battle_clan"
+            android:title="家族战"/>
+        <item
+            android:id="@+id/menu_battle_single"
+            android:title="个人战"/>
+        <item
+            android:id="@+id/menu_event_enemy"
+            android:title="打怪兽"/>
+        <item
+            android:id="@+id/menu_enemy_list"
+            android:title="天降"/>
+    </group>
+    <group android:id="@+id/group2"  android:checkableBehavior="single">
         <item
             android:id="@+id/menu_grace"
             android:title="普天同庆"/>

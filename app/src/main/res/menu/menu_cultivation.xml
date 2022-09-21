@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <item
-        android:id="@+id/menu_battle_bang"
-        android:orderInCategory="300"
-        android:title="battleBang"/>
-    <item
-        android:id="@+id/menu_battle_clan"
-        android:orderInCategory="310"
-        android:title="battleClan"/>
-    <item
-        android:id="@+id/menu_battle_single"
-        android:orderInCategory="310"
-        android:title="battleSingle"/>
-    <item
-        android:id="@+id/menu_event_enemy"
-        android:orderInCategory="400"
-        android:title="enemy"/>
-    <item
-        android:id="@+id/menu_enemy_list"
-        android:orderInCategory="400"
-        android:title="disaster"/>
     <item
         android:id="@+id/menu_add_fixed"
         android:orderInCategory="600"

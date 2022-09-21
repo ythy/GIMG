@@ -121,6 +121,7 @@
         android:layout_width="150dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        app:headerLayout="@layout/navigation_header_cultivation"
         app:itemTextColor="?attr/colorPrimary"
         app:itemIconPadding="5dp" />
     <com.google.android.material.navigation.NavigationView

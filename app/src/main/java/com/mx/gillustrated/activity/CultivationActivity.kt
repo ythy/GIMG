@@ -366,6 +366,21 @@ class CultivationActivity : BaseActivity() {
                 R.id.menu_add_spec ->{
                     addSpecPerson()
                 }
+                R.id.menu_battle_bang ->{
+                    battleBangHandler()
+                }
+                R.id.menu_battle_clan ->{
+                    battleClanHandler()
+                }
+                R.id.menu_battle_single ->{
+                    battleSingleHandler()
+                }
+                R.id.menu_event_enemy ->{
+                    eventEnemyHandler()
+                }
+                R.id.menu_enemy_list->{
+                    addBossHandler()
+                }
             }
             mDrawer.closeDrawer(GravityCompat.START)
             false
@@ -1449,21 +1464,6 @@ class CultivationActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         super.onOptionsItemSelected(item)
         when (item.itemId) {
-            R.id.menu_battle_bang ->{
-                battleBangHandler()
-            }
-            R.id.menu_battle_clan ->{
-                battleClanHandler()
-            }
-            R.id.menu_battle_single ->{
-                battleSingleHandler()
-            }
-            R.id.menu_event_enemy ->{
-                eventEnemyHandler()
-            }
-            R.id.menu_enemy_list->{
-               addBossHandler()
-            }
             R.id.menu_add_fixed ->{
                 addFixedcPerson()
             }
