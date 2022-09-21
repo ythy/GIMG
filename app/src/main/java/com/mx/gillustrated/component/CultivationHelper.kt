@@ -17,8 +17,17 @@ object CultivationHelper {
     var pinyinMode:Boolean = false //是否pinyin模式
     var mCurrentXun:Long = 0//当前时间
     var mHistoryTempData:MutableList<HistoryInfo> = Collections.synchronizedList(mutableListOf())
-    fun writeHistory(content:String, person: Person?, type:Int = 1, battleId: String = ""){
-        mHistoryTempData.add(0, HistoryInfo(content, person, type, battleId))
+
+    fun writeHistory(content:String){
+        mHistoryTempData.add(0, HistoryInfo(0, content, null, null))
+    }
+
+    fun writeHistory(content:String, person: Person?){
+        mHistoryTempData.add(0, HistoryInfo(1, content, person, null))
+    }
+
+    fun writeHistory(content:String, battleId: String?){
+        mHistoryTempData.add(0, HistoryInfo(2, content, null, battleId))
     }
 
     fun joinAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>){
@@ -342,11 +351,8 @@ object CultivationHelper {
         person.jinJieMax = initJingJie.max
     }
 
-    fun getPersonBasicString(person:Person, detail:Boolean = true):String{
-        return if(detail)
-            "${person.name} (${person.age}/${person.lifetime}:${person.jinJieName}) ${person.lingGenName} "
-        else
-            ""
+    fun getPersonBasicString(person:Person):String{
+        return "${person.name} (${person.age}/${person.lifetime}:${person.jinJieName}) ${person.lingGenName} "
     }
 
     fun updatePersonExtraProperty(person: Person){
@@ -449,12 +455,11 @@ object CultivationHelper {
         return tianValue + allianceValue
     }
 
-    fun addPersonEvent(person:Person, content:String, event:Event? = null){
+    fun addPersonEvent(person:Person, content:String){
         val personEvent = PersonEvent()
         personEvent.nid = UUID.randomUUID().toString()
         personEvent.happenTime = mCurrentXun
         personEvent.content = content
-        personEvent.detail = event
         person.events.add(personEvent)
     }
 
@@ -480,9 +485,9 @@ object CultivationHelper {
         man.partnerName = woman.name
         woman.partner = man.id
         woman.partnerName = man.name
-        addPersonEvent(man,"${mCurrentXun / 12}年 与${woman.name}结伴")
-        addPersonEvent(woman,"${mCurrentXun / 12}年 与${man.name}结伴")
-        writeHistory("${getPersonBasicString(man)} 与 ${getPersonBasicString(woman)} 结伴了", null, 0)
+        addPersonEvent(man,"与${woman.name}结伴")
+        addPersonEvent(woman,"与${man.name}结伴")
+        writeHistory("${getPersonBasicString(man)} 与 ${getPersonBasicString(woman)} 结伴了")
     }
 
 
@@ -564,8 +569,9 @@ object CultivationHelper {
     const val SP_JIE_TURN = 81
     val SP_EVENT_WEIGHT = listOf("1000-10","1200-40","7200-40","8400-40","9600-80")
 
-    // type 1 人物信息, 2 流程信息
-    data class HistoryInfo(var content:String, var person:Person?, var type:Int = 0, var battleId:String = "")
+    // type 1 人物信息 assert(person != null), 2 流程信息 assert(battleId != "")
+    // person : add lingGen color
+    data class HistoryInfo(var type:Int = 0, var content:String, var person:Person?, var battleId:String?)
 
     val SpecPersonFirstName2:MutableList<String> = mutableListOf("主", "侍", "廿一", "廿二", "廿三")
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "侍", "儿", "妃")

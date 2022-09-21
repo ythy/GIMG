@@ -6,7 +6,6 @@ import android.os.Parcelable
 class PersonEvent() :Parcelable {
     lateinit var nid:String
     var happenTime:Long = 0
-    var detail:Event? = null
     lateinit var content:String
 
     constructor(parcel: Parcel) : this() {

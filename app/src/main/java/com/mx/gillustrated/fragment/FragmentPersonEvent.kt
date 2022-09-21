@@ -55,7 +55,9 @@ class FragmentPersonEvent : Fragment(){
     }
 
     fun normalRender(){
-        mEventDataString = mPerson.events.toMutableList().sortedByDescending { it.happenTime }.map { CultivationHelper.showing(it.content) }.toMutableList()
+        mEventDataString = mPerson.events.toMutableList().sortedByDescending { it.happenTime }.map {
+                CultivationHelper.showing("${it.happenTime/12}年 ${it.content}")
+        }.toMutableList()
         mListView.adapter = ArrayAdapter(this.context!!, R.layout.list_simple_item_text1,
                 android.R.id.text1, mEventDataString)
     }

@@ -10,7 +10,7 @@ object CultivationBattleHelper {
 
     var mBattles:ConcurrentHashMap<String, BattleInfo> = ConcurrentHashMap()
 
-    fun battleEnemy(allPersons:ConcurrentHashMap<String, Person>, person: Person, enemy: Enemy, xiuwei:Int):Boolean{
+    fun battleEnemy(allPersons:ConcurrentHashMap<String, Person>, person: Person, enemy: Enemy):Boolean{
         val props1 = CultivationHelper.getProperty(person)
         val battlePerson = BattleObject(props1[0], props1[1], props1[2], props1[3], props1[4], 0, person.teji)
         val battleEnemy = BattleObject(enemy.HP, enemy.maxHP, enemy.attack, enemy.defence, enemy.speed, 1)
@@ -32,14 +32,12 @@ object CultivationBattleHelper {
             mBattles[battleId]!!.winnerName = person.name
             mBattles[battleId]!!.looserName = enemy.name
             addBattleDetail(battleId, "${showName(battlePerson, false)}\u83b7\u80dc, \u6b8bHP:${battlePerson.hp}")
-            CultivationHelper.writeHistory("${person.name}(${battlePerson.hp})  ${props1[0] - battlePerson.hp}🔪${enemy.HP - battleEnemy.hp}  ${enemy.name}(${battleEnemy.hp})", person, 2, battleId)
-            person.xiuXei += xiuwei
+            CultivationHelper.writeHistory("${person.name}(${battlePerson.hp})  ${props1[0] - battlePerson.hp}🔪${enemy.HP - battleEnemy.hp}  ${enemy.name}(${battleEnemy.hp})", battleId)
         }else{
             mBattles[battleId]!!.winnerName = enemy.name
             mBattles[battleId]!!.looserName = person.name
             addBattleDetail(battleId, "${enemy.name}\u83b7\u80dc, \u6b8bHP:${battleEnemy.hp}")
-            CultivationHelper.writeHistory(" ${enemy.name}(${battleEnemy.hp}/${enemy.remainHit}-${enemy.attack}:${enemy.defence}:${enemy.speed})  ${enemy.HP - battleEnemy.hp}🔪${props1[0] - battlePerson.hp}  ${person.name}(${battlePerson.hp})", person, 2, battleId)
-            person.xiuXei -= xiuwei
+            CultivationHelper.writeHistory(" ${enemy.name}(${battleEnemy.hp}/${enemy.remainHit}-${enemy.attack}:${enemy.defence}:${enemy.speed})  ${enemy.HP - battleEnemy.hp}🔪${props1[0] - battlePerson.hp}  ${person.name}(${battlePerson.hp})", battleId)
         }
         person.HP = battlePerson.hp -  props1[5]
         enemy.HP = battleEnemy.hp
@@ -47,7 +45,7 @@ object CultivationBattleHelper {
         return firstWin
     }
 
-    fun battlePerson(allPersons:ConcurrentHashMap<String, Person>?, person1: Person, person2: Person, round:Int, xiuwei:Int):Boolean{
+    fun battlePerson(allPersons:ConcurrentHashMap<String, Person>?, person1: Person, person2: Person, round:Int):Boolean{
 
         val props1 = CultivationHelper.getProperty(person1)
         val props2 = CultivationHelper.getProperty(person2)
@@ -72,16 +70,12 @@ object CultivationBattleHelper {
             mBattles[battleId]!!.winnerName = person1.name
             mBattles[battleId]!!.looserName = person2.name
             addBattleDetail(battleId, "${showName(battlePerson1, false)}\u83b7\u80dc, \u6b8bHP:${battlePerson1.hp}")
-            CultivationHelper.writeHistory("${person1.name}(${battlePerson1.hp})  ${props1[0] - battlePerson1.hp}🔪${props2[0] - battlePerson2.hp}  ${person2.name}(${battlePerson2.hp})", person1, 2, battleId)
-            person1.xiuXei += xiuwei / 4
-            person2.xiuXei -= xiuwei
+            CultivationHelper.writeHistory("${person1.name}(${battlePerson1.hp})  ${props1[0] - battlePerson1.hp}🔪${props2[0] - battlePerson2.hp}  ${person2.name}(${battlePerson2.hp})", battleId)
         }else{
             mBattles[battleId]!!.winnerName = person2.name
             mBattles[battleId]!!.looserName = person1.name
             addBattleDetail(battleId, "${showName(battlePerson2, false)}\u83b7\u80dc, \u6b8bHP:${battlePerson2.hp}")
-            CultivationHelper.writeHistory("${person2.name}(${battlePerson2.hp})  ${props2[0] - battlePerson2.hp}🔪${props1[0] - battlePerson1.hp}  ${person1.name}(${battlePerson1.hp})", person2, 2, battleId)
-            person2.xiuXei += xiuwei / 4
-            person1.xiuXei -= xiuwei
+            CultivationHelper.writeHistory("${person2.name}(${battlePerson2.hp})  ${props2[0] - battlePerson2.hp}🔪${props1[0] - battlePerson1.hp}  ${person1.name}(${battlePerson1.hp})", battleId)
         }
         person1.HP = battlePerson1.hp - props1[5]
         person2.HP = battlePerson2.hp - props2[5]
