@@ -17,6 +17,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
@@ -186,7 +187,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                 .thenByDescending { it.xiuXei } )
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
-        val jie = mContext.mSP.getInt("cultivation_jie", CultivationHelper.SP_JIE_TURN)
+        val jie = mContext.mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
         mTotalText.text = "${mPersonData.size}-${mPersonData.count { it.lifeTurn >= jie }}"
     }
 

@@ -16,11 +16,12 @@ import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.component.CultivationHelper.CommonColors
-import com.mx.gillustrated.component.CultivationHelper.EnemyNames
+import com.mx.gillustrated.component.CultivationSetting
+import com.mx.gillustrated.component.CultivationSetting.CommonColors
+import com.mx.gillustrated.component.CultivationSetting.EnemyNames
 import com.mx.gillustrated.util.PinyinUtil
 
-class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, private val list: List<CultivationHelper.HistoryInfo>) : BaseAdapter() {
+class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, private val list: List<CultivationSetting.HistoryInfo>) : BaseAdapter() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
 
@@ -55,7 +56,7 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
         val spannable = SpannableString(history)
         repeat(6) { index->
             val matchResult = "(${EnemyNames[index]}|${PinyinUtil.convert(EnemyNames[index])})[0-9]+(hao|号)".toRegex().find(history)
-            if(matchResult != null) {
+            if(matchResult != null && !CultivationHelper.pinyinMode) {
                 spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[index + 2])), matchResult.range.start, matchResult.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }

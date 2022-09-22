@@ -16,7 +16,7 @@ object CultivationEnemyHelper {
         val enemy = Enemy()
         enemy.id = UUID.randomUUID().toString()
         enemy.seq = CultivationHelper.mBattleRound.enemy[type]
-        enemy.name = "${CultivationHelper.EnemyNames[type]}${enemy.seq}号"
+        enemy.name = "${CultivationSetting.EnemyNames[type]}${enemy.seq}号"
         enemy.type = type
         enemy.birthDay = CultivationHelper.mCurrentXun
         enemy.HP = 10 + 10 * random.nextInt(50 * basis)
@@ -44,7 +44,7 @@ object CultivationEnemyHelper {
 
     fun generateLiYuanBa(alliance: Alliance): Person {
         val person = CultivationHelper.getPersonInfo(Pair("李", "\u5143\u9738"), NameUtil.Gender.Male, 20000, null, false,
-                CultivationHelper.PersonFixedInfoMix(null, null, 1000, 1000))
+                CultivationSetting.PersonFixedInfoMix(null, null, 1000, 1000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001004", "8001006", "8002001", "8002003", "8002008", "8003002", "8003007"))
         person.equipmentList.addAll(listOf(Triple("7002901", 0, "")))
@@ -64,7 +64,7 @@ object CultivationEnemyHelper {
 
     fun generateShadowMao(alliance: Alliance): Person {
         val person = CultivationHelper.getPersonInfo(Pair("毛", "\u6b23(\u6697\u5f71)"), NameUtil.Gender.Male, 20000, null, false,
-                CultivationHelper.PersonFixedInfoMix(null, null, 4000, 4000))
+                CultivationSetting.PersonFixedInfoMix(null, null, 4000, 4000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8002002", "8002004", "8002009", "8003002", "8003007"))//必连
         person.equipmentList.addAll(listOf(Triple("7002901", 0, "")))
@@ -84,7 +84,7 @@ object CultivationEnemyHelper {
 
     fun generateShadowQiu(alliance: Alliance): Person {
         val person = CultivationHelper.getPersonInfo(Pair("\u7403\u7403", "(\u6eda\u5706)"), NameUtil.Gender.Female, 20000, null, false,
-                CultivationHelper.PersonFixedInfoMix(null, null, 4000, 4000))
+                CultivationSetting.PersonFixedInfoMix(null, null, 4000, 4000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8003002", "8004001"))//必
         person.equipmentList.addAll(listOf(Triple("7002901", 0, "")))
@@ -105,7 +105,7 @@ object CultivationEnemyHelper {
 
     fun generateYaoWang(alliance: Alliance): Person {
         val person = CultivationHelper.getPersonInfo(Pair("王", "一"), NameUtil.Gender.Female, 20000, null, false,
-                CultivationHelper.PersonFixedInfoMix(null, null, 6000, 6000))
+                CultivationSetting.PersonFixedInfoMix(null, null, 6000, 6000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8002009", "8003002", "8004002"))
         person.equipmentList.addAll(listOf(Triple("7002901", 0, ""), Triple("7003701", 0, "")))

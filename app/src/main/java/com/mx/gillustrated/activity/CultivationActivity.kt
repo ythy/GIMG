@@ -23,22 +23,24 @@ import com.mx.gillustrated.adapter.CultivationHistoryAdapter
 import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName
-import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName2
-import com.mx.gillustrated.component.CultivationHelper.SpecPersonFirstName3
-import com.mx.gillustrated.component.CultivationHelper.SpecPersonFixedName
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName2
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName3
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFixedName
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
 import com.mx.gillustrated.component.CultivationHelper.getPersonBasicString
 import com.mx.gillustrated.component.CultivationHelper.mBattleRound
 import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
-import com.mx.gillustrated.component.CultivationHelper.SpecPersonInfo
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonInfo
 import com.mx.gillustrated.component.CultivationHelper.isTrigger
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
 import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
 import com.mx.gillustrated.component.CultivationHelper.showing
+import com.mx.gillustrated.component.CultivationSetting
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName4
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.service.StopService
 import com.mx.gillustrated.util.CultivationBakUtil
@@ -71,7 +73,7 @@ class CultivationActivity : BaseActivity() {
     var mClans:ConcurrentHashMap<String, Clan> = ConcurrentHashMap()
     private var mEnemys:ConcurrentHashMap<String, Enemy> = ConcurrentHashMap()
     private var mBoss:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
-    private var mHistoryData = mutableListOf<CultivationHelper.HistoryInfo>()
+    private var mHistoryData = mutableListOf<CultivationSetting.HistoryInfo>()
     private val mTimeHandler:TimeHandler = TimeHandler(this)
 
     private val mExecutor:ExecutorService = Executors.newFixedThreadPool(20)
@@ -299,9 +301,6 @@ class CultivationActivity : BaseActivity() {
                 }else{
                     it.value.careerList = Collections.synchronizedList(it.value.careerList)
                 }
-                it.value.events.forEach { e->
-                    e.content = e.content.replace(Regex("[0-9]+(年|nian)"),"").trim()
-                }
             }
             mAlliance.putAll(backup.alliance.mapValues {
                 it.value.toAlliance(mPersons)
@@ -406,6 +405,7 @@ class CultivationActivity : BaseActivity() {
                 val alliance = mAlliance[configAlliance.id]
                 if(alliance != null){
                     alliance.name = configAlliance.name + "界"
+                    alliance.nation = configAlliance.nation
                     alliance.type = configAlliance.type
                     alliance.level = configAlliance.level
                     alliance.lifetime = configAlliance.lifetime
@@ -439,6 +439,7 @@ class CultivationActivity : BaseActivity() {
         alliance.name = it.name + "界"
         alliance.id = it.id
         alliance.type = it.type
+        alliance.nation = it.nation
         alliance.level = it.level
         alliance.lifetime = it.lifetime
         alliance.xiuwei = it.xiuwei
@@ -513,7 +514,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun isDeadException(person:Person):Boolean{
         val matchName = "(李逍遥|阿奴)".toRegex()
-        val lifeTurn = mSP.getInt("cultivation_jie", CultivationHelper.SP_JIE_TURN)
+        val lifeTurn = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
         if(person.isFav){
             return true
         }else if(matchName.find(person.name) != null){
@@ -809,7 +810,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun randomBattle(xun: Long){
-        val weight = mSP.getString("cultivation_random_event", CultivationHelper.SP_EVENT_WEIGHT.joinToString())!!.split(",").map {
+        val weight = CultivationSetting.SP_EVENT_WEIGHT.map {
             val temp = it.split("-")
             Pair(temp.first().trim().toInt(), temp.last().trim().toInt())
         }
@@ -897,7 +898,8 @@ class CultivationActivity : BaseActivity() {
                         gainTeji(person, 10 * it.type)
                     }
                 }else{
-                    person.HP -= it.type * 10
+                    val punishWeight = mSP.getString("cultivation_punish_million", CultivationSetting.SP_PUNISH_MILLION.joinToString())!!.split(",")
+                    person.xiuXei -= it.type * punishWeight[0].trim().toInt() * 10000
                     if(it.remainHit <= 0){
                         writeHistory("${it.name} 消失")
                         it.isDead = true
@@ -921,7 +923,8 @@ class CultivationActivity : BaseActivity() {
                     CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
                 }else{
                     u.remainHit --
-                    person.HP -= u.type * 50
+                    val punishWeight = mSP.getString("cultivation_punish_million", CultivationSetting.SP_PUNISH_MILLION.joinToString())!!.split(",")
+                    person.xiuXei -= u.type * punishWeight[1].trim().toInt() * 10000
                     if(u.remainHit <= 0){
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
                         writeHistory("${u.name} 消失", u)
@@ -1100,13 +1103,19 @@ class CultivationActivity : BaseActivity() {
 
         val allianceList3 = mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id }.toMutableList()
         val specPersonList3 =  SpecPersonFirstName3.map { props->
-            val weight = when( props.third ){
+            val weight = when( props.index ){
                 3-> 100
                 else-> 50
             }
-            SpecPersonInfo(Pair(props.first.first, props.first.second), props.second, props.third,  weight, weight)
+            SpecPersonInfo(props.name, props.gender, props.index, weight, weight)
         }.toMutableList()
         fixedPersonGenerate(specPersonList3, allianceList3)
+
+        val allianceList4 = mAlliance.map { it.value }.filter { it.type == 4 }.sortedBy { it.id }.toMutableList()
+        val specPersonList4 =  SpecPersonFirstName4.map { props->
+            SpecPersonInfo(props.name, props.gender, props.index, props.tianfuWeight, props.linggenWeight)
+        }.toMutableList()
+        fixedPersonGenerate(specPersonList4, allianceList4)
 
         val personList = Collections.synchronizedList(mPersons.map { m-> m.value })
         SpecPersonFixedName.forEach {
@@ -1123,7 +1132,7 @@ class CultivationActivity : BaseActivity() {
         val result = mutableListOf<Person?>()
         specPersonList.forEach {
             if(personList.find { p-> p.allianceId == allianceList[it.allianceIndex].id && p.name == it.name.first + it.name.second } == null){
-                val person = CultivationHelper.getPersonInfo(it.name, it.gender, 100, parent, false, CultivationHelper.PersonFixedInfoMix(null, null, it.TianFuWeight, it.LingGenWeight))
+                val person = CultivationHelper.getPersonInfo(it.name, it.gender, 100, parent, false, CultivationSetting.PersonFixedInfoMix(null, null, it.TianFuWeight, it.LingGenWeight))
                 result.add(person)
                 mPersons[person.id] = person
                 CultivationHelper.joinFixedAlliance(person, allianceList[it.allianceIndex])

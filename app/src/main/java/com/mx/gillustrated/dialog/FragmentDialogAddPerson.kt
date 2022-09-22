@@ -15,6 +15,7 @@ import butterknife.OnClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
@@ -57,7 +58,7 @@ class FragmentDialogAddPerson: DialogFragment()  {
         }
         val person = CultivationHelper.getPersonInfo(Pair(etNameFirst.text.toString().trim(), etNameLast.text.toString().trim()),
                 if(rbMale.isChecked) NameUtil.Gender.Male else NameUtil.Gender.Female  , 100, parent, false,
-                CultivationHelper.PersonFixedInfoMix(null, null, etTianFu.text.toString().toInt(), etLingGen.text.toString().toInt()))
+                CultivationSetting.PersonFixedInfoMix(null, null, etTianFu.text.toString().toInt(), etLingGen.text.toString().toInt()))
         if(parent != null){
             synchronized(parent.first.children){
                 parent.first.children.add(person.id)

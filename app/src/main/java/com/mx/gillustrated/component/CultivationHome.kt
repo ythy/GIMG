@@ -3,11 +3,8 @@ package com.mx.gillustrated.component
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
-import android.util.Log
 import android.view.View
-import androidx.core.graphics.ColorUtils
 import com.mx.gillustrated.R
-import com.mx.gillustrated.component.CultivationHelper.CommonColors
 import com.mx.gillustrated.util.CommonUtil
 import java.util.*
 

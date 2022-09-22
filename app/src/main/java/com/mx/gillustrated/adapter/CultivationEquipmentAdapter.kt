@@ -13,7 +13,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.component.CultivationHelper.CommonColors
+import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.vo.cultivation.Equipment
 
 class CultivationEquipmentAdapter constructor(mContext: Context, private val grouplist: List<Equipment>, private val callbacks: EquipmentAdapterCallback) : BaseExpandableListAdapter() {

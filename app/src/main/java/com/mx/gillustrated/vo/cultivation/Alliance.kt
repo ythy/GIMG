@@ -29,6 +29,7 @@ open class AllianceConfig() :Parcelable {
     var speedG1:Int = 0
     var speedG2:Int = 0
     var persons:List<String> = mutableListOf()
+    var nation:String = ""
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -46,6 +47,7 @@ open class AllianceConfig() :Parcelable {
         speedG1 = parcel.readInt()
         speedG2 = parcel.readInt()
         persons = parcel.createStringArrayList()
+        nation = parcel.readString()
     }
 
     fun toAlliance(personMap: ConcurrentHashMap<String, Person>):Alliance{
@@ -73,6 +75,7 @@ open class AllianceConfig() :Parcelable {
         parcel.writeInt(speedG1)
         parcel.writeInt(speedG2)
         parcel.writeStringList(persons)
+        parcel.writeString(nation)
     }
 
     override fun describeContents(): Int {
