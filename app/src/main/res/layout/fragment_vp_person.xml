@@ -59,13 +59,13 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:id="@+id/et_linggen"
-                android:text="30"/>
+                android:id="@+id/et_tianfu"
+                android:text="100"/>
             <EditText
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:id="@+id/et_tianfu"
+                android:id="@+id/et_linggen"
                 android:text="100"/>
             <Button
                 android:layout_width="wrap_content"

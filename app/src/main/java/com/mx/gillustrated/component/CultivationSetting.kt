@@ -39,9 +39,9 @@ object CultivationSetting {
             PresetInfo(Pair("\u90ed", "\u5609"), NameUtil.Gender.Male, 0, 200, 600),
             PresetInfo(Pair("\u7504", "\u5b93"), NameUtil.Gender.Female, 0, 100, 400),
             PresetInfo(Pair("\u738b", "\u5f02"), NameUtil.Gender.Female, 0, 100, 400),
+            PresetInfo(Pair("\u5f20", "\u6625\u534e"), NameUtil.Gender.Female, 0, 100, 400),
             PresetInfo(Pair("\u590f\u4faf","\u60c7"), NameUtil.Gender.Male, 0), PresetInfo(Pair("\u590f\u4faf","\u6e0a"), NameUtil.Gender.Male, 0),
             PresetInfo(Pair("\u8340", "\u5f67"), NameUtil.Gender.Male, 0), PresetInfo(Pair("\u8bb8","\u891a"), NameUtil.Gender.Male, 0),
-
 
             PresetInfo(Pair("\u5218", "\u5907"), NameUtil.Gender.Male, 1, 200, 600),
             PresetInfo(Pair("\u5173", "\u7fbd"), NameUtil.Gender.Male, 1, 200, 600),
@@ -50,20 +50,24 @@ object CultivationSetting {
             PresetInfo(Pair("\u8bf8\u845b", "\u4eae"), NameUtil.Gender.Male, 1, 500, 1000),
             PresetInfo(Pair("\u5e9e","\u7edf"), NameUtil.Gender.Male, 1), PresetInfo(Pair("\u9a6c","\u8d85"), NameUtil.Gender.Male, 1),
             PresetInfo(Pair("\u9ec4", "\u5fe0"), NameUtil.Gender.Male, 1), PresetInfo(Pair("\u9a6c","\u4e91\u7984"), NameUtil.Gender.Female, 1),
+            PresetInfo(Pair("\u9b4f", "\u5ef6"), NameUtil.Gender.Male, 1),
 
             PresetInfo(Pair("\u5b59", "\u6743"), NameUtil.Gender.Male, 2, 200, 600),
             PresetInfo(Pair("\u5b59", "\u7b56"), NameUtil.Gender.Male, 2, 200, 600),
-            PresetInfo(Pair("\u9646", "\u900a"), NameUtil.Gender.Male, 2, 200, 600),
-            PresetInfo(Pair("\u9ec4", "\u76d6"), NameUtil.Gender.Male, 2, 100, 200),
+            PresetInfo(Pair("\u9646", "\u900a"), NameUtil.Gender.Male, 2, 100, 200),
+            PresetInfo(Pair("\u5927", "\u4e54"), NameUtil.Gender.Female, 2, 100, 200),
+            PresetInfo(Pair("\u5c0f", "\u4e54"), NameUtil.Gender.Female, 2, 100, 200),
             PresetInfo(Pair("\u5468", "\u745c"), NameUtil.Gender.Male, 2, 500, 1000),
             PresetInfo(Pair("\u6f58","\u748b"), NameUtil.Gender.Male, 2), PresetInfo(Pair("\u7518","\u5b81"), NameUtil.Gender.Male, 2),
             PresetInfo(Pair("\u592a\u53f2", "\u6148"), NameUtil.Gender.Male, 2), PresetInfo(Pair("\u5b59","\u5c1a\u9999"), NameUtil.Gender.Female, 2),
+            PresetInfo(Pair("\u9ec4", "\u76d6"), NameUtil.Gender.Male, 2),
 
             PresetInfo(Pair("\u5415", "\u5e03"), NameUtil.Gender.Male, 3, 1000, 2000),
-            PresetInfo(Pair("\u8881", "\u7ecd"), NameUtil.Gender.Male, 3, 200, 600),
-            PresetInfo(Pair("\u8d3e", "\u8be9"), NameUtil.Gender.Male, 3, 200, 600),
-            PresetInfo(Pair("\u5f20", "\u8fbd"), NameUtil.Gender.Male, 3, 100, 300),
-            PresetInfo(Pair("\u8463", "\u5353"), NameUtil.Gender.Male, 3, 100, 200),
+            PresetInfo(Pair("\u8463", "\u5353"), NameUtil.Gender.Male, 3, 200, 600),
+            PresetInfo(Pair("\u8d3e", "\u8be9"), NameUtil.Gender.Male, 3, 100, 400),
+            PresetInfo(Pair("\u8c82", "\u8749"), NameUtil.Gender.Female, 3, 100, 400),
+            PresetInfo(Pair("\u5f20", "\u8fbd"), NameUtil.Gender.Male, 3, 100, 200),
+            PresetInfo(Pair("\u8881", "\u7ecd"), NameUtil.Gender.Male, 3, 100, 200),
             PresetInfo(Pair("\u989c","\u826f"), NameUtil.Gender.Male, 3), PresetInfo(Pair("\u674e","\u5095"), NameUtil.Gender.Male, 3),
             PresetInfo(Pair("\u534e", "\u96c4"), NameUtil.Gender.Male, 3), PresetInfo(Pair("\u6587","\u4e11"), NameUtil.Gender.Male, 3)
 

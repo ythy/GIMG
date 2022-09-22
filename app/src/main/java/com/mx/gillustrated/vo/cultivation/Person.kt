@@ -73,6 +73,7 @@ class Person() :Parcelable {
         //不需要保存
         var type = 0// 标注boss用 boss > 0
         var remainHit = 0// 标注boss attack round
+        var nationId = "" //每次读取时赋值
 
         constructor(parcel: Parcel) : this() {
                 id = parcel.readString()!!
@@ -142,6 +143,7 @@ class Person() :Parcelable {
                 allianceName = parcel.readString()
                 type = parcel.readInt()
                 remainHit = parcel.readInt()
+                nationId = parcel.readString()
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -205,6 +207,7 @@ class Person() :Parcelable {
                 parcel.writeString(allianceName)
                 parcel.writeInt(type)
                 parcel.writeInt(remainHit)
+                parcel.writeString(nationId)
         }
 
         override fun describeContents(): Int {

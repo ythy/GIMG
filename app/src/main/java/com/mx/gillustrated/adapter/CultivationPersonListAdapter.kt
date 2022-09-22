@@ -2,9 +2,6 @@ package com.mx.gillustrated.adapter
 
 import android.content.Context
 import android.graphics.Color
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +17,7 @@ import com.mx.gillustrated.vo.cultivation.Person
 class CultivationPersonListAdapter constructor(context: Context, private val list: MutableList<Person>) : BaseAdapter() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
+    private val nation = CultivationHelper.mConfig.nation
 
     override fun getCount(): Int {
         return list.size
@@ -54,7 +52,7 @@ class CultivationPersonListAdapter constructor(context: Context, private val lis
         component.xiuwei.text = "${person.xiuXei}/${person.jinJieMax}"
         component.lingGen.text = CultivationHelper.showing(person.lingGenName)
         component.lingGen.setTextColor(Color.parseColor(CommonColors[person.lingGenType.color]))
-        component.alliance.text = CultivationHelper.showing(person.allianceName)
+        component.alliance.text = CultivationHelper.showing("${nation.find { it.id == person.nationId }?.name}-${person.allianceName}")
 
         return convertView!!
     }

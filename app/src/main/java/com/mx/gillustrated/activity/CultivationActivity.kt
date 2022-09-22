@@ -319,6 +319,7 @@ class CultivationActivity : BaseActivity() {
             it.value.allianceProperty =  mAlliance[it.value.allianceId]!!.property
             it.value.allianceName = mAlliance[it.value.allianceId]!!.name
             it.value.extraXuiweiMulti = CultivationHelper.getExtraXuiweiMulti(it.value,  mAlliance[it.value.allianceId]!!)
+            it.value.nationId = mAlliance[it.value.allianceId]!!.nation
             CultivationHelper.updatePersonEquipment(it.value)
         }
         if(out == null){

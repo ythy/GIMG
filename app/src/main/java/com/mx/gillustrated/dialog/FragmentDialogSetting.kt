@@ -15,6 +15,7 @@ import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.TextViewBox
+import com.mx.gillustrated.util.CommonUtil
 
 @RequiresApi(Build.VERSION_CODES.N)
 class FragmentDialogSetting : DialogFragment() {
@@ -108,8 +109,10 @@ class FragmentDialogSetting : DialogFragment() {
 
     fun init() {
         measures.measure(0,0)
+        val margin = CommonUtil.dip2px(context, 20f)
+
         val battleRound = CultivationHelper.mBattleRound
-        tvbBattle.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - 20, 20))
+        tvbBattle.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - margin, 20))
         tvbBattle.setCallback(object : TextViewBox.Callback {
             override fun onClick(index: Int) {
                 openDialog(index)
@@ -117,7 +120,7 @@ class FragmentDialogSetting : DialogFragment() {
         })
         tvbBattle.setDataProvider(listOf("帮:${battleRound.bang}", "族:${battleRound.clan}", "个:${battleRound.single}"), null)
 
-        tvbEnemy.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - 20, 20))
+        tvbEnemy.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - margin, 20))
         tvbEnemy.setCallback(object : TextViewBox.Callback {
             override fun onClick(index: Int) {
                 openDialog(10 + index)
@@ -125,7 +128,7 @@ class FragmentDialogSetting : DialogFragment() {
         })
         tvbEnemy.setDataProvider(CultivationSetting.EnemyNames.mapIndexed { index, s ->  "$s:${battleRound.enemy[index]}" }, null)
 
-        tvbBoss.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - 20, 20))
+        tvbBoss.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - margin, 20))
         tvbBoss.setCallback(object : TextViewBox.Callback {
             override fun onClick(index: Int) {
                 openDialog(20 + index)
