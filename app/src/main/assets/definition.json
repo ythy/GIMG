@@ -1858,6 +1858,16 @@
       "xiuwei": 40,
       "success": 0,
       "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "7006601",
+      "name": "\u56fd\u6218\u91d1\u5fbd",
+      "type": 16,
+      "rarity": 4,
+      "maxCount": 10,
+      "xiuwei": 10,
+      "success": 0,
+      "property": [0,0,0,0,0,0,0,0]
     }
   ],
 
@@ -2294,23 +2304,23 @@
   "nation": [
     {
       "id": "6100001",
-      "name": "凡"
+      "name": "凡\u95f4"
     },
     {
       "id": "6100002",
-      "name": "峯"
+      "name": "峯\u95f4"
     },
     {
       "id": "6100003",
-      "name": "侠"
+      "name": "\u6b66\u4fa0"
     },
     {
       "id": "6100004",
-      "name": "化"
+      "name": "\u795e\u8bdd"
     },
     {
       "id": "6100005",
-      "name": "三"
+      "name": "\u4e09\u56fd"
     }
   ]
 }

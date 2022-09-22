@@ -81,6 +81,7 @@ class FragmentDialogAlliance : DialogFragment() {
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
     private var mPersonList = mutableListOf<Person>()
+    private val nation = CultivationHelper.mConfig.nation
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -99,7 +100,7 @@ class FragmentDialogAlliance : DialogFragment() {
         mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
         mAlliance = mContext.mAlliance[mId]!!
-        mDialogView.name.text = CultivationHelper.showing(mAlliance.name)
+        mDialogView.name.text = CultivationHelper.showing("${nation.find { it.id == mAlliance.nation }?.name}-${mAlliance.name}")
         mDialogView.lifetime.text = "life: ${mAlliance.lifetime}"
         mDialogView.xiuwei.text = "xiuwei: ${mAlliance.xiuwei}(${mAlliance.xiuweiMulti})  ↑${mAlliance.success}"
         mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)

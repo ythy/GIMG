@@ -377,6 +377,9 @@ class CultivationActivity : BaseActivity() {
                 R.id.menu_battle_single ->{
                     battleSingleHandler()
                 }
+                R.id.menu_battle_nation ->{
+                    battleNationHandler()
+                }
                 R.id.menu_event_enemy ->{
                     eventEnemyHandler()
                 }
@@ -1288,6 +1291,54 @@ class CultivationActivity : BaseActivity() {
         }).start()
     }
 
+    private fun battleNationHandler(block: Boolean = true){
+        setTimeLooper(false)
+        if(block){
+            mHistoryData.clear()
+            CultivationHelper.mHistoryTempData.clear()
+            (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
+            mHistory.invalidateViews()
+        }
+        val nations = mConfig.nation.map { n->
+            val nation = Nation()
+            val result: ConcurrentHashMap<String, Person> = ConcurrentHashMap()
+            mAlliance.filter { it.value.nation == n.id }.forEach { (_, u) ->
+                result.putAll(u.personList)
+            }
+            nation.id = n.id
+            nation.name = n.name
+            nation.nationPersonList = result
+            nation
+        }.toMutableList()
+        Thread(Runnable {
+            Thread.sleep(500)
+            mBattleRound.nation++
+            writeHistory("第${mBattleRound.nation}届 Nation Battle Start")
+            var roundNumber = 1
+
+            while (true){
+                writeHistory("Nation Battle ${roundNumber}轮 Start")
+                roundNumber++
+                val result = roundNationHandler(nations, 20)
+                if(result)
+                    break
+            }
+            nations[0].nationPersonList.forEach {
+                CultivationHelper.gainJiEquipment(it.value, 16, 0, mBattleRound.nation)
+            }
+
+            writeHistory("第${mBattleRound.nation}届 Nation Battle Winner: ${nations[0].name}")
+            if(!block){
+                Thread.sleep(5000)
+            }
+            val message = Message.obtain()
+            message.what = 8
+            message.arg1 = if (block) 0 else 1
+            mTimeHandler.sendMessage(message)
+        }).start()
+    }
+
+
     private fun roundSingleHandler(persons: MutableList<Person>, round:Int):Boolean{
         persons.shuffle()
         val passIds = mutableListOf<String>()
@@ -1311,6 +1362,29 @@ class CultivationActivity : BaseActivity() {
             true
         }else{
             persons.removeIf { passIds.contains(it.id) }
+            false
+        }
+    }
+
+    private fun roundNationHandler(nation: MutableList<Nation>, round:Int):Boolean{
+        nation.shuffle()
+        val passIds = mutableListOf<String>()
+        for (i in 0 until nation.size step 2){
+            if( i + 1 >= nation.size){
+                break
+            }
+            val firstNation = nation[i]
+            val secondNation = nation[i+1]
+            val result = roundMultiBattle(firstNation.nationPersonList, secondNation.nationPersonList, round, 200)
+            passIds.add(if(result) secondNation.id else firstNation.id)
+        }
+        return if(nation.size == 2){
+            val looser = nation.find { it.id == passIds[0] }!!
+            nation.removeIf { it.id == passIds[0] }
+            nation.add(looser)
+            true
+        }else{
+            nation.removeIf { passIds.contains(it.id) }
             false
         }
     }

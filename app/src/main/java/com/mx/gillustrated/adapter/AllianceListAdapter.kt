@@ -16,6 +16,7 @@ import com.mx.gillustrated.vo.cultivation.Alliance
 class AllianceListAdapter  constructor(mContext: Context, private val list: List<Alliance>) : BaseAdapter() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
+    private val nation = CultivationHelper.mConfig.nation
 
     override fun getCount(): Int {
         return list.size
@@ -41,7 +42,7 @@ class AllianceListAdapter  constructor(mContext: Context, private val list: List
         } else
             component = convertView.tag as ViewHolder
 
-        component.name.text =  CultivationHelper.showing(list[arg0].name)
+        component.name.text =  CultivationHelper.showing("${nation.find { it.id == list[arg0].nation }?.name}-${list[arg0].name}")
         component.persons.text = list[arg0].personList.size.toString()
         component.total.text  = list[arg0].totalXiuwei.toString()
         return convertView
