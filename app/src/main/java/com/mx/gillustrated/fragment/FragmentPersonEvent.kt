@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import butterknife.*
 import com.mx.gillustrated.R
@@ -22,6 +23,10 @@ class FragmentPersonEvent : Fragment(){
 
     @BindView(R.id.lv_events)
     lateinit var mListView: ListView
+
+    @BindView(R.id.tv_seq)
+    lateinit var mSeq: TextView
+
 
     @OnCheckedChanged(R.id.sch_del)
     fun onDelHandler(checked:Boolean){
@@ -51,6 +56,8 @@ class FragmentPersonEvent : Fragment(){
     fun init(){
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getPersonData(id)!!
+        if(mPerson.specIdentity > 0)
+            mSeq.text = mPerson.specIdentity.toString()
         normalRender()
     }
 

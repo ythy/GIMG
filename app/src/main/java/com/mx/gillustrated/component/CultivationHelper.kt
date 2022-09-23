@@ -66,6 +66,7 @@ object CultivationHelper {
         person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
         if(alliance.type == 3 || alliance.type == 4){
             person.singled = true
+            person.dink = true
         }
     }
 

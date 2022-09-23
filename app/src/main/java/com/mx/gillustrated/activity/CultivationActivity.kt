@@ -33,7 +33,6 @@ import com.mx.gillustrated.component.CultivationHelper.mBattleRound
 import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonInfo
 import com.mx.gillustrated.component.CultivationHelper.isTrigger
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
@@ -41,6 +40,10 @@ import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
 import com.mx.gillustrated.component.CultivationHelper.showing
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName4
+import com.mx.gillustrated.component.CultivationSetting.getIdentityGender
+import com.mx.gillustrated.component.CultivationSetting.getIdentityIndex
+import com.mx.gillustrated.component.CultivationSetting.createIdentitySeq
+import com.mx.gillustrated.component.CultivationSetting.PresetInfo
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.service.StopService
 import com.mx.gillustrated.util.CultivationBakUtil
@@ -322,6 +325,7 @@ class CultivationActivity : BaseActivity() {
             it.value.nationId = mAlliance[it.value.allianceId]!!.nation
             CultivationHelper.updatePersonEquipment(it.value)
         }
+        temp()
         if(out == null){
             startWorld()
         }else{
@@ -330,6 +334,20 @@ class CultivationActivity : BaseActivity() {
         registerTimeLooper()
         registerHistoryTimeLooper()
     }
+
+    private fun temp(){
+        mAlliance.map { it.value }.filter { it.type == 3  }.forEach { alliance ->
+           alliance.personList.forEach { (t: String, u: Person) ->
+               u.specIdentity = SpecPersonFirstName3.find { it.name.first + it.name.second == u.name }!!.identity
+           }
+        }
+        mAlliance.map { it.value }.filter { it.type == 4  }.forEach { alliance ->
+            alliance.personList.forEach { (t: String, u: Person) ->
+                u.specIdentity = SpecPersonFirstName4.find { it.name.first + it.name.second == u.name }!!.identity
+            }
+        }
+    }
+
 
     private fun startWorld(){
         writeHistory("进入世界...")
@@ -625,7 +643,7 @@ class CultivationActivity : BaseActivity() {
                 saveAllData(false)
             }
             currentXun % 44000 == 0L -> {
-                if(mPersons.size > 350){
+                if(mPersons.size > 400){
                     addBossHandler(true)
                 }
             }
@@ -854,9 +872,8 @@ class CultivationActivity : BaseActivity() {
                     if(isTrigger(baseNumber.toInt())){
                         val child = if(mAlliance[partner.allianceId]!!.type == 2 && partner.ancestorLevel <= 1 && mPersons[partner.ancestorId] != null ){
                             if(isTrigger()){
-                                val allianceList = mutableListOf(mAlliance[partner.allianceId]!!)
-                                fixedPersonGenerate(mutableListOf(SpecPersonInfo(Pair(partner.lastName, null), NameUtil.Gender.Male, 0,1,1)),
-                                        allianceList, Pair(partner, it))[0]
+                                fixedSinglePersonGenerate(Pair(partner.lastName, null), NameUtil.Gender.Male,
+                                        mAlliance[partner.allianceId]!!, Pair(partner, it))
                             }else{
                                 addPersion(Pair(partner.lastName, null), NameUtil.Gender.Female, 100,
                                         Pair(partner, it))
@@ -1088,38 +1105,37 @@ class CultivationActivity : BaseActivity() {
 
     private fun addSpecPerson(){
         val allianceList = Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 })
-        val specPersonList = mutableListOf<SpecPersonInfo>()
+        val specPersonList = mutableListOf<PresetInfo>()
         for ( i in 0 until 4){
-            SpecPersonFirstName.forEach { first->
-                specPersonList.add(SpecPersonInfo(Pair(allianceList[i].name.slice(0 until 1), first), NameUtil.Gender.Female, i, 50, 20))
+            SpecPersonFirstName.forEachIndexed { index, first ->
+                specPersonList.add(PresetInfo("110$i${createIdentitySeq(index)}1".toInt(), Pair(allianceList[i].name.slice(0 until 1), first),
+                        0,50, 20))
             }
         }
         fixedPersonGenerate(specPersonList, allianceList)
 
         val allianceList2 = mAlliance.map { it.value }.filter { it.type == 2 }.toMutableList()
-        val specPersonList2 = mutableListOf<SpecPersonInfo>()
+        val specPersonList2 = mutableListOf<PresetInfo>()
         for ( i in 0 until 1){
-            SpecPersonFirstName2.forEach { first->
-                specPersonList2.add(SpecPersonInfo(Pair(allianceList2[i].name.slice(0 until 1), first), null, i, 20, 10))
+            SpecPersonFirstName2.forEachIndexed { index, first ->
+                specPersonList2.add(PresetInfo("120$i${createIdentitySeq(index)}2".toInt(), Pair(allianceList2[i].name.slice(0 until 1), first),
+                        0,20, 10))
             }
         }
         fixedPersonGenerate(specPersonList2, allianceList2)
 
         val allianceList3 = mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id }.toMutableList()
         val specPersonList3 =  SpecPersonFirstName3.map { props->
-            val weight = when( props.index ){
-                3-> 100
-                else-> 50
+            if( getIdentityIndex(props.identity) == 3){
+                props.linggenWeight = 100
+                props.tianfuWeight = 100
             }
-            SpecPersonInfo(props.name, props.gender, props.index, weight, weight)
+            props
         }.toMutableList()
         fixedPersonGenerate(specPersonList3, allianceList3)
 
         val allianceList4 = mAlliance.map { it.value }.filter { it.type == 4 }.sortedBy { it.id }.toMutableList()
-        val specPersonList4 =  SpecPersonFirstName4.map { props->
-            SpecPersonInfo(props.name, props.gender, props.index, props.tianfuWeight, props.linggenWeight)
-        }.toMutableList()
-        fixedPersonGenerate(specPersonList4, allianceList4)
+        fixedPersonGenerate(SpecPersonFirstName4, allianceList4)
 
         val personList = Collections.synchronizedList(mPersons.map { m-> m.value })
         SpecPersonFixedName.forEach {
@@ -1131,20 +1147,29 @@ class CultivationActivity : BaseActivity() {
 
     }
 
-    private fun fixedPersonGenerate(specPersonList:MutableList<SpecPersonInfo>, allianceList:MutableList<Alliance>, parent: Pair<Person, Person>? = null):MutableList<Person?>{
-        val personList = Collections.synchronizedList(mPersons.map { m-> m.value })
+    private fun fixedPersonGenerate(specPersonList:MutableList<PresetInfo>, allianceList:MutableList<Alliance>, parent: Pair<Person, Person>? = null):MutableList<Person?>{
         val result = mutableListOf<Person?>()
         specPersonList.forEach {
-            if(personList.find { p-> p.allianceId == allianceList[it.allianceIndex].id && p.name == it.name.first + it.name.second } == null){
-                val person = CultivationHelper.getPersonInfo(it.name, it.gender, 100, parent, false, CultivationSetting.PersonFixedInfoMix(null, null, it.TianFuWeight, it.LingGenWeight))
+            val person = fixedSinglePersonGenerate(it.name, getIdentityGender(it.identity), allianceList[getIdentityIndex(it.identity)],
+                    null, it.tianfuWeight, it.linggenWeight)
+            if(person != null){
+                person.specIdentity = it.identity
                 result.add(person)
-                mPersons[person.id] = person
-                CultivationHelper.joinFixedAlliance(person, allianceList[it.allianceIndex])
-                addPersonEvent(person,"加入")
-                writeHistory("${getPersonBasicString(person)} 加入", person)
             }
         }
         return result
+    }
+
+    private fun fixedSinglePersonGenerate(name:Pair<String, String?>,gender: NameUtil.Gender, alliance:Alliance, parent: Pair<Person, Person>? = null, tinfu:Int = 1, linggen:Int = 1):Person?{
+        if(mPersons.none { p-> p.value.allianceId == alliance.id && p.value.name == name.first + (name.second ?: "") }) {
+            val person = CultivationHelper.getPersonInfo(name, gender, 100, parent, false, CultivationSetting.PersonFixedInfoMix(null, null, tinfu, linggen))
+            mPersons[person.id] = person
+            CultivationHelper.joinFixedAlliance(person, alliance)
+            addPersonEvent(person,"加入")
+            writeHistory("${getPersonBasicString(person)} 加入", person)
+            return person
+        }
+        return null
     }
 
     private fun resetHandler(){

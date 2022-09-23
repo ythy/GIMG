@@ -53,7 +53,7 @@ class Person() :Parcelable {
         var allianceXiuwei:Int = 0 //alliance 增益 zhu / speed； 每轮更新
         var allianceSuccess:Int = 0 //alliance 增益 初始和读取更新
         var allianceProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//alliance 初始和读取更新
-
+        var specIdentity:Int = 0 //spec person nid
 
         //extra props
         var lastBirthDay:Long = 0
@@ -144,6 +144,7 @@ class Person() :Parcelable {
                 type = parcel.readInt()
                 remainHit = parcel.readInt()
                 nationId = parcel.readString()
+                specIdentity = parcel.readInt()
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -208,6 +209,7 @@ class Person() :Parcelable {
                 parcel.writeInt(type)
                 parcel.writeInt(remainHit)
                 parcel.writeString(nationId)
+                parcel.writeInt(specIdentity)
         }
 
         override fun describeContents(): Int {

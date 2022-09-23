@@ -5,16 +5,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="end"
+
         android:orientation="vertical">
-        <Switch
-            android:layout_width="120dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sch_del"
-            style="@style/BaseSwitchStyle"
-            android:layout_marginEnd="5dp"
-            android:checked="false"
-            android:text="Modify"/>
+            android:gravity="end"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:id="@+id/tv_seq"/>
+            </LinearLayout>
+            <Switch
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/sch_del"
+                style="@style/BaseSwitchStyle"
+                android:layout_marginEnd="5dp"
+                android:checked="false"
+                android:text="Modify"/>
+        </LinearLayout>
+
         <ListView
             android:layout_width="match_parent"
             android:layout_height="0dp"
