@@ -54,6 +54,7 @@
 
     <string name="cultivation_menu">菜单</string>
     <string name="cultivation_multi">1000人</string>
+    <string name="cultivation_nation">国家</string>
     <string name="cultivation_list">人物</string>
     <string name="cultivation_clan">家族</string>
     <string name="cultivation_bang">帮派</string>

@@ -68,9 +68,9 @@
             <Button
                 android:layout_width="50dp"
                 android:layout_height="40dp"
-                android:id="@+id/btn_multi"
+                android:id="@+id/btn_nation"
                 style="@style/ButtonSmall"
-                android:text="@string/cultivation_multi"
+                android:text="@string/cultivation_nation"
                 tools:targetApi="lollipop" />
             <Button
                 android:layout_width="50dp"

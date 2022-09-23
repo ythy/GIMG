@@ -3,6 +3,7 @@
     <string name="app_name">GIllustrator</string>
     <string name="cultivation_menu">MENU</string>
     <string name="cultivation_multi">Multi</string>
+    <string name="cultivation_nation">Nation</string>
     <string name="cultivation_list">List</string>
     <string name="cultivation_clan">Clan</string>
     <string name="cultivation_bang">Bang</string>

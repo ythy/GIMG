@@ -22,6 +22,9 @@
     </group>
     <group android:id="@+id/group2"  android:checkableBehavior="single">
         <item
+            android:id="@+id/menu_multi"
+            android:title="1000人"/>
+        <item
             android:id="@+id/menu_grace"
             android:title="普天同庆"/>
         <item

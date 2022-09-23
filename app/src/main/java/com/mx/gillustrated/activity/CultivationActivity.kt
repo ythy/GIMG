@@ -143,9 +143,13 @@ class CultivationActivity : BaseActivity() {
         }).start()
     }
 
-    @OnClick(R.id.btn_multi)
-    fun onAdd100ClickHandler(){
-        addMultiPerson(mInitPersonCount)
+    @OnClick(R.id.btn_nation)
+    fun onNationClickHandler(){
+        val ft = supportFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogNationList.newInstance()
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_nation_list")
     }
 
     @OnClick(R.id.btn_time)
@@ -334,6 +338,7 @@ class CultivationActivity : BaseActivity() {
         registerHistoryTimeLooper()
     }
 
+
     private fun startWorld(){
         writeHistory("进入世界...")
         addMultiPerson(mInitPersonCount)
@@ -389,6 +394,9 @@ class CultivationActivity : BaseActivity() {
                 }
                 R.id.menu_enemy_list->{
                     addBossHandler()
+                }
+                R.id.menu_multi->{
+                    addMultiPerson(mInitPersonCount)
                 }
             }
             mDrawer.closeDrawer(GravityCompat.START)
