@@ -51,6 +51,7 @@ object CultivationHelper {
                 person.allianceProperty = alliance.property
                 person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
                 person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
+                person.nationId = alliance.nation
                 break
             }
         }
@@ -68,6 +69,7 @@ object CultivationHelper {
             person.singled = true
             person.dink = true
         }
+        person.nationId = alliance.nation
     }
 
     fun updateAllianceGain(allAlliance:ConcurrentHashMap<String, Alliance>, updated:Boolean = false){

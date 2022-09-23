@@ -325,7 +325,6 @@ class CultivationActivity : BaseActivity() {
             it.value.nationId = mAlliance[it.value.allianceId]!!.nation
             CultivationHelper.updatePersonEquipment(it.value)
         }
-        temp()
         if(out == null){
             startWorld()
         }else{
@@ -334,20 +333,6 @@ class CultivationActivity : BaseActivity() {
         registerTimeLooper()
         registerHistoryTimeLooper()
     }
-
-    private fun temp(){
-        mAlliance.map { it.value }.filter { it.type == 3  }.forEach { alliance ->
-           alliance.personList.forEach { (t: String, u: Person) ->
-               u.specIdentity = SpecPersonFirstName3.find { it.name.first + it.name.second == u.name }!!.identity
-           }
-        }
-        mAlliance.map { it.value }.filter { it.type == 4  }.forEach { alliance ->
-            alliance.personList.forEach { (t: String, u: Person) ->
-                u.specIdentity = SpecPersonFirstName4.find { it.name.first + it.name.second == u.name }!!.identity
-            }
-        }
-    }
-
 
     private fun startWorld(){
         writeHistory("进入世界...")
@@ -1124,18 +1109,17 @@ class CultivationActivity : BaseActivity() {
         }
         fixedPersonGenerate(specPersonList2, allianceList2)
 
-        val allianceList3 = mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id }.toMutableList()
-        val specPersonList3 =  SpecPersonFirstName3.map { props->
-            if( getIdentityIndex(props.identity) == 3){
-                props.linggenWeight = 100
-                props.tianfuWeight = 100
-            }
-            props
-        }.toMutableList()
-        fixedPersonGenerate(specPersonList3, allianceList3)
+        val addedPersons3 = fixedPersonGenerate(SpecPersonFirstName3.map { props->
+                    if( getIdentityIndex(props.identity) == 3){
+                        props.linggenWeight = 100
+                        props.tianfuWeight = 100
+                    }
+                    props
+                }.toMutableList(),
+                mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id })
 
-        val allianceList4 = mAlliance.map { it.value }.filter { it.type == 4 }.sortedBy { it.id }.toMutableList()
-        fixedPersonGenerate(SpecPersonFirstName4, allianceList4)
+        val addedPersons4 = fixedPersonGenerate(SpecPersonFirstName4,
+                mAlliance.map { it.value }.filter { it.type == 4 }.sortedBy { it.id })
 
         val personList = Collections.synchronizedList(mPersons.map { m-> m.value })
         SpecPersonFixedName.forEach {
@@ -1145,16 +1129,27 @@ class CultivationActivity : BaseActivity() {
             }
         }
 
+        val addedPersons = mutableListOf<Pair<Person, Int>>()
+        addedPersons.addAll(addedPersons3)
+        addedPersons.addAll(addedPersons4)
+        addedPersons.forEach { p ->
+            if (p.second > 0 ){
+                val partner = mPersons.map { it.value }.find { it.specIdentity == p.second }
+                if(partner != null && mPersons[partner.partner] == null ){
+                    CultivationHelper.createPartner(p.first, partner)
+                }
+            }
+        }
     }
 
-    private fun fixedPersonGenerate(specPersonList:MutableList<PresetInfo>, allianceList:MutableList<Alliance>, parent: Pair<Person, Person>? = null):MutableList<Person?>{
-        val result = mutableListOf<Person?>()
+    private fun fixedPersonGenerate(specPersonList:MutableList<PresetInfo>, allianceList:List<Alliance>, parent: Pair<Person, Person>? = null):MutableList<Pair<Person, Int>>{
+        val result = mutableListOf<Pair<Person, Int>>()
         specPersonList.forEach {
             val person = fixedSinglePersonGenerate(it.name, getIdentityGender(it.identity), allianceList[getIdentityIndex(it.identity)],
                     null, it.tianfuWeight, it.linggenWeight)
             if(person != null){
                 person.specIdentity = it.identity
-                result.add(person)
+                result.add(Pair(person, it.partner))
             }
         }
         return result
