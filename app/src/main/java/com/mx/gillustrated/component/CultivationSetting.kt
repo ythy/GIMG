@@ -12,7 +12,6 @@ object CultivationSetting {
     val SP_EVENT_WEIGHT = listOf("1000-10","1200-40","7200-40","8400-40","9600-80")
     val SP_PUNISH_MILLION = listOf(100,500)
 
-    val SpecPersonFirstName2:MutableList<String> = mutableListOf("主", "\u4f8d", "廿一", "廿二", "廿三")
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983")
 
     //13 00 001 0

@@ -48,6 +48,13 @@ class FragmentDialogNation : DialogFragment() {
         this.dismiss()
     }
 
+    @OnClick(R.id.btn_generate)
+    fun onGenerateClickHandler(){
+
+    }
+
+
+
     @OnItemClick(R.id.lv_person)
     fun onItemClick(position:Int){
         val ft = mContext.supportFragmentManager.beginTransaction()
@@ -61,8 +68,8 @@ class FragmentDialogNation : DialogFragment() {
         newFragment.show(ft, "dialog_person_info")
     }
 
-    lateinit var mNation: Nation
-    private var mPersonList = listOf<Person>()
+    private lateinit var mNation: Nation
+    private var mPersonList = mutableListOf<Person>()
     lateinit var mContext:CultivationActivity
     lateinit var mDialogView:DialogView
 
@@ -85,8 +92,9 @@ class FragmentDialogNation : DialogFragment() {
     fun init(){
         val nationId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
-        mNation = CultivationHelper.mConfig.nation.find { it.id == nationId }!!.copy()
+        mNation = mContext.mNations[nationId]!!
         mDialogView.name.text = CultivationHelper.showing(mNation.name)
+        mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
         updateView()
         registerTimeLooper()
     }
@@ -105,9 +113,11 @@ class FragmentDialogNation : DialogFragment() {
     }
 
     private fun updateView(){
-        mPersonList = mContext.mPersons.map { it.value }.filter { it.nationId == mNation.id }.
-                sortedWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId })
-        mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList.toMutableList())
+        mPersonList.clear()
+        mPersonList.addAll(mContext.mPersons.map { it.value }.filter { it.nationId == mNation.id }.
+                sortedWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId }))
+        (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
+        mDialogView.persons.invalidateViews()
         mDialogView.total.text = mPersonList.size.toString()
     }
 

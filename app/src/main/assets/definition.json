@@ -1324,16 +1324,6 @@
       "speedG1": 60
     },
     {
-      "id": "6000311",
-      "name": "剑",
-      "type": 2,
-      "nation": "6100003",
-      "xiuwei": 30,
-      "xiuweiMulti": 50,
-      "property": [0,50,0,10,0,0,0,0],
-      "speedG1": 60
-    },
-    {
       "id": "6000401",
       "name": "庭",
       "type": 3,

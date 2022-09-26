@@ -24,7 +24,6 @@ import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName2
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName3
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFixedName
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
@@ -74,6 +73,8 @@ class CultivationActivity : BaseActivity() {
     var mDeadPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var mAlliance:ConcurrentHashMap<String, Alliance> = ConcurrentHashMap()
     var mClans:ConcurrentHashMap<String, Clan> = ConcurrentHashMap()
+    var mNations:ConcurrentHashMap<String, Nation> = ConcurrentHashMap()
+
     private var mEnemys:ConcurrentHashMap<String, Enemy> = ConcurrentHashMap()
     private var mBoss:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     private var mHistoryData = mutableListOf<CultivationSetting.HistoryInfo>()
@@ -110,7 +111,7 @@ class CultivationActivity : BaseActivity() {
         saveAllData()
     }
 
-    fun saveAllData(setBusyProgression:Boolean = true){
+    private fun saveAllData(setBusyProgression:Boolean = true){
         if(setBusyProgression){
             mProgressDialog.show()
         }
@@ -135,6 +136,9 @@ class CultivationActivity : BaseActivity() {
                 }
             }
             backupInfo.clans = mClans.mapValues { it.value.toClanBak() }
+            backupInfo.nation = mNations.mapValues {
+                it.value.toNationBak()
+            }
             CultivationBakUtil.saveDataToFiles(Gson().toJson(backupInfo))
             val message = Message.obtain()
             message.what = 2
@@ -315,11 +319,20 @@ class CultivationActivity : BaseActivity() {
             mClans.putAll(backup.clans.mapValues {
                 it.value.toClan(mPersons)
             })
+            if(backup.nation.isEmpty()){
+                mConfig.nation.forEach {
+                    mNations[it.id] = it
+                }
+            }else{
+                mNations.putAll(backup.nation.mapValues {
+                    it.value.toNation()
+                })
+            }
             mBattleRound = backup.battleRound ?: BattleRound()
         }else{
             mBattleRound = BattleRound()
         }
-        createAlliance()
+        createAlliance() //此处处理了删除alliance的情况
         //更新Alliance属性
         mPersons.forEach {
             it.value.allianceSuccess = mAlliance[it.value.allianceId]!!.success
@@ -441,8 +454,15 @@ class CultivationActivity : BaseActivity() {
                 if(mConfig.alliance.find { a-> a.id == it.value.id } == null){
                     mAlliance.remove(it.value.id)
                     mPersons.forEach { p->
-                        if(p.value.allianceId == it.value.id)
+                        if(p.value.allianceId == it.value.id){
                             mPersons.remove(p.value.id)
+                            if(mClans[p.value.ancestorId] != null){
+                                mClans[p.value.ancestorId]!!.clanPersonList.remove(p.value.id)
+                                if(p.value.ancestorId == p.value.id){
+                                    mClans.remove(p.value.id)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -863,25 +883,13 @@ class CultivationActivity : BaseActivity() {
                 val baseNumber = if(children.isEmpty()) 10L else Math.pow((children.size * 2).toDouble(), 5.0).toLong()
                 if(partner != null && baseNumber < Int.MAX_VALUE){
                     if(isTrigger(baseNumber.toInt())){
-                        val child = if(mAlliance[partner.allianceId]!!.type == 2 && partner.ancestorLevel <= 1 && mPersons[partner.ancestorId] != null ){
-                            if(isTrigger()){
-                                fixedSinglePersonGenerate(Pair(partner.lastName, null), NameUtil.Gender.Male,
-                                        mAlliance[partner.allianceId]!!, Pair(partner, it))
-                            }else{
-                                addPersion(Pair(partner.lastName, null), NameUtil.Gender.Female, 100,
-                                        Pair(partner, it))
-                            }
-                        }else{
-                            addPersion(Pair(partner.lastName, null), null, 100,
+                        val child = addPersion(Pair(partner.lastName, null), null, 100,
                                     Pair(partner, it))
+                        synchronized(it.children){
+                            it.children.add(child.id)
                         }
-                        if(child != null){
-                            synchronized(it.children){
-                                it.children.add(child.id)
-                            }
-                            synchronized(partner.children){
-                                partner.children.add(child.id)
-                            }
+                        synchronized(partner.children){
+                            partner.children.add(child.id)
                         }
                     }
                 }
@@ -1106,16 +1114,6 @@ class CultivationActivity : BaseActivity() {
             }
         }
         fixedPersonGenerate(specPersonList, allianceList)
-
-        val allianceList2 = mAlliance.map { it.value }.filter { it.type == 2 }.toMutableList()
-        val specPersonList2 = mutableListOf<PresetInfo>()
-        for ( i in 0 until 1){
-            SpecPersonFirstName2.forEachIndexed { index, first ->
-                specPersonList2.add(PresetInfo("120$i${createIdentitySeq(index)}2".toInt(), Pair(allianceList2[i].name.slice(0 until 1), first),
-                        0,20, 10))
-            }
-        }
-        fixedPersonGenerate(specPersonList2, allianceList2)
 
         val addedPersons3 = fixedPersonGenerate(SpecPersonFirstName3.map { props->
                     if( getIdentityIndex(props.identity) == 3){

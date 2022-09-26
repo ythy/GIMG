@@ -108,8 +108,8 @@ class FragmentDialogNationList  : DialogFragment() {
     }
 
     private fun updateView(){
-        mNationList = CultivationHelper.mConfig.nation.map { c->
-            val nation = c.copy()
+        mNationList = mContext.mNations.map { c->
+            val nation = c.value.copy()
             nation.nationPersonList = ConcurrentHashMap(mContext.mPersons.filter { it.value.nationId == nation.id })
             nation.totalTurn =  nation.nationPersonList.map { it.value }.sumBy { it.lifeTurn }
             nation
