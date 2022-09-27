@@ -57,15 +57,16 @@ object CultivationSetting {
             PresetInfo(14010030, Triple("\u5f20", "\u98de", 2015),0,200, 600),
             PresetInfo(14010040, Triple("\u8d75", "\u4e91", 2044), 14010101,100, 400),
             PresetInfo(14010050, Triple("\u8bf8\u845b", "\u4eae", 2013), 14010061,500, 1000),
-            PresetInfo(14010061, Triple("\u9ec4", "\u6708\u82f1", 4006), 14010050,100, 400),
+            PresetInfo(14010061, Triple("\u9ec4", "\u6708\u82f1", 4006), 14010050,100, 200),
             PresetInfo(14010070, Triple("\u5e9e","\u7edf", 2012)), PresetInfo(14010080, Triple("\u9a6c","\u8d85", 2035)),
-            PresetInfo(14010090, Triple("\u9ec4", "\u5fe0", 2014)), PresetInfo(14010101, Triple("\u9a6c","\u4e91\u7984", 4008), 14010040, 100, 400),
+            PresetInfo(14010090, Triple("\u9ec4", "\u5fe0", 2014)), PresetInfo(14010101, Triple("\u9a6c","\u4e91\u7984", 4008), 14010040, 100, 200),
             PresetInfo(14010110, Triple("\u9b4f", "\u5ef6", 2032)), PresetInfo(14010121, Triple("\u5173", "\u94f6\u5c4f", 4001), 0,200, 600),
             PresetInfo(14010130, Triple("\u738b", "\u5e73", 2022)), PresetInfo(14010140, Triple("\u5b5f", "\u83b7", 2031)),
+            PresetInfo(14010151, Triple("\u795d", "\u878d", 4011)),
 
             PresetInfo(14020010, Triple("\u5b59", "\u6743", 2046), 0,200, 600),
             PresetInfo(14020020, Triple("\u5b59", "\u7b56", 2003),14020041,200, 600),
-            PresetInfo(14020030, Triple("\u9646", "\u900a", 2005), 0,100, 200),
+            PresetInfo(14020030, Triple("\u9646", "\u900a", 2005), 0,100, 100),
             PresetInfo(14020041, Triple("\u5927", "\u4e54",4005), 14020020,100, 400),
             PresetInfo(14020051, Triple("\u5c0f", "\u4e54",4004), 14020060,100, 400),
             PresetInfo(14020060, Triple("\u5468", "\u745c", 2006), 14020051,500, 1000),
@@ -83,7 +84,8 @@ object CultivationSetting {
             PresetInfo(14030070, Triple("\u989c","\u826f",2042)), PresetInfo(14030080, Triple("\u6f58","\u51e4",2039)),
             PresetInfo(14030090, Triple("\u534e", "\u96c4",2037)), PresetInfo(14030100, Triple("\u6587","\u4e11",2043)),
             PresetInfo(14030111, Triple("\u5415", "\u73b2\u7eee", 4002), 0, 200, 600),
-            PresetInfo(14030120, Triple("\u5e9e", "\u5fb7",2038)), PresetInfo(14030130, Triple("\u5218", "\u8868",2036))
+            PresetInfo(14030120, Triple("\u5e9e", "\u5fb7",2038)), PresetInfo(14030130, Triple("\u5218", "\u8868",2036)),
+            PresetInfo(14030140, Triple("\u534e", "\u4f57",2048))
     )
 
     val SpecPersonFixedName:MutableList<Triple<Pair<String, String>, NameUtil.Gender, PersonFixedInfoMix>> = mutableListOf(

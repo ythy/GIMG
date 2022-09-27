@@ -60,13 +60,13 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:id="@+id/et_tianfu"
-                android:text="100"/>
+                android:text="40"/>
             <EditText
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:id="@+id/et_linggen"
-                android:text="100"/>
+                android:text="40"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
