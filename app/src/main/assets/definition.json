@@ -71,6 +71,14 @@
       "randomBasic": 5000,
       "qiBasic": 300,
       "color": 8
+    },
+    {
+      "id": "1000010",
+      "name": "无",
+      "type": 5,
+      "randomBasic": 500000,
+      "qiBasic": 5000,
+      "color": 9
     }
   ],
 
@@ -806,6 +814,18 @@
       "name": "\u6447\u5149\u7075\u6839",
       "property": [0,30,10,20,0,0,0,0],
       "type": 4
+    },
+    {
+      "id": "1010601",
+      "name": "\u54c8\u8fea\u65af\u7075\u6839",
+      "property": [200,100,0,100,0,0,0,0],
+      "type": 5
+    },
+    {
+      "id": "1010602",
+      "name": "\u96c5\u5178\u5a1c\u7075\u6839",
+      "property": [200,100,50,50,0,0,0,0],
+      "type": 5
     }
   ],
   "tianFuType": [
@@ -1321,6 +1341,17 @@
       "xiuwei": 30,
       "xiuweiMulti": 50,
       "property": [50,30,10,10,0,0,0,0],
+      "speedG1": 60
+    },
+    {
+      "id": "6000205",
+      "name": "剑",
+      "type": 1,
+      "nation": "6100002",
+      "lifetime": 50,
+      "success": 0,
+      "xiuwei": 100,
+      "property": [0,50,0,10,0,0,0,0],
       "speedG1": 60
     },
     {

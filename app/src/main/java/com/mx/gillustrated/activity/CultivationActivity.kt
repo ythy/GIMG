@@ -295,13 +295,16 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun temp(){
+        SpecPersonFirstName3.forEach { p->
+            val person = mPersons.map { it.value }.find { it.specIdentity == p.identity }
+            if(person != null){
+                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
+            }
+        }
         SpecPersonFirstName4.forEach { p->
             val person = mPersons.map { it.value }.find { it.specIdentity == p.identity }
             if(person != null){
-                person.name = p.name.first + p.name.second
-                person.lastName = p.name.first
-                if(p.profile > 0)
-                    person.profile = p.profile
+                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
             }
         }
     }

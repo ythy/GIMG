@@ -24,7 +24,7 @@ open class NationBak {
     }
 }
 
-//nationPost: 0 无，1 di，2 taiwei 3 shangshu 4 cishi
+//nationPost: 0 无，1 di，2 taiwei 3 shangshu 4 cishi 5 
 class Nation : NationBak(){
     var nationPersonList: ConcurrentHashMap<String, Person> = ConcurrentHashMap() //此值不保存到全局mNation里
     var totalTurn:Int = 0
