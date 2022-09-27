@@ -19,7 +19,6 @@ import butterknife.OnItemClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationNationAdapter
-import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.vo.cultivation.Nation
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap

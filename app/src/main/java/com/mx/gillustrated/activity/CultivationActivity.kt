@@ -43,6 +43,7 @@ import com.mx.gillustrated.component.CultivationSetting.getIdentityGender
 import com.mx.gillustrated.component.CultivationSetting.getIdentityIndex
 import com.mx.gillustrated.component.CultivationSetting.createIdentitySeq
 import com.mx.gillustrated.component.CultivationSetting.PresetInfo
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstNameWeight
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.service.StopService
 import com.mx.gillustrated.util.CultivationBakUtil
@@ -291,6 +292,17 @@ class CultivationActivity : BaseActivity() {
         isStop = false
     }
 
+    private fun temp(){
+        SpecPersonFirstName4.forEach { p->
+            val person = mPersons.map { it.value }.find { it.specIdentity == p.identity }
+            if(person != null){
+                person.name = p.name.first + p.name.second
+                person.lastName = p.name.first
+                if(p.profile > 0)
+                    person.profile = p.profile
+            }
+        }
+    }
 
     private fun init(json:String?){
         val out:String? = if(readRecord) json else null
@@ -325,7 +337,7 @@ class CultivationActivity : BaseActivity() {
                 }
             }else{
                 mNations.putAll(backup.nation.mapValues {
-                    it.value.toNation()
+                    it.value.toNation(mPersons)
                 })
             }
             mBattleRound = backup.battleRound ?: BattleRound()
@@ -373,6 +385,9 @@ class CultivationActivity : BaseActivity() {
                 }
                 R.id.menu_reset_wtf->{
                     resetCustomBonus()
+                }
+                R.id.menu_temp->{
+                    temp()
                 }
             }
             mDrawer.closeDrawer(GravityCompat.END)
@@ -668,6 +683,7 @@ class CultivationActivity : BaseActivity() {
         updateEnemys()
         updateBoss(currentXun)
         randomSpecialEvent(currentXun)
+        updateNationPost(currentXun)
     }
 
     //1旬一月
@@ -870,6 +886,41 @@ class CultivationActivity : BaseActivity() {
 
     }
 
+    fun updateNationPost(xun:Long){
+        if(xun % 60000 == 0L) {
+            mNations.forEach { (t: String, _: Nation) ->
+                updateNationPost(t)
+            }
+        }
+    }
+
+    fun updateNationPost(id:String):Nation?{
+        val mNation = mNations[id]!!
+        val ps = ConcurrentHashMap(mPersons.filter { it.value.nationId == mNation.id }).map { it.value }.toMutableList()
+        if (ps.size < 10)
+            return null
+        ps.forEach {
+            it.nationPost = 0
+        }
+        val emperor = ps.sortedWith(compareByDescending<Person>{ it.lingGenType.color }.thenByDescending { it.lifeTurn })[0]
+        emperor.nationPost = 1
+        mNation.emperor = emperor
+        ps.remove(emperor)
+        val taiwei = ps.sortedWith(compareByDescending<Person>{ CultivationHelper.getProperty(it)[2] }.thenByDescending { it.lifeTurn })[0]
+        taiwei.nationPost = 2
+        mNation.taiWei = taiwei
+        ps.remove(taiwei)
+        val shangshu = ps.sortedWith(compareByDescending<Person>{ CultivationHelper.getProperty(it)[3] }.thenByDescending { it.lifeTurn })[0]
+        shangshu.nationPost = 3
+        mNation.shangShu = shangshu
+        ps.remove(shangshu)
+        mNation.ciShi = ps.shuffled().subList(0, 4).map {
+            it.nationPost = 4
+            it
+        }.toMutableList()
+
+        return mNation
+    }
 
 
     // Every 10 Years
@@ -1110,18 +1161,12 @@ class CultivationActivity : BaseActivity() {
         for ( i in 0 until 4){
             SpecPersonFirstName.forEachIndexed { index, first ->
                 specPersonList.add(PresetInfo("110$i${createIdentitySeq(index)}1".toInt(), Pair(allianceList[i].name.slice(0 until 1), first),
-                        0,50, 20))
+                        0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second))
             }
         }
         fixedPersonGenerate(specPersonList, allianceList)
 
-        val addedPersons3 = fixedPersonGenerate(SpecPersonFirstName3.map { props->
-                    if( getIdentityIndex(props.identity) == 3){
-                        props.linggenWeight = 100
-                        props.tianfuWeight = 100
-                    }
-                    props
-                }.toMutableList(),
+        val addedPersons3 = fixedPersonGenerate(SpecPersonFirstName3,
                 mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id })
 
         val addedPersons4 = fixedPersonGenerate(SpecPersonFirstName4,
@@ -1155,6 +1200,9 @@ class CultivationActivity : BaseActivity() {
                     null, it.tianfuWeight, it.linggenWeight)
             if(person != null){
                 person.specIdentity = it.identity
+                if(it.profile > 0){
+                    person.profile = it.profile
+                }
                 result.add(Pair(person, it.partner))
             }
         }

@@ -16,9 +16,11 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.vo.cultivation.Nation
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
+import java.util.concurrent.ConcurrentHashMap
 
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
@@ -50,6 +52,11 @@ class FragmentDialogNation : DialogFragment() {
 
     @OnClick(R.id.btn_generate)
     fun onGenerateClickHandler(){
+        val nation = mContext.updateNationPost(mNation.id)
+        if(nation != null){
+            Toast.makeText(context, "已生成", Toast.LENGTH_SHORT).show()
+            updateView()
+        }
 
     }
 
@@ -114,11 +121,28 @@ class FragmentDialogNation : DialogFragment() {
 
     private fun updateView(){
         mPersonList.clear()
-        mPersonList.addAll(mContext.mPersons.map { it.value }.filter { it.nationId == mNation.id }.
+        mPersonList.addAll(mContext.mPersons.filter { it.value.nationId == mNation.id }.map { it.value }.
                 sortedWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId }))
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
         mDialogView.total.text = mPersonList.size.toString()
+        updatePost()
+    }
+
+    private fun updatePost(){
+        mDialogView.emperor.text = CultivationHelper.showing(mNation.emperor?.name ?: "")
+        mDialogView.taiWei.text = CultivationHelper.showing(mNation.taiWei?.name ?: "")
+        mDialogView.shangShu.text = CultivationHelper.showing(mNation.shangShu?.name ?: "")
+        updateCiShi()
+    }
+
+    private fun updateCiShi(){
+        mDialogView.ciShi.removeAllViews()
+        if(mNation.ciShi.isNotEmpty()){
+            mDialogView.measures.measure(0,0)
+            mDialogView.ciShi.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
+            mDialogView.ciShi.setDataProvider(mNation.ciShi.map { CultivationHelper.showing(it.name) }, null)
+        }
     }
 
     class DialogView constructor(view: View){
@@ -129,11 +153,23 @@ class FragmentDialogNation : DialogFragment() {
         @BindView(R.id.tv_total)
         lateinit var total:TextView
 
-        @BindView(R.id.tv_zhu)
-        lateinit var zhu:TextView
+        @BindView(R.id.tv_emperor)
+        lateinit var emperor:TextView
+
+        @BindView(R.id.tv_shang)
+        lateinit var shangShu:TextView
+
+        @BindView(R.id.tv_wei)
+        lateinit var taiWei:TextView
 
         @BindView(R.id.lv_person)
         lateinit var persons:ListView
+
+        @BindView(R.id.ll_cishi)
+        lateinit var ciShi: TextViewBox
+
+        @BindView(R.id.ll_parent_measure)
+        lateinit var measures:LinearLayout
 
         init {
             ButterKnife.bind(this, view)

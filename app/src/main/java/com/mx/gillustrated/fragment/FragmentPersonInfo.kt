@@ -13,6 +13,10 @@ import butterknife.OnClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName3
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName4
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstNameWeight
 import com.mx.gillustrated.dialog.FragmentDialogPerson
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
@@ -93,7 +97,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
     @OnClick(R.id.btn_props)
     fun onPropsClickHandler(){
-        CultivationHelper.updatePersonInborn(mPerson, etLingGen.text.toString().toInt(), etTianFu.text.toString().toInt())
+        CultivationHelper.updatePersonInborn(mPerson, etTianFu.text.toString().toInt(), etLingGen.text.toString().toInt())
         mCallback.update(1)
         Toast.makeText(context, "重置成功", Toast.LENGTH_SHORT).show()
     }
@@ -163,6 +167,19 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         mSwitchSingled.isChecked = mPerson.singled
         mSwitchDink.isChecked = mPerson.dink
         etProfile.setText(mPerson.profile.toString())
+        if(mPerson.specIdentity > 0){
+            val persons = mutableListOf<CultivationSetting.PresetInfo>()
+            persons.addAll(SpecPersonFirstName3)
+            persons.addAll(SpecPersonFirstName4)
+            val spec = persons.find { it.identity == mPerson.specIdentity }
+            if(spec == null){
+                etTianFu.setText(SpecPersonFirstNameWeight.first.toString())
+                etLingGen.setText(SpecPersonFirstNameWeight.second.toString())
+            }else{
+                etTianFu.setText(spec.tianfuWeight.toString())
+                etLingGen.setText(spec.linggenWeight.toString())
+            }
+        }
         updateView()
     }
 

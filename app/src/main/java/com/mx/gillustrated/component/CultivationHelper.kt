@@ -336,7 +336,7 @@ object CultivationHelper {
         return profile
     }
 
-    fun updatePersonInborn(person: Person, lingGenWeight: Int = 1, tianFuWeight: Int = 1){
+    fun updatePersonInborn(person: Person, tianFuWeight: Int = 1, lingGenWeight: Int = 1){
         val lingGen = getLingGen(null, null, lingGenWeight)
         val tianFus = getTianFu(null, null, tianFuWeight)
         person.lingGenType = lingGen.first

@@ -10,4 +10,8 @@
     <string name="cultivation_save">Save</string>
     <string name="cultivation_stop">Stop</string>
     <string name="cultivation_start">Run</string>
+    <string name="cultivation_title_emperor">emperor:</string>
+    <string name="cultivation_title_taiwei">[TaiWei:</string>
+    <string name="cultivation_title_shangshu">[ShangShu:</string>
+    <string name="cultivation_title_cishi">CiShi:</string>
 </resources>

@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/group11" android:checkableBehavior="single">
         <item
             android:id="@+id/menu_reset"
             android:title="reset"/>
         <item
             android:id="@+id/menu_reset_wtf"
             android:title="resetWTF"/>
+
+    </group>
+    <group android:id="@+id/group12" android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_temp"
+            android:title="temp"/>
     </group>
 </menu>

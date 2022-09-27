@@ -61,4 +61,8 @@
     <string name="cultivation_save">保存</string>
     <string name="cultivation_stop">暂停</string>
     <string name="cultivation_start">开始</string>
+    <string name="cultivation_title_emperor">皇帝:</string>
+    <string name="cultivation_title_taiwei">[太尉:</string>
+    <string name="cultivation_title_shangshu">[尚书:</string>
+    <string name="cultivation_title_cishi">刺史:</string>
 </resources>
