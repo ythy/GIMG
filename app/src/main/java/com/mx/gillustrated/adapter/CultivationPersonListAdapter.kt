@@ -1,6 +1,7 @@
 package com.mx.gillustrated.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +13,10 @@ import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
+import com.mx.gillustrated.component.CultivationSetting.PostColors
 import com.mx.gillustrated.vo.cultivation.Person
 
-class CultivationPersonListAdapter constructor(context: Context, private val list: MutableList<Person>) : BaseAdapter() {
+class CultivationPersonListAdapter constructor(private val context: Context, private val list: MutableList<Person>) : BaseAdapter() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
     private val nation = CultivationHelper.mConfig.nation
@@ -53,6 +55,14 @@ class CultivationPersonListAdapter constructor(context: Context, private val lis
         component.lingGen.text = CultivationHelper.showing(person.lingGenName)
         component.lingGen.setTextColor(Color.parseColor(CommonColors[person.lingGenType.color]))
         component.alliance.text = CultivationHelper.showing("${nation.find { it.id == person.nationId }?.name}-${person.allianceName}")
+
+        if(person.nationPost > 0){
+            component.name.background = context.getDrawable(R.drawable.box_bottom)
+            component.name.backgroundTintList = ColorStateList.valueOf(Color.parseColor(PostColors[person.nationPost - 1]))
+        }else{
+            component.name.background = null
+            component.name.backgroundTintList = null
+        }
 
         return convertView!!
     }

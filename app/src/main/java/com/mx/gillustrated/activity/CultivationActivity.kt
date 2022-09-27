@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -52,6 +53,7 @@ import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
 import java.io.IOException
+import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.*
@@ -902,15 +904,15 @@ class CultivationActivity : BaseActivity() {
         ps.forEach {
             it.nationPost = 0
         }
-        val emperor = ps.sortedWith(compareByDescending<Person>{ it.lingGenType.color }.thenByDescending { it.lifeTurn })[0]
+        val emperor = ps.sortedWith(compareByDescending<Person>{ it.lingGenType.color }.thenByDescending { it.tianfus.sumBy { s->s.weight } })[0]
         emperor.nationPost = 1
         mNation.emperor = emperor
         ps.remove(emperor)
-        val taiwei = ps.sortedWith(compareByDescending<Person>{ CultivationHelper.getProperty(it)[2] }.thenByDescending { it.lifeTurn })[0]
+        val taiwei = ps.sortedWith(compareByDescending<Person>{ CultivationHelper.getProperty(it)[2] }.thenByDescending { it.tianfus.sumBy { s->s.weight } })[0]
         taiwei.nationPost = 2
         mNation.taiWei = taiwei
         ps.remove(taiwei)
-        val shangshu = ps.sortedWith(compareByDescending<Person>{ CultivationHelper.getProperty(it)[3] }.thenByDescending { it.lifeTurn })[0]
+        val shangshu = ps.sortedWith(compareByDescending<Person>{ CultivationHelper.getProperty(it)[3] }.thenByDescending { it.tianfus.sumBy { s->s.weight } })[0]
         shangshu.nationPost = 3
         mNation.shangShu = shangshu
         ps.remove(shangshu)
@@ -1588,7 +1590,12 @@ class CultivationActivity : BaseActivity() {
     fun showToast(content:String){
         if(isStop)
             return
-        Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
+        try {
+            Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
+        }catch (e:Exception){
+            Log.e("CultivationActivity", e.message)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -369,13 +369,17 @@ object CultivationHelper {
     }
 
     //0 ~ 5
+    //20220927 nation add bonus：emperor attack + 100 hp + 200, taiwei hp + 200, shangshu attack + 100
     fun getProperty(person: Person):MutableList<Int>{
         val property = person.extraProperty.mapIndexed { index, it ->
             it + person.allianceProperty[index] + person.equipmentProperty[index]
         }
+        val nationAttack = if(person.nationPost == 1) 100 else if(person.nationPost == 3 ) 100 else 0
+        val nationHP = if(person.nationPost == 1) 200 else if(person.nationPost == 2 ) 200 else 0
+
         val jingJieLevel = getJingJieLevel(person.jingJieId)
-        val extraHP = jingJieLevel.first + 10 * jingJieLevel.second + property[0] // 0 ~ 70 + 80
-        val attack =  5 * jingJieLevel.second +  property[1] // yuan 2, hua 4, he 4,di 5, tai 6, zhun 7, di 8 // 0 ~ 40
+        val extraHP = jingJieLevel.first + 10 * jingJieLevel.second + property[0] + nationHP// 0 ~ 70 + 80
+        val attack =  5 * jingJieLevel.second +  property[1] + nationAttack// yuan 2, hua 4, he 4,di 5, tai 6, zhun 7, di 8 // 0 ~ 40
         val defence = 5 * jingJieLevel.second +  property[2] // 0 ~ 40
         val speed =   5 * jingJieLevel.second + property[3] // 0 ~ 40
 
@@ -428,6 +432,7 @@ object CultivationHelper {
         }
     }
 
+    //20220927 added nation bonus: cishi + 100
     fun getXiuweiGrow(person:Person, allAllianceMap:ConcurrentHashMap<String, Alliance>):Int{
         val alliance = allAllianceMap[person.allianceId] ?: return 0
         synchronized(person){
@@ -439,7 +444,11 @@ object CultivationHelper {
                 person.allianceXiuwei += 20
             }
         }
-        val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei
+        var postXiuwei = 0
+        if(person.nationPost == 4){
+            postXiuwei += 100
+        }
+        val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + postXiuwei
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
     }

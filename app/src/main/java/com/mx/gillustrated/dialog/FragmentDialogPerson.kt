@@ -1,6 +1,7 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
 import android.os.*
@@ -21,6 +22,7 @@ import com.mx.gillustrated.adapter.PersonPagerAdapter
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.fragment.*
 import com.mx.gillustrated.vo.cultivation.Person
@@ -235,6 +237,13 @@ class FragmentDialogPerson : DialogFragment() {
 
     fun setProfile(){
         val person = mPerson
+        if(person.nationPost > 0){
+            mDialogView.profileBorder.background = mContext.getDrawable(R.drawable.box_back)
+            mDialogView.profileBorder.backgroundTintList = ColorStateList.valueOf(Color.parseColor(CultivationSetting.PostColors[person.nationPost - 1]))
+        }else{
+            mDialogView.profileBorder.background = null
+            mDialogView.profileBorder.backgroundTintList = null
+        }
         try {
             val imageDir = File(Environment.getExternalStorageDirectory(),
                     MConfig.SD_CULTIVATION_HEADER_PATH + "/" + person.gender)
@@ -425,6 +434,10 @@ class FragmentDialogPerson : DialogFragment() {
 
         @BindView(R.id.ll_parent_measure)
         lateinit var measures:LinearLayout
+
+        @BindView(R.id.ll_profile)
+        lateinit var profileBorder:LinearLayout
+
 
         init {
             ButterKnife.bind(this, view)
