@@ -369,13 +369,13 @@ object CultivationHelper {
     }
 
     //0 ~ 5
-    //20220927 nation add bonus：emperor attack + 100 hp + 200, taiwei hp + 200, shangshu attack + 100
+    //20220927 nation add bonus：emperor attack + 100 hp + 200, taiwei hp + 200, shangshu attack + 100, cishi hp + 100, duwei attack + 50
     fun getProperty(person: Person):MutableList<Int>{
         val property = person.extraProperty.mapIndexed { index, it ->
             it + person.allianceProperty[index] + person.equipmentProperty[index]
         }
-        val nationAttack = if(person.nationPost == 1) 100 else if(person.nationPost == 3 ) 100 else 0
-        val nationHP = if(person.nationPost == 1) 200 else if(person.nationPost == 2 ) 200 else 0
+        val nationAttack = if(person.nationPost == 1) 100 else if(person.nationPost == 3 ) 100 else if(person.nationPost == 5 ) 50 else 0
+        val nationHP = if(person.nationPost == 1) 200 else if(person.nationPost == 2 ) 200 else if(person.nationPost == 4 ) 100 else 0
 
         val jingJieLevel = getJingJieLevel(person.jingJieId)
         val extraHP = jingJieLevel.first + 10 * jingJieLevel.second + property[0] + nationHP// 0 ~ 70 + 80
@@ -432,7 +432,7 @@ object CultivationHelper {
         }
     }
 
-    //20220927 added nation bonus: cishi + 100
+    //20220927 added nation bonus: cishi + 100, duwei + 50
     fun getXiuweiGrow(person:Person, allAllianceMap:ConcurrentHashMap<String, Alliance>):Int{
         val alliance = allAllianceMap[person.allianceId] ?: return 0
         synchronized(person){
@@ -447,6 +447,8 @@ object CultivationHelper {
         var postXiuwei = 0
         if(person.nationPost == 4){
             postXiuwei += 100
+        }else if(person.nationPost == 5){
+            postXiuwei += 50
         }
         val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + postXiuwei
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100

@@ -60,19 +60,25 @@ class FragmentDialogNation : DialogFragment() {
 
     }
 
+    @OnClick(R.id.tv_emperor)
+    fun onEmperorClickHandler(){
+        showPersonInfo(mNation.emperor?.id)
+    }
+
+    @OnClick(R.id.tv_wei)
+    fun onTaiweiClickHandler(){
+        showPersonInfo(mNation.taiWei?.id)
+    }
+
+    @OnClick(R.id.tv_shang)
+    fun onShangshuClickHandler(){
+        showPersonInfo(mNation.shangShu?.id)
+    }
 
 
     @OnItemClick(R.id.lv_person)
     fun onItemClick(position:Int){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogPerson.newInstance()
-        newFragment.isCancelable = false
-
-        val bundle = Bundle()
-        bundle.putString("id", mPersonList[position].id)
-        newFragment.arguments = bundle
-        newFragment.show(ft, "dialog_person_info")
+        showPersonInfo(mPersonList[position].id)
     }
 
     private lateinit var mNation: Nation
@@ -134,6 +140,7 @@ class FragmentDialogNation : DialogFragment() {
         mDialogView.taiWei.text = CultivationHelper.showing(mNation.taiWei?.name ?: "")
         mDialogView.shangShu.text = CultivationHelper.showing(mNation.shangShu?.name ?: "")
         updateCiShi()
+        updateduWei()
     }
 
     private fun updateCiShi(){
@@ -141,8 +148,41 @@ class FragmentDialogNation : DialogFragment() {
         if(mNation.ciShi.isNotEmpty()){
             mDialogView.measures.measure(0,0)
             mDialogView.ciShi.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
+            mDialogView.ciShi.setCallback(object : TextViewBox.Callback {
+                override fun onClick(index: Int) {
+                    showPersonInfo(mNation.ciShi[index].id)
+                }
+            })
             mDialogView.ciShi.setDataProvider(mNation.ciShi.map { CultivationHelper.showing(it.name) }, null)
         }
+    }
+
+    private fun updateduWei(){
+        mDialogView.duWei.removeAllViews()
+        if(mNation.duWei.isNotEmpty()){
+            mDialogView.measures.measure(0,0)
+            mDialogView.duWei.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
+            mDialogView.duWei.setCallback(object : TextViewBox.Callback {
+                override fun onClick(index: Int) {
+                    showPersonInfo(mNation.duWei[index].id)
+                }
+            })
+            mDialogView.duWei.setDataProvider(mNation.duWei.map { CultivationHelper.showing(it.name) }, null)
+        }
+    }
+
+    private fun showPersonInfo(id:String?){
+        if(id == null)
+            return
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogPerson.newInstance()
+        newFragment.isCancelable = false
+
+        val bundle = Bundle()
+        bundle.putString("id", id)
+        newFragment.arguments = bundle
+        newFragment.show(ft, "dialog_person_info")
     }
 
     class DialogView constructor(view: View){
@@ -167,6 +207,9 @@ class FragmentDialogNation : DialogFragment() {
 
         @BindView(R.id.ll_cishi)
         lateinit var ciShi: TextViewBox
+
+        @BindView(R.id.ll_duwei)
+        lateinit var duWei: TextViewBox
 
         @BindView(R.id.ll_parent_measure)
         lateinit var measures:LinearLayout

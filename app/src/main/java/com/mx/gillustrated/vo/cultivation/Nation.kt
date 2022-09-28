@@ -8,6 +8,7 @@ open class NationBak {
     lateinit var name:String
     var postTop:Triple<String?, String?, String?>? = null// 1 2 3
     var postCishi:List<String> = listOf()
+    var postDuwei:List<String> = listOf()
 
     fun toNation(personMap: ConcurrentHashMap<String, Person>):Nation{
         val nation = Nation()
@@ -20,11 +21,12 @@ open class NationBak {
         if(this.postTop?.third != null)
             nation.shangShu = personMap[this.postTop!!.third.toString()]
         nation.ciShi = postCishi.mapNotNull { personMap[it] }.toMutableList()
+        nation.duWei = postDuwei.mapNotNull { personMap[it] }.toMutableList()
         return nation
     }
 }
 
-//nationPost: 0 无，1 di，2 taiwei 3 shangshu 4 cishi 5 
+//nationPost: 0 无，1 di，2 taiwei 3 shangshu 4 cishi 5 douwei
 class Nation : NationBak(){
     var nationPersonList: ConcurrentHashMap<String, Person> = ConcurrentHashMap() //此值不保存到全局mNation里
     var totalTurn:Int = 0
@@ -32,6 +34,7 @@ class Nation : NationBak(){
     var taiWei:Person? = null
     var shangShu:Person? = null
     var ciShi:MutableList<Person> = mutableListOf()
+    var duWei:MutableList<Person> = mutableListOf()
 
     fun toNationBak():NationBak{
         val nation = NationBak()
@@ -39,6 +42,7 @@ class Nation : NationBak(){
         nation.name = this.name
         nation.postTop = Triple(this.emperor?.id, this.taiWei?.id, this.shangShu?.id)
         nation.postCishi = this.ciShi.map { it.id }
+        nation.postDuwei = this.duWei.map { it.id }
         return nation
     }
 
@@ -50,6 +54,7 @@ class Nation : NationBak(){
         nation.taiWei = this.taiWei
         nation.shangShu = this.shangShu
         nation.ciShi = this.ciShi.toMutableList()
+        nation.duWei = this.duWei.toMutableList()
         return nation
     }
 

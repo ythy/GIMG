@@ -88,10 +88,6 @@ object CultivationSetting {
             PresetInfo(14030140, Triple("\u534e", "\u4f57",2048))
     )
 
-    val SpecPersonFixedName:MutableList<Triple<Pair<String, String>, NameUtil.Gender, PersonFixedInfoMix>> = mutableListOf(
-           Triple(Pair("\u6bdb", "\u6b23"), NameUtil.Gender.Male, PersonFixedInfoMix("1000008", mutableListOf("4000109", "4000209", "4000305", "4000407", "4000506")))
-    )
-
     //1300 0010
     fun getIdentityIndex(identity:Int):Int{
         return (identity / 10000) % 10

@@ -26,7 +26,6 @@ import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName3
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFixedName
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
 import com.mx.gillustrated.component.CultivationHelper.getPersonBasicString
 import com.mx.gillustrated.component.CultivationHelper.mBattleRound
@@ -295,18 +294,18 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun temp(){
-        SpecPersonFirstName3.forEach { p->
-            val person = mPersons.map { it.value }.find { it.specIdentity == p.identity }
-            if(person != null){
-                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
-            }
-        }
-        SpecPersonFirstName4.forEach { p->
-            val person = mPersons.map { it.value }.find { it.specIdentity == p.identity }
-            if(person != null){
-                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
-            }
-        }
+//        SpecPersonFirstName3.forEach { p->
+//            val person = mPersons.map { it.value }.find { it.specIdentity == p.identity }
+//            if(person != null){
+//                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
+//            }
+//        }
+//        SpecPersonFirstName4.forEach { p->
+//            val person = mPersons.map { it.value }.find { it.specIdentity == p.identity }
+//            if(person != null){
+//                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
+//            }
+//        }
     }
 
     private fun init(json:String?){
@@ -907,20 +906,31 @@ class CultivationActivity : BaseActivity() {
         ps.forEach {
             it.nationPost = 0
         }
-        val emperor = ps.sortedWith(compareByDescending<Person>{ it.lingGenType.color }.thenByDescending { it.tianfus.sumBy { s->s.weight } })[0]
+        val emperor = ps.sortedWith(compareByDescending<Person>{ it.lingGenType.color }
+                .thenByDescending { it.tianfus.sumBy { s->s.weight } }
+                .thenByDescending { it.jingJieId })[0]
         emperor.nationPost = 1
         mNation.emperor = emperor
         ps.remove(emperor)
-        val taiwei = ps.sortedWith(compareByDescending<Person>{ CultivationHelper.getProperty(it)[2] }.thenByDescending { it.tianfus.sumBy { s->s.weight } })[0]
+        val taiwei = ps.sortedWith(compareByDescending<Person>{ it.tianfus.sumBy { s->s.weight } }
+                .thenByDescending { it.jingJieId })[0]
         taiwei.nationPost = 2
         mNation.taiWei = taiwei
         ps.remove(taiwei)
-        val shangshu = ps.sortedWith(compareByDescending<Person>{ CultivationHelper.getProperty(it)[3] }.thenByDescending { it.tianfus.sumBy { s->s.weight } })[0]
+        val shangshu = ps.sortedWith(compareByDescending<Person>{ it.tianfus.sumBy { s->s.rarity } }
+                .thenByDescending { it.jingJieId })[0]
         shangshu.nationPost = 3
         mNation.shangShu = shangshu
         ps.remove(shangshu)
         mNation.ciShi = ps.shuffled().subList(0, 4).map {
             it.nationPost = 4
+            it
+        }.toMutableList()
+        ps.removeIf { mNation.ciShi.find { f-> f.id == it.id } != null }
+
+        val endIndex = Math.min(4, ps.size)
+        mNation.duWei = ps.shuffled().subList(0, endIndex).map {
+            it.nationPost = 5
             it
         }.toMutableList()
 
@@ -1176,14 +1186,6 @@ class CultivationActivity : BaseActivity() {
 
         val addedPersons4 = fixedPersonGenerate(SpecPersonFirstName4,
                 mAlliance.map { it.value }.filter { it.type == 4 }.sortedBy { it.id })
-
-        val personList = Collections.synchronizedList(mPersons.map { m-> m.value })
-        SpecPersonFixedName.forEach {
-            if(personList.find { p-> p.name == it.first.first + it.first.second } == null){
-                val person = CultivationHelper.getPersonInfo(it.first, it.second, 100, null, false, it.third)
-                combinedPersonRelationship(person)
-            }
-        }
 
         val addedPersons = mutableListOf<Pair<Person, Int>>()
         addedPersons.addAll(addedPersons3)
