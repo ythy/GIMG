@@ -81,8 +81,8 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
                 partner.partner = mPerson.id
                 partner.partnerName = mPerson.name
             }
-            CultivationHelper.addPersonEvent(partner, "${CultivationHelper.mCurrentXun / 12}年 与${mPerson.name}\u7ed3\u4f34")
-            CultivationHelper.addPersonEvent(mPerson, "${CultivationHelper.mCurrentXun / 12}年 与${partner.name}\u7ed3\u4f34")
+            CultivationHelper.addPersonEvent(partner, "与${mPerson.name}\u7ed3\u4f34")
+            CultivationHelper.addPersonEvent(mPerson, "与${partner.name}\u7ed3\u4f34")
             CultivationHelper.writeHistory("${CultivationHelper.getPersonBasicString(partner)} 与 ${CultivationHelper.getPersonBasicString(mPerson)} \u7ed3\u4f34了")
             updateView()
         }

@@ -6,7 +6,7 @@ import com.mx.gillustrated.vo.cultivation.Person
 object CultivationSetting {
 
     val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA", "#C18135", "#A5529E")
-    val PostColors = arrayOf("#E2D223", "#B72962", "#2972B7", "#29B779", "#825103")
+    val PostColors = arrayOf("#E2D223", "#BE0012", "#0272E4", "#12A703", "#EF7362")
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
     const val SP_JIE_TURN = 81

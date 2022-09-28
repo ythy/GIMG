@@ -1201,26 +1201,38 @@ class CultivationActivity : BaseActivity() {
         }
         fixedPersonGenerate(specPersonList, allianceList)
 
-        val addedPersons3 = fixedPersonGenerate(SpecPersonFirstName3,
+        fixedPersonGenerate(SpecPersonFirstName3,
                 mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id })
-
-        val addedPersons4 = fixedPersonGenerate(SpecPersonFirstName4,
+        fixedPersonGenerate(SpecPersonFirstName4,
                 mAlliance.map { it.value }.filter { it.type == 4 }.sortedBy { it.id })
 
-        val addedPersons = mutableListOf<Pair<Person, Int>>()
-        addedPersons.addAll(addedPersons3)
-        addedPersons.addAll(addedPersons4)
-        addedPersons.forEach { p ->
-            if (p.second > 0 ){
-                val partner = mPersons.map { it.value }.find { it.specIdentity == p.second }
-                if(partner != null && partner.partner == null ){
-                    CultivationHelper.createPartner(p.first, partner)
+
+        val specPersons = mutableListOf<PresetInfo>()
+        specPersons.addAll(SpecPersonFirstName3)
+        specPersons.addAll(SpecPersonFirstName4)
+        specPersons.forEach { p ->
+            if(p.partner > 0){
+                val current = mPersons.map { it.value }.find { it.specIdentity == p.identity }
+                if(current != null && current.partner == null ){
+                    val partner = mPersons.map { it.value }.find { it.specIdentity == p.partner }
+                    if(partner != null){
+                        current.partner = partner.id
+                        current.partnerName = partner.name
+                        if(partner.partner == null){
+                            partner.partner = current.id
+                            partner.partnerName = current.name
+                        }
+                        addPersonEvent(partner, "与${current.name}\u7ed3\u4f34")
+                        addPersonEvent(current, "与${partner.name}\u7ed3\u4f34")
+                        writeHistory("${getPersonBasicString(partner)} 与 ${getPersonBasicString(current)} \u7ed3\u4f34了")
+                    }
                 }
             }
         }
+
     }
 
-    private fun fixedPersonGenerate(specPersonList:MutableList<PresetInfo>, allianceList:List<Alliance>, parent: Pair<Person, Person>? = null):MutableList<Pair<Person, Int>>{
+    private fun fixedPersonGenerate(specPersonList:MutableList<PresetInfo>, allianceList:List<Alliance>):MutableList<Pair<Person, Int>>{
         val result = mutableListOf<Pair<Person, Int>>()
         specPersonList.forEach {
             val person = fixedSinglePersonGenerate(it.name, getIdentityGender(it.identity), allianceList[getIdentityIndex(it.identity)],
