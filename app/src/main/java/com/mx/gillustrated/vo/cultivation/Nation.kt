@@ -19,11 +19,11 @@ open class NationBak {
 class Nation : NationBak(){
     var nationPersonList: ConcurrentHashMap<String, Person> = ConcurrentHashMap() //此值不保存到全局mNation里
     var totalTurn:Int = 0
-    var emperor:Person? = null
-    var taiWei:Person? = null
-    var shangShu:Person? = null
-    var ciShi:MutableList<Person> = mutableListOf()
-    var duWei:MutableList<Person> = mutableListOf()
+    var emperor:String? = null
+    var taiWei:String? = null
+    var shangShu:String? = null
+    var ciShi:MutableList<String> = mutableListOf()
+    var duWei:MutableList<String> = mutableListOf()
 
     fun toNationBak():NationBak{
         val nation = NationBak()

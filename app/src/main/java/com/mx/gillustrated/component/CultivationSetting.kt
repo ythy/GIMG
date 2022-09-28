@@ -18,18 +18,15 @@ object CultivationSetting {
 
     //13 00 001 0
     val SpecPersonFirstName3:MutableList<PresetInfo> = mutableListOf(
-            PresetInfo(13010011, Pair("\u9080","\u6708"),0, 100, 100),PresetInfo(13010021, Pair("\u601c","\u661f"),0, 100, 100),
-            PresetInfo(13010031, Pair("\u82cf","\u6a31"),0, 100, 100), PresetInfo(13010041, Pair("\u674e","\u7ea2\u8896"),13010050, 100, 100),
-            PresetInfo(13010050, Pair("\u695a","\u7559\u9999"),13010041),PresetInfo(13010061, Pair("\u98ce","\u56db\u5a18"),0, 100, 200),
-            PresetInfo(13010070, Pair("\u674e","\u5bfb\u6b22"),0, 200, 600), PresetInfo(13010081, Pair("\u5b8b","\u751c\u513f"),13010050),
-            PresetInfo(13010090, Pair("\u963f","\u98de"),0,100,100), PresetInfo(13010100, Pair("\u897f\u95e8","\u5439\u96ea"),0,100,100),
+            PresetInfo(13010031, Pair("\u82cf","\u6a31"),0, 100, 100),
+            PresetInfo(13010041, Pair("\u674e","\u7ea2\u8896"),0, 100, 100),
+            PresetInfo(13010070, Pair("\u674e","\u5bfb\u6b22"),0, 200, 600),
 
-            PresetInfo(13020011, Pair("\u9ec4","\u84c9"),0, 200, 600),PresetInfo(13020021, Pair("\u8d75","\u654f"),0, 200, 600),
-            PresetInfo(13020031, Pair("\u5468","\u82b7\u82e5"),0, 200, 600), PresetInfo(13020040, Pair("\u8427","\u5cf0"),13020081),
-            PresetInfo(13020051, Pair("\u5c0f","\u662d"),0, 100, 200), PresetInfo(13020061, Pair("\u6728","\u5a49\u6e05"),13020100),
-            PresetInfo(13020070, Pair("\u97e6","\u5c0f\u5b9d")), PresetInfo(13020081, Pair("\u963f","\u6731"), 13020040),
-            PresetInfo(13020091, Pair("\u4efb","\u76c8\u76c8"), 0, 200, 600), PresetInfo(13020100, Pair("\u6bb5","\u8a89"),13020061),
-            PresetInfo(13020110, Pair("\u5f20","\u4e09\u4e30"),0, 200, 600)
+            PresetInfo(13020011, Pair("\u9ec4","\u84c9"),0, 200, 600),
+            PresetInfo(13020021, Pair("\u8d75","\u654f"),0, 200, 600),
+            PresetInfo(13020031, Pair("\u5468","\u82b7\u82e5"),0, 200, 600),
+            PresetInfo(13020051, Pair("\u5c0f","\u662d"),0, 100, 200),
+            PresetInfo(13020091, Pair("\u4efb","\u76c8\u76c8"), 0, 200, 600)
     )
 
     val SpecPersonFirstName4:MutableList<PresetInfo> = mutableListOf(

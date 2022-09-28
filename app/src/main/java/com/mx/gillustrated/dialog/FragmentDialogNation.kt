@@ -62,17 +62,17 @@ class FragmentDialogNation : DialogFragment() {
 
     @OnClick(R.id.tv_emperor)
     fun onEmperorClickHandler(){
-        showPersonInfo(mNation.emperor?.id)
+        showPersonInfo(mNation.emperor)
     }
 
     @OnClick(R.id.tv_wei)
     fun onTaiweiClickHandler(){
-        showPersonInfo(mNation.taiWei?.id)
+        showPersonInfo(mNation.taiWei)
     }
 
     @OnClick(R.id.tv_shang)
     fun onShangshuClickHandler(){
-        showPersonInfo(mNation.shangShu?.id)
+        showPersonInfo(mNation.shangShu)
     }
 
 
@@ -84,7 +84,7 @@ class FragmentDialogNation : DialogFragment() {
     private lateinit var mNation: Nation
     private var mPersonList = mutableListOf<Person>()
     lateinit var mContext:CultivationActivity
-    lateinit var mDialogView:DialogView
+    private lateinit var mDialogView:DialogView
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
@@ -136,9 +136,9 @@ class FragmentDialogNation : DialogFragment() {
     }
 
     private fun updatePost(){
-        mDialogView.emperor.text = CultivationHelper.showing(mNation.emperor?.name ?: "")
-        mDialogView.taiWei.text = CultivationHelper.showing(mNation.taiWei?.name ?: "")
-        mDialogView.shangShu.text = CultivationHelper.showing(mNation.shangShu?.name ?: "")
+        mDialogView.emperor.text = CultivationHelper.showing( mContext.getOnlinePersonDetail(mNation.emperor)?.name ?: "")
+        mDialogView.taiWei.text = CultivationHelper.showing(mContext.getOnlinePersonDetail(mNation.taiWei)?.name ?: "")
+        mDialogView.shangShu.text = CultivationHelper.showing(mContext.getOnlinePersonDetail(mNation.shangShu)?.name ?: "")
         updateCiShi()
         updateduWei()
     }
@@ -148,12 +148,13 @@ class FragmentDialogNation : DialogFragment() {
         if(mNation.ciShi.isNotEmpty()){
             mDialogView.measures.measure(0,0)
             mDialogView.ciShi.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
+            val list = mNation.ciShi.mapNotNull { mContext.getOnlinePersonDetail(it) }
             mDialogView.ciShi.setCallback(object : TextViewBox.Callback {
                 override fun onClick(index: Int) {
-                    showPersonInfo(mNation.ciShi[index].id)
+                    showPersonInfo(list[index].id)
                 }
             })
-            mDialogView.ciShi.setDataProvider(mNation.ciShi.map { CultivationHelper.showing(it.name) }, null)
+            mDialogView.ciShi.setDataProvider(list.map { CultivationHelper.showing(it.name) }, null)
         }
     }
 
@@ -162,12 +163,13 @@ class FragmentDialogNation : DialogFragment() {
         if(mNation.duWei.isNotEmpty()){
             mDialogView.measures.measure(0,0)
             mDialogView.duWei.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
+            val list = mNation.duWei.mapNotNull { mContext.getOnlinePersonDetail(it) }
             mDialogView.duWei.setCallback(object : TextViewBox.Callback {
                 override fun onClick(index: Int) {
-                    showPersonInfo(mNation.duWei[index].id)
+                    showPersonInfo(list[index].id)
                 }
             })
-            mDialogView.duWei.setDataProvider(mNation.duWei.map { CultivationHelper.showing(it.name) }, null)
+            mDialogView.duWei.setDataProvider(list.map { CultivationHelper.showing(it.name) }, null)
         }
     }
 

@@ -83,7 +83,7 @@ object CultivationEnemyHelper {
     }
 
     fun generateShadowQiu(alliance: Alliance): Person {
-        val person = CultivationHelper.getPersonInfo(Pair("\u7403\u7403", "(\u6eda\u5706)"), NameUtil.Gender.Female, 20000, null, false,
+        val person = CultivationHelper.getPersonInfo(Pair("\u7403\u7403", "(\u5706\u6eda\u6eda)"), NameUtil.Gender.Female, 20000, null, false,
                 CultivationSetting.PersonFixedInfoMix(null, null, 4000, 4000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8003002", "8004001"))//必
@@ -105,7 +105,7 @@ object CultivationEnemyHelper {
 
     fun generateYaoWang(alliance: Alliance): Person {
         val person = CultivationHelper.getPersonInfo(Pair("王", "一"), NameUtil.Gender.Female, 20000, null, false,
-                CultivationSetting.PersonFixedInfoMix(null, null, 6000, 6000))
+                CultivationSetting.PersonFixedInfoMix(null, null, 8000, 80000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.teji.addAll(listOf("8001005", "8001006", "8002009", "8003002", "8004002"))
         person.equipmentList.addAll(listOf(Triple("7002901", 0, ""), Triple("7003701", 0, "")))

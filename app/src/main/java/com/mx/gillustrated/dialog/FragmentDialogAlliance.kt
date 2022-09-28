@@ -16,6 +16,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Alliance
 import com.mx.gillustrated.vo.cultivation.Person
@@ -62,15 +63,7 @@ class FragmentDialogAlliance : DialogFragment() {
 
     @OnItemClick(R.id.lv_person)
     fun onItemClick(position:Int){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogPerson.newInstance()
-        newFragment.isCancelable = false
-
-        val bundle = Bundle()
-        bundle.putString("id", mPersonList[position].id)
-        newFragment.arguments = bundle
-        newFragment.show(ft, "dialog_person_info")
+        showPersonInfo(mPersonList[position].id)
     }
 
     lateinit var mAlliance: Alliance
@@ -129,11 +122,20 @@ class FragmentDialogAlliance : DialogFragment() {
             mDialogView.zhu.text = zhuName
         }
 
-        var speedString = ""
-        mAlliance.speedG1PersonList.forEach {
-            speedString += ( CultivationHelper.showing(it.value.name) ) + " "
+
+        mDialogView.speeds.removeAllViews()
+        val list = mAlliance.speedG1PersonList.mapNotNull { mContext.getOnlinePersonDetail(it.value.id) }
+        if(list.isNotEmpty()){
+            mDialogView.measures.measure(0,0)
+            mDialogView.speeds.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 20))
+
+            mDialogView.speeds.setCallback(object : TextViewBox.Callback {
+                override fun onClick(index: Int) {
+                    showPersonInfo(list[index].id)
+                }
+            })
+            mDialogView.speeds.setDataProvider(list.map { CultivationHelper.showing(it.name) }, null)
         }
-        mDialogView.speeds.text = speedString
 
         mPersonList.clear()
         mPersonList.addAll(mAlliance.personList.map { it.value }.toMutableList())
@@ -142,6 +144,20 @@ class FragmentDialogAlliance : DialogFragment() {
         mDialogView.persons.invalidateViews()
 
         mDialogView.total.text = mPersonList.size.toString()
+    }
+
+    private fun showPersonInfo(id:String?){
+        if(id == null)
+            return
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogPerson.newInstance()
+        newFragment.isCancelable = false
+
+        val bundle = Bundle()
+        bundle.putString("id", id)
+        newFragment.arguments = bundle
+        newFragment.show(ft, "dialog_person_info")
     }
 
     class DialogView constructor(view: View){
@@ -164,8 +180,11 @@ class FragmentDialogAlliance : DialogFragment() {
         @BindView(R.id.lv_person)
         lateinit var persons:ListView
 
-        @BindView(R.id.tv_speed_persons)
-        lateinit var speeds:TextView
+        @BindView(R.id.ll_speed)
+        lateinit var speeds:TextViewBox
+
+        @BindView(R.id.ll_parent_measure)
+        lateinit var measures:LinearLayout
 
         init {
             ButterKnife.bind(this, view)

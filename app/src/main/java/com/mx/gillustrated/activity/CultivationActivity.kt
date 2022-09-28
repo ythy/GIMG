@@ -306,6 +306,18 @@ class CultivationActivity : BaseActivity() {
 //                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
 //            }
 //        }
+        val specPersons = mutableListOf<PresetInfo>()
+        specPersons.addAll(SpecPersonFirstName3)
+        specPersons.addAll(SpecPersonFirstName4)
+//        specPersons.forEach { p ->
+//            val current = mPersons.map { it.value }.find { it.specIdentity == p.identity }
+//        }
+
+        mPersons.map { it.value }.filter { it.allianceId == "6000402" || it.allianceId == "6000403" }.forEach {
+            if (specPersons.find { p-> p.identity == it.specIdentity} == null  ){
+               deadHandler(it, mCurrentXun)
+            }
+        }
     }
 
     private fun init(json:String?){
@@ -930,28 +942,28 @@ class CultivationActivity : BaseActivity() {
                 .thenByDescending { it.tianfus.sumBy { s->s.weight } }
                 .thenByDescending { it.jingJieId })[0]
         emperor.nationPost = 1
-        mNation.emperor = emperor
+        mNation.emperor = emperor.id
         ps.remove(emperor)
         val taiwei = ps.sortedWith(compareByDescending<Person>{ it.tianfus.sumBy { s->s.weight } }
                 .thenByDescending { it.jingJieId })[0]
         taiwei.nationPost = 2
-        mNation.taiWei = taiwei
+        mNation.taiWei = taiwei.id
         ps.remove(taiwei)
         val shangshu = ps.sortedWith(compareByDescending<Person>{ it.tianfus.sumBy { s->s.rarity } }
                 .thenByDescending { it.jingJieId })[0]
         shangshu.nationPost = 3
-        mNation.shangShu = shangshu
+        mNation.shangShu = shangshu.id
         ps.remove(shangshu)
         mNation.ciShi = ps.shuffled().subList(0, 4).map {
             it.nationPost = 4
-            it
+            it.id
         }.toMutableList()
-        ps.removeIf { mNation.ciShi.find { f-> f.id == it.id } != null }
+        ps.removeIf { mNation.ciShi.find { f-> f == it.id } != null }
 
         val endIndex = Math.min(4, ps.size)
         mNation.duWei = ps.shuffled().subList(0, endIndex).map {
             it.nationPost = 5
-            it
+            it.id
         }.toMutableList()
 
         return mNation
@@ -1535,7 +1547,7 @@ class CultivationActivity : BaseActivity() {
             }
             val firstClan = clan[i]
             val secondClan = clan[i+1]
-            val result = roundMultiBattle(firstClan.clanPersonList, secondClan.clanPersonList, round, 5)
+            val result = roundMultiBattle(firstClan.clanPersonList, secondClan.clanPersonList, round, 10)
             passIds.add(if(result) secondClan.id else firstClan.id)
         }
         return if(clan.size == 2){

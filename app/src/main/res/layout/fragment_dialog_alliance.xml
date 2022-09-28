@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent" style="@style/BaseActivityStyle"
+    android:id="@+id/ll_parent_measure"
     android:minWidth="300dp" android:minHeight="600dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,14 +46,13 @@
             android:id="@+id/lv_person">
         </ListView>
     </LinearLayout>
-    <LinearLayout
+    <com.mx.gillustrated.component.TextViewBox
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_speed_persons"/>
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:orientation="vertical"
+        android:id="@+id/ll_speed">
+    </com.mx.gillustrated.component.TextViewBox>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
