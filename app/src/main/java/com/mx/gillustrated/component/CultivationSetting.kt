@@ -6,7 +6,7 @@ import com.mx.gillustrated.vo.cultivation.Person
 object CultivationSetting {
 
     val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA", "#C18135", "#A5529E")
-    val PostColors = arrayOf("#E2D223", "#B72962", "#2972B7", "#29B779", "#869C98")
+    val PostColors = arrayOf("#E2D223", "#B72962", "#2972B7", "#29B779", "#825103")
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
     const val SP_JIE_TURN = 81
@@ -18,25 +18,18 @@ object CultivationSetting {
 
     //13 00 001 0
     val SpecPersonFirstName3:MutableList<PresetInfo> = mutableListOf(
-            PresetInfo(13000010, Pair("\u7389", "\u5e1d"),0, 200, 600), PresetInfo(13000020, Pair("\u83e9","\u63d0")),
-            PresetInfo(13000030, Pair("\u6768","\u622c")), PresetInfo(13000040, Pair("\u54ea", "\u5412")),
-            PresetInfo(13000050, Pair("\u592a\u4e0a","\u8001\u541b")), PresetInfo(13000061, Pair("\u5ae6","\u5a25"),0, 100, 100),
-            PresetInfo(13000070, Pair("\u592a\u767d","\u91d1\u661f")),
-
             PresetInfo(13010011, Pair("\u9080","\u6708"),0, 100, 100),PresetInfo(13010021, Pair("\u601c","\u661f"),0, 100, 100),
             PresetInfo(13010031, Pair("\u82cf","\u6a31"),0, 100, 100), PresetInfo(13010041, Pair("\u674e","\u7ea2\u8896"),13010050, 100, 100),
             PresetInfo(13010050, Pair("\u695a","\u7559\u9999"),13010041),PresetInfo(13010061, Pair("\u98ce","\u56db\u5a18"),0, 100, 200),
-            PresetInfo(13010070, Pair("\u674e","\u5bfb\u6b22"),0, 200, 600),
+            PresetInfo(13010070, Pair("\u674e","\u5bfb\u6b22"),0, 200, 600), PresetInfo(13010081, Pair("\u5b8b","\u751c\u513f"),13010050),
+            PresetInfo(13010090, Pair("\u963f","\u98de"),0,100,100), PresetInfo(13010100, Pair("\u897f\u95e8","\u5439\u96ea"),0,100,100),
 
             PresetInfo(13020011, Pair("\u9ec4","\u84c9"),0, 200, 600),PresetInfo(13020021, Pair("\u8d75","\u654f"),0, 200, 600),
-            PresetInfo(13020031, Pair("\u5468","\u82b7\u82e5"),0, 200, 600), PresetInfo(13020040, Pair("\u8427","\u5cf0")),
-            PresetInfo(13020051, Pair("\u5c0f","\u662d"),0, 100, 200), PresetInfo(13020061, Pair("\u6728","\u5a49\u6e05")),
-            PresetInfo(13020070, Pair("\u97e6","\u5c0f\u5b9d")),
-
-            PresetInfo(13030010, Pair("\u4f0f", "\u7fb2"), 0, 100, 200), PresetInfo(13030021, Pair("\u5973","\u5a32"), 0, 200, 600),
-            PresetInfo(13030030, Pair("\u795e","\u519c"), 0, 100, 100), PresetInfo(13030040, Pair("\u86a9", "\u5c24"), 0, 100, 100),
-            PresetInfo(13030050, Pair("\u989b","\u987c"), 0, 100, 100), PresetInfo(13030060, Pair("\u5e1d","\u55be"), 0, 100, 100),
-            PresetInfo(13030070, Pair("\u9ec4","\u5e1d"), 0, 200, 600), PresetInfo(13030081, Pair("\u7384", "\u5973"),0, 200, 600)
+            PresetInfo(13020031, Pair("\u5468","\u82b7\u82e5"),0, 200, 600), PresetInfo(13020040, Pair("\u8427","\u5cf0"),13020081),
+            PresetInfo(13020051, Pair("\u5c0f","\u662d"),0, 100, 200), PresetInfo(13020061, Pair("\u6728","\u5a49\u6e05"),13020100),
+            PresetInfo(13020070, Pair("\u97e6","\u5c0f\u5b9d")), PresetInfo(13020081, Pair("\u963f","\u6731"), 13020040),
+            PresetInfo(13020091, Pair("\u4efb","\u76c8\u76c8"), 0, 200, 600), PresetInfo(13020100, Pair("\u6bb5","\u8a89"),13020061),
+            PresetInfo(13020110, Pair("\u5f20","\u4e09\u4e30"),0, 200, 600)
     )
 
     val SpecPersonFirstName4:MutableList<PresetInfo> = mutableListOf(

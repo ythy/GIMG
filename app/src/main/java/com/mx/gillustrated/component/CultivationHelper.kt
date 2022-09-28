@@ -370,6 +370,7 @@ object CultivationHelper {
 
     //0 ~ 5
     //20220927 nation add bonus：emperor attack + 100 hp + 200, taiwei hp + 200, shangshu attack + 100, cishi hp + 100, duwei attack + 50
+    //
     fun getProperty(person: Person):MutableList<Int>{
         val property = person.extraProperty.mapIndexed { index, it ->
             it + person.allianceProperty[index] + person.equipmentProperty[index]
@@ -441,7 +442,7 @@ object CultivationHelper {
                 person.allianceXiuwei += alliance.speedG1
             }
             if(person.id == alliance.zhuPerson?.id){
-                person.allianceXiuwei += 20
+                person.allianceXiuwei += 50
             }
         }
         var postXiuwei = 0

@@ -1178,7 +1178,7 @@
     {
       "id": "6000101",
       "name": "金",
-      "nation": "6100001",
+      "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "金",
@@ -1188,7 +1188,7 @@
     {
       "id": "6000102",
       "name": "水",
-      "nation": "6100001",
+      "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "水",
@@ -1198,7 +1198,7 @@
     {
       "id": "6000103",
       "name": "木",
-      "nation": "6100001",
+      "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "木",
@@ -1208,7 +1208,7 @@
     {
       "id": "6000104",
       "name": "火",
-      "nation": "6100001",
+      "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "火",
@@ -1218,7 +1218,7 @@
     {
       "id": "6000105",
       "name": "土",
-      "nation": "6100001",
+      "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "土",
@@ -1228,7 +1228,7 @@
     {
       "id": "6000106",
       "name": "隐",
-      "nation": "6100001",
+      "nation": "6200001",
       "tianfu": 1,
       "level": 10,
       "lifetime": 0,
@@ -1240,7 +1240,7 @@
     {
       "id": "6000107",
       "name": "魔",
-      "nation": "6100001",
+      "nation": "6200001",
       "tianfu": 1,
       "level": 10,
       "lifetime": -40,
@@ -1252,7 +1252,7 @@
     {
       "id": "6000108",
       "name": "天",
-      "nation": "6100002",
+      "nation": "6200001",
       "tianfu": 2,
       "level": 20,
       "lifetime": 0,
@@ -1264,7 +1264,7 @@
     {
       "id": "6000109",
       "name": "地",
-      "nation": "6100002",
+      "nation": "6200001",
       "tianfu": 2,
       "level": 20,
       "lifetime": 50,
@@ -1276,7 +1276,7 @@
     {
       "id": "6000110",
       "name": "人",
-      "nation": "6100002",
+      "nation": "6200001",
       "tianfu": 2,
       "level": 20,
       "lifetime": 20,
@@ -1289,7 +1289,7 @@
     {
       "id": "6000111",
       "name": "神",
-      "nation": "6100002",
+      "nation": "6200001",
       "tianfu": 3,
       "level": 50,
       "lifetime": 50,
@@ -1304,7 +1304,7 @@
       "id": "6000201",
       "name": "琴",
       "type": 1,
-      "nation": "6100002",
+      "nation": "6200002",
       "lifetime": 50,
       "xiuwei": 100,
       "property": [0,30,20,10,0,0,0,0],
@@ -1314,7 +1314,7 @@
       "id": "6000202",
       "name": "棋",
       "type": 1,
-      "nation": "6100002",
+      "nation": "6200002",
       "lifetime": 50,
       "xiuweiMulti": 100,
       "property": [0,20,30,10,0,0,0,0],
@@ -1324,7 +1324,7 @@
       "id": "6000203",
       "name": "书",
       "type": 1,
-      "nation": "6100002",
+      "nation": "6200002",
       "lifetime": 50,
       "xiuwei": 50,
       "xiuweiMulti": 50,
@@ -1335,7 +1335,7 @@
       "id": "6000204",
       "name": "画",
       "type": 1,
-      "nation": "6100002",
+      "nation": "6200002",
       "lifetime": 50,
       "success": 5,
       "xiuwei": 30,
@@ -1347,7 +1347,7 @@
       "id": "6000205",
       "name": "剑",
       "type": 1,
-      "nation": "6100002",
+      "nation": "6200002",
       "lifetime": 50,
       "success": 0,
       "xiuwei": 100,
@@ -1355,21 +1355,21 @@
       "speedG1": 60
     },
     {
-      "id": "6000401",
-      "name": "庭",
+      "id": "6000301",
+      "name": "待定",
       "type": 3,
-      "nation": "6100004",
+      "nation": "6200003",
       "lifetime": 50,
-      "xiuwei": 100,
+      "xiuwei": 150,
       "xiuweiMulti": 150,
-      "property": [50,30,20,20,0,0,0,0],
+      "property": [0,80,0,20,0,0,0,0],
       "speedG1": 80
     },
     {
       "id": "6000402",
       "name": "古",
       "type": 3,
-      "nation": "6100003",
+      "nation": "6200003",
       "lifetime": 50,
       "xiuwei": 150,
       "xiuweiMulti": 150,
@@ -1380,7 +1380,7 @@
       "id": "6000403",
       "name": "庸",
       "type": 3,
-      "nation": "6100003",
+      "nation": "6200003",
       "lifetime": 50,
       "xiuwei": 150,
       "xiuweiMulti": 150,
@@ -1388,21 +1388,10 @@
       "speedG1": 80
     },
     {
-      "id": "6000404",
-      "name": "帝",
-      "type": 3,
-      "nation": "6100004",
-      "lifetime": 50,
-      "xiuwei": 200,
-      "xiuweiMulti": 200,
-      "property": [50,100,10,30,0,0,0,0],
-      "speedG1": 100
-    },
-    {
       "id": "6000501",
       "name": "魏",
       "type": 4,
-      "nation": "6100005",
+      "nation": "6200004",
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
@@ -1413,7 +1402,7 @@
       "id": "6000502",
       "name": "蜀",
       "type": 4,
-      "nation": "6100005",
+      "nation": "6200004",
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
@@ -1424,7 +1413,7 @@
       "id": "6000503",
       "name": "吴",
       "type": 4,
-      "nation": "6100005",
+      "nation": "6200004",
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
@@ -1435,7 +1424,7 @@
       "id": "6000504",
       "name": "群",
       "type": 4,
-      "nation": "6100005",
+      "nation": "6200004",
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
@@ -2324,28 +2313,20 @@
   ],
   "nation": [
     {
-      "id": "6100001",
+      "id": "6200001",
       "name": "凡\u95f4"
     },
     {
-      "id": "6100002",
+      "id": "6200002",
       "name": "峯\u95f4"
     },
     {
-      "id": "6100003",
+      "id": "6200003",
       "name": "\u6b66\u4fa0"
     },
     {
-      "id": "6100004",
-      "name": "\u795e\u8bdd"
-    },
-    {
-      "id": "6100005",
+      "id": "6200004",
       "name": "\u4e09\u56fd"
-    },
-    {
-      "id": "6100006",
-      "name": "\u6218\u56fd"
     }
   ]
 }

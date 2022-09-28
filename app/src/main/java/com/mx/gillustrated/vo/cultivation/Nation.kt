@@ -6,22 +6,11 @@ import java.util.concurrent.ConcurrentHashMap
 open class NationBak {
     lateinit var id:String
     lateinit var name:String
-    var postTop:Triple<String?, String?, String?>? = null// 1 2 3
-    var postCishi:List<String> = listOf()
-    var postDuwei:List<String> = listOf()
 
-    fun toNation(personMap: ConcurrentHashMap<String, Person>):Nation{
+    fun toNation():Nation{
         val nation = Nation()
         nation.id = this.id
         nation.name = this.name
-        if(this.postTop?.first != null)
-            nation.emperor = personMap[this.postTop!!.first.toString()]
-        if(this.postTop?.second != null)
-            nation.taiWei = personMap[this.postTop!!.second.toString()]
-        if(this.postTop?.third != null)
-            nation.shangShu = personMap[this.postTop!!.third.toString()]
-        nation.ciShi = postCishi.mapNotNull { personMap[it] }.toMutableList()
-        nation.duWei = postDuwei.mapNotNull { personMap[it] }.toMutableList()
         return nation
     }
 }
@@ -40,9 +29,6 @@ class Nation : NationBak(){
         val nation = NationBak()
         nation.id = this.id
         nation.name = this.name
-        nation.postTop = Triple(this.emperor?.id, this.taiWei?.id, this.shangShu?.id)
-        nation.postCishi = this.ciShi.map { it.id }
-        nation.postDuwei = this.duWei.map { it.id }
         return nation
     }
 

@@ -335,20 +335,15 @@ class CultivationActivity : BaseActivity() {
             mClans.putAll(backup.clans.mapValues {
                 it.value.toClan(mPersons)
             })
-            if(backup.nation.isEmpty()){
-                mConfig.nation.forEach {
-                    mNations[it.id] = it
-                }
-            }else{
-                mNations.putAll(backup.nation.mapValues {
-                    it.value.toNation(mPersons)
-                })
-            }
+            mNations.putAll(backup.nation.mapValues {
+                it.value.toNation()
+            })
             mBattleRound = backup.battleRound ?: BattleRound()
         }else{
             mBattleRound = BattleRound()
         }
         createAlliance() //此处处理了删除alliance的情况
+        createNation()
         //更新Alliance属性
         mPersons.forEach {
             it.value.allianceSuccess = mAlliance[it.value.allianceId]!!.success
@@ -356,8 +351,10 @@ class CultivationActivity : BaseActivity() {
             it.value.allianceName = mAlliance[it.value.allianceId]!!.name
             it.value.extraXuiweiMulti = CultivationHelper.getExtraXuiweiMulti(it.value,  mAlliance[it.value.allianceId]!!)
             it.value.nationId = mAlliance[it.value.allianceId]!!.nation
+            it.value.nationPost = 0
             CultivationHelper.updatePersonEquipment(it.value)
         }
+        updateNationPost(0, true)
         if(out == null){
             startWorld()
         }else{
@@ -487,6 +484,29 @@ class CultivationActivity : BaseActivity() {
             }
         }
     }
+
+    private fun createNation(){
+        if(mNations.isEmpty()){
+            mConfig.nation.forEach {
+                mNations[it.id] = it.copy()
+            }
+        }else{
+            mConfig.nation.forEach { configNation->
+                val nation = mNations[configNation.id]
+                if(nation != null){
+                    nation.name = configNation.name
+                }else{
+                    mNations[configNation.id] = configNation.copy()
+                }
+            }
+            mNations.forEach {
+                if(mConfig.nation.find { f-> f.id == it.key } == null ){ //不存在的nation
+                    mNations.remove(it.key)
+                }
+            }
+        }
+    }
+
 
     private fun newAlliance(it:AllianceConfig):Alliance{
         val alliance = Alliance()
@@ -623,7 +643,7 @@ class CultivationActivity : BaseActivity() {
             if (next != null) {
                 val commonText = "${personDataString[1]} ${CultivationHelper.getJinJieName(next.name)}，${personDataString[2]} $random/$totalSuccess"
                 val lastJingJieDigt = CultivationHelper.getJingJieLevel(it.jingJieId)
-                if (it.isFav || (lastJingJieDigt.second >= 6 && lastJingJieDigt.third == 4)) {
+                if (it.isFav && lastJingJieDigt.third == 4) {
                     writeHistory("${getPersonBasicString(it)} $commonText", it)
                 }
                 it.jingJieId = next.id
@@ -890,8 +910,8 @@ class CultivationActivity : BaseActivity() {
 
     }
 
-    fun updateNationPost(xun:Long){
-        if(xun % 60000 == 0L) {
+    private fun updateNationPost(xun:Long, force:Boolean = false){
+        if(xun % 60000 == 0L || force) {
             mNations.forEach { (t: String, _: Nation) ->
                 updateNationPost(t)
             }
@@ -1193,7 +1213,7 @@ class CultivationActivity : BaseActivity() {
         addedPersons.forEach { p ->
             if (p.second > 0 ){
                 val partner = mPersons.map { it.value }.find { it.specIdentity == p.second }
-                if(partner != null && mPersons[partner.partner] == null ){
+                if(partner != null && partner.partner == null ){
                     CultivationHelper.createPartner(p.first, partner)
                 }
             }
