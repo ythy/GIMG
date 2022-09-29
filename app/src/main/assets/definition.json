@@ -921,7 +921,7 @@
       "id": "4000203",
       "name": "Clever3",
       "type": 2,
-      "bonus": 50,
+      "bonus": 40,
       "rarity": 2,
       "weight": 100
     },
@@ -929,7 +929,7 @@
       "id": "4000204",
       "name": "Clever4",
       "type": 2,
-      "bonus": 80,
+      "bonus": 50,
       "rarity": 3,
       "weight": 150
     },
@@ -937,23 +937,23 @@
       "id": "4000205",
       "name": "Clever5",
       "type": 2,
-      "bonus": 100,
+      "bonus": 60,
       "rarity": 4,
-      "weight": 200
+      "weight": 300
     },
     {
       "id": "4000206",
       "name": "Clever6",
       "type": 2,
-      "bonus": 150,
+      "bonus": 80,
       "rarity": 5,
-      "weight": 300
+      "weight": 500
     },
     {
       "id": "4000207",
       "name": "Clever7",
       "type": 2,
-      "bonus": 200,
+      "bonus": 100,
       "rarity": 6,
       "weight": 1000
     },
@@ -961,7 +961,7 @@
       "id": "4000208",
       "name": "Clever8",
       "type": 2,
-      "bonus": 250,
+      "bonus": 150,
       "rarity": 7,
       "weight": 3000
     },
@@ -969,9 +969,9 @@
       "id": "4000209",
       "name": "Clever9",
       "type": 2,
-      "bonus": 300,
+      "bonus": 200,
       "rarity": 8,
-      "weight": 5000
+      "weight": 6000
     },
     {
       "id": "4000301",
@@ -1051,7 +1051,7 @@
       "type": 4,
       "bonus": 2,
       "rarity": 2,
-      "weight": 50
+      "weight": 100
     },
     {
       "id": "4000402",
@@ -1059,7 +1059,7 @@
       "type": 4,
       "bonus": 5,
       "rarity": 3,
-      "weight": 100
+      "weight": 200
     },
     {
       "id": "4000403",
@@ -1067,7 +1067,7 @@
       "type": 4,
       "bonus": 10,
       "rarity": 4,
-      "weight": 200
+      "weight": 500
     },
     {
       "id": "4000404",
@@ -1075,7 +1075,7 @@
       "type": 4,
       "bonus": 15,
       "rarity": 5,
-      "weight": 500
+      "weight": 1000
     },
     {
       "id": "4000405",
@@ -1083,7 +1083,7 @@
       "type": 4,
       "bonus": 20,
       "rarity": 6,
-      "weight": 2000
+      "weight": 4000
     },
     {
       "id": "4000406",
@@ -1091,7 +1091,7 @@
       "type": 4,
       "bonus": 25,
       "rarity": 7,
-      "weight": 4000
+      "weight": 6000
     },
     {
       "id": "4000407",
@@ -1099,7 +1099,7 @@
       "type": 4,
       "bonus": 30,
       "rarity": 8,
-      "weight": 6000
+      "weight": 8000
     },
     {
       "id": "4000501",
@@ -1356,13 +1356,13 @@
     },
     {
       "id": "6000301",
-      "name": "待定",
+      "name": "风",
       "type": 3,
       "nation": "6200003",
       "lifetime": 50,
       "xiuwei": 150,
       "xiuweiMulti": 150,
-      "property": [0,80,0,20,0,0,0,0],
+      "property": [0,100,0,0,0,0,0,0],
       "speedG1": 80
     },
     {

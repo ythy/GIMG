@@ -109,7 +109,7 @@ object CultivationHelper {
 
     private fun getTianFu(parent: Pair<Person, Person>?, fixedTianfus:MutableList<String>?, tianFuWeight:Int):MutableList<TianFu>{
         if(fixedTianfus != null && fixedTianfus.isNotEmpty()){
-            return fixedTianfus.map { mConfig.tianFuType.find { f-> f.id == it }!! }.toMutableList()
+            return fixedTianfus.map { getPersonTianfu(it)!! }.toMutableList()
         }
         val tianFus = mutableListOf<TianFu>()
         mConfig.tianFuType.groupBy { it.type }.forEach { (_, l) ->
@@ -360,7 +360,8 @@ object CultivationHelper {
     }
 
     fun updatePersonExtraProperty(person: Person){
-        val tianFus = person.tianfus.map { mConfig.tianFuType.find { f->f.id == it.id }!! }
+        val tianFus = person.tianfus.map { getPersonTianfu(it.id)!! }
+        person.tianfus = tianFus.toMutableList()
         person.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
         person.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
         person.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
@@ -403,7 +404,7 @@ object CultivationHelper {
         person.equipmentSuccess = 0
         person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
         if(equipments.isNotEmpty()){
-            equipments.filter { it.type != 1 && it.type != 2 && it.type != 3 }.groupBy { it.id }.forEach { (_, u) ->
+            equipments.filter { it.type > 3 }.groupBy { it.id }.forEach { (_, u) ->
                 for (index in 0 until u.size){
                     val effectEquipment = u[index]
                     if( index > getEquipmentsMaxCount(effectEquipment, u.size)){
@@ -412,7 +413,7 @@ object CultivationHelper {
                     summationEquipmentValues(person, effectEquipment)
                 }
             }
-            equipments.filter { it.type == 1 || it.type == 2 || it.type == 3 }.groupBy { it.type }.forEach { (_, u) ->
+            equipments.filter { it.type <= 3 }.groupBy { it.type }.forEach { (_, u) ->
                 val effectEquipment = u.maxBy { it.rarity }!!
                 summationEquipmentValues(person, effectEquipment)
             }
@@ -420,10 +421,8 @@ object CultivationHelper {
     }
 
     fun getEquipmentsMaxCount(equipment: Equipment, size:Int):Int{
-        return Math.ceil( Math.sqrt(size.toDouble())).toInt()
+        return Math.max(1, Math.round( Math.log(size.toDouble())).toInt())
     }
-
-
 
     private fun summationEquipmentValues(person: Person, effectEquipment: Equipment){
         person.equipmentXiuwei += effectEquipment.xiuwei
@@ -445,15 +444,18 @@ object CultivationHelper {
                 person.allianceXiuwei += 50
             }
         }
-        var postXiuwei = 0
-        if(person.nationPost == 4){
-            postXiuwei += 100
-        }else if(person.nationPost == 5){
-            postXiuwei += 50
-        }
+        val postXiuwei = getNationXiuwei(person)
         val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + postXiuwei
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
+    }
+
+    fun getNationXiuwei(person: Person):Int{
+        return when {
+            person.nationPost == 4 -> 100
+            person.nationPost == 5 -> 50
+            else -> 0
+        }
     }
 
     fun getTotalSuccess(person:Person):Int{
@@ -466,9 +468,15 @@ object CultivationHelper {
 
     fun getExtraXuiweiMulti(person:Person, alliance:Alliance? = null):Int{
         val tianfu = person.tianfus.find { it.type == 2 }
-        val tianValue = mConfig.tianFuType.find { it.id == tianfu?.id }?.bonus ?: 0
+        val tianValue = getPersonTianfu(tianfu?.id)?.bonus ?: 0
         val allianceValue = alliance?.xiuweiMulti ?: 0
         return tianValue + allianceValue
+    }
+
+    fun getPersonTianfu(id:String?):TianFu?{
+        if(id == null)
+            return null
+        return mConfig.tianFuType.find { it.id == id }
     }
 
     fun addPersonEvent(person:Person, content:String){

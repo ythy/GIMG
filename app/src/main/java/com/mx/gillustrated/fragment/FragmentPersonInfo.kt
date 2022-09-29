@@ -62,6 +62,11 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
     @BindView(R.id.sch_dink)
     lateinit var mSwitchDink:Switch
 
+    @BindView(R.id.tv_xiuwei)
+    lateinit var tvXiuwei:TextView
+
+
+
     @OnClick(R.id.btn_life)
     fun onLifetimeHandler(){
         val success = mContext.addPersonLifetime(mPerson.id)
@@ -203,5 +208,10 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         etLastName.setText(CultivationHelper.showing(mPerson.name.substring(mPerson.lastName.length)))
 
         tvAge.text = "${mPerson.age}/${mPerson.lifetime}"
+
+        val alliance = mContext.mAlliance[mPerson.allianceId]!!
+        val tianValue = CultivationHelper.getPersonTianfu(mPerson.tianfus.find { it.type == 2 }?.id)?.bonus ?: 0
+        tvXiuwei.text = "(根:${mPerson.lingGenType.qiBasic}+赋:${mPerson.extraXiuwei}+帮:${mPerson.allianceXiuwei}+装:${mPerson.equipmentXiuwei}+国${CultivationHelper.getNationXiuwei(mPerson)})" +
+                "*${1 + (tianValue.toDouble()/100.0) + alliance.xiuweiMulti.toDouble()/100.0}(赋:${tianValue/100}+帮:${alliance.xiuweiMulti/100})"
     }
 }

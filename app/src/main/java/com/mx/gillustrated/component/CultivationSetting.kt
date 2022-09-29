@@ -18,6 +18,10 @@ object CultivationSetting {
 
     //13 00 001 0
     val SpecPersonFirstName3:MutableList<PresetInfo> = mutableListOf(
+            PresetInfo(13000010, Pair("\u6b65","\u60ca\u4e91"),0, 100, 200),
+            PresetInfo(13000020, Pair("\u8042","\u98ce"),13000031, 200, 600),
+            PresetInfo(13000031, Pair("\u7b2c\u4e8c","\u68a6"),13000020),
+
             PresetInfo(13010031, Pair("\u82cf","\u6a31"),0, 100, 100),
             PresetInfo(13010041, Pair("\u674e","\u7ea2\u8896"),0, 100, 100),
             PresetInfo(13010070, Pair("\u674e","\u5bfb\u6b22"),0, 200, 600),
