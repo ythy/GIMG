@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="百万"/>
+                android:text="万"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

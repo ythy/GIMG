@@ -57,6 +57,7 @@ class FragmentDialogSetting : DialogFragment() {
 
     @OnClick(R.id.btn_reset)
     fun onResetClickHandler(){
+        mBossPunish.setText(CultivationSetting.SP_PUNISH_BOSS_MILLION.toString())
         mActivity.mSP.edit().putInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION).apply()
         mActivity.showToast("重置成功!")
     }

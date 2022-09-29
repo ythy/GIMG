@@ -583,6 +583,7 @@ class CultivationActivity : BaseActivity() {
     private fun deadHandler(it:Person, currentXun:Long){
         mPersons.remove(it.id)
         mDeadPersons[it.id] = it
+        it.nationPost = 0
         addPersonEvent(it, personDataString[0])
         writeHistory("${getPersonBasicString(it)} ${personDataString[0]}", it)
         val alliance = mAlliance[it.allianceId]

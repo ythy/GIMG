@@ -225,7 +225,7 @@ object CultivationHelper {
      fun getTeji(weight:Int = 1, multi:Boolean = true):MutableList<String>{
          val result = mutableListOf<String>()
          if(!multi){
-             val teji = mConfig.teji.shuffled()[0]
+             val teji = mConfig.teji.filter { it.type != 4 }.shuffled()[0]
              if(isTrigger( teji.weight / Math.max(1, weight))){
                  result.add(teji.id)
              }

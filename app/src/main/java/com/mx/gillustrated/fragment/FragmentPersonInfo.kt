@@ -209,9 +209,12 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
         tvAge.text = "${mPerson.age}/${mPerson.lifetime}"
 
-        val alliance = mContext.mAlliance[mPerson.allianceId]!!
-        val tianValue = CultivationHelper.getPersonTianfu(mPerson.tianfus.find { it.type == 2 }?.id)?.bonus ?: 0
-        tvXiuwei.text = "(${mPerson.lingGenType.qiBasic}+P:${mPerson.extraXiuwei}+A:${mPerson.allianceXiuwei}+E:${mPerson.equipmentXiuwei}+N${CultivationHelper.getNationXiuwei(mPerson)})" +
-                "*${1 + (tianValue.toDouble()/100.0) + alliance.xiuweiMulti.toDouble()/100.0}(C:${tianValue.toDouble()/100.0}+A:${alliance.xiuweiMulti.toDouble()/100.0})"
+        val alliance = mContext.mAlliance[mPerson.allianceId]
+        if(alliance != null){
+            val tianValue = CultivationHelper.getPersonTianfu(mPerson.tianfus.find { it.type == 2 }?.id)?.bonus ?: 0
+            tvXiuwei.text = "(${mPerson.lingGenType.qiBasic}+P:${mPerson.extraXiuwei}+A:${mPerson.allianceXiuwei}+E:${mPerson.equipmentXiuwei}+N${CultivationHelper.getNationXiuwei(mPerson)})" +
+                    "*${1 + (tianValue.toDouble()/100.0) + alliance.xiuweiMulti.toDouble()/100.0}(C:${tianValue.toDouble()/100.0}+A:${alliance.xiuweiMulti.toDouble()/100.0})"
+        }
+
     }
 }
