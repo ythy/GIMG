@@ -214,11 +214,11 @@ object CultivationBattleHelper {
                     current.hp -= reduced
                     addBattleDetail(battleId, "${showName(current)} ${statusDetail("8100003").name}\u53d1\u52a8 , HP-$reduced")
                 }
-                if(hasTeji("8001007", current) && current.hp > 0 && isTrigger(tejiDetail("8001007").chance, current, getBattleObject(allOpponent)) ){//kill immediately
-                    val opponent = getBattleObject(allOpponent)
-                    if(opponent.hp > 0) {
-                        opponent.hp = 0
-                        addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001007").name}\u53d1\u52a8, ${showName(opponent)}HP0", "8001007")
+                val opponent8001007 = getBattleObject(allOpponent)
+                if(hasTeji("8001007", current) && current.hp > 0 && isTrigger(tejiDetail("8001007").chance, current, opponent8001007) ){//kill immediately
+                    if(opponent8001007.hp > 0) {
+                        opponent8001007.hp = 0
+                        addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8001007").name}\u53d1\u52a8, ${showName(opponent8001007)}HP0", "8001007")
                     }
                 }
             }
@@ -241,10 +241,10 @@ object CultivationBattleHelper {
                     current.goneCount++
                     addBattleDetail(battleId, "${showName(current, round > 0)}\u7279\u6280:${tejiDetail("8001001").name}\u53d1\u52a8, HP1", "8001001")
                 }
-                if(hasTeji("8001002", current) && current.hp <= 0 && isTrigger(tejiDetail("8001002").chance, current, getBattleObject(opponentList))){
-                    val opponent = getBattleObject(opponentList)
-                    opponent.hp = 1
-                    addBattleDetail(battleId, "${showName(current, round > 0)}\u7279\u6280:${tejiDetail("8001002").name}\u53d1\u52a8, ${showName(opponent, round > 0)}HP1", "8001002")
+                val opponent8001002 = getBattleObject(opponentList)
+                if(hasTeji("8001002", current) && current.hp <= 0 && isTrigger(tejiDetail("8001002").chance, current, opponent8001002)){
+                    opponent8001002.hp = 1
+                    addBattleDetail(battleId, "${showName(current, round > 0)}\u7279\u6280:${tejiDetail("8001002").name}\u53d1\u52a8, ${showName(opponent8001002, round > 0)}HP1", "8001002")
                 }
             }
         }

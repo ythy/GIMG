@@ -77,7 +77,6 @@ class CultivationActivity : BaseActivity() {
     var mClans:ConcurrentHashMap<String, Clan> = ConcurrentHashMap()
     var mNations:ConcurrentHashMap<String, Nation> = ConcurrentHashMap()
 
-    private var mEnemys:ConcurrentHashMap<String, Enemy> = ConcurrentHashMap()
     private var mBoss:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     private var mHistoryData = mutableListOf<CultivationSetting.HistoryInfo>()
     private val mTimeHandler:TimeHandler = TimeHandler(this)
@@ -306,18 +305,28 @@ class CultivationActivity : BaseActivity() {
 //                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
 //            }
 //        }
-        val specPersons = mutableListOf<PresetInfo>()
-        specPersons.addAll(SpecPersonFirstName3)
-        specPersons.addAll(SpecPersonFirstName4)
-//        specPersons.forEach { p ->
-//            val current = mPersons.map { it.value }.find { it.specIdentity == p.identity }
+//        val specPersons = mutableListOf<PresetInfo>()
+//        specPersons.addAll(SpecPersonFirstName3)
+//        specPersons.addAll(SpecPersonFirstName4)
+//        mPersons.map { it.value }.filter { it.allianceId == "6000402" || it.allianceId == "6000403" }.forEach {
+//            if (specPersons.find { p-> p.identity == it.specIdentity} == null  ){
+//               deadHandler(it, mCurrentXun)
+//            }
 //        }
 
-        mPersons.map { it.value }.filter { it.allianceId == "6000402" || it.allianceId == "6000403" }.forEach {
-            if (specPersons.find { p-> p.identity == it.specIdentity} == null  ){
-               deadHandler(it, mCurrentXun)
+        mPersons.forEach { (_: String, p: Person) ->
+            p.followerList.groupBy { it.first }.forEach { (t, u) ->
+                val f = mConfig.follower.find { it.id == t }!!
+                if(u.size > f.max){
+                    val extraFollower = u.subList(f.max, u.size)
+                    extraFollower.forEach {
+                        p.followerList.remove(it)
+                    }
+                }
             }
+            p.equipmentList.removeIf { it.first.startsWith("700640") }
         }
+
     }
 
     private fun init(json:String?){
@@ -429,9 +438,6 @@ class CultivationActivity : BaseActivity() {
                 }
                 R.id.menu_battle_nation ->{
                     battleNationHandler()
-                }
-                R.id.menu_event_enemy ->{
-                    eventEnemyHandler()
                 }
                 R.id.menu_enemy_list->{
                     addBossHandler()
@@ -716,7 +722,6 @@ class CultivationActivity : BaseActivity() {
         }
         updateCareerEffect(currentXun)
         updateClans(currentXun)
-        updateEnemys()
         updateBoss(currentXun)
         randomSpecialEvent(currentXun)
         updateNationPost(currentXun)
@@ -897,23 +902,20 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun randomBattle(xun: Long){
-        val weight = CultivationSetting.SP_EVENT_WEIGHT.map {
+        val weight = CultivationSetting.EVENT_WEIGHT.map {
             val temp = it.split("-")
             Pair(temp.first().trim().toInt(), temp.last().trim().toInt())
         }
         if(xun % weight[0].first == 0L && isTrigger(weight[0].second)) {
-           eventEnemyHandler()
-        }
-        if(xun % weight[1].first == 0L && isTrigger(weight[1].second)) {
             addBossHandler()
         }
-        if(xun % weight[2].first == 0L && isTrigger(weight[2].second)) {
+        if(xun % weight[1].first == 0L && isTrigger(weight[1].second)) {
             battleSingleHandler(false)
         }
-        if(xun % weight[3].first == 0L && isTrigger(weight[3].second)) {
+        if(xun % weight[2].first == 0L && isTrigger(weight[2].second)) {
             battleBangHandler(false)
         }
-        if(xun % weight[4].first == 0L && isTrigger(weight[4].second)) {
+        if(xun % weight[3].first == 0L && isTrigger(weight[3].second)) {
             battleClanHandler(false)
         }
     }
@@ -1002,32 +1004,6 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun updateEnemys(){
-        mEnemys.filter { !it.value.isDead }.forEach { e->
-            val it = e.value
-            if(isTrigger(it.attackFrequency)){
-                it.remainHit--
-                val persons = mPersons.map { it.value }.shuffled()
-                val person = persons[0]
-                val result = CultivationBattleHelper.battleEnemy(mPersons, person, it)
-                if(result){
-                    writeHistory("${it.name} 倒")
-                    it.isDead = true
-                    CultivationHelper.gainJiEquipment(person, 14, it.type, it.seq)
-                    if(it.type > 1){
-                        gainTeji(person, 10 * it.type)
-                    }
-                }else{
-                    val punishWeight = mSP.getString("cultivation_punish_million", CultivationSetting.SP_PUNISH_MILLION.joinToString())!!.split(",")
-                    person.xiuXei -= it.type * punishWeight[0].trim().toInt() * 10000
-                    if(it.remainHit <= 0){
-                        writeHistory("${it.name} 消失")
-                        it.isDead = true
-                    }
-                }
-            }
-        }
-    }
 
     private fun updateBoss(xun:Long){
         if(xun % 12 == 0L) {
@@ -1043,8 +1019,8 @@ class CultivationActivity : BaseActivity() {
                     CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
                 }else{
                     u.remainHit --
-                    val punishWeight = mSP.getString("cultivation_punish_million", CultivationSetting.SP_PUNISH_MILLION.joinToString())!!.split(",")
-                    person.xiuXei -= u.type * punishWeight[1].trim().toInt() * 10000
+                    val punishWeight = mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)
+                    person.xiuXei -= u.type * punishWeight * 10000
                     if(u.remainHit <= 0){
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
                         writeHistory("${u.name} 消失", u)
@@ -1181,18 +1157,6 @@ class CultivationActivity : BaseActivity() {
                 }
             }
         }
-    }
-
-    private fun eventEnemyHandler(){
-        val type = Random().nextInt(6)
-        mBattleRound.enemy[type]++
-        val enemy = CultivationEnemyHelper.generateEnemy(type)
-        mEnemys[enemy.id] = enemy
-        writeHistory("====================================")
-        writeHistory("↑↑============================↑↑")
-        writeHistory("${enemy.name}天降 - (${enemy.HP}/${enemy.remainHit})${enemy.attack}-${enemy.defence}-${enemy.speed}")
-        writeHistory("↓↓============================↓↓")
-        writeHistory("====================================")
     }
 
     private fun addFixedcPerson(){
@@ -1591,10 +1555,10 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun addBossHandler(ss:Boolean = false){
-        val boss = if(ss)  CultivationEnemyHelper.generateYaoWang(mAlliance["6000105"]!!)
+        val boss = if(ss)  CultivationEnemyHelper.generateYaoWang(mAlliance["6000102"]!!)
             else when (Random().nextInt(3)) {
                 0 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
-                1 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000105"]!!)
+                1 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000104"]!!)
                 else -> CultivationEnemyHelper.generateShadowQiu(mAlliance["6000105"]!!)
             }
         mBoss[boss.id] = boss

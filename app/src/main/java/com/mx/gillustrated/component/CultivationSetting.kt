@@ -10,8 +10,8 @@ object CultivationSetting {
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
     const val SP_JIE_TURN = 81
-    val SP_EVENT_WEIGHT = listOf("1000-10","1200-40","7200-40","8400-40","9600-80")
-    val SP_PUNISH_MILLION = listOf(100,500)
+    val EVENT_WEIGHT = listOf("1200-50","7200-40","8400-40","9600-100")
+    const val SP_PUNISH_BOSS_MILLION = 200
 
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf")
     val SpecPersonFirstNameWeight:Pair<Int, Int> = Pair(50, 20)// tianfu.linggen

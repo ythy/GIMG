@@ -421,7 +421,8 @@ object CultivationHelper {
     }
 
     fun getEquipmentsMaxCount(equipment: Equipment, size:Int):Int{
-        return Math.max(1, Math.round( Math.log(size.toDouble())).toInt())
+        val maxCount = if(equipment.type == 11 || equipment.type == 12 || equipment.type == 13) equipment.maxCount else 1
+        return Math.max(maxCount, Math.round( Math.log(size.toDouble())).toInt())
     }
 
     private fun summationEquipmentValues(person: Person, effectEquipment: Equipment){

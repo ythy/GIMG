@@ -211,7 +211,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
         val alliance = mContext.mAlliance[mPerson.allianceId]!!
         val tianValue = CultivationHelper.getPersonTianfu(mPerson.tianfus.find { it.type == 2 }?.id)?.bonus ?: 0
-        tvXiuwei.text = "(根:${mPerson.lingGenType.qiBasic}+赋:${mPerson.extraXiuwei}+帮:${mPerson.allianceXiuwei}+装:${mPerson.equipmentXiuwei}+国${CultivationHelper.getNationXiuwei(mPerson)})" +
-                "*${1 + (tianValue.toDouble()/100.0) + alliance.xiuweiMulti.toDouble()/100.0}(赋:${tianValue/100}+帮:${alliance.xiuweiMulti/100})"
+        tvXiuwei.text = "(${mPerson.lingGenType.qiBasic}+P:${mPerson.extraXiuwei}+A:${mPerson.allianceXiuwei}+E:${mPerson.equipmentXiuwei}+N${CultivationHelper.getNationXiuwei(mPerson)})" +
+                "*${1 + (tianValue.toDouble()/100.0) + alliance.xiuweiMulti.toDouble()/100.0}(C:${tianValue.toDouble()/100.0}+A:${alliance.xiuweiMulti.toDouble()/100.0})"
     }
 }

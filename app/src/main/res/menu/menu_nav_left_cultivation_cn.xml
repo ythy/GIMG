@@ -14,11 +14,8 @@
             android:id="@+id/menu_battle_nation"
             android:title="国战"/>
         <item
-            android:id="@+id/menu_event_enemy"
-            android:title="打怪兽"/>
-        <item
             android:id="@+id/menu_enemy_list"
-            android:title="天降"/>
+            android:title="天降Boss"/>
     </group>
     <group android:id="@+id/group2"  android:checkableBehavior="single">
         <item

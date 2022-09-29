@@ -32,17 +32,11 @@ class FragmentDialogSetting : DialogFragment() {
     @BindView(R.id.tvb_battle)
     lateinit var tvbBattle: TextViewBox
 
-    @BindView(R.id.tvb_enemy)
-    lateinit var tvbEnemy: TextViewBox
-
     @BindView(R.id.tvb_boss)
     lateinit var tvbBoss: TextViewBox
 
     @BindView(R.id.et_jie)
     lateinit var mEtJie:EditText
-
-    @BindView(R.id.et_enemy_punish)
-    lateinit var mEnemyPunish:EditText
 
     @BindView(R.id.et_boss_punish)
     lateinit var mBossPunish:EditText
@@ -57,16 +51,13 @@ class FragmentDialogSetting : DialogFragment() {
 
     @OnClick(R.id.btn_save)
     fun onSaveClickHandler(){
-       mActivity.mSP.edit().putString("cultivation_punish_million", listOf(
-               mEnemyPunish.text,
-               mBossPunish.text
-       ).joinToString()).apply()
+       mActivity.mSP.edit().putInt("cultivation_punish_boss_million", mBossPunish.text.toString().toInt()).apply()
        mActivity.showToast("保存成功!")
     }
 
     @OnClick(R.id.btn_reset)
     fun onResetClickHandler(){
-        mActivity.mSP.edit().putString("cultivation_punish_million", CultivationSetting.SP_PUNISH_MILLION.joinToString()).apply()
+        mActivity.mSP.edit().putInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION).apply()
         mActivity.showToast("重置成功!")
     }
 
@@ -120,14 +111,6 @@ class FragmentDialogSetting : DialogFragment() {
         })
         tvbBattle.setDataProvider(listOf("帮:${battleRound.bang}", "族:${battleRound.clan}", "个:${battleRound.single}"), null)
 
-        tvbEnemy.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - margin, 20))
-        tvbEnemy.setCallback(object : TextViewBox.Callback {
-            override fun onClick(index: Int) {
-                openDialog(10 + index)
-            }
-        })
-        tvbEnemy.setDataProvider(CultivationSetting.EnemyNames.mapIndexed { index, s ->  "$s:${battleRound.enemy[index]}" }, null)
-
         tvbBoss.setConfig(TextViewBox.TextViewBoxConfig(measures.measuredWidth - margin, 20))
         tvbBoss.setCallback(object : TextViewBox.Callback {
             override fun onClick(index: Int) {
@@ -137,9 +120,8 @@ class FragmentDialogSetting : DialogFragment() {
         tvbBoss.setDataProvider(listOf("霸:${battleRound.boss[0]}", "暗:${battleRound.boss[1]}", "滚:${battleRound.boss[2]}", "王:${battleRound.boss[3]}"), null)
 
         mEtJie.setText(mActivity.mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN).toString())
-        val punishWeight = mActivity.mSP.getString("cultivation_punish_million", CultivationSetting.SP_PUNISH_MILLION.joinToString())!!.split(",")
-        mEnemyPunish.setText(punishWeight[0].trim())
-        mBossPunish.setText(punishWeight[1].trim())
+        val punishWeight = mActivity.mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)
+        mBossPunish.setText(punishWeight.toString())
     }
 
     private fun openDialog(tag:Int){
