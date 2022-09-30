@@ -23,7 +23,7 @@ import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 import java.util.*
 
-//type 0 all; 1 fav; 2 carrer rarity>=8
+//type 0 all; 1 fav; 2 carrer rarity>=8 ; 3 lifeturn == 0 & lingGen type > 1 & tianFu rarity sum > 10
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFragment() {
@@ -171,6 +171,9 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                 val list = p.careerList.map { l-> CultivationHelper.mConfig.career.find{ c-> c.id == l.first} }
                         .sortedByDescending { it?.rarity }
                 list.isNotEmpty() && list[0]?.rarity!! >= 8
+            }
+            3 -> mContext.mPersons.map { it.value }.filter { p->
+                p.lifeTurn == 0 && p.lingGenType.type > 0 && p.tianfus.sumBy { s-> s.rarity } > 5
             }
             else -> mContext.mPersons.map { it.value }
         }

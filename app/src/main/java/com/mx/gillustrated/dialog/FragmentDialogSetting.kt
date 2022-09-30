@@ -85,6 +85,17 @@ class FragmentDialogSetting : DialogFragment() {
         newFragment.show(ft, "dialog_person_list")
     }
 
+    @OnClick(R.id.btn_talent)
+    fun onTanlentClick(){
+        val ft = childFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogPersonList.newInstance(3)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_person_list")
+    }
+
+
+
     lateinit var mActivity: CultivationActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

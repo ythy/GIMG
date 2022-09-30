@@ -113,19 +113,34 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         val second  = etLastName.text.toString()
         mPerson.name = first + second
         mPerson.lastName = first
-        mContext.mPersons.forEach { (_: String, u: Person) ->
-            if(u.partner == mPerson.id){
-                u.partnerName = mPerson.name
-            }
-            if(u.parent?.first == mPerson.id){
-                u.parentName = Pair(mPerson.name, u.parentName!!.second)
-            }
-            if(u.parent?.second == mPerson.id){
-                u.parentName = Pair(u.parentName!!.first, mPerson.name)
+        changedNameLoopHandler(mPerson)
+
+        if (mContext.mClans[mPerson.ancestorId] != null && mPerson.ancestorId == mPerson.id){
+            val clan = mContext.mClans[mPerson.ancestorId!!]!!
+            clan.name = first
+            clan.clanPersonList.forEach { (_: String, u: Person) ->
+                val ming = u.name.substring(u.lastName.length)
+                u.name = first + ming
+                u.lastName = first
+                changedNameLoopHandler(u)
             }
         }
         mCallback.update(3)
         Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show()
+    }
+
+    fun changedNameLoopHandler(person: Person){
+        mContext.mPersons.forEach { (_: String, u: Person) ->
+            if(u.partner == person.id){
+                u.partnerName = person.name
+            }
+            if(u.parent?.first == person.id){
+                u.parentName = Pair(person.name, u.parentName!!.second)
+            }
+            if(u.parent?.second == person.id){
+                u.parentName = Pair(u.parentName!!.first, person.name)
+            }
+        }
     }
 
     @OnClick(R.id.btn_be)

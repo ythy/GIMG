@@ -314,18 +314,13 @@ class CultivationActivity : BaseActivity() {
 //            }
 //        }
 
-        mPersons.forEach { (_: String, p: Person) ->
-            p.followerList.groupBy { it.first }.forEach { (t, u) ->
-                val f = mConfig.follower.find { it.id == t }!!
-                if(u.size > f.max){
-                    val extraFollower = u.subList(f.max, u.size)
-                    extraFollower.forEach {
-                        p.followerList.remove(it)
-                    }
-                }
+        mPersons.forEach {
+            if(it.value.lingGenType.type == 5){
+                deadHandler(it.value, mCurrentXun)
             }
-            p.equipmentList.removeIf { it.first.startsWith("700640") }
         }
+
+
 
     }
 
@@ -1011,20 +1006,22 @@ class CultivationActivity : BaseActivity() {
             mBoss.map(Map.Entry<String, Person>::value).filter { (xun - it.lastBirthDay) / 12 < it.lifetime && it.remainHit > 0  }.forEach { u ->
                 val targets = mPersons.map { it.value }.shuffled()
                 val person = targets[0]
-                val result = CultivationBattleHelper.battlePerson(mPersons, person, u, 10)
-                if (result) {
-                    u.lifetime = 0
-                    mAlliance[u.allianceId]?.personList?.remove(u.id)
-                    writeHistory("${u.name} 倒", u)
-                    gainTeji(person, 50 * u.type)
-                    CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
-                }else{
-                    u.remainHit --
-                    val punishWeight = mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)
-                    person.xiuXei -= u.type * punishWeight * 10000
-                    if(u.remainHit <= 0){
+                if (CultivationHelper.getProperty(person)[0] > 0){
+                    val result = CultivationBattleHelper.battlePerson(mPersons, person, u, 10)
+                    if (result) {
+                        u.lifetime = 0
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
-                        writeHistory("${u.name} 消失", u)
+                        writeHistory("${u.name} 倒", u)
+                        gainTeji(person, 50 * u.type)
+                        CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
+                    }else{
+                        u.remainHit --
+                        val punishWeight = mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)
+                        person.xiuXei -= u.type * punishWeight * 10000
+                        if(u.remainHit <= 0){
+                            mAlliance[u.allianceId]?.personList?.remove(u.id)
+                            writeHistory("${u.name} 消失", u)
+                        }
                     }
                 }
             }

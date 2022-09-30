@@ -157,7 +157,7 @@ class FragmentDialogRank constructor(private val mType:Int)  : DialogFragment() 
 
     private fun updateList(list:MutableList<SimpleData>){
         mListData.clear()
-        mListData.addAll(list.sortedBy { it.seq })
+        mListData.addAll(list.sortedByDescending { it.seq })
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
         mTotalText.text = list.size.toString()

@@ -172,32 +172,37 @@ object CultivationHelper {
         return Triple(lingGen, lingGenId, lingGenName)
     }
 
+    private fun getParentWeightForLingGen(person: Person?):Int{
+        return  when(person?.lingGenType?.type ?: 0) {
+            1 -> 5000
+            2 -> 500
+            3 -> 200
+            4 -> 100
+            5 -> 1
+            else -> 10000
+        }
+    }
 
     private fun getLingGen(parent: Pair<Person, Person>?, lingGenTypeFixed:String? = null, lingGenWeight:Int):Triple<LingGen, String, String>{
         if(lingGenTypeFixed != null){
             return getLingGenDetail(lingGenTypeFixed)
         }
-        var firestNumber = 100
-        var secondNumber = 100
-        if(parent != null){
-            when {
-                parent.first.lingGenType.type == 1 -> firestNumber = 50
-                parent.first.lingGenType.type == 2 -> firestNumber = 5
-                parent.first.lingGenType.type == 3 -> firestNumber = 2
-                parent.first.lingGenType.type == 4 -> firestNumber = 1
-            }
-            when {
-                parent.second.lingGenType.type == 1 -> secondNumber = 50
-                parent.second.lingGenType.type == 2 -> secondNumber = 5
-                parent.second.lingGenType.type == 3 -> secondNumber = 2
-                parent.second.lingGenType.type == 4 -> secondNumber = 1
-            }
-        }
-        val selectNumber = Random().nextInt(200 + firestNumber + secondNumber)
         val lingGenName: String
         val lingGenId: String
         var lingGen: LingGen? = null
-        if(parent == null || lingGenWeight > 1 || selectNumber < 200){
+        val firstNumber = getParentWeightForLingGen(parent?.first)
+        val secondNumber = getParentWeightForLingGen(parent?.second)
+        if(parent != null && isTrigger(40000 / (firstNumber + secondNumber))){
+            val selectNumber = Random().nextInt(firstNumber + secondNumber)
+            val maxPerson:Person = if(selectNumber < firstNumber){
+                parent.first
+            }else{
+                parent.second
+            }
+            lingGen = maxPerson.lingGenType
+            lingGenId = maxPerson.lingGenId
+            lingGenName = maxPerson.lingGenName
+        }else{
             val lingGenList = mConfig.lingGenType.sortedByDescending { it.randomBasic }
             for (i in 0 until lingGenList.size){
                 val weight = Math.max(1, lingGenList[i].randomBasic / lingGenWeight)
@@ -209,15 +214,6 @@ object CultivationHelper {
             val info = getLingGenDetail(lingGen!!.id)
             lingGenId = info.second
             lingGenName = info.third
-        }else{
-            val maxPerson:Person = if(selectNumber in 200 until 200 + firestNumber){
-                parent.first
-            }else{
-                parent.second
-            }
-            lingGen = maxPerson.lingGenType
-            lingGenId = maxPerson.lingGenId
-            lingGenName = maxPerson.lingGenName
         }
         return Triple(lingGen, lingGenId, lingGenName)
     }
