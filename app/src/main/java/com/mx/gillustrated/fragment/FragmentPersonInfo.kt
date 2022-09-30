@@ -65,7 +65,20 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
     @BindView(R.id.tv_xiuwei)
     lateinit var tvXiuwei:TextView
 
+    @OnClick(R.id.btn_revive)
+    fun onReviveHandler(){
+        if(mBtnRevive.text == "Kill"){
+            mContext.killPerson(mPerson.id)
+            mBtnRevive.text = "Revive"
+        }else{
+            mContext.revivePerson(mPerson.id)
+            mBtnRevive.text = "Kill"
+        }
+        mCallback.update(3)
+    }
 
+    @BindView(R.id.btn_revive)
+    lateinit var mBtnRevive:Button
 
     @OnClick(R.id.btn_life)
     fun onLifetimeHandler(){
@@ -184,6 +197,11 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
        // mHome.addView(draw)
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getPersonData(id)!!
+        if(mContext.getOnlinePersonDetail(mPerson.id) == null){
+            mBtnRevive.text = "Revive"
+        }else{
+            mBtnRevive.text = "Kill"
+        }
         mSwitchSingled.isChecked = mPerson.singled
         mSwitchDink.isChecked = mPerson.dink
         etProfile.setText(mPerson.profile.toString())

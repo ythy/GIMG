@@ -61,6 +61,9 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     @BindView(R.id.btn_be)
     lateinit var mBe: Button
 
+    @BindView(R.id.btn_clear)
+    lateinit var mClear: Button
+
 
     @OnClick(R.id.btn_close)
     fun onCloseHandler(){
@@ -73,6 +76,11 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
        mContext.bePerson()
     }
 
+    @OnClick(R.id.btn_clear)
+    fun onClearClickHandler(){
+        mContext.mDeadPersons.clear()
+    }
+
     @OnClick(R.id.btn_switch)
     fun onSwitchClickHandler(){
         if (mType > 0)
@@ -82,11 +90,13 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             mSwitchBtn.text = "offline"
             mSwitchBtn.tag = "OFF"
             mBe.visibility = View.VISIBLE
+            mClear.visibility = View.VISIBLE
             setOfflineList()
         }else{
             mSwitchBtn.text = "online"
             mSwitchBtn.tag = "ON"
             mBe.visibility = View.GONE
+            mClear.visibility = View.GONE
             setOnlineList()
         }
     }

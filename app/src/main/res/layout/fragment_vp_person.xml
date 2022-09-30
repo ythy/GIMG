@@ -19,6 +19,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/ButtonSmall"
                 android:layout_marginStart="20dp"
                 android:id="@+id/btn_be"
                 android:visibility="gone"
@@ -26,6 +27,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/ButtonSmall"
                 android:layout_marginStart="20dp"
                 android:id="@+id/btn_assign"
                 android:visibility="gone"
@@ -46,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                style="@style/ButtonSmall"
                 android:id="@+id/btn_profile"
                 android:text="save"/>
         </LinearLayout>
@@ -71,6 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                style="@style/ButtonSmall"
                 android:id="@+id/btn_props"
                 android:text="reset"/>
         </LinearLayout>
@@ -116,12 +120,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                style="@style/ButtonSmall"
                 android:id="@+id/btn_name"
                 android:text="save"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:layout_marginTop="10dp">
             <TextView
                 android:layout_width="wrap_content"
@@ -131,8 +137,15 @@
             <ImageButton
                 style="@style/ImageButtonSmall"
                 android:background="@drawable/material_add"
-                android:layout_marginStart="3dp"
+                android:layout_marginStart="5dp"
                 android:id="@+id/btn_life" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ButtonSmall"
+                android:id="@+id/btn_revive"
+                android:layout_marginStart="5dp"
+                android:text="Kill"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

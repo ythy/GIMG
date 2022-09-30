@@ -189,12 +189,6 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_revive"
-                android:layout_marginStart="5dp"
-                android:text="Kill"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:id="@+id/btn_close"
                 android:text="OK"/>

@@ -37,18 +37,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                style="@style/ButtonSmall"
                 android:id="@+id/btn_fav"
                 android:text="FAV"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                style="@style/ButtonSmall"
                 android:id="@+id/btn_spec"
                 android:text="SPEC"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                style="@style/ButtonSmall"
                 android:id="@+id/btn_talent"
                 android:text="TALENT"/>
         </LinearLayout>
@@ -89,12 +92,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                style="@style/ButtonSmall"
                 android:id="@+id/btn_save"
                 android:text="Save"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                style="@style/ButtonSmall"
                 android:id="@+id/btn_reset"
                 android:text="Reset"/>
         </LinearLayout>

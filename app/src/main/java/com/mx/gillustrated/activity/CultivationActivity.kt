@@ -930,7 +930,9 @@ class CultivationActivity : BaseActivity() {
 
     fun updateNationPost(id:String):Nation?{
         val mNation = mNations[id]!!
-        val ps = ConcurrentHashMap(mPersons.filter { it.value.nationId == mNation.id }).map { it.value }.toMutableList()
+        val ps = ConcurrentHashMap(mPersons.filter {
+            it.value.nationId == mNation.id && it.value.lingGenType.type < 5 })
+                .map { it.value }.toMutableList()
         if (ps.size < 10)
             return null
         ps.forEach {
@@ -1525,8 +1527,8 @@ class CultivationActivity : BaseActivity() {
 
     //true: fiest win
     private fun roundMultiBattle(firstPersonList:ConcurrentHashMap<String, Person>, secondPersonList:ConcurrentHashMap<String, Person>, round:Int, count:Int):Boolean{
-        val firstPersons = firstPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.take(count).shuffled()
-        val secondPersons = secondPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.take(count).shuffled()
+        val firstPersons = firstPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }.take(count).shuffled()
+        val secondPersons = secondPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }.take(count).shuffled()
 
         if(firstPersons.isEmpty()){
             return false

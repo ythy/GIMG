@@ -105,19 +105,6 @@ class FragmentDialogPerson : DialogFragment() {
         }
     }
 
-    @OnClick(R.id.btn_revive)
-    fun onReviveHandler(){
-        if(mBtnRevive.text == "Kill"){
-            mContext.killPerson(mPerson.id)
-        }else{
-            mContext.revivePerson(mPerson.id)
-            mThreadRunnable = true
-        }
-    }
-
-    @BindView(R.id.btn_revive)
-    lateinit var mBtnRevive:Button
-
     @BindView(R.id.sch_fav)
     lateinit var mSwitchFav:Switch
 
@@ -295,9 +282,6 @@ class FragmentDialogPerson : DialogFragment() {
     fun updateView(){
         if(mContext.getOnlinePersonDetail(mPerson.id) == null){
             mThreadRunnable = false
-            mBtnRevive.text = "Revive"
-        }else{
-            mBtnRevive.text = "Kill"
         }
         mSwitchFav.isChecked = mPerson.isFav
         val lifeTurn = if(mPerson.lifeTurn == 0) "" else ".${mPerson.lifeTurn}"

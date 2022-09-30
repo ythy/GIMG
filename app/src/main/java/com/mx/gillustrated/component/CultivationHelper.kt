@@ -65,7 +65,7 @@ object CultivationHelper {
         person.allianceProperty = alliance.property
         person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
         person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
-        if(alliance.type == 3 || alliance.type == 4){
+        if(alliance.type >= 3){
             person.singled = true
             person.dink = true
         }
@@ -92,13 +92,13 @@ object CultivationHelper {
         if(alliance.zhuPerson != null){
             return
         }
-        val personList = Collections.synchronizedList( persons.map { it.value })
+        val personList = Collections.synchronizedList( persons.map { it.value }.filter { it.type == 0 })
         alliance.zhuPerson = personList.sortedBy { it.lastBirthDay }.first()
     }
 
     private fun updateG1InAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
         val total = Math.min(10, Math.max(1, persons.size / 4))
-        val personList =  Collections.synchronizedList( persons.map { it.value })
+        val personList =  Collections.synchronizedList( persons.map { it.value }.filter { it.type == 0 })
         alliance.speedG1PersonList.clear()
         personList.sortByDescending { it.extraSpeed }
         for (i in 0 until total){
