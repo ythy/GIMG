@@ -522,6 +522,11 @@ object CultivationHelper {
         }
     }
 
+    fun getYearString(xun:Long = mCurrentXun):String{
+        val wan = Math.max(1, xun / 12 / 10000)
+        return "$wan${showing("万年")}"
+    }
+
     fun showing(input:String):String{
         return if (pinyinMode) PinyinUtil.convert(input.trim()) else input.trim()
     }

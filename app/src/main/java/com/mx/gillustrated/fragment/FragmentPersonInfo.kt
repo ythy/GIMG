@@ -16,6 +16,7 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName3
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName4
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName5
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstNameWeight
 import com.mx.gillustrated.dialog.FragmentDialogPerson
 import com.mx.gillustrated.util.NameUtil
@@ -61,6 +62,10 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
     @BindView(R.id.sch_dink)
     lateinit var mSwitchDink:Switch
+
+    @BindView(R.id.sch_never_dead)
+    lateinit var mSwitchNeverDead:Switch
+
 
     @BindView(R.id.tv_xiuwei)
     lateinit var tvXiuwei:TextView
@@ -179,6 +184,11 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         mPerson.dink = checked
     }
 
+    @OnCheckedChanged(R.id.sch_never_dead)
+    fun onNeverDeadSwitch(checked:Boolean){
+        mPerson.neverDead = checked
+    }
+
     lateinit var mPerson: Person
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -204,11 +214,13 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         }
         mSwitchSingled.isChecked = mPerson.singled
         mSwitchDink.isChecked = mPerson.dink
+        mSwitchNeverDead.isChecked =  mPerson.neverDead
         etProfile.setText(mPerson.profile.toString())
         if(mPerson.specIdentity > 0){
             val persons = mutableListOf<CultivationSetting.PresetInfo>()
             persons.addAll(SpecPersonFirstName3)
             persons.addAll(SpecPersonFirstName4)
+            persons.addAll(SpecPersonFirstName5)
             val spec = persons.find { it.identity == mPerson.specIdentity }
             if(spec == null){
                 etTianFu.setText(SpecPersonFirstNameWeight.first.toString())

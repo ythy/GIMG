@@ -62,6 +62,12 @@ class FragmentDialogClanList  : DialogFragment() {
         this.dismiss()
     }
 
+    @OnClick(R.id.btn_optimize)
+    fun onOptimizeHandler(){
+        mContext.optimizeClanPersons()
+    }
+
+
     @OnItemClick(R.id.lv_clan)
     fun onItemClick(position:Int){
         if(mClanListData[position].clanPersonList.map { it.value }.count() == 0){

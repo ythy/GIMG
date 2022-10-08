@@ -84,6 +84,29 @@ object CultivationSetting {
             PresetInfo(14030140, Triple("\u534e", "\u4f57",2048))
     )
 
+    val SpecPersonFirstName5:MutableList<PresetInfo> = mutableListOf(
+            PresetInfo(15000010, Pair("\u674e","\u767d"),0, 200, 600),
+            PresetInfo(15000020, Pair("\u675c","\u752b"),0, 100, 100),
+            PresetInfo(15000031, Pair("\u674e","\u6e05\u7167"),0, 100, 200),
+            PresetInfo(15000040, Pair("\u8f9b","\u5f03\u75be"),0, 100, 100),
+            PresetInfo(15000050, Pair("\u767d","\u5c45\u6613"),0, 100, 100),
+            PresetInfo(15000060, Pair("\u82cf","\u8f7c"),0, 100, 100),
+            PresetInfo(15000070, Pair("\u738b","\u7fb2\u4e4b"),0, 100, 200),
+            PresetInfo(15000081, Pair("\u865e","\u59ec"),15010020, 100, 200),
+            PresetInfo(15000091, Pair("\u6768","\u7389\u73af"),15020040,100,200),
+
+            PresetInfo(15010010, Pair("\u674e","\u5143\u9738"),0, 500, 1000),
+            PresetInfo(15010020, Pair("\u9879","\u7fbd"),15000081, 500, 1000),
+            PresetInfo(15010030, Pair("\u8346","\u8f72"),0, 100, 100),
+
+            PresetInfo(15020010, Pair("\u5b34","\u653f"),0, 500, 1000),
+            PresetInfo(15020020, Pair("\u674e","\u4e16\u6c11"),0, 100, 200),
+            PresetInfo(15020030, Pair("\u8d75","\u4f76"),0, 100, 100),
+            PresetInfo(15020040, Pair("\u674e","\u9686\u57fa"),15000091)
+
+
+    )
+
     //1300 0010
     fun getIdentityIndex(identity:Int):Int{
         return (identity / 10000) % 10

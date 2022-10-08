@@ -94,6 +94,16 @@ class FragmentDialogSetting : DialogFragment() {
         newFragment.show(ft, "dialog_person_list")
     }
 
+    @OnClick(R.id.btn_xiuwei)
+    fun onXiuweiRankClick(){
+        val ft = childFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogPersonList.newInstance(4)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_person_list")
+    }
+
+
 
 
     lateinit var mActivity: CultivationActivity

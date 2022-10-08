@@ -55,6 +55,7 @@ class Person() :Parcelable {
         var allianceProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//alliance 初始和读取更新
         var specIdentity:Int = 0 //spec person nid
         var nationPost:Int = 0
+        var neverDead:Boolean = false
 
         //extra props
         var lastBirthDay:Long = 0
@@ -70,6 +71,7 @@ class Person() :Parcelable {
         var extraSpeed:Int = 0 //tianfu 初始和读取更新
         var extraXuiweiMulti:Int = 0 //tianfu + alliance  初始和读取更新
         var allianceName:String = "" // alliance
+
 
         //不需要保存
         var type = 0// 标注boss用 boss > 0
@@ -147,6 +149,7 @@ class Person() :Parcelable {
                 nationId = parcel.readString()
                 specIdentity = parcel.readInt()
                 nationPost = parcel.readInt()
+                neverDead = parcel.readByte() != 0.toByte()
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -213,6 +216,8 @@ class Person() :Parcelable {
                 parcel.writeString(nationId)
                 parcel.writeInt(specIdentity)
                 parcel.writeInt(nationPost)
+                parcel.writeByte(if (neverDead) 1 else 0)
+
         }
 
         override fun describeContents(): Int {

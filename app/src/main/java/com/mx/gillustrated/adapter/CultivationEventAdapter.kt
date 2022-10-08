@@ -44,7 +44,7 @@ class CultivationEventAdapter constructor(mContext: Context, private val list: L
             component = convertView.tag as ViewHolder
 
         val values = list[arg0]
-        component.content.text = CultivationHelper.showing("${values.happenTime/12}年 ${values.content}")
+        component.content.text = CultivationHelper.showing("${CultivationHelper.getYearString(values.happenTime)} ${values.content}")
 
         component.del.setOnClickListener{
             callbacks.onDeleteHandler(values)

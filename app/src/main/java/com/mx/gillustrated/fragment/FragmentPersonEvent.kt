@@ -61,15 +61,15 @@ class FragmentPersonEvent : Fragment(){
         normalRender()
     }
 
-    fun normalRender(){
+    private fun normalRender(){
         mEventDataString = mPerson.events.toMutableList().sortedByDescending { it.happenTime }.map {
-                CultivationHelper.showing("${it.happenTime/12}年 ${it.content}")
+                CultivationHelper.showing("${CultivationHelper.getYearString(it.happenTime)} ${it.content}")
         }.toMutableList()
         mListView.adapter = ArrayAdapter(this.context!!, R.layout.list_simple_item_text1,
                 android.R.id.text1, mEventDataString)
     }
 
-    fun specRender(){
+    private fun specRender(){
         mEventData = mPerson.events.toMutableList().sortedByDescending { it.happenTime }.toMutableList()
         mListView.adapter = CultivationEventAdapter(this.context!!, mEventData, object : CultivationEventAdapter.EventAdapterCallback{
             override fun onDeleteHandler(event: PersonEvent) {

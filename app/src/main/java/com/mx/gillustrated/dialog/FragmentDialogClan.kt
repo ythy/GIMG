@@ -50,7 +50,6 @@ class FragmentDialogClan : DialogFragment() {
         this.dismiss()
     }
 
-
     @OnItemClick(R.id.lv_person)
     fun onItemClick(position:Int){
         val ft = mContext.supportFragmentManager.beginTransaction()

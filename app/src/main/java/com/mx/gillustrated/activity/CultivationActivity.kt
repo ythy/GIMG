@@ -36,9 +36,9 @@ import com.mx.gillustrated.component.CultivationHelper.isTrigger
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
 import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
-import com.mx.gillustrated.component.CultivationHelper.showing
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName4
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName5
 import com.mx.gillustrated.component.CultivationSetting.getIdentityGender
 import com.mx.gillustrated.component.CultivationSetting.getIdentityIndex
 import com.mx.gillustrated.component.CultivationSetting.createIdentitySeq
@@ -575,7 +575,18 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun deadHandler(it:Person, currentXun:Long){
+    fun optimizeClanPersons(){
+        mClans.forEach { (_: String, u: Clan) ->
+            u.clanPersonList.map { it.value }.sortedBy { it.ancestorLevel }.forEach {
+                if(it.ancestorLevel > 0 && getOnlinePersonDetail(it.parent?.first) == null ){
+                    deadHandler(it)
+                }
+            }
+        }
+        showToast("Clan Person 优化完成")
+    }
+
+    private fun deadHandler(it:Person, currentXun:Long = mCurrentXun){
         mPersons.remove(it.id)
         mDeadPersons[it.id] = it
         it.nationPost = 0
@@ -603,7 +614,7 @@ class CultivationActivity : BaseActivity() {
     private fun isDeadException(person:Person):Boolean{
         val matchName = "(李逍遥|阿奴)".toRegex()
         val lifeTurn = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
-        if(person.isFav){
+        if(person.isFav || person.neverDead){
             return true
         }else if(matchName.find(person.name) != null){
             return true
@@ -614,7 +625,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun xunHandler(currentXun:Long) {
-        val year = getYearString(currentXun)
+        val year = CultivationHelper.getYearString(currentXun)
         if(!isStop && mDate.text != year) {
             mDate.text = year
         }
@@ -704,6 +715,7 @@ class CultivationActivity : BaseActivity() {
         //以下辅助操作
         when {
             currentXun % 100000 == 0L && isStop -> {
+                optimizeClanPersons()
                 mDeadPersons.clear()
                 addSpecPerson()
                 saveAllData(false)
@@ -772,10 +784,6 @@ class CultivationActivity : BaseActivity() {
         mHistoryData.addAll(0, tempList)
         (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
         mHistory.invalidateViews()
-    }
-
-    private fun getYearString(xun:Long = mCurrentXun):String{
-       return "${xun / 12}${showing("年")}"
     }
 
     private fun addMultiPerson(count:Int){
@@ -1009,7 +1017,7 @@ class CultivationActivity : BaseActivity() {
                 val targets = mPersons.map { it.value }.shuffled()
                 val person = targets[0]
                 if (CultivationHelper.getProperty(person)[0] > 0){
-                    val result = CultivationBattleHelper.battlePerson(mPersons, person, u, 10)
+                    val result = CultivationBattleHelper.battlePerson(mPersons, person, u, 50)
                     if (result) {
                         u.lifetime = 0
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
@@ -1169,7 +1177,7 @@ class CultivationActivity : BaseActivity() {
     private fun addSpecPerson(){
         val allianceList = Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 })
         val specPersonList = mutableListOf<PresetInfo>()
-        for ( i in 0 until 4){
+        for ( i in 0 until allianceList.size){
             SpecPersonFirstName.forEachIndexed { index, first ->
                 specPersonList.add(PresetInfo("110$i${createIdentitySeq(index)}1".toInt(), Pair(allianceList[i].name.slice(0 until 1), first),
                         0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second))
@@ -1181,11 +1189,13 @@ class CultivationActivity : BaseActivity() {
                 mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id })
         fixedPersonGenerate(SpecPersonFirstName4,
                 mAlliance.map { it.value }.filter { it.type == 4 }.sortedBy { it.id })
-
+        fixedPersonGenerate(SpecPersonFirstName5,
+                mAlliance.map { it.value }.filter { it.type == 5 }.sortedBy { it.id })
 
         val specPersons = mutableListOf<PresetInfo>()
         specPersons.addAll(SpecPersonFirstName3)
         specPersons.addAll(SpecPersonFirstName4)
+        specPersons.addAll(SpecPersonFirstName5)
         specPersons.forEach { p ->
             if(p.partner > 0){
                 val current = mPersons.map { it.value }.find { it.specIdentity == p.identity }

@@ -23,7 +23,8 @@ import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 import java.util.*
 
-//type 0 all; 1 fav; 2 carrer rarity>=8 ; 3 lifeturn == 0 & lingGen type > 1 & tianFu rarity sum > 10
+//type 0 all; 1 fav; 2 carrer rarity>=8 ; 3 lifeturn == 0 & lingGen type > 1 & tianFu rarity sum > 10;
+//type 4  rank by xiuwei
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFragment() {
@@ -195,9 +196,15 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                 it.name.startsWith(filterString, true) || PinyinUtil.convert(it.name).startsWith(filterString, true)
             })
 
-        mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
-                .thenByDescending { it.jingJieId }
-                .thenByDescending { it.xiuXei } )
+        if (mType == 4){
+            mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it, mContext.mAlliance) }
+                    .thenByDescending { it.lifeTurn })
+        }else{
+            mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
+                    .thenByDescending { it.jingJieId }
+                    .thenByDescending { it.xiuXei } )
+        }
+
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
         val jie = mContext.mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)

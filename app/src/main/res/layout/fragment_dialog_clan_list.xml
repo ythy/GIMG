@@ -40,6 +40,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:id="@+id/btn_optimize"
+                android:text="OPT"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:id="@+id/btn_close"
                 android:text="OK"/>
         </LinearLayout>
