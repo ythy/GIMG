@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

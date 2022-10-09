@@ -50,9 +50,15 @@ class FragmentDialogAlliance : DialogFragment() {
         this.dismiss()
     }
 
-    @OnClick(R.id.btn_speed)
-    fun onSpeedHandler(){
-
+    @OnClick(R.id.btn_insert)
+    fun onInsertPersonHandler(){
+        val name = mDialogView.insertPerson.text.toString()
+        val person = mContext.mPersons.map { it.value }.find { it.name == name || PinyinUtil.convert(it.name) == name }
+        if (person != null){
+            CultivationHelper.changedToFixedAlliance(person, mContext.mAlliance, mAlliance)
+            mDialogView.insertPerson.setText("")
+            Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
+        }
     }
 
     @OnClick(R.id.tv_xiuwei)
@@ -185,6 +191,10 @@ class FragmentDialogAlliance : DialogFragment() {
 
         @BindView(R.id.ll_parent_measure)
         lateinit var measures:LinearLayout
+
+        @BindView(R.id.et_insert)
+        lateinit var insertPerson:EditText
+
 
         init {
             ButterKnife.bind(this, view)

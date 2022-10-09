@@ -17,7 +17,7 @@ object CultivationSetting {
     val SpecPersonFirstNameWeight:Pair<Int, Int> = Pair(50, 20)// tianfu.linggen
 
     //13 00 001 0
-    val SpecPersonFirstName3:MutableList<PresetInfo> = mutableListOf(
+    private val SpecPersonFirstName3:MutableList<PresetInfo> = mutableListOf(
             PresetInfo(13000010, Pair("\u6b65","\u60ca\u4e91"),0, 100, 200),
             PresetInfo(13000020, Pair("\u8042","\u98ce"),13000031, 200, 600),
             PresetInfo(13000031, Pair("\u7b2c\u4e8c","\u68a6"),13000020),
@@ -35,7 +35,7 @@ object CultivationSetting {
             PresetInfo(13020091, Pair("\u4efb","\u76c8\u76c8"), 0, 200, 600)
     )
 
-    val SpecPersonFirstName4:MutableList<PresetInfo> = mutableListOf(
+    private val SpecPersonFirstName4:MutableList<PresetInfo> = mutableListOf(
             PresetInfo(14000010, Triple("\u66f9", "\u64cd", 2047),0,500, 1000),
             PresetInfo(14000020, Triple("\u53f8\u9a6c", "\u61ff", 2011), 0,200, 600),
             PresetInfo(14000030, Triple("\u90ed", "\u5609", 2019), 0,100, 200),
@@ -84,7 +84,7 @@ object CultivationSetting {
             PresetInfo(14030140, Triple("\u534e", "\u4f57",2048))
     )
 
-    val SpecPersonFirstName5:MutableList<PresetInfo> = mutableListOf(
+    private val SpecPersonFirstName5:MutableList<PresetInfo> = mutableListOf(
             PresetInfo(15000010, Pair("\u674e","\u767d"),0, 200, 600),
             PresetInfo(15000020, Pair("\u675c","\u752b"),0, 100, 100),
             PresetInfo(15000031, Pair("\u674e","\u6e05\u7167"),0, 100, 200),
@@ -103,9 +103,94 @@ object CultivationSetting {
             PresetInfo(15020020, Pair("\u674e","\u4e16\u6c11"),0, 100, 200),
             PresetInfo(15020030, Pair("\u8d75","\u4f76"),0, 100, 100),
             PresetInfo(15020040, Pair("\u674e","\u9686\u57fa"),15000091)
-
-
     )
+
+    private val SpecPersonFirstName6:MutableList<PresetInfo> = mutableListOf(
+            PresetInfo(16000010, Pair("\u5b8b","\u6c5f"),0, 100, 200),
+            PresetInfo(16000020, Pair("\u6768","\u5fd7")),
+            PresetInfo(16000030, Pair("\u5218","\u5510")),
+            PresetInfo(16000040, Pair("\u516c\u5b59","\u80dc"),0, 100, 100),
+            PresetInfo(16000051, Pair("\u6248","\u4e09\u5a18"),0, 200, 600),
+            PresetInfo(16000060, Pair("\u6797","\u51b2"),0, 100, 100),
+            PresetInfo(16000070, Pair("\u9c81","\u667a\u6df1")),
+
+            PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
+            PresetInfo(16010020, Pair("\u9ad8","\u7403"),0, 100, 100),
+
+            PresetInfo(16020010, Pair("\u6641","\u76d6"),0, 100, 200),
+            PresetInfo(16020020, Pair("\u738b","\u4f26"))
+    )
+
+    private val SpecPersonFirstName7:MutableList<PresetInfo> = mutableListOf(
+
+            PresetInfo(17000010, Pair("\u5929\u9a6c\u5ea7","\u661f\u77e2"),0, 100, 200),
+            PresetInfo(17000020, Pair("\u51e4\u51f0\u5ea7","\u4e00\u8f89"),17030051, 100, 200),
+            PresetInfo(17000030, Pair("\u5929\u9f99\u5ea7","\u7d2b\u9f99")),
+            PresetInfo(17000040, Pair("\u767d\u9e1f\u5ea7","\u51b0\u6cb3")),
+            PresetInfo(17000050, Pair("\u4ed9\u5973\u5ea7","\u77ac")),
+            PresetInfo(17000060, Pair("\u72ec\u89d2\u517d\u5ea7","\u90aa\u6b66")),
+
+            PresetInfo(17010010, Pair("\u53cc\u5b50\u5ea7","\u6492\u52a0"),0, 200, 600),
+            PresetInfo(17010020, Pair("\u5904\u5973\u5ea7","\u6c99\u52a0"),0, 200, 600),
+            PresetInfo(17010030, Pair("\u767d\u7f8a\u5ea7","\u7a46")),
+            PresetInfo(17010040, Pair("\u6c34\u74f6\u5ea7","\u5361\u5999")),
+            PresetInfo(17010050, Pair("\u5929\u874e\u5ea7","\u7c73\u7f57")),
+            PresetInfo(17010060, Pair("\u6469\u7faf\u5ea7","\u4fee\u7f57")),
+            PresetInfo(17010070, Pair("\u53cc\u9c7c\u5ea7","\u963f\u5e03\u7f57\u72c4")),
+            PresetInfo(17010080, Pair("\u72ee\u5b50\u5ea7","\u827e\u5965\u91cc\u4e9a")),
+            PresetInfo(17010090, Pair("\u5929\u67b0\u5ea7","\u7ae5\u864e"),0,100,100),
+            PresetInfo(17010100, Pair("\u767d\u7f8a\u5ea7","\u53f2\u6602"),0,100,200),
+            PresetInfo(17010110, Pair("\u91d1\u725b\u5ea7","\u963f\u9c81\u8fea\u5df4")),
+            PresetInfo(17010120, Pair("\u5de8\u87f9\u5ea7","\u8fea\u65af\u9a6c\u65af\u514b")),
+            PresetInfo(17010130, Pair("\u5c04\u624b\u5ea7","\u827e\u4fc4\u7f57\u65af")),
+            PresetInfo(17010140, Pair("\u53cc\u5b50\u5ea7","\u52a0\u9686"),0, 100, 100),
+
+            PresetInfo(17020010, Pair("\u6d77\u7687","\u6ce2\u585e\u51ac"),0, 1000, 2000),
+            PresetInfo(17020020, Pair("\u6d77\u9f99","\u52a0\u9686"),0, 100, 100),
+            PresetInfo(17020030, Pair("\u6d77\u9b54\u5973","\u82cf\u5170\u7279"),0, 100, 100),
+            PresetInfo(17020040, Pair("\u6d77\u9a6c","\u5df4\u5c14\u5b89")),
+            PresetInfo(17020050, Pair("\u516d\u5723\u517d","\u4f0a\u5965")),
+            PresetInfo(17020060, Pair("\u6d77\u7687\u5b50","\u514b\u4fee\u62c9"),0,100,100),
+            PresetInfo(17020070, Pair("\u9b54\u9b3c\u9c7c","\u827e\u5c14\u624e\u514b")),
+            PresetInfo(17020080, Pair("\u6d77\u5e7b\u517d","\u5361\u8428")),
+
+
+            PresetInfo(17030010, Pair("\u51a5\u738b","\u54c8\u8fea\u65af"),0, 1000, 2000),
+            PresetInfo(17030020, Pair("\u7761\u795e","\u4fee\u666e\u8bfa\u65af"),0, 500, 1000),
+            PresetInfo(17030030, Pair("\u6b7b\u795e","\u5854\u7eb3\u6258\u65af"),0, 500, 1000),
+            PresetInfo(17030040, Pair("\u5929\u731b\u661f","\u62c9\u8fbe\u66fc\u8fea\u65af"),0, 100, 100),
+            PresetInfo(17030051, Pair("\u6f58","\u591a\u62c9"),17000020, 100, 200),
+            PresetInfo(17030060, Pair("\u5929\u8d35\u661f","\u7c73\u8bfa\u65af")),
+            PresetInfo(17030070, Pair("\u5929\u96c4\u661f","\u827e\u4e9a\u54e5\u65af")),
+            PresetInfo(17030080, Pair("\u5929\u82f1\u661f","\u8def\u5c3c")),
+            PresetInfo(17030090, Pair("\u5929\u517d\u661f","\u6cd5\u62c9\u5965")),
+            PresetInfo(17030100, Pair("\u51a5\u5de8\u87f9\u5ea7","\u8fea\u65af\u9a6c\u65af\u514b")),
+            PresetInfo(17030110, Pair("\u51a5\u53cc\u9c7c\u5ea7","\u963f\u5e03\u7f57\u72c4")),
+            PresetInfo(17030120, Pair("\u51a5\u6c34\u74f6\u5ea7","\u5361\u5999")),
+            PresetInfo(17030130, Pair("\u51a5\u6469\u7faf\u5ea7","\u4fee\u7f57")),
+            PresetInfo(17030140, Pair("\u51a5\u53cc\u5b50\u5ea7","\u6492\u52a0"),0, 100, 200),
+            PresetInfo(17030150, Pair("\u51a5\u767d\u7f8a\u5ea7","\u53f2\u6602"),0,100,100)
+    )
+
+    fun getSpecPersonsByType():HashMap<Int, MutableList<PresetInfo>>{
+        val persons = hashMapOf<Int, MutableList<PresetInfo>>()
+        persons[3] = SpecPersonFirstName3
+        persons[4] = SpecPersonFirstName4
+        persons[5] = SpecPersonFirstName5
+        persons[6] = SpecPersonFirstName6
+        persons[7] = SpecPersonFirstName7
+        return persons
+    }
+
+    fun getAllSpecPersons():MutableList<PresetInfo>{
+        val persons = mutableListOf<PresetInfo>()
+        persons.addAll(SpecPersonFirstName3)
+        persons.addAll(SpecPersonFirstName4)
+        persons.addAll(SpecPersonFirstName5)
+        persons.addAll(SpecPersonFirstName6)
+        persons.addAll(SpecPersonFirstName7)
+        return persons
+    }
 
     //1300 0010
     fun getIdentityIndex(identity:Int):Int{
@@ -124,6 +209,9 @@ object CultivationSetting {
             else -> "${Math.min(999, index + 1)}"
         }
     }
+
+
+
 
     data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?, var tianFuWeight: Int = 1, var lingGenWeight:Int = 1)
     // type 1 人物信息 assert(person != null), 2 流程信息 assert(battleId != "")

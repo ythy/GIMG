@@ -14,9 +14,6 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName3
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName4
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName5
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstNameWeight
 import com.mx.gillustrated.dialog.FragmentDialogPerson
 import com.mx.gillustrated.util.NameUtil
@@ -120,8 +117,10 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
     @OnClick(R.id.btn_props)
     fun onPropsClickHandler(){
-        CultivationHelper.updatePersonInborn(mPerson, etTianFu.text.toString().toInt(), etLingGen.text.toString().toInt())
+        val alliance = mContext.mAlliance[mPerson.allianceId]
+        CultivationHelper.updatePersonInborn(mPerson, etTianFu.text.toString().toInt(), etLingGen.text.toString().toInt(), alliance)
         mCallback.update(1)
+        updateView()
         Toast.makeText(context, "重置成功", Toast.LENGTH_SHORT).show()
     }
 
@@ -217,10 +216,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         mSwitchNeverDead.isChecked =  mPerson.neverDead
         etProfile.setText(mPerson.profile.toString())
         if(mPerson.specIdentity > 0){
-            val persons = mutableListOf<CultivationSetting.PresetInfo>()
-            persons.addAll(SpecPersonFirstName3)
-            persons.addAll(SpecPersonFirstName4)
-            persons.addAll(SpecPersonFirstName5)
+            val persons =  CultivationSetting.getAllSpecPersons()
             val spec = persons.find { it.identity == mPerson.specIdentity }
             if(spec == null){
                 etTianFu.setText(SpecPersonFirstNameWeight.first.toString())
@@ -258,6 +254,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         if(alliance != null){
             val tianValue = CultivationHelper.getPersonTianfu(mPerson.tianfus.find { it.type == 2 }?.id)?.bonus ?: 0
             tvXiuwei.text = "(${mPerson.lingGenType.qiBasic}+P:${mPerson.extraXiuwei}+A:${mPerson.allianceXiuwei}+E:${mPerson.equipmentXiuwei}+N${CultivationHelper.getNationXiuwei(mPerson)})" +
+                    "${mPerson.lingGenType.qiBasic + mPerson.extraXiuwei + mPerson.allianceXiuwei + mPerson.equipmentXiuwei + CultivationHelper.getNationXiuwei(mPerson)}" +
                     "*${1 + (tianValue.toDouble()/100.0) + alliance.xiuweiMulti.toDouble()/100.0}(C:${tianValue.toDouble()/100.0}+A:${alliance.xiuweiMulti.toDouble()/100.0})"
         }
 

@@ -25,7 +25,6 @@ import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName3
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
 import com.mx.gillustrated.component.CultivationHelper.getPersonBasicString
 import com.mx.gillustrated.component.CultivationHelper.mBattleRound
@@ -37,8 +36,6 @@ import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
 import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
 import com.mx.gillustrated.component.CultivationSetting
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName4
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName5
 import com.mx.gillustrated.component.CultivationSetting.getIdentityGender
 import com.mx.gillustrated.component.CultivationSetting.getIdentityIndex
 import com.mx.gillustrated.component.CultivationSetting.createIdentitySeq
@@ -293,33 +290,12 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun temp(){
-//        SpecPersonFirstName3.forEach { p->
-//            val person = mPersons.map { it.value }.find { it.specIdentity == p.identity }
-//            if(person != null){
-//                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
-//            }
-//        }
-//        SpecPersonFirstName4.forEach { p->
-//            val person = mPersons.map { it.value }.find { it.specIdentity == p.identity }
-//            if(person != null){
-//                CultivationHelper.updatePersonInborn(person, p.tianfuWeight, p.linggenWeight)
-//            }
-//        }
-//        val specPersons = mutableListOf<PresetInfo>()
-//        specPersons.addAll(SpecPersonFirstName3)
-//        specPersons.addAll(SpecPersonFirstName4)
-//        mPersons.map { it.value }.filter { it.allianceId == "6000402" || it.allianceId == "6000403" }.forEach {
-//            if (specPersons.find { p-> p.identity == it.specIdentity} == null  ){
-//               deadHandler(it, mCurrentXun)
-//            }
-//        }
 
-        mPersons.forEach {
-            if(it.value.lingGenType.type == 5){
-                deadHandler(it.value, mCurrentXun)
-            }
-        }
-
+//        mPersons.forEach {
+//            if(it.value.lingGenType.type == 5){
+//                deadHandler(it.value, mCurrentXun)
+//            }
+//        }
 
 
     }
@@ -987,7 +963,7 @@ class CultivationActivity : BaseActivity() {
                 val partner = getOnlinePersonDetail(it.partner)
                 val children = it.children.filter { c-> getOnlinePersonDetail(c) != null }
                 val baseNumber = if(children.isEmpty()) 10L else Math.pow((children.size * 2).toDouble(), 5.0).toLong()
-                if(partner != null && baseNumber < Int.MAX_VALUE){
+                if(partner != null && !partner.dink && baseNumber < Int.MAX_VALUE){
                     if(isTrigger(baseNumber.toInt())){
                         val child = addPersion(Pair(partner.lastName, null), null, 100,
                                     Pair(partner, it))
@@ -1185,18 +1161,12 @@ class CultivationActivity : BaseActivity() {
         }
         fixedPersonGenerate(specPersonList, allianceList)
 
-        fixedPersonGenerate(SpecPersonFirstName3,
-                mAlliance.map { it.value }.filter { it.type == 3 }.sortedBy { it.id })
-        fixedPersonGenerate(SpecPersonFirstName4,
-                mAlliance.map { it.value }.filter { it.type == 4 }.sortedBy { it.id })
-        fixedPersonGenerate(SpecPersonFirstName5,
-                mAlliance.map { it.value }.filter { it.type == 5 }.sortedBy { it.id })
+        CultivationSetting.getSpecPersonsByType().forEach { (t, u) ->
+            fixedPersonGenerate(u,
+                    mAlliance.map { it.value }.filter { it.type == t }.sortedBy { it.id })
+        }
 
-        val specPersons = mutableListOf<PresetInfo>()
-        specPersons.addAll(SpecPersonFirstName3)
-        specPersons.addAll(SpecPersonFirstName4)
-        specPersons.addAll(SpecPersonFirstName5)
-        specPersons.forEach { p ->
+        CultivationSetting.getAllSpecPersons().forEach { p ->
             if(p.partner > 0){
                 val current = mPersons.map { it.value }.find { it.specIdentity == p.identity }
                 if(current != null && current.partner == null ){

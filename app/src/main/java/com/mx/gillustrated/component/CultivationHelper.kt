@@ -1,6 +1,7 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
@@ -65,11 +66,20 @@ object CultivationHelper {
         person.allianceProperty = alliance.property
         person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
         person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
-        if(alliance.type >= 3){
+        if(alliance.type >= 3 && person.specIdentity > 0){
             person.singled = true
             person.dink = true
         }
         person.nationId = alliance.nation
+    }
+
+    fun changedToFixedAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>, newAlliance:Alliance){
+        val originAlliance = allAlliance[person.allianceId]!!
+        originAlliance.personList.remove(person.id)
+        if(originAlliance.zhuPerson == person)
+            originAlliance.zhuPerson = null
+
+        joinFixedAlliance(person, newAlliance)
     }
 
     fun updateAllianceGain(allAlliance:ConcurrentHashMap<String, Alliance>, updated:Boolean = false){
@@ -332,14 +342,14 @@ object CultivationHelper {
         return profile
     }
 
-    fun updatePersonInborn(person: Person, tianFuWeight: Int = 1, lingGenWeight: Int = 1){
+    fun updatePersonInborn(person: Person, tianFuWeight: Int = 1, lingGenWeight: Int = 1, alliance: Alliance? = null){
         val lingGen = getLingGen(null, null, lingGenWeight)
         val tianFus = getTianFu(null, null, tianFuWeight)
         person.lingGenType = lingGen.first
         person.lingGenName = lingGen.third
         person.lingGenId = lingGen.second
         person.tianfus = tianFus
-        updatePersonExtraProperty(person)
+        updatePersonExtraProperty(person, alliance)
     }
 
     fun setPersonJingjie(person: Person, level: Int = 0){
@@ -355,14 +365,14 @@ object CultivationHelper {
         return "${person.name} (${person.age}/${person.lifetime}:${person.jinJieName}) ${person.lingGenName} "
     }
 
-    fun updatePersonExtraProperty(person: Person){
+    fun updatePersonExtraProperty(person: Person, alliance: Alliance? = null){
         val tianFus = person.tianfus.map { getPersonTianfu(it.id)!! }
         person.tianfus = tianFus.toMutableList()
         person.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
         person.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
         person.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
         person.extraProperty = mConfig.lingGenTian.find { it.id == person.lingGenId }?.property ?: mutableListOf(0,0,0,0,0,0,0,0)
-        person.extraXuiweiMulti =  getExtraXuiweiMulti(person)
+        person.extraXuiweiMulti =  getExtraXuiweiMulti(person, alliance)
     }
 
     //0 ~ 5
@@ -432,6 +442,10 @@ object CultivationHelper {
     //20220927 added nation bonus: cishi + 100, duwei + 50
     fun getXiuweiGrow(person:Person, allAllianceMap:ConcurrentHashMap<String, Alliance>):Int{
         val alliance = allAllianceMap[person.allianceId] ?: return 0
+        return getXiuweiGrow(person, alliance)
+    }
+
+    fun getXiuweiGrow(person:Person, alliance: Alliance):Int{
         synchronized(person){
             person.allianceXiuwei = alliance.xiuwei
             if(alliance.speedG1PersonList.contains(person.id)){

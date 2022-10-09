@@ -84,24 +84,24 @@
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
             <Switch
-                android:layout_width="110dp"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/sch_singled"
                 style="@style/BaseSwitchStyle"
                 android:checked="false"
-                android:text="Singled"/>
+                android:text="Single"/>
             <Switch
-                android:layout_width="90dp"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:id="@+id/sch_dink"
                 style="@style/BaseSwitchStyle"
                 android:checked="false"
                 android:text="Dink"/>
             <Switch
-                android:layout_width="90dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:id="@+id/sch_never_dead"
                 style="@style/BaseSwitchStyle"
                 android:checked="false"
