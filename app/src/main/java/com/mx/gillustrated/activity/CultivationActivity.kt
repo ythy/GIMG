@@ -290,12 +290,21 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun temp(){
+        val specConfig = CultivationSetting.getAllSpecPersons()
+        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
+            val config = specConfig.find { c-> c.identity == u.specIdentity }
+            if (config != null){
+                u.name = config.name.first + config.name.second
+                u.lastName = config.name.first
+                if (config.profile > 0)
+                    u.profile = config.profile
+                if (u.partner != null){
+                    mPersons[u.partner ?: ""]?.partnerName = u.name
+                }
+            }
+        }
 
-//        mPersons.forEach {
-//            if(it.value.lingGenType.type == 5){
-//                deadHandler(it.value, mCurrentXun)
-//            }
-//        }
+
 
 
     }
