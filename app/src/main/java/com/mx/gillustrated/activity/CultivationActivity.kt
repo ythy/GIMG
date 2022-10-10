@@ -956,7 +956,7 @@ class CultivationActivity : BaseActivity() {
         ps.removeIf { mNation.ciShi.find { f-> f == it.id } != null }
 
 
-        val endIndex = Math.min(8, Math.max(4, ps.size / 8) )
+        val endIndex = Math.max(4, ps.size / 6)
         mNation.duWei = ps.shuffled().subList(0, endIndex).map {
             it.nationPost = 5
             it.id

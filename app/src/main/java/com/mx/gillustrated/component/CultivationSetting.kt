@@ -129,6 +129,11 @@ object CultivationSetting {
             PresetInfo(17000040, Triple("\u767d\u9e1f\u5ea7","\u51b0\u6cb3",4003)),
             PresetInfo(17000050, Triple("\u4ed9\u5973\u5ea7","\u77ac",4005)),
             PresetInfo(17000060, Triple("\u72ec\u89d2\u517d\u5ea7","\u90aa\u6b66",4006)),
+            PresetInfo(17000070, Triple("\u5e7c\u72ee\u5ea7","\u86ee",4007)),
+            PresetInfo(17000080, Triple("\u8c7a\u72fc\u5ea7","\u90a3\u667a",4008)),
+            PresetInfo(17000090, Triple("\u5927\u718a\u5ea7","\u6a84",4009)),
+            PresetInfo(17000100, Triple("\u6c34\u86c7\u5ea7","\u5e02",4010)),
+            PresetInfo(17000111, Triple("\u53d8\u8272\u9f99\u5ea7","\u73cd\u59ae",2214)),
 
             PresetInfo(17010010, Triple("\u53cc\u5b50\u5ea7","\u6492\u52a0",4012),0, 200, 600),
             PresetInfo(17010020, Triple("\u5904\u5973\u5ea7","\u6c99\u52a0",4015),0, 200, 600),
