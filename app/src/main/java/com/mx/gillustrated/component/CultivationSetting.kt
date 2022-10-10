@@ -169,7 +169,16 @@ object CultivationSetting {
             PresetInfo(17030120, Triple("\u51a5\u6c34\u74f6\u5ea7","\u5361\u5999",4030)),
             PresetInfo(17030130, Triple("\u51a5\u6469\u7faf\u5ea7","\u4fee\u7f57",4029)),
             PresetInfo(17030140, Triple("\u51a5\u53cc\u5b50\u5ea7","\u6492\u52a0",4028),0, 100, 200),
-            PresetInfo(17030150, Triple("\u51a5\u767d\u7f8a\u5ea7","\u53f2\u6602",4025),0,100,100)
+            PresetInfo(17030150, Triple("\u51a5\u767d\u7f8a\u5ea7","\u53f2\u6602",4025),0,100,100),
+
+            PresetInfo(17040011, Triple("\u5929\u9e70\u5ea7","\u9b54\u94c3",2212)),
+            PresetInfo(17040021, Triple("\u86c7\u592b\u5ea7","\u838e\u5c14\u5a1c",2213),0, 100, 200),
+            PresetInfo(17040030, Triple("\u8725\u8734\u5ea7","\u7f8e\u65af\u72c4",4078)),
+            PresetInfo(17040040, Triple("\u767d\u9cb8\u5ea7","\u6469\u897f\u65af",4081)),
+            PresetInfo(17040050, Triple("\u730e\u72ac\u5ea7","\u4e9a\u72c4\u91cc\u5b89",4080)),
+            PresetInfo(17040060, Triple("\u82f1\u4ed9\u5ea7","\u4e9a\u9c81\u54e5\u8def",4079)),
+            PresetInfo(17040070, Triple("\u5929\u7434\u5ea7","\u5965\u8def\u83f2",4082),0,200,600)
+
     )
 
     fun getSpecPersonsByType():HashMap<Int, MutableList<PresetInfo>>{

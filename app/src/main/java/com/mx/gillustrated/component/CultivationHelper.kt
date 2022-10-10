@@ -58,7 +58,7 @@ object CultivationHelper {
         }
     }
 
-    fun joinFixedAlliance(person: Person, alliance:Alliance){
+    fun joinFixedAlliance(person: Person, alliance:Alliance, changed:Boolean = false){
         alliance.personList[person.id] = person
         person.allianceId = alliance.id
         person.allianceName = alliance.name
@@ -66,7 +66,7 @@ object CultivationHelper {
         person.allianceProperty = alliance.property
         person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
         person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
-        if(alliance.type >= 3 && person.specIdentity > 0){
+        if(alliance.type >= 3 && !changed){
             person.singled = true
             person.dink = true
         }
@@ -78,8 +78,8 @@ object CultivationHelper {
         originAlliance.personList.remove(person.id)
         if(originAlliance.zhuPerson == person)
             originAlliance.zhuPerson = null
-
-        joinFixedAlliance(person, newAlliance)
+        person.equipmentList.removeIf { it.first == "7006101" || it.first == "7006102" }
+        joinFixedAlliance(person, newAlliance, true)
     }
 
     fun updateAllianceGain(allAlliance:ConcurrentHashMap<String, Alliance>, updated:Boolean = false){

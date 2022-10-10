@@ -926,7 +926,7 @@ class CultivationActivity : BaseActivity() {
         val ps = ConcurrentHashMap(mPersons.filter {
             it.value.nationId == mNation.id && it.value.lingGenType.type < 5 })
                 .map { it.value }.toMutableList()
-        if (ps.size < 10)
+        if (ps.size < 11)
             return null
         ps.forEach {
             it.nationPost = 0
@@ -947,13 +947,16 @@ class CultivationActivity : BaseActivity() {
         shangshu.nationPost = 3
         mNation.shangShu = shangshu.id
         ps.remove(shangshu)
-        mNation.ciShi = ps.shuffled().subList(0, 4).map {
+
+        mNation.ciShi = ps.sortedWith(compareByDescending<Person>{ it.tianfus.find { t-> t.type == 2 }?.bonus ?: 0 }
+                .thenByDescending { it.jingJieId }).subList(0, 4).map {
             it.nationPost = 4
             it.id
         }.toMutableList()
         ps.removeIf { mNation.ciShi.find { f-> f == it.id } != null }
 
-        val endIndex = Math.min(4, ps.size)
+
+        val endIndex = Math.min(8, Math.max(4, ps.size / 8) )
         mNation.duWei = ps.shuffled().subList(0, endIndex).map {
             it.nationPost = 5
             it.id
