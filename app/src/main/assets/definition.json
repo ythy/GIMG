@@ -1546,6 +1546,28 @@
       "xiuweiMulti": 100,
       "property": [50,60,0,10,0,0,0,0],
       "speedG1": 80
+    },
+    {
+      "id": "6000805",
+      "name": "白",
+      "type": 7,
+      "nation": "6200007",
+      "lifetime": 50,
+      "xiuwei": 100,
+      "xiuweiMulti": 100,
+      "property": [50,50,10,10,0,0,0,0],
+      "speedG1": 80
+    },
+    {
+      "id": "6000806",
+      "name": "LC",
+      "type": 7,
+      "nation": "6200007",
+      "lifetime": 50,
+      "xiuwei": 100,
+      "xiuweiMulti": 100,
+      "property": [0,70,0,10,0,0,0,0],
+      "speedG1": 80
     }
   ],
   "equipment": [

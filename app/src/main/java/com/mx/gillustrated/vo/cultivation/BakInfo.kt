@@ -7,4 +7,5 @@ class BakInfo {
     var clans:Map<String, ClanBak> = HashMap()
     var nation:Map<String, NationBak> = HashMap()
     var battleRound:BattleRound? = null
+    var xunDurationPair:Map<Pair<String, Int>, Long> = HashMap()
 }

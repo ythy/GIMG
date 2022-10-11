@@ -1,7 +1,6 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
@@ -14,6 +13,7 @@ object CultivationHelper {
 
     lateinit var mConfig:Config
     lateinit var mBattleRound:BattleRound
+    lateinit var mXunDuration:ConcurrentHashMap<Pair<String, Int>, Long>
     var maxFemaleProfile = 0 // 默认0号 1001开始不随机使用
     var maxMaleProfile = 0 // 默认0号 1001开始不随机使用
     var pinyinMode:Boolean = false //是否pinyin模式
@@ -549,6 +549,19 @@ object CultivationHelper {
         return Random().nextInt(Math.max(1, weight)) == 0
     }
 
+    // symbol 需要唯一
+    fun inDurationByXun(symbols:String, duration:Int, currentXun:Long = mCurrentXun):Boolean{
+        val lastXun = mXunDuration[Pair(symbols, duration)]
+        if(lastXun == null){
+            mXunDuration[Pair(symbols, duration)] = currentXun
+            return false
+        }else if (currentXun - lastXun >= duration){
+            val newLastXun = lastXun +  ((currentXun - lastXun) / duration).toInt() * duration
+            mXunDuration[Pair(symbols, duration)] = newLastXun
+            return true
+        }
+        return false
+    }
 
     fun getJinJieName(input:String):String{
         if(pinyinMode)
