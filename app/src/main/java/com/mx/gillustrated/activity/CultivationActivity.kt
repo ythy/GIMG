@@ -124,7 +124,7 @@ class CultivationActivity : BaseActivity() {
             val backupInfo = BakInfo()
             backupInfo.xun = mCurrentXun
             backupInfo.battleRound = mBattleRound
-            backupInfo.xunDurationPair = mXunDuration.toMap()
+            backupInfo.xunDuration = mXunDuration.mapKeys { m-> "${m.key.first}-${m.key.second}" }
             backupInfo.alliance = mAlliance.mapValues { it.value.toConfig() }
             mPersons.forEach { p->
                 val it = p.value
@@ -346,7 +346,10 @@ class CultivationActivity : BaseActivity() {
                 it.value.toNation()
             })
             mBattleRound = backup.battleRound ?: BattleRound()
-            mXunDuration = ConcurrentHashMap(backup.xunDurationPair)
+            mXunDuration = ConcurrentHashMap(backup.xunDuration.mapKeys { m->
+                val arr = m.key.split("-")
+                Pair(arr[0], arr[1].toInt())
+            })
         }else{
             mBattleRound = BattleRound()
             mXunDuration = ConcurrentHashMap()
