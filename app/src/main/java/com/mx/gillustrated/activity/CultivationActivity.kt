@@ -310,7 +310,18 @@ class CultivationActivity : BaseActivity() {
             }
         }
 
-
+//        for ((_: String, person: Person) in mPersons) {
+//            val list = person.careerList.map { t ->
+//                val career = mConfig.career.find { c -> c.id == t.first }!!.copy()
+//                career.level = t.second
+//                career
+//            }
+//            if (list.size > 1){
+//                person.careerList = Collections.synchronizedList(list.subList(0, list.size - 1).map { Triple(it.id, it.maxLevel, "") })
+//                val last = list.last()
+//                person.careerList.add(Triple(last.id, last.level, ""))
+//            }
+//        }
 
 
     }
@@ -1103,7 +1114,7 @@ class CultivationActivity : BaseActivity() {
     private fun updateCareer(){
         for ((_: String, person: Person) in mPersons) {
             val list = person.careerList.map { t->
-                val career = mConfig.career.find { c-> c.id == t.first }!!
+                val career = mConfig.career.find { c-> c.id == t.first }!!.copy()
                 career.level = t.second
                 career
             }
@@ -1123,18 +1134,19 @@ class CultivationActivity : BaseActivity() {
                         }
                     }
                 }
-            }
-            list.forEach {
-                if(it.level < it.maxLevel && person.pointXiuWei > it.upgradeBasicXiuwei){
-                    person.pointXiuWei -= it.upgradeBasicXiuwei
-                    if(isTrigger(it.level)){
-                        changed = true
-                        it.level ++
+            }else{
+                list.forEach {
+                    if(it.level < it.maxLevel && person.pointXiuWei > it.upgradeBasicXiuwei){
+                        person.pointXiuWei -= it.upgradeBasicXiuwei
+                        if(isTrigger(it.level)){
+                            changed = true
+                            it.level ++
+                        }
                     }
                 }
-            }
-            if(changed){
-                person.careerList = Collections.synchronizedList(list.map { Triple(it.id, it.level, "") })
+                if(changed){
+                    person.careerList = Collections.synchronizedList(list.map { Triple(it.id, it.level, "") })
+                }
             }
             if(addonCareer != null){
                 person.careerList.add(Triple(addonCareer, 0, ""))
@@ -1146,7 +1158,7 @@ class CultivationActivity : BaseActivity() {
         if(inDurationByXun("CareerEffect", 120, xun)) {
             for ((_: String, person: Person) in mPersons) {
                 person.careerList.map { t->
-                    val obj = mConfig.career.find { c-> c.id == t.first }!!
+                    val obj = mConfig.career.find { c-> c.id == t.first }!!.copy()
                     obj.level = t.second
                     obj
                 }.forEach { career->

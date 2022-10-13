@@ -134,6 +134,8 @@ object CultivationSetting {
             PresetInfo(17000090, Triple("\u5927\u718a\u5ea7","\u6a84",4009)),
             PresetInfo(17000100, Triple("\u6c34\u86c7\u5ea7","\u5e02",4010)),
             PresetInfo(17000111, Triple("\u53d8\u8272\u9f99\u5ea7","\u73cd\u59ae",2214)),
+            PresetInfo(17000120, Triple("\u5361\u897f","\u6b27\u58eb",4073)),
+            PresetInfo(17000130, Triple("\u8fb0\u5df1","\u5f97\u4e38",4074)),
 
             PresetInfo(17010010, Triple("\u53cc\u5b50\u5ea7","\u6492\u52a0",4012),0, 200, 600),
             PresetInfo(17010020, Triple("\u5904\u5973\u5ea7","\u6c99\u52a0",4015),0, 200, 600),
@@ -182,7 +184,23 @@ object CultivationSetting {
             PresetInfo(17040040, Triple("\u767d\u9cb8\u5ea7","\u6469\u897f\u65af",4081)),
             PresetInfo(17040050, Triple("\u730e\u72ac\u5ea7","\u4e9a\u72c4\u91cc\u5b89",4080)),
             PresetInfo(17040060, Triple("\u82f1\u4ed9\u5ea7","\u4e9a\u9c81\u54e5\u8def",4079)),
-            PresetInfo(17040070, Triple("\u5929\u7434\u5ea7","\u5965\u8def\u83f2",4082),0,200,600)
+            PresetInfo(17040070, Triple("\u5929\u7434\u5ea7","\u5965\u8def\u83f2",4082),0,200,600),
+
+            PresetInfo(17050010, Triple("\u5929\u9a6c\u5ea7","\u5929\u9a6c",4055)),
+            PresetInfo(17050021, Triple("\u5973\u795e","\u8428\u6c99",2208),0,200,600),
+            PresetInfo(17050030, Triple("\u5929\u67b0\u5ea7","\u7ae5\u864e(LC)",4051)),
+            PresetInfo(17050040, Triple("\u5de8\u87f9\u5ea7","\u9a6c\u5c3c\u6208\u7279",4052)),
+            PresetInfo(17050050, Triple("\u767d\u7f8a\u5ea7","\u53f2\u6602(LC)",4057)),
+            PresetInfo(17050060, Triple("\u5c04\u624b\u5ea7","\u5e0c\u7eea\u5f17\u65af",4058)),
+            PresetInfo(17050070, Triple("\u6469\u7faf\u5ea7","\u827e\u5c14\u5e0c\u5fb7",4059)),
+            PresetInfo(17050080, Triple("\u53cc\u9c7c\u5ea7","\u96c5\u67cf\u83f2\u5361",4060)),
+            PresetInfo(17050090, Triple("\u796d\u575b\u5ea7","\u767d\u793c",4061)),
+            PresetInfo(17050100, Triple("\u91d1\u725b\u5ea7","\u963f\u9c81\u8fea\u5df4(LC)",4062)),
+            PresetInfo(17050110, Triple("\u5904\u5973\u5ea7","\u963f\u91ca\u5bc6\u8fbe",4063)),
+            PresetInfo(17050120, Triple("\u5929\u874e\u5ea7","\u5361\u8def\u8fea\u4e9a",4065)),
+            PresetInfo(17050130, Triple("\u6c34\u74f6\u5ea7","\u7b1b\u6377\u5c14",4066)),
+            PresetInfo(17050140, Triple("\u53cc\u5b50\u5ea7","\u963f\u65af\u666e\u6d1b\u65af",4068),0,100,100),
+            PresetInfo(17050150, Triple("\u72ee\u5b50\u5ea7","\u96f7\u53e4\u9c81\u65af",4070),0,100,100)
 
     )
 

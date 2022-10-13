@@ -1560,7 +1560,18 @@
     },
     {
       "id": "6000806",
-      "name": "LC",
+      "name": "圣LC",
+      "type": 7,
+      "nation": "6200007",
+      "lifetime": 50,
+      "xiuwei": 100,
+      "xiuweiMulti": 100,
+      "property": [50,60,0,10,0,0,0,0],
+      "speedG1": 80
+    },
+    {
+      "id": "6000807",
+      "name": "冥LC",
       "type": 7,
       "nation": "6200007",
       "lifetime": 50,
