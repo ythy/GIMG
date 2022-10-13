@@ -187,7 +187,7 @@ object CultivationSetting {
             PresetInfo(17040070, Triple("\u5929\u7434\u5ea7","\u5965\u8def\u83f2",4082),0,200,600),
 
             PresetInfo(17050010, Triple("\u5929\u9a6c\u5ea7","\u5929\u9a6c",4055)),
-            PresetInfo(17050021, Triple("\u5973\u795e","\u8428\u6c99",2208),0,200,600),
+            PresetInfo(17050021, Triple("\u96c5\u5178\u5a1c","\u8428\u6c99",2208),0,200,600),
             PresetInfo(17050030, Triple("\u5929\u67b0\u5ea7","\u7ae5\u864e(LC)",4051)),
             PresetInfo(17050040, Triple("\u5de8\u87f9\u5ea7","\u9a6c\u5c3c\u6208\u7279",4052)),
             PresetInfo(17050050, Triple("\u767d\u7f8a\u5ea7","\u53f2\u6602(LC)",4057)),
@@ -200,7 +200,15 @@ object CultivationSetting {
             PresetInfo(17050120, Triple("\u5929\u874e\u5ea7","\u5361\u8def\u8fea\u4e9a",4065)),
             PresetInfo(17050130, Triple("\u6c34\u74f6\u5ea7","\u7b1b\u6377\u5c14",4066)),
             PresetInfo(17050140, Triple("\u53cc\u5b50\u5ea7","\u963f\u65af\u666e\u6d1b\u65af",4068),0,100,100),
-            PresetInfo(17050150, Triple("\u72ee\u5b50\u5ea7","\u96f7\u53e4\u9c81\u65af",4070),0,100,100)
+            PresetInfo(17050150, Triple("\u72ee\u5b50\u5ea7","\u96f7\u53e4\u9c81\u65af",4070),0,100,200),
+
+            PresetInfo(17060010, Triple("\u54c8\u8fea\u65af","\u4e9a\u4f26",4049)),
+            PresetInfo(17060021, Triple("\u6f58","\u591a\u62c9(LC)",2207),0,100,200),
+            PresetInfo(17060030, Triple("\u51a5\u738b","\u54c8\u8fea\u65af(LC)",4039),0, 200, 600),
+            PresetInfo(17060040, Triple("\u7761\u795e","\u4fee\u666e\u8bfa\u65af(LC)",4054),0,100,200),
+            PresetInfo(17060050, Triple("\u6b7b\u795e","\u5854\u7eb3\u6258\u65af(LC)",4053),0,100,200),
+            PresetInfo(17060060, Triple("\u5929\u66b4\u661f","\u8f89\u706b",4064)),
+            PresetInfo(17060070, Triple("\u68a6\u795e","\u5965\u6d85\u4f0a\u6d1b\u65af",4067),200, 600)
 
     )
 
