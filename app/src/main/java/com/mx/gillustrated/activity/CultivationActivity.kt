@@ -736,11 +736,6 @@ class CultivationActivity : BaseActivity() {
                 addSpecPerson()
                 saveAllData(false)
             }
-            inDurationByXun("Xun44000", 44000)  -> {
-                if(mPersons.size > 400){
-                    addBossHandler(true)
-                }
-            }
             inDurationByXun("Xun12000", 12000) && isStop -> bePerson()
             else -> randomBattle(currentXun)
         }
@@ -1370,8 +1365,8 @@ class CultivationActivity : BaseActivity() {
 
     private fun battleBangHandler(block: Boolean = true){
         val alliances = mAlliance.filter { it.value.personList.isNotEmpty() }.map { it.value }.toMutableList()
-        if(alliances.isEmpty() || alliances.size < 4){
-            showToast("Bang less than 4")
+        if(alliances.isEmpty() || alliances.size < 10){
+            showToast("Bang less than 10")
             return
         }
         setTimeLooper(false)
@@ -1385,22 +1380,28 @@ class CultivationActivity : BaseActivity() {
             Thread.sleep(500)
             mBattleRound.bang++
             writeHistory("第${mBattleRound.bang}届 Bang Battle Start")
+            val restAlliance = mutableListOf<Alliance>()
             var roundNumber = 1
             while (true){
                 writeHistory("Bang Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundBangHandler(alliances, 20)
+                val result = roundBangHandler(alliances, restAlliance, 20)
                 if(result)
                     break
             }
-            alliances[0].personList.forEach {
+
+            restAlliance[0].personList.forEach {
                 CultivationHelper.gainJiEquipment(it.value, 11, 0, mBattleRound.bang)
             }
-            alliances[1].personList.forEach {
+            restAlliance[1].personList.forEach {
                 CultivationHelper.gainJiEquipment(it.value, 11, 1, mBattleRound.bang)
             }
-            writeHistory("第${mBattleRound.bang}届 Bang Battle Runner: ${alliances[1].name}")
-            writeHistory("第${mBattleRound.bang}届 Bang Battle Winner: ${alliances[0].name}")
+            repeat(10){ index->
+                val count = 10 - index //10 ~ 1
+                val alliance = restAlliance[count - 1]
+                alliance.winner += index + 1
+                writeHistory("第${mBattleRound.bang}届 Bang Battle No $count : ${alliance.name}")
+            }
             if(!block){
                 Thread.sleep(5000)
             }
@@ -1509,7 +1510,7 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun roundBangHandler(alliance: MutableList<Alliance>, round:Int):Boolean{
+    private fun roundBangHandler(alliance: MutableList<Alliance>, restAlliance:MutableList<Alliance>, round:Int):Boolean{
         alliance.shuffle()
         val passIds = mutableListOf<String>()
         for (i in 0 until alliance.size step 2){
@@ -1520,11 +1521,11 @@ class CultivationActivity : BaseActivity() {
             val secondAlliance = alliance[i+1]
             val result = roundMultiBattle(firstAlliance.personList, secondAlliance.personList, round, 100)
             passIds.add(if(result) secondAlliance.id else firstAlliance.id)
+            restAlliance.add(0, if(result) secondAlliance else firstAlliance)
         }
         return if(alliance.size == 2){
-            val looser = alliance.find { it.id == passIds[0] }!!
             alliance.removeIf { it.id == passIds[0] }
-            alliance.add(looser)
+            restAlliance.add(0, alliance.first())
             true
         }else{
             alliance.removeIf { passIds.contains(it.id) }
@@ -1584,12 +1585,12 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun addBossHandler(ss:Boolean = false){
-        val boss = if(ss)  CultivationEnemyHelper.generateYaoWang(mAlliance["6000102"]!!)
-            else when (Random().nextInt(3)) {
-                0 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
-                1 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000104"]!!)
-                else -> CultivationEnemyHelper.generateShadowQiu(mAlliance["6000105"]!!)
+    private fun addBossHandler(){
+        val boss = when (Random().nextInt(10)) { // 1 2 3 4 = 10
+                in 0 .. 3 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
+                in 4 .. 6 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000104"]!!)
+                in 7 .. 8  -> CultivationEnemyHelper.generateShadowQiu(mAlliance["6000105"]!!)
+                else -> CultivationEnemyHelper.generateYaoWang(mAlliance["6000102"]!!)
             }
         mBoss[boss.id] = boss
         mBattleRound.boss[boss.type - 1]++

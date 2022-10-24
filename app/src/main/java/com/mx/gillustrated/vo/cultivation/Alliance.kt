@@ -30,6 +30,7 @@ open class AllianceConfig() :Parcelable {
     var speedG2:Int = 0
     var persons:List<String> = mutableListOf()
     var nation:String = ""
+    var winner:Int = 0
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -48,6 +49,7 @@ open class AllianceConfig() :Parcelable {
         speedG2 = parcel.readInt()
         persons = parcel.createStringArrayList()
         nation = parcel.readString()
+        winner = parcel.readInt()
     }
 
     fun toAlliance(personMap: ConcurrentHashMap<String, Person>):Alliance{
@@ -55,6 +57,7 @@ open class AllianceConfig() :Parcelable {
         alliance.id = this.id
         alliance.name = this.name
         alliance.lingGen = this.lingGen
+        alliance.winner = this.winner
         alliance.personList.putAll(personMap.filterKeys { this.persons.contains(it) })
         return alliance
     }
@@ -76,6 +79,7 @@ open class AllianceConfig() :Parcelable {
         parcel.writeInt(speedG2)
         parcel.writeStringList(persons)
         parcel.writeString(nation)
+        parcel.writeInt(winner)
     }
 
     override fun describeContents(): Int {
@@ -115,6 +119,7 @@ class Alliance() : AllianceConfig(), Parcelable {
         config.id = super.id
         config.name = super.name
         config.lingGen = super.lingGen
+        config.winner = super.winner
         config.persons = this.personList.filter { it.value.allianceId == super.id && it.value.type == 0}.map { it.key }
         return config
     }

@@ -101,7 +101,7 @@ object CultivationEnemyHelper {
                 CultivationSetting.PersonFixedInfoMix(null, null, 8000, 80000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 4
-        updateBossProps(person, 10, Pair(6, 2), 60,5000, 500, listOf("8004002", "8002002"))
+        updateBossProps(person, 10, Pair(6, 2), 60,2000, 120, listOf("8004002", "8002002"))
         return person
     }
 

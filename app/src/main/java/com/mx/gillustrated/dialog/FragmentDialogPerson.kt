@@ -87,25 +87,6 @@ class FragmentDialogPerson : DialogFragment() {
         onCloseHandler()
     }
 
-    @OnClick(R.id.btn_be)
-    fun onBeClickHandler(){
-        val partner = mContext.getOnlinePersonDetail(mPerson.partner)
-        if(partner == null){
-            val tag = mDialogView.be.tag
-            val calendar = Calendar.getInstance()
-            val timestamp = calendar.timeInMillis
-            if(tag == null || timestamp - tag.toString().toLong() > 3000){
-                Toast.makeText(mContext, "再次点击", Toast.LENGTH_SHORT).show()
-                mDialogView.be.tag = timestamp
-            }else{
-                mPerson.partner = null
-                mPerson.partnerName = null
-                mDialogView.be.tag = null
-                setFamily()
-            }
-        }
-    }
-
     @BindView(R.id.sch_fav)
     lateinit var mSwitchFav:Switch
 
@@ -317,7 +298,6 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.partner.text = if(mPerson.partnerName != null) "<${getContent(mPerson.partnerName)}>"  else ""
         mDialogView.partner.visibility = if(mPerson.partnerName != null) View.VISIBLE else View.GONE
         val partner = mContext.getOnlinePersonDetail(mPerson.partner)
-        mDialogView.be.visibility = if(mPerson.partner != null && partner == null ) View.VISIBLE else View.GONE
 
         val dadName = if(mPerson.parentName != null) "[${mPerson.parentName!!.first}" else null
         val mumName = if(mPerson.parentName != null) "${mPerson.parentName!!.second}]" else null
@@ -407,7 +387,7 @@ class FragmentDialogPerson : DialogFragment() {
         @BindView(R.id.tv_xiuwei_add)
         lateinit var xiuweiAdd:TextView
 
-        @BindView(R.id.tv_neigong)
+        @BindView(R.id.tv_career)
         lateinit var career:TextView
 
         @BindView(R.id.tv_clan)
@@ -415,9 +395,6 @@ class FragmentDialogPerson : DialogFragment() {
 
         @BindView(R.id.tv_props)
         lateinit var props:TextView
-
-        @BindView(R.id.btn_be)
-        lateinit var be:ImageButton
 
         @BindView(R.id.ll_parent_measure)
         lateinit var measures:LinearLayout

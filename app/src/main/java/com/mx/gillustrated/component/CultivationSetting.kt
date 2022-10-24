@@ -13,7 +13,7 @@ object CultivationSetting {
     val EVENT_WEIGHT = listOf("1200-50","7200-40","8400-40","9600-100")
     const val SP_PUNISH_BOSS_MILLION = 200
 
-    val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf")
+    val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed")
     val SpecPersonFirstNameWeight:Pair<Int, Int> = Pair(50, 20)// tianfu.linggen
 
     //13 00 001 0
@@ -23,6 +23,7 @@ object CultivationSetting {
             PresetInfo(13000031, Pair("\u7b2c\u4e8c","\u68a6"),13000020),
             PresetInfo(13000040, Pair("\u96c4","\u9738"),0, 200, 600),
             PresetInfo(13000050, Pair("\u79e6","\u971c")),
+            PresetInfo(13000060, Pair("\u65ad","\u6d6a"),0,100,100),
 
             PresetInfo(13010031, Pair("\u82cf","\u6a31"),0, 100, 100),
             PresetInfo(13010041, Pair("\u674e","\u7ea2\u8896"),0, 100, 100),
@@ -113,9 +114,15 @@ object CultivationSetting {
             PresetInfo(16000051, Pair("\u6248","\u4e09\u5a18"),0, 200, 600),
             PresetInfo(16000060, Pair("\u6797","\u51b2"),0, 100, 100),
             PresetInfo(16000070, Pair("\u9c81","\u667a\u6df1")),
+            PresetInfo(16000080, Pair("\u6b66","\u677e"),0, 100, 100),
+            PresetInfo(16000090, Pair("\u962e","\u5c0f\u4e03")),
 
             PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
-            PresetInfo(16010020, Pair("\u9ad8","\u7403"),0, 100, 100),
+            PresetInfo(16010020, Pair("\u9ad8","\u4fc5"),0, 100, 100),
+            PresetInfo(16010030, Pair("\u9ad8","\u8859\u5185")),
+            PresetInfo(16010040, Pair("\u7ae5","\u8d2f")),
+            PresetInfo(16010050, Pair("\u897f\u95e8","\u5e86"),16010061),
+            PresetInfo(16010061, Pair("\u6f58","\u91d1\u83b2"),16010050, 100, 100),
 
             PresetInfo(16020010, Pair("\u6641","\u76d6"),0, 100, 200),
             PresetInfo(16020020, Pair("\u738b","\u4f26"))
@@ -171,12 +178,14 @@ object CultivationSetting {
             PresetInfo(17030070, Triple("\u5929\u96c4\u661f","\u827e\u4e9a\u54e5\u65af",4044)),
             PresetInfo(17030080, Triple("\u5929\u82f1\u661f","\u8def\u5c3c",4045)),
             PresetInfo(17030090, Triple("\u5929\u517d\u661f","\u6cd5\u62c9\u5965",4046)),
-            PresetInfo(17030100, Triple("\u51a5\u5de8\u87f9\u5ea7","\u8fea\u65af\u9a6c\u65af\u514b",4026)),
-            PresetInfo(17030110, Triple("\u51a5\u53cc\u9c7c\u5ea7","\u963f\u5e03\u7f57\u72c4",4027)),
-            PresetInfo(17030120, Triple("\u51a5\u6c34\u74f6\u5ea7","\u5361\u5999",4030)),
-            PresetInfo(17030130, Triple("\u51a5\u6469\u7faf\u5ea7","\u4fee\u7f57",4029)),
-            PresetInfo(17030140, Triple("\u51a5\u53cc\u5b50\u5ea7","\u6492\u52a0",4028),0, 100, 200),
-            PresetInfo(17030150, Triple("\u51a5\u767d\u7f8a\u5ea7","\u53f2\u6602",4025),0,100,100),
+            PresetInfo(17030100, Triple("\u5de8\u87f9\u5ea7","\u8fea\u65af\u9a6c\u65af\u514b(\u51a5)",4026)),
+            PresetInfo(17030110, Triple("\u53cc\u9c7c\u5ea7","\u963f\u5e03\u7f57\u72c4(\u51a5)",4027)),
+            PresetInfo(17030120, Triple("\u6c34\u74f6\u5ea7","\u5361\u5999(\u51a5)",4030)),
+            PresetInfo(17030130, Triple("\u6469\u7faf\u5ea7","\u4fee\u7f57(\u51a5)",4029)),
+            PresetInfo(17030140, Triple("\u53cc\u5b50\u5ea7","\u6492\u52a0(\u51a5)",4028),0, 100, 200),
+            PresetInfo(17030150, Triple("\u767d\u7f8a\u5ea7","\u53f2\u6602(\u51a5)",4025),0,100,100),
+            PresetInfo(17030160, Triple("\u5929\u54ed\u661f","\u5df4\u8fde\u8fbe\u56e0",4047)),
+            PresetInfo(17030170, Triple("\u5730\u5996\u661f","\u7f2a\u0020",4048)),
 
             PresetInfo(17040011, Triple("\u5929\u9e70\u5ea7","\u9b54\u94c3",2212)),
             PresetInfo(17040021, Triple("\u86c7\u592b\u5ea7","\u838e\u5c14\u5a1c",2213),0, 100, 200),
@@ -203,12 +212,16 @@ object CultivationSetting {
             PresetInfo(17050150, Triple("\u72ee\u5b50\u5ea7","\u96f7\u53e4\u9c81\u65af",4070),0,100,200),
 
             PresetInfo(17060010, Triple("\u54c8\u8fea\u65af","\u4e9a\u4f26",4049)),
-            PresetInfo(17060021, Triple("\u6f58","\u591a\u62c9(LC)",2207),0,100,200),
-            PresetInfo(17060030, Triple("\u51a5\u738b","\u54c8\u8fea\u65af(LC)",4039),0, 200, 600),
+            PresetInfo(17060021, Triple("\u6f58","\u591a\u62c9(LC)",2207),17060080,100,200),
+            PresetInfo(17060030, Triple("\u51a5\u738b","\u54c8\u8fea\u65af(LC)",4050),0, 200, 600),
             PresetInfo(17060040, Triple("\u7761\u795e","\u4fee\u666e\u8bfa\u65af(LC)",4054),0,100,200),
             PresetInfo(17060050, Triple("\u6b7b\u795e","\u5854\u7eb3\u6258\u65af(LC)",4053),0,100,200),
             PresetInfo(17060060, Triple("\u5929\u66b4\u661f","\u8f89\u706b",4064)),
-            PresetInfo(17060070, Triple("\u68a6\u795e","\u5965\u6d85\u4f0a\u6d1b\u65af",4067),200, 600)
+            PresetInfo(17060070, Triple("\u68a6\u795e","\u5965\u6d85\u4f0a\u6d1b\u65af",4067),200, 600),
+            PresetInfo(17060080, Triple("\u5929\u731b\u661f","\u62c9\u8fbe\u66fc\u8fea\u65af(\u795e\u9f99)",4069),17060021, 100, 200),
+            PresetInfo(17060090, Triple("\u51a5\u738b","\u54c8\u8fea\u65af(LC/\u771f)",4071),0, 500, 1000),
+            PresetInfo(17060101, Triple("\u6d77\u7687","\u6ce2\u585e\u51ac(LC)",2204),0, 500, 1000)
+
 
     )
 
