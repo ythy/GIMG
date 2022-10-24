@@ -31,6 +31,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:id="@+id/tv_zhu"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:id="@+id/tv_winner"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

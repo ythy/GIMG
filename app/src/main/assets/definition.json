@@ -1300,7 +1300,7 @@
       "level": 50,
       "lifetime": 50,
       "success": 10,
-      "maxPerson": 5,
+      "maxPerson": 10,
       "xiuwei": 60,
       "xiuweiMulti": 50,
       "property": [50,20,10,10,0,0,0,0],

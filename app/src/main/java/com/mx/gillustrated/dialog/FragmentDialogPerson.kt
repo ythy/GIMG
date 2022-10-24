@@ -276,8 +276,8 @@ class FragmentDialogPerson : DialogFragment() {
             obj.level = it.second
             obj
         }.joinToString()
-        mDialogView.props.text =  getProperty()
-        mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.name ?: "")
+        mDialogView.props.text = getProperty()
+        mDialogView.clan.text = "${mPerson.winner}  ${CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.name ?: "")}"
         mDialogView.jingjie.text = CultivationHelper.showing(mPerson.jinJieName)
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"

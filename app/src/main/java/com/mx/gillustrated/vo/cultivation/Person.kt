@@ -56,6 +56,7 @@ class Person() :Parcelable {
         var specIdentity:Int = 0 //spec person nid
         var nationPost:Int = 0
         var neverDead:Boolean = false
+        var winner:Int = 0
 
         //extra props
         var lastBirthDay:Long = 0
@@ -150,6 +151,7 @@ class Person() :Parcelable {
                 specIdentity = parcel.readInt()
                 nationPost = parcel.readInt()
                 neverDead = parcel.readByte() != 0.toByte()
+                winner = parcel.readInt()
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -217,6 +219,7 @@ class Person() :Parcelable {
                 parcel.writeInt(specIdentity)
                 parcel.writeInt(nationPost)
                 parcel.writeByte(if (neverDead) 1 else 0)
+                parcel.writeInt(winner)
 
         }
 

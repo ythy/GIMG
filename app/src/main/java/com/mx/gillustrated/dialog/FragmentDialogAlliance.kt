@@ -127,7 +127,7 @@ class FragmentDialogAlliance : DialogFragment() {
             val zhuName = CultivationHelper.showing(mAlliance.zhuPerson!!.name)
             mDialogView.zhu.text = zhuName
         }
-
+        mDialogView.winner.text = mAlliance.winner.toString()
 
         mDialogView.speeds.removeAllViews()
         val list = mAlliance.speedG1PersonList.mapNotNull { mContext.getOnlinePersonDetail(it.value.id) }
@@ -182,6 +182,9 @@ class FragmentDialogAlliance : DialogFragment() {
 
         @BindView(R.id.tv_zhu)
         lateinit var zhu:TextView
+
+        @BindView(R.id.tv_winner)
+        lateinit var winner:TextView
 
         @BindView(R.id.lv_person)
         lateinit var persons:ListView

@@ -89,7 +89,7 @@ class FragmentDialogClan : DialogFragment() {
         mContext = activity as CultivationActivity
         val clan = mContext.mClans[mId]
         if(clan != null){
-            mDialogView.name.text = CultivationHelper.showing(clan.name)
+            mDialogView.name.text = "${CultivationHelper.showing(clan.name)} ${clan.winner}"
             mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
             updateView()
             registerTimeLooper()

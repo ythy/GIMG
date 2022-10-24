@@ -2,6 +2,7 @@ package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -65,6 +66,25 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     @BindView(R.id.btn_clear)
     lateinit var mClear: Button
 
+    @BindView(R.id.btn_sort_t)
+    lateinit var mBtnLifeturn: Button
+
+    @BindView(R.id.btn_sort_x)
+    lateinit var mBtnXiuwei: Button
+
+    @BindView(R.id.btn_sort_b)
+    lateinit var mBtnBattle: Button
+
+    @OnClick(R.id.btn_sort_t, R.id.btn_sort_x, R.id.btn_sort_b)
+    fun onSortHandler(btn:Button){
+        mBtnLifeturn.setTextColor(mContext.getColor(R.color.color_blue))
+        mBtnXiuwei.setTextColor(mContext.getColor(R.color.color_blue))
+        mBtnBattle.setTextColor(mContext.getColor(R.color.color_blue))
+        btn.setTextColor(Color.parseColor("white"))
+        mSort = btn.tag.toString()
+        setOnlineList()
+    }
+
 
     @OnClick(R.id.btn_close)
     fun onCloseHandler(){
@@ -124,6 +144,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     lateinit var mContext:CultivationActivity
     private var mThreadRunnable:Boolean = true
     private var mPersonData =  Collections.synchronizedList(mutableListOf<Person>())
+    private var mSort = "T"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -196,13 +217,15 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                 it.name.startsWith(filterString, true) || PinyinUtil.convert(it.name).startsWith(filterString, true)
             })
 
-        if (mType == 4){
-            mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it, mContext.mAlliance) }
+
+        when (mSort) {
+            "X" -> mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it, mContext.mAlliance) }
                     .thenByDescending { it.lifeTurn })
-        }else{
-            mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
+            "T" -> mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
                     .thenByDescending { it.jingJieId }
                     .thenByDescending { it.xiuXei } )
+            "B" -> mPersonData.sortWith(compareByDescending<Person> {it.winner}
+                    .thenByDescending { it.lifeTurn })
         }
 
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()

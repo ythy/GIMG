@@ -1284,10 +1284,11 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleSingleHandler(block:Boolean = true){
+        val minSize = 32
         val personsAll = mPersons.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
         personsAll.shuffle()
-        if(personsAll.size < 20){
-            showToast("persons less than 20")
+        if(personsAll.size < minSize){
+            showToast("persons less than $minSize")
             return
         }
         val persons = personsAll.subList(0, personsAll.size/2)
@@ -1302,18 +1303,24 @@ class CultivationActivity : BaseActivity() {
             Thread.sleep(500)
             mBattleRound.single++
             writeHistory("第${mBattleRound.single}届  Single Battle Start")
+            val restPersons = mutableListOf<Person>()
             var roundNumber = 1
             while (true){
                 writeHistory("Single Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundSingleHandler(persons, 40)
+                val result = roundSingleHandler(persons, restPersons,40)
                 if(result)
                     break
             }
-            CultivationHelper.gainJiEquipment(persons[0], 13, 0, mBattleRound.single)
-            CultivationHelper.gainJiEquipment(persons[1], 13, 1, mBattleRound.single)
-            writeHistory("第${mBattleRound.single}届 Single Battle Runner: ${persons[1].allianceName} - ${persons[1].name}", persons[1])
-            writeHistory("第${mBattleRound.single}届 Single Battle Winner: ${persons[0].allianceName} - ${persons[0].name}", persons[0])
+            CultivationHelper.gainJiEquipment(restPersons[0], 13, 0, mBattleRound.single)
+            CultivationHelper.gainJiEquipment(restPersons[1], 13, 1, mBattleRound.single)
+            repeat(minSize){ index->
+                val count = minSize - index //32 ~ 1
+                val person = restPersons[count - 1]
+                person.winner += index + 1
+                writeHistory("第${mBattleRound.single}届 Single Battle No $count : ${person.name}", person)
+            }
+
             if(!block){
                 Thread.sleep(5000)
             }
@@ -1325,9 +1332,10 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleClanHandler(block: Boolean = true){
+        val minSize = 4
         val clans = mClans.filter { it.value.clanPersonList.size > 0 }.map { it.value }.toMutableList()
-        if(clans.isEmpty() || clans.size < 4){
-            showToast("Clan less than 4")
+        if(clans.isEmpty() || clans.size < minSize){
+            showToast("Clan less than $minSize")
             return
         }
         setTimeLooper(false)
@@ -1341,18 +1349,25 @@ class CultivationActivity : BaseActivity() {
             Thread.sleep(500)
             mBattleRound.clan++
             writeHistory("第${mBattleRound.clan}届 Clan Battle Start")
+            val restClans = mutableListOf<Clan>()
             var roundNumber = 1
             while (true){
                 writeHistory("Clan Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundClanHandler(clans, 10)
+                val result = roundClanHandler(clans, restClans,10)
                 if(result)
                     break
             }
-            clans[0].clanPersonList.forEach {
+            restClans[0].clanPersonList.forEach {
                 CultivationHelper.gainJiEquipment(it.value, 12, 0, mBattleRound.clan)
             }
-            writeHistory("Clan Battle Winner: ${clans[0].name}")
+            repeat(minSize){ index->
+                val count = minSize - index //4 ~ 1
+                val clan = restClans[count - 1]
+                clan.winner += index + 1
+                writeHistory("第${mBattleRound.clan}届 Clan Battle No $count : ${clan.name}")
+            }
+
             if(!block){
                 Thread.sleep(5000)
             }
@@ -1364,9 +1379,10 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleBangHandler(block: Boolean = true){
+        val minSize = 10
         val alliances = mAlliance.filter { it.value.personList.isNotEmpty() }.map { it.value }.toMutableList()
-        if(alliances.isEmpty() || alliances.size < 10){
-            showToast("Bang less than 10")
+        if(alliances.isEmpty() || alliances.size < minSize){
+            showToast("Bang less than $minSize")
             return
         }
         setTimeLooper(false)
@@ -1396,8 +1412,8 @@ class CultivationActivity : BaseActivity() {
             restAlliance[1].personList.forEach {
                 CultivationHelper.gainJiEquipment(it.value, 11, 1, mBattleRound.bang)
             }
-            repeat(10){ index->
-                val count = 10 - index //10 ~ 1
+            repeat(minSize){ index->
+                val count = minSize - index //10 ~ 1
                 val alliance = restAlliance[count - 1]
                 alliance.winner += index + 1
                 writeHistory("第${mBattleRound.bang}届 Bang Battle No $count : ${alliance.name}")
@@ -1460,7 +1476,7 @@ class CultivationActivity : BaseActivity() {
     }
 
 
-    private fun roundSingleHandler(persons: MutableList<Person>, round:Int):Boolean{
+    private fun roundSingleHandler(persons: MutableList<Person>, restPersons:MutableList<Person>, round:Int):Boolean{
         persons.shuffle()
         val passIds = mutableListOf<String>()
         for (i in 0 until persons.size step 2) {
@@ -1472,14 +1488,15 @@ class CultivationActivity : BaseActivity() {
             val result = CultivationBattleHelper.battlePerson(null, firstPerson, secondPerson, round)
             if(result){
                 passIds.add(secondPerson.id)
+                restPersons.add(0,secondPerson)
             }else{
                 passIds.add(firstPerson.id)
+                restPersons.add(0,firstPerson)
             }
         }
         return if(persons.size == 2){
-            val looser = persons.find { it.id == passIds[0] }!!
             persons.removeIf { it.id == passIds[0] }
-            persons.add(looser)
+            restPersons.add(0, persons.first())
             true
         }else{
             persons.removeIf { passIds.contains(it.id) }
@@ -1496,7 +1513,7 @@ class CultivationActivity : BaseActivity() {
             }
             val firstNation = nation[i]
             val secondNation = nation[i+1]
-            val result = roundMultiBattle(firstNation.nationPersonList, secondNation.nationPersonList, round, 200)
+            val result = roundMultiBattle(firstNation.nationPersonList, secondNation.nationPersonList, round, 100)
             passIds.add(if(result) secondNation.id else firstNation.id)
         }
         return if(nation.size == 2){
@@ -1519,7 +1536,7 @@ class CultivationActivity : BaseActivity() {
             }
             val firstAlliance = alliance[i]
             val secondAlliance = alliance[i+1]
-            val result = roundMultiBattle(firstAlliance.personList, secondAlliance.personList, round, 100)
+            val result = roundMultiBattle(firstAlliance.personList, secondAlliance.personList, round, 50)
             passIds.add(if(result) secondAlliance.id else firstAlliance.id)
             restAlliance.add(0, if(result) secondAlliance else firstAlliance)
         }
@@ -1533,7 +1550,7 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun roundClanHandler(clan: MutableList<Clan>, round:Int):Boolean{
+    private fun roundClanHandler(clan: MutableList<Clan>, restClan: MutableList<Clan>, round:Int):Boolean{
         clan.shuffle()
         val passIds = mutableListOf<String>()
         for (i in 0 until clan.size step 2){
@@ -1544,11 +1561,11 @@ class CultivationActivity : BaseActivity() {
             val secondClan = clan[i+1]
             val result = roundMultiBattle(firstClan.clanPersonList, secondClan.clanPersonList, round, 10)
             passIds.add(if(result) secondClan.id else firstClan.id)
+            restClan.add(0, if(result) secondClan else firstClan)
         }
         return if(clan.size == 2){
-            val looser = clan.find { it.id == passIds[0] }!!
             clan.removeIf { it.id == passIds[0] }
-            clan.add(looser)
+            restClan.add(0, clan.first())
             true
         }else{
             clan.removeIf { passIds.contains(it.id) }
@@ -1558,8 +1575,10 @@ class CultivationActivity : BaseActivity() {
 
     //true: fiest win
     private fun roundMultiBattle(firstPersonList:ConcurrentHashMap<String, Person>, secondPersonList:ConcurrentHashMap<String, Person>, round:Int, count:Int):Boolean{
-        val firstPersons = firstPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }.take(count).shuffled()
-        val secondPersons = secondPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }.take(count).shuffled()
+        val firstPersons = firstPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
+                .sortedByDescending { it.maxXiuWei }.take(count).shuffled()
+        val secondPersons = secondPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
+                .sortedByDescending { it.maxXiuWei }.take(count).shuffled()
 
         if(firstPersons.isEmpty()){
             return false

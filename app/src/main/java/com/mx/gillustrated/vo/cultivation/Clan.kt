@@ -10,12 +10,14 @@ open class ClanBak() :Parcelable {
     lateinit var name:String
     var createDate:Long = 0//xun
     var persons: List<String> = Collections.synchronizedList(mutableListOf())
+    var winner:Int = 0
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
         name = parcel.readString()
         createDate = parcel.readLong()
         persons = parcel.createStringArrayList()
+        winner = parcel.readInt()
     }
 
     fun toClan(personMap: ConcurrentHashMap<String, Person>):Clan{
@@ -24,6 +26,7 @@ open class ClanBak() :Parcelable {
         clan.name = this.name
         clan.createDate = this.createDate
         clan.clanPersonList.putAll(personMap.filterKeys { this.persons.contains(it) })
+        clan.winner = this.winner
         return clan
     }
 
@@ -32,6 +35,7 @@ open class ClanBak() :Parcelable {
         parcel.writeString(name)
         parcel.writeLong(createDate)
         parcel.writeStringList(persons)
+        parcel.writeInt(winner)
     }
 
     override fun describeContents(): Int {
@@ -65,6 +69,7 @@ class Clan() : ClanBak(), Parcelable{
         bak.name = super.name
         bak.createDate = super.createDate
         bak.persons = this.clanPersonList.filter { it.value.ancestorId == super.id }.map { it.key }
+        bak.winner = this.winner
         return bak
     }
 
