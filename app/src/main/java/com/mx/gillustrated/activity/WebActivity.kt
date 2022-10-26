@@ -7,12 +7,18 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.webkit.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
+import com.mx.gillustrated.common.MConfig
+import java.io.*
+import android.webkit.WebView
+
+
 
 class WebActivity: BaseActivity() {
 
@@ -37,9 +43,12 @@ class WebActivity: BaseActivity() {
         webSettings.displayZoomControls = false
         webSettings.javaScriptCanOpenWindowsAutomatically=true
         webSettings.setSupportZoom(true)
+
         webSettings.defaultTextEncodingName = "utf-8"
         webView.addJavascriptInterface(JavaScriptInterface(this), "AndroidFunction")
         webView.webChromeClient = MyWebChromeClient() //这里不设置， alert弹不出来
+//        webView.systemUiVisibility = (WebView.SYSTEM_UI_FLAG_IMMERSIVE or WebView.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                or WebView.SYSTEM_UI_FLAG_FULLSCREEN)
         webView.webViewClient = MyWebViewClient()
     }
 
@@ -63,14 +72,48 @@ class WebActivity: BaseActivity() {
             val intent = Intent(mContext, MainActivity::class.java)
             mContext.startActivity(intent)
         }
+
+        @JavascriptInterface
+        fun getError():String {
+            if (Environment.MEDIA_MOUNTED == Environment
+                            .getExternalStorageState()) {
+                val fileDir = File(Environment.getExternalStorageDirectory(),
+                        MConfig.SD_ERROR_PATH)
+                if (!fileDir.exists()) {
+                    fileDir.mkdirs()
+                }
+                val file = File(fileDir.path, "error.txt")
+                if (!file.exists()) {
+                    try {
+                        file.createNewFile()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+                val stringArr = arrayListOf<String>()
+                try {
+                    val bf = BufferedReader(InputStreamReader(FileInputStream(file)))
+                    while (true) {
+                        val line = bf.readLine() ?: break
+                        stringArr.add(0, line)
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                return stringArr.joinToString(" <br />")
+            }
+            return "权限异常"
+        }
+
     }
 
     inner class MyWebViewClient : WebViewClient(){
 
 
-        override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             Toast.makeText(view!!.context, "LOADING", Toast.LENGTH_LONG).show()
-            return super.shouldOverrideUrlLoading(view, request)
+            view.loadUrl(url)
+            return true
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {

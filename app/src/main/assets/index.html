@@ -1,10 +1,50 @@
 <html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        html,
+        body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+
+        .main {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          background-color: darkgrey;
+          padding-left: 2px;
+          padding-right: 2px;
+          overflow: hidden;
+        }
+
+        .content {
+          background-color: cadetblue;
+          flex-basis: 0px;
+          flex-grow: 1;
+          overflow-y: auto;
+        }
+    </style>
+</head>
 <body>
-    <span>hello world</span>
-    <button onclick="back()" >back</button>
-    <button onclick="warning()" >alert</button>
+    <div class="main">
+        <div>
+            <span>hello world</span>
+            <button onclick="back()" >back</button>
+            <button onclick="warning()" >alert</button>
+        </div>
+        <div class="content">
+            <p class="error"></p>
+        </div>
+    </div>
 </body>
 <script language="JavaScript">
+
+    function init(){
+        document.querySelector("p").innerHTML = AndroidFunction.getError();
+    }
 
     function back(){
        AndroidFunction.goBack();
@@ -14,5 +54,6 @@
        alert("alert");
     }
 
+    init();
 </script>
 </html>

@@ -224,10 +224,14 @@ public class CommonUtil {
 	}
 
 	public static void printFile(String str, File file) {
+		printFile(str, file, false);
+	}
+
+	public static void printFile(String str, File file, Boolean append) {
 		FileWriter fw = null;
 		BufferedWriter bw = null;
 		try {
-			fw = new FileWriter(file, false);//
+			fw = new FileWriter(file, append);//
 			// 创建FileWriter对象，用来写入字符流
 			bw = new BufferedWriter(fw); // 将缓冲对文件的输出
 			bw.write(str + "\n"); // 写入文件

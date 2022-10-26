@@ -32,7 +32,9 @@ object CultivationSetting {
             PresetInfo(13020011, Pair("\u9ec4","\u84c9"),0, 200, 600),
             PresetInfo(13020021, Pair("\u8d75","\u654f"),0, 200, 600),
             PresetInfo(13020031, Pair("\u5468","\u82b7\u82e5"),0, 200, 600),
+            PresetInfo(13020041, Pair("\u4e1c\u65b9","\u4e0d\u8d25"),0, 500, 1000),
             PresetInfo(13020051, Pair("\u5c0f","\u662d"),0, 100, 200),
+            PresetInfo(13020061, Pair("\u674e","\u79cb\u6c34"),0, 100, 100),
             PresetInfo(13020091, Pair("\u4efb","\u76c8\u76c8"), 0, 200, 600)
     )
 

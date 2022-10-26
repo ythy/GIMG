@@ -5,6 +5,7 @@ import android.app.Application;
 import com.mx.gillustrated.di.components.AppComponent;
 import com.mx.gillustrated.di.components.DaggerAppComponent;
 import com.mx.gillustrated.di.modules.AppModule;
+import com.mx.gillustrated.listener.ExceptionHandler;
 //import com.mx.gillustrated.di.modules.AppModule;
 //import com.mx.gillustrated.di.modules.DBModule;
 
@@ -22,6 +23,7 @@ public class MyApplication extends Application {
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
+        new ExceptionHandler();
     }
 
     public AppComponent getAppComponent(){
