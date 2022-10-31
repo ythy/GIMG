@@ -116,7 +116,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
             it.totalXiuwei = it.personList.reduceValuesToLong(1000,
                     { p: Person -> p.lifeTurn.toLong() }, 0, { left, right -> left + right })
         }
-        mAllianceListData.sortWith(compareByDescending<Alliance> {it.winner}.thenByDescending { it.totalXiuwei })
+        mAllianceListData.sortWith(compareByDescending<Alliance> {it.battleWinner}.thenByDescending { it.totalXiuwei })
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
         mTotalText.text = mAllianceListData.sumBy { it.personList.size }.toString()

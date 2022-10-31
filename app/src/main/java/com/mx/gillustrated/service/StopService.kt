@@ -65,10 +65,10 @@ class StopService : Service() {
         stopForeground(true)
     }
 
-    override fun onLowMemory() {
-        super.onLowMemory()
-        stopForeground(true)
-    }
+//    override fun onLowMemory() {
+//        super.onLowMemory()
+//        stopForeground(true)
+//    }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)

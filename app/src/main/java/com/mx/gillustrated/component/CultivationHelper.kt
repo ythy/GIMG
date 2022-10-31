@@ -98,6 +98,23 @@ object CultivationHelper {
         }
     }
 
+    //前3，
+    fun updateAllianceBattleBonus(allAlliance:ConcurrentHashMap<String, Alliance>){
+        allAlliance.forEach { data->
+            var xiuwei = 0
+            data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
+                when (t) {
+                    1 -> xiuwei += getValidBonus(u.size, 10) * 8
+                    2 -> xiuwei += getValidBonus(u.size, 10) * 5
+                    3 -> xiuwei += getValidBonus(u.size, 10) * 2
+                }
+            }
+            data.value.xiuweiBattle = xiuwei
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { 17 - it }
+        }
+    }
+
+
     private fun updateZhuInAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
         if(alliance.zhuPerson != null){
             return
@@ -427,8 +444,16 @@ object CultivationHelper {
     }
 
     fun getEquipmentsMaxCount(equipment: Equipment, size:Int):Int{
-        val maxCount = if(equipment.type == 11 || equipment.type == 12 || equipment.type == 13) equipment.maxCount else 1
-        return Math.max(maxCount, Math.round( Math.log(size.toDouble())).toInt())
+        val maxCount = if(equipment.type == 16 || equipment.type == 13) equipment.maxCount else 1
+        return getMaxBonus(size, maxCount)
+    }
+
+    fun getMaxBonus(size:Int, max:Int = 1):Int{
+        return Math.max(max, Math.round( Math.log(size.toDouble())).toInt())
+    }
+
+    fun getValidBonus(size:Int, max:Int = 1):Int{
+        return Math.min(size, getMaxBonus(size, max))
     }
 
     private fun summationEquipmentValues(person: Person, effectEquipment: Equipment){
@@ -454,6 +479,7 @@ object CultivationHelper {
             if(person.id == alliance.zhuPerson?.id){
                 person.allianceXiuwei += 50
             }
+            person.allianceXiuwei += alliance.xiuweiBattle
         }
         val postXiuwei = getNationXiuwei(person)
         val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + postXiuwei

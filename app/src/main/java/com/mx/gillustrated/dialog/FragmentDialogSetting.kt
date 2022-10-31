@@ -136,6 +136,8 @@ class FragmentDialogSetting : DialogFragment() {
     }
 
     private fun openDialog(tag:Int){
+        if(tag == 1)
+            return
         val ft = mActivity.supportFragmentManager.beginTransaction()
         val newFragment = FragmentDialogRank.newInstance(tag)
         newFragment.isCancelable = false

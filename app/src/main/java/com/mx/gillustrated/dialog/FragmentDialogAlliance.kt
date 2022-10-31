@@ -61,6 +61,16 @@ class FragmentDialogAlliance : DialogFragment() {
         }
     }
 
+    @OnClick(R.id.tv_winner)
+    fun onWinnerClickHandler(){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogRank.newInstance(3, mAlliance.id)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_rank_info")
+    }
+
+
+
     @OnClick(R.id.tv_xiuwei)
     fun onXiuweiClickHandler(){
         val prop = mAlliance.property.joinToString()
@@ -127,8 +137,7 @@ class FragmentDialogAlliance : DialogFragment() {
             val zhuName = CultivationHelper.showing(mAlliance.zhuPerson!!.name)
             mDialogView.zhu.text = zhuName
         }
-        mDialogView.winner.text = mAlliance.winner.toString()
-
+        mDialogView.winner.text = mAlliance.battleWinner.toString()
         mDialogView.speeds.removeAllViews()
         val list = mAlliance.speedG1PersonList.mapNotNull { mContext.getOnlinePersonDetail(it.value.id) }
         if(list.isNotEmpty()){

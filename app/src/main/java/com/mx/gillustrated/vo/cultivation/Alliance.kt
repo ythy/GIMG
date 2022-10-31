@@ -4,15 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.concurrent.ConcurrentHashMap
 
-//zhu 增益 20
-/*
- update:
- 1.雅4 - type 1, number 4, fixed gender
- 2.继承 - type 2, number 1
- 3.TianTing - type 3, index 0, fixed 3
- 4.GuLong - type 3, index 1, fixed 4
- 5.Yong - type 3, index 2, fixed 3
- */
 open class AllianceConfig() :Parcelable {
     lateinit var id:String
     lateinit var name:String
@@ -30,7 +21,9 @@ open class AllianceConfig() :Parcelable {
     var speedG2:Int = 0
     var persons:List<String> = mutableListOf()
     var nation:String = ""
-    var winner:Int = 0
+    var battleRecord:MutableMap<Int, Int> = mutableMapOf()
+    var xiuweiBattle:Int = 0
+    var battleWinner:Int = 0
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -49,7 +42,9 @@ open class AllianceConfig() :Parcelable {
         speedG2 = parcel.readInt()
         persons = parcel.createStringArrayList()
         nation = parcel.readString()
-        winner = parcel.readInt()
+        parcel.readMap(battleRecord, Map::class.java.classLoader)
+        xiuweiBattle = parcel.readInt()
+        battleWinner = parcel.readInt()
     }
 
     fun toAlliance(personMap: ConcurrentHashMap<String, Person>):Alliance{
@@ -57,7 +52,7 @@ open class AllianceConfig() :Parcelable {
         alliance.id = this.id
         alliance.name = this.name
         alliance.lingGen = this.lingGen
-        alliance.winner = this.winner
+        alliance.battleRecord = ConcurrentHashMap(this.battleRecord)
         alliance.personList.putAll(personMap.filterKeys { this.persons.contains(it) })
         return alliance
     }
@@ -79,7 +74,10 @@ open class AllianceConfig() :Parcelable {
         parcel.writeInt(speedG2)
         parcel.writeStringList(persons)
         parcel.writeString(nation)
-        parcel.writeInt(winner)
+        parcel.writeMap(battleRecord)
+        parcel.writeInt(battleWinner)
+        parcel.writeInt(xiuweiBattle)
+
     }
 
     override fun describeContents(): Int {
@@ -119,7 +117,7 @@ class Alliance() : AllianceConfig(), Parcelable {
         config.id = super.id
         config.name = super.name
         config.lingGen = super.lingGen
-        config.winner = super.winner
+        config.battleRecord = super.battleRecord
         config.persons = this.personList.filter { it.value.allianceId == super.id && it.value.type == 0}.map { it.key }
         return config
     }

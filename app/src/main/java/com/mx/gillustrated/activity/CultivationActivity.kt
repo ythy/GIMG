@@ -25,6 +25,7 @@ import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
+import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName2
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
 import com.mx.gillustrated.component.CultivationHelper.getPersonBasicString
 import com.mx.gillustrated.component.CultivationHelper.mBattleRound
@@ -65,7 +66,7 @@ class CultivationActivity : BaseActivity() {
 
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
-    private var isStop = false//
+    private var isPaused = false// Activity 是否不可见
     private var mSpeed = 10L//流失速度
     private val mInitPersonCount = 1000//初始化Person数量
     private var readRecord = true
@@ -274,15 +275,15 @@ class CultivationActivity : BaseActivity() {
     override fun onStop() {
         super.onStop()
         if(!isFinishing){
-            isStop = true
+            isPaused = true
             val serviceIntent = Intent(this, StopService::class.java)
             this.startForegroundService(serviceIntent)
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        isStop = false
+    override fun onResume() {
+        super.onResume()
+        isPaused = false
         val serviceIntent = Intent(this, StopService::class.java)
         stopService(serviceIntent)
     }
@@ -292,7 +293,7 @@ class CultivationActivity : BaseActivity() {
         super.onDestroy()
         mThreadRunnable = false
         mHistoryThreadRunnable = false
-        isStop = false
+        isPaused = false
     }
 
     private fun temp(){
@@ -309,6 +310,20 @@ class CultivationActivity : BaseActivity() {
                 }
             }
         }
+
+        SpecPersonFirstName2.forEach { spec->
+            val person = mPersons.map { it.value }.find { it.name == spec.name.first + spec.name.second }
+            if (person != null){
+                person.specIdentity = spec.identity
+            }
+        }
+
+        mPersons.forEach { (_: String, u: Person) ->
+            u.equipmentList.removeIf { it.first == "7006101" || it.first == "7006102" ||  it.first == "7006201"  }
+        }
+
+        mBattleRound.bang = 0
+        mBattleRound.clan = 0
 
 //        for ((_: String, person: Person) in mPersons) {
 //            val list = person.careerList.map { t ->
@@ -328,7 +343,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun init(json:String?){
         val out:String? = if(readRecord) json else null
-        if(out != null){
+        if(out != null && out.trim() != ""){
             val backup = Gson().fromJson(out, BakInfo::class.java)
             mCurrentXun = backup.xun
             mPersons.putAll(backup.persons)
@@ -378,7 +393,8 @@ class CultivationActivity : BaseActivity() {
             CultivationHelper.updatePersonEquipment(it.value)
         }
         updateNationPost(0, true)
-        if(out == null){
+        CultivationHelper.updateAllianceBattleBonus(mAlliance)
+        if(out == null || out.trim() == ""){
             startWorld()
         }else{
             writeHistory("返回世界...")
@@ -391,8 +407,10 @@ class CultivationActivity : BaseActivity() {
     private fun startWorld(){
         writeHistory("进入世界...")
         addMultiPerson(mInitPersonCount)
-        val li = addPersion(Pair("李", "逍遥"), NameUtil.Gender.Male, 100, null, true)
-        val nu = addPersion(Pair("阿", "奴"), NameUtil.Gender.Female, 100, null, true)
+        val li = addPersion(Pair("李", "逍遥"), NameUtil.Gender.Male, 100, null, true,
+                CultivationSetting.PersonFixedInfoMix(null, null, 200, 600))
+        val nu = addPersion(Pair("阿", "奴"), NameUtil.Gender.Female, 100, null, true,
+                CultivationSetting.PersonFixedInfoMix(null, null, 200, 600))
         CultivationHelper.createPartner(li, nu)
     }
 
@@ -554,6 +572,10 @@ class CultivationActivity : BaseActivity() {
         return  getOnlinePersonDetail(id) ?: getOfflinePersonDetail(id) ?: mBoss[id]
     }
 
+    fun getSpecOnlinePerson(id:Int?):Person?{
+        return  mPersons.map { it.value }.find { it.specIdentity == id}
+    }
+
     fun getOnlinePersonDetail(id:String?):Person?{
         if(id == null)
             return null
@@ -568,13 +590,13 @@ class CultivationActivity : BaseActivity() {
 
     fun setTimeLooper(flag:Boolean){
         if(flag){
-            if(!isStop){
+            if(!isPaused){
                 mBtnTime.tag = "ON"
                 mBtnTime.text = resources.getString(R.string.cultivation_stop)
             }
             mThreadRunnable = true
         }else{
-            if(!isStop) {
+            if(!isPaused) {
                 mBtnTime.tag = "OFF"
                 mBtnTime.text = resources.getString(R.string.cultivation_start)
             }
@@ -640,7 +662,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun xunHandler(currentXun:Long, step:Int) {
         val year = CultivationHelper.getYearString(currentXun)
-        if(!isStop && mDate.text != year) {
+        if(!isPaused && mDate.text != year) {
             mDate.text = year
         }
         for ((_: String, it: Person) in mPersons) {
@@ -730,13 +752,13 @@ class CultivationActivity : BaseActivity() {
         }
         //以下辅助操作
         when {
-            inDurationByXun("Xun100000", 100000) && isStop -> {
+            inDurationByXun("Xun100000", 100000) && isPaused -> {
                 optimizeClanPersons()
                 mDeadPersons.clear()
                 addSpecPerson()
                 saveAllData(false)
             }
-            inDurationByXun("Xun12000", 12000) && isStop -> bePerson()
+            inDurationByXun("Xun12000", 12000) && isPaused -> bePerson()
             else -> randomBattle(currentXun)
         }
         updateCareerEffect(currentXun)
@@ -784,7 +806,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updateHistory(){
-        if(isStop)
+        if(isPaused)
             return
         if(mHistoryData.size > 500 && mThreadRunnable){
             mHistoryData.clear()
@@ -831,8 +853,8 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun addPersion(fixedName:Pair<String, String?>?, fixedGender:NameUtil.Gender?,
-                           lifetime: Long = 100, parent: Pair<Person, Person>? = null, fav:Boolean = false):Person{
-        val person = CultivationHelper.getPersonInfo(fixedName, fixedGender, lifetime, parent, fav)
+                           lifetime: Long = 100, parent: Pair<Person, Person>? = null, fav:Boolean = false, mix: CultivationSetting.PersonFixedInfoMix? = null):Person{
+        val person = CultivationHelper.getPersonInfo(fixedName, fixedGender, lifetime, parent, fav, mix)
         combinedPersonRelationship(person)
         return person
     }
@@ -1206,6 +1228,33 @@ class CultivationActivity : BaseActivity() {
         }
         fixedPersonGenerate(specPersonList, allianceList)
 
+        SpecPersonFirstName2.forEach { spec->
+            if(mPersons.none { spec.identity == it.value.specIdentity}){
+                var parent:Pair<Person, Person>? = null
+                if(spec.parent != null){
+                    val dad = getSpecOnlinePerson(spec.parent?.first)
+                    val mum = getSpecOnlinePerson(spec.parent?.second)
+                    if (dad != null && mum != null){
+                        parent = Pair(dad, mum)
+                    }
+                }
+                if(spec.parent == null || parent != null ){
+                     val person = addPersion(spec.name, getIdentityGender(spec.identity), 100, parent, false,
+                            CultivationSetting.PersonFixedInfoMix(null, null, spec.tianfuWeight, spec.linggenWeight))
+                    person.specIdentity = spec.identity
+                    if(parent != null){
+                        synchronized(parent.first.children){
+                            parent.first.children.add(person.id)
+                        }
+                        synchronized(parent.second.children){
+                            parent.second.children.add(person.id)
+                        }
+                    }
+                }
+            }
+        }
+
+
         CultivationSetting.getSpecPersonsByType().forEach { (t, u) ->
             fixedPersonGenerate(u,
                     mAlliance.map { it.value }.filter { it.type == t }.sortedBy { it.id })
@@ -1219,7 +1268,8 @@ class CultivationActivity : BaseActivity() {
                     if(partner != null){
                         current.partner = partner.id
                         current.partnerName = partner.name
-                        if(partner.partner == null){
+                        val specPartnerSetting = CultivationSetting.getAllSpecPersons().find { f->f.identity == partner.specIdentity }!!
+                        if(partner.partner == null && specPartnerSetting.partner == current.specIdentity){
                             partner.partner = current.id
                             partner.partnerName = current.name
                         }
@@ -1236,14 +1286,32 @@ class CultivationActivity : BaseActivity() {
     private fun fixedPersonGenerate(specPersonList:MutableList<PresetInfo>, allianceList:List<Alliance>):MutableList<Pair<Person, Int>>{
         val result = mutableListOf<Pair<Person, Int>>()
         specPersonList.forEach {
-            val person = fixedSinglePersonGenerate(it.name, getIdentityGender(it.identity), allianceList[getIdentityIndex(it.identity)],
-                    null, it.tianfuWeight, it.linggenWeight)
-            if(person != null){
-                person.specIdentity = it.identity
-                if(it.profile > 0){
-                    person.profile = it.profile
+            var parent:Pair<Person, Person>? = null
+            if(it.parent != null){
+                val dad = getSpecOnlinePerson(it.parent?.first)
+                val mum = getSpecOnlinePerson(it.parent?.second)
+                if (dad != null && mum != null){
+                    parent = Pair(dad, mum)
                 }
-                result.add(Pair(person, it.partner))
+            }
+            if(it.parent == null || parent != null){
+                val person = fixedSinglePersonGenerate(it.name, getIdentityGender(it.identity), allianceList[getIdentityIndex(it.identity)],
+                        parent, it.tianfuWeight, it.linggenWeight)
+                if(person != null){
+                    person.specIdentity = it.identity
+                    if(parent != null){
+                        synchronized(parent.first.children){
+                            parent.first.children.add(person.id)
+                        }
+                        synchronized(parent.second.children){
+                            parent.second.children.add(person.id)
+                        }
+                    }
+                    if(it.profile > 0){
+                        person.profile = it.profile
+                    }
+                    result.add(Pair(person, it.partner))
+                }
             }
         }
         return result
@@ -1332,7 +1400,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleClanHandler(block: Boolean = true){
-        val minSize = 4
+        val minSize = 32
         val clans = mClans.filter { it.value.clanPersonList.size > 0 }.map { it.value }.toMutableList()
         if(clans.isEmpty() || clans.size < minSize){
             showToast("Clan less than $minSize")
@@ -1379,7 +1447,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleBangHandler(block: Boolean = true){
-        val minSize = 10
+        val minSize = 16
         val alliances = mAlliance.filter { it.value.personList.isNotEmpty() }.map { it.value }.toMutableList()
         if(alliances.isEmpty() || alliances.size < minSize){
             showToast("Bang less than $minSize")
@@ -1405,19 +1473,13 @@ class CultivationActivity : BaseActivity() {
                 if(result)
                     break
             }
-
-            restAlliance[0].personList.forEach {
-                CultivationHelper.gainJiEquipment(it.value, 11, 0, mBattleRound.bang)
+            repeat(minSize){ index-> // 0 ~ 15
+                val reverseIndex = minSize - index //16 ~ 1
+                val alliance = restAlliance[reverseIndex - 1]
+                alliance.battleRecord[mBattleRound.bang] = reverseIndex
+                writeHistory("第${mBattleRound.bang}届 Bang Battle No $reverseIndex : ${alliance.name}")
             }
-            restAlliance[1].personList.forEach {
-                CultivationHelper.gainJiEquipment(it.value, 11, 1, mBattleRound.bang)
-            }
-            repeat(minSize){ index->
-                val count = minSize - index //10 ~ 1
-                val alliance = restAlliance[count - 1]
-                alliance.winner += index + 1
-                writeHistory("第${mBattleRound.bang}届 Bang Battle No $count : ${alliance.name}")
-            }
+            CultivationHelper.updateAllianceBattleBonus(mAlliance)
             if(!block){
                 Thread.sleep(5000)
             }
@@ -1651,7 +1713,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     fun showToast(content:String){
-        if(isStop)
+        if(isPaused)
             return
         try {
             Toast.makeText(this, content, Toast.LENGTH_SHORT).show()

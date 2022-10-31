@@ -10,11 +10,18 @@ object CultivationSetting {
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
     const val SP_JIE_TURN = 81
-    val EVENT_WEIGHT = listOf("1200-50","7200-40","8400-40","9600-100")
+    val EVENT_WEIGHT = listOf("1200-50","7200-40","8400-40","9600-1000000")
     const val SP_PUNISH_BOSS_MILLION = 200
 
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed")
     val SpecPersonFirstNameWeight:Pair<Int, Int> = Pair(50, 20)// tianfu.linggen
+
+    val SpecPersonFirstName2:MutableList<PresetInfo> = mutableListOf(
+            PresetInfo(12000010, Pair("\u6bdb","\u6b23"),12000021, 1000, 2000),
+            PresetInfo(12000021, Pair("\u674e","\u4e00\u6850"),12000010, 1000, 2000),
+            PresetInfo(12000031, Pair("\u674e","\u4e00\u6850\u2161"),12000010, 500, 1000),
+            PresetInfo(12000041, Pair("\u6bdb","\u6c47\u5f64"),0, 1000, 2000, Pair(12000010, 12000021))
+     )
 
     //13 00 001 0
     private val SpecPersonFirstName3:MutableList<PresetInfo> = mutableListOf(
@@ -58,10 +65,10 @@ object CultivationSetting {
             PresetInfo(14010050, Triple("\u8bf8\u845b", "\u4eae", 2013), 14010061,500, 1000),
             PresetInfo(14010061, Triple("\u9ec4", "\u6708\u82f1", 4006), 14010050,100, 100),
             PresetInfo(14010070, Triple("\u5e9e","\u7edf", 2012)), PresetInfo(14010080, Triple("\u9a6c","\u8d85", 2035)),
-            PresetInfo(14010090, Triple("\u9ec4", "\u5fe0", 2014)), PresetInfo(14010101, Triple("\u9a6c","\u4e91\u7984", 4008)),
+            PresetInfo(14010090, Triple("\u9ec4", "\u5fe0", 2014)), PresetInfo(14010101, Triple("\u9a6c","\u4e91\u7984", 4008), 14010040),
             PresetInfo(14010110, Triple("\u9b4f", "\u5ef6", 2032)), PresetInfo(14010121, Triple("\u5173", "\u94f6\u5c4f", 4001), 0,200, 600),
-            PresetInfo(14010130, Triple("\u738b", "\u5e73", 2022)), PresetInfo(14010140, Triple("\u5b5f", "\u83b7", 2031)),
-            PresetInfo(14010151, Triple("\u795d", "\u878d", 4011)),
+            PresetInfo(14010130, Triple("\u738b", "\u5e73", 2022)), PresetInfo(14010140, Triple("\u5b5f", "\u83b7", 2031), 14010151),
+            PresetInfo(14010151, Triple("\u795d", "\u878d", 4011), 14010140),
 
             PresetInfo(14020010, Triple("\u5b59", "\u6743", 2046), 0,200, 600),
             PresetInfo(14020020, Triple("\u5b59", "\u7b56", 2003),14020041,100, 200),
@@ -82,9 +89,21 @@ object CultivationSetting {
             PresetInfo(14030060, Triple("\u8881", "\u7ecd", 2017), 0, 100, 200),
             PresetInfo(14030070, Triple("\u989c","\u826f",2042)), PresetInfo(14030080, Triple("\u6f58","\u51e4",2039)),
             PresetInfo(14030090, Triple("\u534e", "\u96c4",2037)), PresetInfo(14030100, Triple("\u6587","\u4e11",2043)),
-            PresetInfo(14030111, Triple("\u5415", "\u73b2\u7eee", 4002), 0, 200, 600),
+            PresetInfo(14030111, Triple("\u5415", "\u73b2\u7eee", 4002), 0, 200, 600, Pair(14030010, 14030041)),
             PresetInfo(14030120, Triple("\u5e9e", "\u5fb7",2038)), PresetInfo(14030130, Triple("\u5218", "\u8868",2036)),
-            PresetInfo(14030140, Triple("\u534e", "\u4f57",2048))
+            PresetInfo(14030140, Triple("\u534e", "\u4f57",2048)),
+
+            PresetInfo(14040010, Pair("\u5218", "\u7109"), 0, 100, 100),
+            PresetInfo(14040020, Pair("\u7559", "\u8d5e"), 0, 100, 100),
+            PresetInfo(14040030, Pair("\u5173", "\u7d22"), 14040081, 200, 600),
+            PresetInfo(14040041, Pair("\u8d75", "\u8944"), 0, 200, 600, Pair(14010040, 14010101)),
+            PresetInfo(14040050, Pair("\u8bb8", "\u52ad"), 0, 100, 200),
+            PresetInfo(14040061, Pair("\u738b", "\u8363"), 0, 100, 200),
+            PresetInfo(14040071, Pair("\u82b1", "\u9b18"), 14040030, 100, 200, Pair(14010140, 14010151)),
+            PresetInfo(14040081, Pair("\u9c8d", "\u4e09\u5a18"), 14040030, 100, 200),
+            PresetInfo(14040090, Pair("\u738b", "\u53cc")), PresetInfo(14040100, Pair("\u9648", "\u7433")),
+            PresetInfo(14040101, Pair("\u5218", "\u7109"), 0, 100, 100, Pair(14020060, 14020051))
+
     )
 
     private val SpecPersonFirstName5:MutableList<PresetInfo> = mutableListOf(
@@ -97,15 +116,19 @@ object CultivationSetting {
             PresetInfo(15000070, Pair("\u738b","\u7fb2\u4e4b"),0, 100, 200),
             PresetInfo(15000081, Pair("\u865e","\u59ec"),15010020, 100, 200),
             PresetInfo(15000091, Pair("\u6768","\u7389\u73af"),15020040,100,200),
+            PresetInfo(15000101, Pair("\u897f","\u65bd"),0,100,200),
+            PresetInfo(15000111, Pair("\u738b","\u662d\u541b"),0,100,100),
 
             PresetInfo(15010010, Pair("\u674e","\u5143\u9738"),0, 500, 1000),
             PresetInfo(15010020, Pair("\u9879","\u7fbd"),15000081, 500, 1000),
             PresetInfo(15010030, Pair("\u8346","\u8f72"),0, 100, 100),
+            PresetInfo(15010040, Pair("\u674e","\u5e7f"),0, 100, 100),
 
             PresetInfo(15020010, Pair("\u5b34","\u653f"),0, 500, 1000),
             PresetInfo(15020020, Pair("\u674e","\u4e16\u6c11"),0, 100, 200),
             PresetInfo(15020030, Pair("\u8d75","\u4f76"),0, 100, 100),
-            PresetInfo(15020040, Pair("\u674e","\u9686\u57fa"),15000091)
+            PresetInfo(15020040, Pair("\u674e","\u9686\u57fa"),15000091),
+            PresetInfo(15020050, Pair("\u5218","\u90a6"),0, 100, 100)
     )
 
     private val SpecPersonFirstName6:MutableList<PresetInfo> = mutableListOf(
@@ -118,6 +141,7 @@ object CultivationSetting {
             PresetInfo(16000070, Pair("\u9c81","\u667a\u6df1")),
             PresetInfo(16000080, Pair("\u6b66","\u677e"),0, 100, 100),
             PresetInfo(16000090, Pair("\u962e","\u5c0f\u4e03")),
+            PresetInfo(16000100, Pair("\u82b1","\u8363"),0, 100, 200),
 
             PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
             PresetInfo(16010020, Pair("\u9ad8","\u4fc5"),0, 100, 100),
@@ -239,6 +263,7 @@ object CultivationSetting {
 
     fun getAllSpecPersons():MutableList<PresetInfo>{
         val persons = mutableListOf<PresetInfo>()
+        persons.addAll(SpecPersonFirstName2)
         persons.addAll(SpecPersonFirstName3)
         persons.addAll(SpecPersonFirstName4)
         persons.addAll(SpecPersonFirstName5)
@@ -275,10 +300,21 @@ object CultivationSetting {
 
     class PresetInfo constructor(var identity:Int, var name: Pair<String, String>, var partner:Int = 0, var tianfuWeight:Int = 50, var linggenWeight:Int = 50){
         var profile:Int = 0
+        var parent: Pair<Int, Int>? = null
 
         constructor(identity:Int, name: Triple<String, String, Int>, partner:Int = 0, tianfuWeight:Int = 50, linggenWeight:Int = 50)
                 :this(identity, Pair(name.first, name.second), partner, tianfuWeight, linggenWeight){
             profile = name.third
+        }
+
+        constructor(identity:Int, name: Pair<String, String>, partner:Int = 0, tianfuWeight:Int = 50, linggenWeight:Int = 50, fixedParent:Pair<Int, Int>)
+                :this(identity, name, partner, tianfuWeight, linggenWeight){
+            parent = fixedParent
+        }
+
+        constructor(identity:Int, name: Triple<String, String, Int>, partner:Int = 0, tianfuWeight:Int = 50, linggenWeight:Int = 50, fixedParent:Pair<Int, Int>)
+                :this(identity, name, partner, tianfuWeight, linggenWeight){
+            parent = fixedParent
         }
     }
 

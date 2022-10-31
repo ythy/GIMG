@@ -18,17 +18,18 @@ import butterknife.OnItemClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationRankAdapter
+import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.vo.cultivation.SimpleData
 
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
-class FragmentDialogRank constructor(private val mType:Int)  : DialogFragment() {
+class FragmentDialogRank constructor(private val mType:Int, private val mId:String)  : DialogFragment() {
 
     companion object{
 
-        fun newInstance(type:Int): FragmentDialogRank {
-            return FragmentDialogRank(type)
+        fun newInstance(type:Int, id:String = ""): FragmentDialogRank {
+            return FragmentDialogRank(type, id)
         }
 
     }
@@ -68,6 +69,9 @@ class FragmentDialogRank constructor(private val mType:Int)  : DialogFragment() 
                 newFragment.arguments = bundle
                 newFragment.show(ft, "dialog_clan_info")
             }
+            in 3..9 ->{
+
+            }
             else ->{
                 val newFragment = FragmentDialogPerson.newInstance()
                 newFragment.isCancelable = false
@@ -101,26 +105,27 @@ class FragmentDialogRank constructor(private val mType:Int)  : DialogFragment() 
             0 ->{
                 title = "Bang"
                 val banglist = mutableListOf<SimpleData>()
-                mContext.mPersons.forEach{ p->
-                    banglist.addAll(p.value.equipmentList.filter { e-> e.first == "7006101" }.map {
-                        SimpleData(p.value.allianceId, p.value.allianceName, "", mType, mutableListOf(), it.second)
-                    })
+                repeat(CultivationHelper.mBattleRound.bang){ r->
+                    val round = r + 1
+                    val alliance = mContext.mAlliance.map { it.value }.find { it.battleRecord[round] == 1 }
+                    if (alliance != null){
+                        list.add(SimpleData(alliance.id, alliance.name, "", mType, mutableListOf(), round))
+                    }
                 }
-                list.addAll(banglist.distinctBy { it.seq })
             }
             1 ->{
                 title = "Clan"
-                val clanlist = mutableListOf<SimpleData>()
-                mContext.mPersons.forEach{ p->
-                    clanlist.addAll(p.value.equipmentList.filter { e-> e.first == "7006201" }.mapNotNull {
-                        val clan = mContext.mClans[p.value.ancestorId]
-                        if(clan == null)
-                            null
-                        else
-                            SimpleData(clan.id, clan.name, "", mType, mutableListOf(), it.second)
-                    })
-                }
-                list.addAll(clanlist.distinctBy { it.seq })
+//                val clanlist = mutableListOf<SimpleData>()
+//                mContext.mPersons.forEach{ p->
+//                    clanlist.addAll(p.value.equipmentList.filter { e-> e.first == "7006201" }.mapNotNull {
+//                        val clan = mContext.mClans[p.value.ancestorId]
+//                        if(clan == null)
+//                            null
+//                        else
+//                            SimpleData(clan.id, clan.name, "", mType, mutableListOf(), it.second)
+//                    })
+//                }
+//                list.addAll(clanlist.distinctBy { it.seq })
             }
             2 ->{
                 title = "Single"
@@ -128,6 +133,16 @@ class FragmentDialogRank constructor(private val mType:Int)  : DialogFragment() 
                     list.addAll(p.value.equipmentList.filter { e-> e.first == "7006301" }.map {
                         SimpleData(p.value.id, p.value.name, "", mType, mutableListOf(), it.second)
                     })
+                }
+            }
+            3 ->{
+                title = "Bang Ranking"
+                val alliance = mContext.mAlliance[mId]!!
+                repeat(CultivationHelper.mBattleRound.bang){
+                    val round = it + 1
+                    if (alliance.battleRecord[round] != null){
+                        list.add(SimpleData(it.toString(), alliance.battleRecord[round].toString(), "", mType, mutableListOf(), round))
+                    }
                 }
             }
             in 10..19 ->{
