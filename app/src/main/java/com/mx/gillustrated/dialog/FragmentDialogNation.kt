@@ -81,6 +81,15 @@ class FragmentDialogNation : DialogFragment() {
         showPersonInfo(mPersonList[position].id)
     }
 
+    @OnClick(R.id.tv_xiuwei)
+    fun onWinnerClickHandler(){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogRank.newInstance(5, mNation.id)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_rank_info")
+    }
+
+
     private lateinit var mNation: Nation
     private var mPersonList = mutableListOf<Person>()
     lateinit var mContext:CultivationActivity
@@ -132,6 +141,7 @@ class FragmentDialogNation : DialogFragment() {
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
         mDialogView.total.text = mPersonList.size.toString()
+        mDialogView.xiuwei.text = "${mNation.battleWinner}-${mNation.xiuweiBattle}↑"
         updatePost()
     }
 
@@ -191,6 +201,9 @@ class FragmentDialogNation : DialogFragment() {
 
         @BindView(R.id.tv_name)
         lateinit var name:TextView
+
+        @BindView(R.id.tv_xiuwei)
+        lateinit var xiuwei:TextView
 
         @BindView(R.id.tv_total)
         lateinit var total:TextView

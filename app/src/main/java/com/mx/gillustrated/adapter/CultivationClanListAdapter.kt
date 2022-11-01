@@ -56,7 +56,7 @@ class CultivationClanListAdapter  constructor(mContext: Context, private val lis
             component.zhu.text = ""
         component.persons.text = personList.size.toString()
         component.total.text  = clan.totalXiuwei.toString()
-        component.winner.text = clan.winner.toString()
+        component.winner.text = clan.battleWinner.toString()
         return convertView
     }
 

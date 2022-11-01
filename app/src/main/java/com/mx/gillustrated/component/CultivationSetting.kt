@@ -10,7 +10,7 @@ object CultivationSetting {
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
     const val SP_JIE_TURN = 81
-    val EVENT_WEIGHT = listOf("1200-50","7200-40","8400-40","9600-1000000")
+    val EVENT_WEIGHT = listOf("1200-50","7200-40","8400-40","9600-100")
     const val SP_PUNISH_BOSS_MILLION = 200
 
     val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed")
@@ -20,7 +20,13 @@ object CultivationSetting {
             PresetInfo(12000010, Pair("\u6bdb","\u6b23"),12000021, 1000, 2000),
             PresetInfo(12000021, Pair("\u674e","\u4e00\u6850"),12000010, 1000, 2000),
             PresetInfo(12000031, Pair("\u674e","\u4e00\u6850\u2161"),12000010, 500, 1000),
-            PresetInfo(12000041, Pair("\u6bdb","\u6c47\u5f64"),0, 1000, 2000, Pair(12000010, 12000021))
+            PresetInfo(12000041, Pair("\u6bdb","\u6c47\u5f64"),0, 1000, 2000, Pair(12000010, 12000021)),
+            PresetInfo(12000050, Pair("\u5f20","\u5c0f\u51e1"),12000061, 200, 600),
+            PresetInfo(12000061, Pair("\u78a7","\u7476"),12000050, 200, 600),
+            PresetInfo(12000071, Pair("\u9646","\u96ea\u742a"),12000050, 200, 600),
+            PresetInfo(12000080, Pair("\u7f57","\u5cf0"),12000091, 200, 600),
+            PresetInfo(12000091, Pair("\u5f90","\u6b23"),12000080, 200, 600),
+            PresetInfo(12000101, Pair("\u73cd\u59ae","\u7279"),12000080, 100, 100)
      )
 
     //13 00 001 0

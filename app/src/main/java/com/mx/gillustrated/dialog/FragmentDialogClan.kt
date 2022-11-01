@@ -63,6 +63,14 @@ class FragmentDialogClan : DialogFragment() {
         newFragment.show(ft, "dialog_person_info")
     }
 
+    @OnClick(R.id.tv_name)
+    fun onWinnerClickHandler(){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogRank.newInstance(4, mId)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_rank_info")
+    }
+
     lateinit var mId:String
     lateinit var mContext:CultivationActivity
     lateinit var mDialogView:DialogView
@@ -89,7 +97,7 @@ class FragmentDialogClan : DialogFragment() {
         mContext = activity as CultivationActivity
         val clan = mContext.mClans[mId]
         if(clan != null){
-            mDialogView.name.text = "${CultivationHelper.showing(clan.name)} ${clan.winner}"
+            mDialogView.name.text = CultivationHelper.showing(clan.name)
             mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
             updateView()
             registerTimeLooper()
@@ -122,6 +130,7 @@ class FragmentDialogClan : DialogFragment() {
         }
         mDialogView.total.text = personList.size.toString()
         mDialogView.zhu.text = if(clan.zhu?.name == null ) "" else CultivationHelper.showing(clan.zhu!!.name)
+        mDialogView.xiuwei.text = "${clan.battleWinner}-${clan.xiuweiBattle}↑"
         mPersonList.clear()
         mPersonList.addAll(personList.sortedBy { it.ancestorLevel })
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
@@ -133,6 +142,9 @@ class FragmentDialogClan : DialogFragment() {
 
         @BindView(R.id.tv_name)
         lateinit var name:TextView
+
+        @BindView(R.id.tv_xiuwei)
+        lateinit var xiuwei:TextView
 
         @BindView(R.id.tv_total)
         lateinit var total:TextView

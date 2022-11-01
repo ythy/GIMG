@@ -42,6 +42,7 @@ class CultivationNationAdapter  constructor(mContext: Context, private val list:
 
         component.name.text =  CultivationHelper.showing(list[arg0].name)
         component.persons.text = list[arg0].nationPersonList.size.toString()
+        component.winner.text = list[arg0].battleWinner.toString()
         component.total.text  = list[arg0].totalTurn.toString()
         return convertView
     }
@@ -53,6 +54,9 @@ class CultivationNationAdapter  constructor(mContext: Context, private val list:
 
         @BindView(R.id.tv_persons)
         lateinit var persons: TextView
+
+        @BindView(R.id.tv_winner)
+        lateinit var winner: TextView
 
         @BindView(R.id.tv_total)
         lateinit var total: TextView

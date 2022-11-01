@@ -6,11 +6,15 @@ import java.util.concurrent.ConcurrentHashMap
 open class NationBak {
     lateinit var id:String
     lateinit var name:String
+    var battleRecord:MutableMap<Int, Int> = mutableMapOf()
+    var xiuweiBattle:Int = 0
+    var battleWinner:Int = 0
 
     fun toNation():Nation{
         val nation = Nation()
         nation.id = this.id
         nation.name = this.name
+        nation.battleRecord = ConcurrentHashMap(this.battleRecord)
         return nation
     }
 }
@@ -29,6 +33,7 @@ class Nation : NationBak(){
         val nation = NationBak()
         nation.id = this.id
         nation.name = this.name
+        nation.battleRecord = this.battleRecord
         return nation
     }
 
@@ -41,6 +46,9 @@ class Nation : NationBak(){
         nation.shangShu = this.shangShu
         nation.ciShi = this.ciShi.toMutableList()
         nation.duWei = this.duWei.toMutableList()
+        nation.battleWinner = this.battleWinner
+        nation.xiuweiBattle = this.xiuweiBattle
+        nation.battleRecord = this.battleRecord
         return nation
     }
 

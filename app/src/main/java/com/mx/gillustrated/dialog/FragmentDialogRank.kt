@@ -104,7 +104,6 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
         when(mType){
             0 ->{
                 title = "Bang"
-                val banglist = mutableListOf<SimpleData>()
                 repeat(CultivationHelper.mBattleRound.bang){ r->
                     val round = r + 1
                     val alliance = mContext.mAlliance.map { it.value }.find { it.battleRecord[round] == 1 }
@@ -115,17 +114,13 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
             }
             1 ->{
                 title = "Clan"
-//                val clanlist = mutableListOf<SimpleData>()
-//                mContext.mPersons.forEach{ p->
-//                    clanlist.addAll(p.value.equipmentList.filter { e-> e.first == "7006201" }.mapNotNull {
-//                        val clan = mContext.mClans[p.value.ancestorId]
-//                        if(clan == null)
-//                            null
-//                        else
-//                            SimpleData(clan.id, clan.name, "", mType, mutableListOf(), it.second)
-//                    })
-//                }
-//                list.addAll(clanlist.distinctBy { it.seq })
+                repeat(CultivationHelper.mBattleRound.clan){ r->
+                    val round = r + 1
+                    val clan = mContext.mClans.map { it.value }.find { it.battleRecord[round] == 1 }
+                    if (clan != null){
+                        list.add(SimpleData(clan.id, clan.name, "", mType, mutableListOf(), round))
+                    }
+                }
             }
             2 ->{
                 title = "Single"
@@ -142,6 +137,26 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                     val round = it + 1
                     if (alliance.battleRecord[round] != null){
                         list.add(SimpleData(it.toString(), alliance.battleRecord[round].toString(), "", mType, mutableListOf(), round))
+                    }
+                }
+            }
+            4 ->{
+                title = "Clan Ranking"
+                val clan = mContext.mClans[mId]!!
+                repeat(CultivationHelper.mBattleRound.clan){
+                    val round = it + 1
+                    if (clan.battleRecord[round] != null){
+                        list.add(SimpleData(it.toString(), clan.battleRecord[round].toString(), "", mType, mutableListOf(), round))
+                    }
+                }
+            }
+            5 ->{
+                title = "Nation Ranking"
+                val nation = mContext.mNations[mId]!!
+                repeat(CultivationHelper.mBattleRound.nation){
+                    val round = it + 1
+                    if (nation.battleRecord[round] != null){
+                        list.add(SimpleData(it.toString(), nation.battleRecord[round].toString(), "", mType, mutableListOf(), round))
                     }
                 }
             }

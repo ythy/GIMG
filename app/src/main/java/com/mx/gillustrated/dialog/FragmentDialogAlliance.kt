@@ -137,7 +137,7 @@ class FragmentDialogAlliance : DialogFragment() {
             val zhuName = CultivationHelper.showing(mAlliance.zhuPerson!!.name)
             mDialogView.zhu.text = zhuName
         }
-        mDialogView.winner.text = mAlliance.battleWinner.toString()
+        mDialogView.winner.text = "${mAlliance.battleWinner}-${mAlliance.xiuweiBattle}↑"
         mDialogView.speeds.removeAllViews()
         val list = mAlliance.speedG1PersonList.mapNotNull { mContext.getOnlinePersonDetail(it.value.id) }
         if(list.isNotEmpty()){

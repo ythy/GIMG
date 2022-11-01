@@ -98,7 +98,7 @@ object CultivationHelper {
         }
     }
 
-    //前3，
+    //前3， rank total 16
     fun updateAllianceBattleBonus(allAlliance:ConcurrentHashMap<String, Alliance>){
         allAlliance.forEach { data->
             var xiuwei = 0
@@ -133,6 +133,47 @@ object CultivationHelper {
         }
 
     }
+
+    // rank total 4
+    fun updateClanBattleBonus(allClan:ConcurrentHashMap<String, Clan>){
+        allClan.forEach { data->
+            var xiuwei = 0
+            data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
+                when (t) {
+                    1 -> xiuwei += getValidBonus(u.size, 10) * 5
+                    2 -> xiuwei += getValidBonus(u.size, 10) * 3
+                    3 -> xiuwei += getValidBonus(u.size, 10) * 1
+                }
+            }
+            data.value.xiuweiBattle = xiuwei
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { 5 - it }
+            data.value.clanPersonList.forEach { (_: String, clanPerson: Person) ->
+                clanPerson.clanXiuwei = xiuwei
+            }
+        }
+    }
+
+    // rank total 4
+    fun updateNationBattleBonus(allNations:ConcurrentHashMap<String, Nation>, allPersons:ConcurrentHashMap<String, Person>){
+        allNations.forEach { data->
+            var xiuwei = 0
+            data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
+                when (t) {
+                    1 -> xiuwei += getValidBonus(u.size, 10) * 10
+                    2 -> xiuwei += getValidBonus(u.size, 10) * 6
+                    3 -> xiuwei += getValidBonus(u.size, 10) * 3
+                }
+            }
+            data.value.xiuweiBattle = xiuwei
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { 5 - it }
+
+            allPersons.map { it.value }.filter { it.nationId == data.value.id }.forEach {
+                it.nationXiuwei = xiuwei
+            }
+        }
+    }
+
+
 
     private fun getTianFu(parent: Pair<Person, Person>?, fixedTianfus:MutableList<String>?, tianFuWeight:Int):MutableList<TianFu>{
         if(fixedTianfus != null && fixedTianfus.isNotEmpty()){
@@ -482,7 +523,8 @@ object CultivationHelper {
             person.allianceXiuwei += alliance.xiuweiBattle
         }
         val postXiuwei = getNationXiuwei(person)
-        val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + postXiuwei
+        val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei
+                            + person.clanXiuwei + person.nationXiuwei + postXiuwei
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
     }
