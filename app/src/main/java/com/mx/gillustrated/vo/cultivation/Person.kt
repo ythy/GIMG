@@ -54,6 +54,7 @@ class Person() :Parcelable {
         var allianceSuccess:Int = 0 //alliance 增益 初始和读取更新
         var allianceProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//alliance 初始和读取更新
         var specIdentity:Int = 0 //spec person nid
+        var specIdentityTurn:Int = 0 //spec person turn added while dead
         var nationPost:Int = 0
         var neverDead:Boolean = false
         var winner:Int = 0
@@ -150,6 +151,7 @@ class Person() :Parcelable {
                 remainHit = parcel.readInt()
                 nationId = parcel.readString()
                 specIdentity = parcel.readInt()
+                specIdentityTurn = parcel.readInt()
                 nationPost = parcel.readInt()
                 neverDead = parcel.readByte() != 0.toByte()
                 winner = parcel.readInt()
@@ -220,6 +222,7 @@ class Person() :Parcelable {
                 parcel.writeInt(remainHit)
                 parcel.writeString(nationId)
                 parcel.writeInt(specIdentity)
+                parcel.writeInt(specIdentityTurn)
                 parcel.writeInt(nationPost)
                 parcel.writeByte(if (neverDead) 1 else 0)
                 parcel.writeInt(winner)

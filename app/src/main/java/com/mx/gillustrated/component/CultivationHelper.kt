@@ -104,9 +104,9 @@ object CultivationHelper {
             var xiuwei = 0
             data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
                 when (t) {
-                    1 -> xiuwei += getValidBonus(u.size, 10) * 8
-                    2 -> xiuwei += getValidBonus(u.size, 10) * 5
-                    3 -> xiuwei += getValidBonus(u.size, 10) * 2
+                    1 -> xiuwei += getValidBonus(u.size, 5) * 8
+                    2 -> xiuwei += getValidBonus(u.size, 5) * 5
+                    3 -> xiuwei += getValidBonus(u.size, 5) * 2
                 }
             }
             data.value.xiuweiBattle = xiuwei
@@ -140,9 +140,9 @@ object CultivationHelper {
             var xiuwei = 0
             data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
                 when (t) {
-                    1 -> xiuwei += getValidBonus(u.size, 10) * 5
-                    2 -> xiuwei += getValidBonus(u.size, 10) * 3
-                    3 -> xiuwei += getValidBonus(u.size, 10) * 1
+                    1 -> xiuwei += getValidBonus(u.size, 5) * 5
+                    2 -> xiuwei += getValidBonus(u.size, 5) * 3
+                    3 -> xiuwei += getValidBonus(u.size, 5) * 1
                 }
             }
             data.value.xiuweiBattle = xiuwei
@@ -159,9 +159,9 @@ object CultivationHelper {
             var xiuwei = 0
             data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
                 when (t) {
-                    1 -> xiuwei += getValidBonus(u.size, 10) * 10
-                    2 -> xiuwei += getValidBonus(u.size, 10) * 6
-                    3 -> xiuwei += getValidBonus(u.size, 10) * 3
+                    1 -> xiuwei += getValidBonus(u.size, 5) * 10
+                    2 -> xiuwei += getValidBonus(u.size, 5) * 6
+                    3 -> xiuwei += getValidBonus(u.size, 5) * 3
                 }
             }
             data.value.xiuweiBattle = xiuwei
@@ -371,7 +371,7 @@ object CultivationHelper {
         result.lastBirthDay = mCurrentXun
         setPersonJingjie(result)
         result.profile = if(fav) 1001 else getRandomProfile(result.gender)
-        result.isFav = fav
+        result.neverDead = fav
         result.tianfus = tianFus
         result.teji = Collections.synchronizedList(getTeji())
         result.careerList = Collections.synchronizedList(getCareer().map { Triple(it, 0, "") })

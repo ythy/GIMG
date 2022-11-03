@@ -30,7 +30,7 @@ class ExceptionHandler: Thread.UncaughtExceptionHandler {
                     e.printStackTrace()
                 }
             }
-            val message = "${Timestamp(System.currentTimeMillis())}: ${ex?.message}  \n"
+            val message = "${Timestamp(System.currentTimeMillis())}: ${ex?.message ?: ex.toString()}  \n"
             CommonUtil.printFile(message, file, true)
             System.exit(0)
         }

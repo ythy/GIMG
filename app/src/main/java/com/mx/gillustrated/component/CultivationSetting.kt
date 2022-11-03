@@ -26,7 +26,9 @@ object CultivationSetting {
             PresetInfo(12000071, Pair("\u9646","\u96ea\u742a"),12000050, 200, 600),
             PresetInfo(12000080, Pair("\u7f57","\u5cf0"),12000091, 200, 600),
             PresetInfo(12000091, Pair("\u5f90","\u6b23"),12000080, 200, 600),
-            PresetInfo(12000101, Pair("\u73cd\u59ae","\u7279"),12000080, 100, 100)
+            PresetInfo(12000101, Pair("\u73cd\u59ae","\u7279"),12000080, 100, 100),
+            PresetInfo(12000110, Pair("\u6731\u5229\u5b89","\u68ad\u7f57"),12000121, 1000, 600000),
+            PresetInfo(12000121, Pair("\u57ce\u6237","\u7eb1\u7ec7"),12000110, 1000, 600000)
      )
 
     //13 00 001 0
@@ -108,7 +110,7 @@ object CultivationSetting {
             PresetInfo(14040071, Pair("\u82b1", "\u9b18"), 14040030, 100, 200, Pair(14010140, 14010151)),
             PresetInfo(14040081, Pair("\u9c8d", "\u4e09\u5a18"), 14040030, 100, 200),
             PresetInfo(14040090, Pair("\u738b", "\u53cc")), PresetInfo(14040100, Pair("\u9648", "\u7433")),
-            PresetInfo(14040101, Pair("\u5218", "\u7109"), 0, 100, 100, Pair(14020060, 14020051))
+            PresetInfo(14040101, Pair("\u5468", "\u5983"), 0, 100, 100, Pair(14020060, 14020051))
 
     )
 
@@ -148,6 +150,8 @@ object CultivationSetting {
             PresetInfo(16000080, Pair("\u6b66","\u677e"),0, 100, 100),
             PresetInfo(16000090, Pair("\u962e","\u5c0f\u4e03")),
             PresetInfo(16000100, Pair("\u82b1","\u8363"),0, 100, 200),
+            PresetInfo(16000110, Pair("\u79e6","\u660e")),
+            PresetInfo(16000120, Pair("\u67f4","\u8fdb")),
 
             PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
             PresetInfo(16010020, Pair("\u9ad8","\u4fc5"),0, 100, 100),
@@ -287,6 +291,18 @@ object CultivationSetting {
         return if (identity % 10 == 0 ) NameUtil.Gender.Male else if (identity % 10 == 1) NameUtil.Gender.Female else NameUtil.Gender.Default
     }
 
+    //例 1300 001 0  1 ~ 999
+    fun getIdentitySeq(identity:Int):Int{
+        return identity.toString().substring(4, 7).toInt()
+    }
+
+    fun createLifeTurnName(lifeturn:Int):String{
+        return if(lifeturn == 0)
+            ""
+        else
+            "${lifeturn + 1}世"
+    }
+
     //return 1 ~ 999
     fun createIdentitySeq(index:Int):String{
         return  when(index){
@@ -295,6 +311,7 @@ object CultivationSetting {
             else -> "${Math.min(999, index + 1)}"
         }
     }
+
 
 
 

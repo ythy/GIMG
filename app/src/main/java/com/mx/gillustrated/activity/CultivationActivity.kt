@@ -44,6 +44,7 @@ import com.mx.gillustrated.component.CultivationSetting.getIdentityIndex
 import com.mx.gillustrated.component.CultivationSetting.createIdentitySeq
 import com.mx.gillustrated.component.CultivationSetting.PresetInfo
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstNameWeight
+import com.mx.gillustrated.component.CultivationSetting.getAllSpecPersons
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.service.StopService
 import com.mx.gillustrated.util.CultivationBakUtil
@@ -301,19 +302,30 @@ class CultivationActivity : BaseActivity() {
         mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
             val config = specConfig.find { c-> c.identity == u.specIdentity }
             if (config != null){
-                u.name = config.name.first + config.name.second
+                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
                 u.lastName = config.name.first
                 if (config.profile > 0)
                     u.profile = config.profile
-                if (u.partner != null){
+                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
                     mPersons[u.partner ?: ""]?.partnerName = u.name
                 }
             }
         }
 
+//        val allianceList = Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 }.sortedBy { it.id })
+//        for ( i in 0 until allianceList.size){
+//            SpecPersonFirstName.forEachIndexed { index, first ->
+//                val person = mPersons.map { it.value }.find { it.name ==  allianceList[i].name.slice(0 until 1) + first}
+//                val id = "110$i${createIdentitySeq(index)}1".toInt()
+//                if(person != null && person.specIdentity != id){
+//                    person.specIdentity = id
+//                }
+//            }
+//        }
+
 //        SpecPersonFirstName2.forEach { spec->
 //            val person = mPersons.map { it.value }.find { it.name == spec.name.first + spec.name.second }
-//            if (person != null){
+//            if (person != null && person.specIdentity == 0){
 //                person.specIdentity = spec.identity
 //            }
 //        }
@@ -573,7 +585,7 @@ class CultivationActivity : BaseActivity() {
         return  getOnlinePersonDetail(id) ?: getOfflinePersonDetail(id) ?: mBoss[id]
     }
 
-    fun getSpecOnlinePerson(id:Int?):Person?{
+    private fun getSpecOnlinePerson(id:Int?):Person?{
         return  mPersons.map { it.value }.find { it.specIdentity == id}
     }
 
@@ -639,14 +651,31 @@ class CultivationActivity : BaseActivity() {
             it.birthDay.removeIf { it.second == 0L }
             it.birthDay.add(pair)
         }
+
+        if(it.specIdentity > 0 && alliance != null){ //特殊处理SpecName
+            val config = getAllSpecPersons().find { p-> p.identity == it.specIdentity } //maybe null
+            var person:Person? = null
+            if(alliance.type == 0 && config != null){ //Name2
+                person = addSingleSpecPerson(config)
+            }else if(alliance.type == 1){
+                val firstName = SpecPersonFirstName[CultivationSetting.getIdentitySeq(it.specIdentity) - 1]
+                person = addSingleSpecPerson(PresetInfo(it.specIdentity, Pair(it.lastName, firstName),
+                        0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second),
+                        alliance)
+            }else if(config != null){
+                person = addSingleSpecPerson(config, alliance)
+            }
+
+            if(person != null){
+                person.specIdentityTurn = it.specIdentityTurn + 1
+                person.name = person.name + CultivationSetting.createLifeTurnName(person.specIdentityTurn)
+            }
+        }
     }
 
     private fun isDeadException(person:Person):Boolean{
-        val matchName = "(李逍遥|阿奴)".toRegex()
         val lifeTurn = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
         if(person.isFav || person.neverDead){
-            return true
-        }else if(matchName.find(person.name) != null){
             return true
         }else if(person.lifeTurn >= lifeTurn){
             return true
@@ -1219,49 +1248,26 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun addSpecPerson(){
-        val allianceList = Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 })
-        val specPersonList = mutableListOf<PresetInfo>()
-        for ( i in 0 until allianceList.size){
+        Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 }.sortedBy { it.id }).forEachIndexed { i, alliance ->
             SpecPersonFirstName.forEachIndexed { index, first ->
-                specPersonList.add(PresetInfo("110$i${createIdentitySeq(index)}1".toInt(), Pair(allianceList[i].name.slice(0 until 1), first),
-                        0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second))
+                val nid = "110$i${createIdentitySeq(index)}1".toInt()
+                addSingleSpecPerson(PresetInfo(nid, Pair(alliance.name.slice(0 until 1), first),
+                            0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second), alliance)
             }
         }
-        fixedPersonGenerate(specPersonList, allianceList)
 
         SpecPersonFirstName2.forEach { spec->
-            if(mPersons.none { spec.identity == it.value.specIdentity}){
-                var parent:Pair<Person, Person>? = null
-                if(spec.parent != null){
-                    val dad = getSpecOnlinePerson(spec.parent?.first)
-                    val mum = getSpecOnlinePerson(spec.parent?.second)
-                    if (dad != null && mum != null){
-                        parent = Pair(dad, mum)
-                    }
-                }
-                if(spec.parent == null || parent != null ){
-                     val person = addPersion(spec.name, getIdentityGender(spec.identity), 100, parent, false,
-                            CultivationSetting.PersonFixedInfoMix(null, null, spec.tianfuWeight, spec.linggenWeight))
-                    person.specIdentity = spec.identity
-                    if(parent != null){
-                        synchronized(parent.first.children){
-                            parent.first.children.add(person.id)
-                        }
-                        synchronized(parent.second.children){
-                            parent.second.children.add(person.id)
-                        }
-                    }
-                }
+            addSingleSpecPerson(spec)
+        }
+
+        CultivationSetting.getSpecPersonsByType().forEach { (t, u) ->
+            val alliances = mAlliance.map { it.value }.filter { it.type == t }.sortedBy { it.id }
+            u.forEach { spec->
+                addSingleSpecPerson(spec, alliances[getIdentityIndex(spec.identity)])
             }
         }
 
-
-        CultivationSetting.getSpecPersonsByType().forEach { (t, u) ->
-            fixedPersonGenerate(u,
-                    mAlliance.map { it.value }.filter { it.type == t }.sortedBy { it.id })
-        }
-
-        CultivationSetting.getAllSpecPersons().forEach { p ->
+        getAllSpecPersons().forEach { p ->
             if(p.partner > 0){
                 val current = mPersons.map { it.value }.find { it.specIdentity == p.identity }
                 if(current != null && current.partner == null ){
@@ -1269,7 +1275,7 @@ class CultivationActivity : BaseActivity() {
                     if(partner != null){
                         current.partner = partner.id
                         current.partnerName = partner.name
-                        val specPartnerSetting = CultivationSetting.getAllSpecPersons().find { f->f.identity == partner.specIdentity }!!
+                        val specPartnerSetting = getAllSpecPersons().find { f->f.identity == partner.specIdentity }!!
                         if(partner.partner == null && specPartnerSetting.partner == current.specIdentity){
                             partner.partner = current.id
                             partner.partnerName = current.name
@@ -1284,45 +1290,41 @@ class CultivationActivity : BaseActivity() {
 
     }
 
-    private fun fixedPersonGenerate(specPersonList:MutableList<PresetInfo>, allianceList:List<Alliance>):MutableList<Pair<Person, Int>>{
-        val result = mutableListOf<Pair<Person, Int>>()
-        specPersonList.forEach {
-            var parent:Pair<Person, Person>? = null
-            if(it.parent != null){
-                val dad = getSpecOnlinePerson(it.parent?.first)
-                val mum = getSpecOnlinePerson(it.parent?.second)
-                if (dad != null && mum != null){
-                    parent = Pair(dad, mum)
-                }
-            }
-            if(it.parent == null || parent != null){
-                val person = fixedSinglePersonGenerate(it.name, getIdentityGender(it.identity), allianceList[getIdentityIndex(it.identity)],
-                        parent, it.tianfuWeight, it.linggenWeight)
-                if(person != null){
-                    person.specIdentity = it.identity
-                    if(parent != null){
-                        synchronized(parent.first.children){
-                            parent.first.children.add(person.id)
-                        }
-                        synchronized(parent.second.children){
-                            parent.second.children.add(person.id)
-                        }
-                    }
-                    if(it.profile > 0){
-                        person.profile = it.profile
-                    }
-                    result.add(Pair(person, it.partner))
-                }
+    private fun addSingleSpecPerson(spec:PresetInfo, alliance:Alliance? = null):Person?{
+        if(getSpecOnlinePerson(spec.identity) != null)
+            return null
+        var parent:Pair<Person, Person>? = null
+        if(spec.parent != null){
+            val dad = getSpecOnlinePerson(spec.parent?.first)
+            val mum = getSpecOnlinePerson(spec.parent?.second)
+            if (dad != null && mum != null){
+                parent = Pair(dad, mum)
             }
         }
-        return result
-    }
-
-    private fun fixedSinglePersonGenerate(name:Pair<String, String?>,gender: NameUtil.Gender, alliance:Alliance, parent: Pair<Person, Person>? = null, tinfu:Int = 1, linggen:Int = 1):Person?{
-        if(mPersons.none { p-> p.value.allianceId == alliance.id && p.value.name == name.first + (name.second ?: "") }) {
-            val person = CultivationHelper.getPersonInfo(name, gender, 100, parent, false, CultivationSetting.PersonFixedInfoMix(null, null, tinfu, linggen))
+        if(spec.parent == null || parent != null ){
+            val person = CultivationHelper.getPersonInfo(spec.name,  getIdentityGender(spec.identity), 100, parent, false,
+                    CultivationSetting.PersonFixedInfoMix(null, null, spec.tianfuWeight, spec.linggenWeight))
+            person.specIdentity = spec.identity
+            if(spec.profile > 0){
+                person.profile = spec.profile
+            }
+            if(parent != null){
+                synchronized(parent.first.children){
+                    parent.first.children.add(person.id)
+                }
+                synchronized(parent.second.children){
+                    parent.second.children.add(person.id)
+                }
+            }
             mPersons[person.id] = person
-            CultivationHelper.joinFixedAlliance(person, alliance)
+            if(mClans[person.ancestorId] != null){
+                mClans[person.ancestorId]!!.clanPersonList[person.id] = person
+            }
+            if(alliance != null){
+                CultivationHelper.joinFixedAlliance(person, alliance)
+            }else{
+                CultivationHelper.joinAlliance(person, mAlliance)
+            }
             addPersonEvent(person,"加入")
             writeHistory("${getPersonBasicString(person)} 加入", person)
             return person
