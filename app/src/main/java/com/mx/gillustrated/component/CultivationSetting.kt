@@ -12,14 +12,15 @@ object CultivationSetting {
     object BattleSettings {
         const val AllianceMinSize = 16
         const val AllianceBonusCount = 4
-        val AllianceBonus = arrayOf(5,8,5,3,1,0,0,0,0,0,0)
+        val AllianceBonus = arrayOf(5,8,5,3,1,0,0,0,0,0,0)// [0]: equipment maxCount, [1..10]: bonus
         const val ClanMinSize = 4
         const val ClanBonusCount = 3
         val ClanBonus = arrayOf(5,3,2,1,0,0,0,0,0,0,0)
         const val NationMinSize = 4
-        const  val NationBonusCount = 3
+        const val NationBonusCount = 3
         val NationBonus = arrayOf(5,3,2,1,0,0,0,0,0,0,0)
         const val SingleMinSize = 32
+        const val SingleBonusCount = 4
     }
 
     const val SP_JIE_TURN = 81
@@ -62,7 +63,9 @@ object CultivationSetting {
             PresetInfo(13020031, Pair("\u5468","\u82b7\u82e5"),0, 200, 600),
             PresetInfo(13020041, Pair("\u4e1c\u65b9","\u4e0d\u8d25"),0, 500, 1000),
             PresetInfo(13020051, Pair("\u5c0f","\u662d"),0, 100, 200),
-            PresetInfo(13020061, Pair("\u674e","\u79cb\u6c34"),0, 100, 100),
+            PresetInfo(13020061, Pair("\u674e","\u79cb\u6c34"),13020070, 100, 100),
+            PresetInfo(13020070, Pair("\u65e0","\u5d16\u5b50"),13020061, 100, 200),
+            PresetInfo(13020081, Pair("\u6728","\u5a49\u6e05"),0,100,100),
             PresetInfo(13020091, Pair("\u4efb","\u76c8\u76c8"), 0, 200, 600)
     )
 

@@ -1362,7 +1362,6 @@ class CultivationActivity : BaseActivity() {
             showToast("persons less than $minSize")
             return
         }
-        val persons = personsAll.subList(0, personsAll.size/2)
         setTimeLooper(false)
         if(block){
             mHistoryData.clear()
@@ -1379,21 +1378,19 @@ class CultivationActivity : BaseActivity() {
             while (true){
                 writeHistory("Single Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundSingleHandler(persons, restPersons,40)
+                val result = roundSingleHandler(personsAll, restPersons,40)
                 if(result)
                     break
             }
-            CultivationHelper.gainJiEquipment(restPersons[0], 13, 0, mBattleRound.single)
-            CultivationHelper.gainJiEquipment(restPersons[1], 13, 1, mBattleRound.single)
-            CultivationHelper.gainJiEquipment(restPersons[2], 13, 2, mBattleRound.single)
-            CultivationHelper.gainJiEquipment(restPersons[3], 13, 3, mBattleRound.single)
             repeat(minSize){ index->
                 val count = minSize - index //32 ~ 1
                 val person = restPersons[count - 1]
                 person.winner += index + 1
                 writeHistory("第${mBattleRound.single}届 Single Battle No $count : ${person.name}", person)
             }
-
+            repeat(CultivationSetting.BattleSettings.SingleBonusCount){ index->
+                CultivationHelper.gainJiEquipment(restPersons[index], 13, index, mBattleRound.single)
+            }
             if(!block){
                 Thread.sleep(5000)
             }
