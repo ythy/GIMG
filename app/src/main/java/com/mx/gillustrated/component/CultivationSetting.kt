@@ -9,6 +9,19 @@ object CultivationSetting {
     val PostColors = arrayOf("#E2D223", "#BE0012", "#0272E4", "#12A703", "#EF7362")
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
+    object BattleSettings {
+        const val AllianceMinSize = 16
+        const val AllianceBonusCount = 4
+        val AllianceBonus = arrayOf(5,8,5,3,1,0,0,0,0,0,0)
+        const val ClanMinSize = 4
+        const val ClanBonusCount = 3
+        val ClanBonus = arrayOf(5,3,2,1,0,0,0,0,0,0,0)
+        const val NationMinSize = 4
+        const  val NationBonusCount = 3
+        val NationBonus = arrayOf(5,3,2,1,0,0,0,0,0,0,0)
+        const val SingleMinSize = 32
+    }
+
     const val SP_JIE_TURN = 81
     val EVENT_WEIGHT = listOf("1200-50","7200-40","8400-40","9600-100")
     const val SP_PUNISH_BOSS_MILLION = 200

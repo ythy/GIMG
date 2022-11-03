@@ -1355,7 +1355,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleSingleHandler(block:Boolean = true){
-        val minSize = 32
+        val minSize = CultivationSetting.BattleSettings.SingleMinSize
         val personsAll = mPersons.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
         personsAll.shuffle()
         if(personsAll.size < minSize){
@@ -1405,7 +1405,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleClanHandler(block: Boolean = true){
-        val minSize = 4
+        val minSize = CultivationSetting.BattleSettings.ClanMinSize
         val clans = mClans.filter { it.value.clanPersonList.size > 0 }.map { it.value }.toMutableList()
         if(clans.isEmpty() || clans.size < minSize){
             showToast("Clan less than $minSize")
@@ -1450,7 +1450,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun battleBangHandler(block: Boolean = true){
-        val minSize = 16
+        val minSize =  CultivationSetting.BattleSettings.AllianceMinSize
         val alliances = mAlliance.filter { it.value.personList.isNotEmpty() }.map { it.value }.toMutableList()
         if(alliances.isEmpty() || alliances.size < minSize){
             showToast("Bang less than $minSize")
@@ -1526,7 +1526,7 @@ class CultivationActivity : BaseActivity() {
                 if(result)
                     break
             }
-            val minSize = 4
+            val minSize = CultivationSetting.BattleSettings.NationMinSize
             repeat(minSize){ index-> // 0 ~ 3
                 val reverseIndex = minSize - index //4 ~ 1
                 val nation = mNations[restNation[reverseIndex - 1].id]!!

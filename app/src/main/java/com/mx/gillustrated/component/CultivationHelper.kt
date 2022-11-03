@@ -2,6 +2,7 @@ package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
+import com.mx.gillustrated.component.CultivationSetting.BattleSettings
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
@@ -98,19 +99,17 @@ object CultivationHelper {
         }
     }
 
-    //前3， rank total 16
+    //前4， rank total 16
     fun updateAllianceBattleBonus(allAlliance:ConcurrentHashMap<String, Alliance>){
         allAlliance.forEach { data->
             var xiuwei = 0
             data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
-                when (t) {
-                    1 -> xiuwei += getValidBonus(u.size, 5) * 8
-                    2 -> xiuwei += getValidBonus(u.size, 5) * 5
-                    3 -> xiuwei += getValidBonus(u.size, 5) * 2
+                if(t in 1..BattleSettings.AllianceBonusCount){
+                    xiuwei += getValidBonus(u.size, BattleSettings.AllianceBonus[0]) * BattleSettings.AllianceBonus[t]
                 }
             }
             data.value.xiuweiBattle = xiuwei
-            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { 17 - it }
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.AllianceMinSize + 1 - it }
         }
     }
 
@@ -139,14 +138,12 @@ object CultivationHelper {
         allClan.forEach { data->
             var xiuwei = 0
             data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
-                when (t) {
-                    1 -> xiuwei += getValidBonus(u.size, 5) * 5
-                    2 -> xiuwei += getValidBonus(u.size, 5) * 3
-                    3 -> xiuwei += getValidBonus(u.size, 5) * 1
+                if(t in 1..BattleSettings.ClanBonusCount){
+                    xiuwei += getValidBonus(u.size, BattleSettings.ClanBonus[0]) * BattleSettings.ClanBonus[t]
                 }
             }
             data.value.xiuweiBattle = xiuwei
-            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { 5 - it }
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.ClanMinSize + 1 - it }
             data.value.clanPersonList.forEach { (_: String, clanPerson: Person) ->
                 clanPerson.clanXiuwei = xiuwei
             }
@@ -158,14 +155,12 @@ object CultivationHelper {
         allNations.forEach { data->
             var xiuwei = 0
             data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
-                when (t) {
-                    1 -> xiuwei += getValidBonus(u.size, 5) * 10
-                    2 -> xiuwei += getValidBonus(u.size, 5) * 6
-                    3 -> xiuwei += getValidBonus(u.size, 5) * 3
+                if(t in 1..BattleSettings.NationBonusCount){
+                    xiuwei += getValidBonus(u.size, BattleSettings.NationBonus[0]) * BattleSettings.NationBonus[t]
                 }
             }
             data.value.xiuweiBattle = xiuwei
-            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { 5 - it }
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.NationMinSize + 1 - it }
 
             allPersons.map { it.value }.filter { it.nationId == data.value.id }.forEach {
                 it.nationXiuwei = xiuwei
