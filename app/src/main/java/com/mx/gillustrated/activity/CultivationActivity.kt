@@ -362,7 +362,7 @@ class CultivationActivity : BaseActivity() {
                 if(it.value.children.isNotEmpty())
                     it.value.children = Collections.synchronizedList(it.value.children)
                 it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
-                it.value.equipmentList = Collections.synchronizedList(it.value.equipmentList)
+                it.value.equipmentListPair = Collections.synchronizedList(it.value.equipmentListPair)
                 CultivationHelper.updatePersonEquipment(it.value)
                 CultivationHelper.updatePersonExtraProperty(it.value)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
@@ -1212,8 +1212,8 @@ class CultivationActivity : BaseActivity() {
                     if(career.id == "6100001" || career.id == "6100002" || career.id == "6100003" || career.id == "6100006"){
                         val equipmentType = if (career.id == "6100001") 0 else if (career.id == "6100002") 1 else if (career.id == "6100003") 2 else 3
                         val equipment = CultivationHelper.makeEquipment(equipmentType, career.level)
-                        if(equipment != null && person.equipmentList.find { it.first == equipment.id } == null){
-                            person.equipmentList.add(Triple(equipment.id, 0, ""))
+                        if(equipment != null && person.equipmentListPair.find { it.first == equipment.id } == null){
+                            person.equipmentListPair.add(Pair(equipment.id, 0))
                             val commonText = "\u5236\u9020 : ${equipment.name}"
                             CultivationHelper.updatePersonEquipment(person)
                             addPersonEvent(person, commonText)
@@ -1704,7 +1704,7 @@ class CultivationActivity : BaseActivity() {
             u.careerList = Collections.synchronizedList(CultivationHelper.getCareer().map { c->Triple(c, 0, "") })
             u.pointXiuWei = u.maxXiuWei
             u.teji.clear()
-            u.equipmentList.removeIf {
+            u.equipmentListPair.removeIf {
                 val equipment = mConfig.equipment.find { e-> it.first == e.id }
                 equipment?.type ?: 0 <= 10
             }

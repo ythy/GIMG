@@ -79,7 +79,7 @@ object CultivationHelper {
         originAlliance.personList.remove(person.id)
         if(originAlliance.zhuPerson == person)
             originAlliance.zhuPerson = null
-        person.equipmentList.removeIf { it.first == "7006101" || it.first == "7006102" }
+        person.equipmentListPair.removeIf { it.first == "7006101" || it.first == "7006102" }
         joinFixedAlliance(person, newAlliance, true)
     }
 
@@ -453,12 +453,12 @@ object CultivationHelper {
     //type 11,12,13,14 -> B,C,S,E
     fun gainJiEquipment(person:Person, type:Int, level:Int = 0, round:Int = 0){
         val equipment = mConfig.equipment.filter{ it.type == type}.sortedBy { it.id }[level]
-        person.equipmentList.add(Triple(equipment.id, round, ""))
+        person.equipmentListPair.add(Pair(equipment.id, round))
         updatePersonEquipment(person)
     }
 
     fun updatePersonEquipment(person:Person){
-        val equipments = person.equipmentList.mapNotNull { mConfig.equipment.find { e-> e.id == it.first } }
+        val equipments = person.equipmentListPair.mapNotNull { mConfig.equipment.find { e-> e.id == it.first } }
         person.equipmentXiuwei = 0
         person.equipmentSuccess = 0
         person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)

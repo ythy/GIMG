@@ -125,7 +125,7 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
             2 ->{
                 title = "Single"
                 mContext.mPersons.forEach{ p->
-                    list.addAll(p.value.equipmentList.filter { e-> e.first == "7006301" }.map {
+                    list.addAll(p.value.equipmentListPair.filter { e-> e.first == "7006301" }.map {
                         SimpleData(p.value.id, p.value.name, "", mType, mutableListOf(), it.second)
                     })
                 }
@@ -165,7 +165,7 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                 val equipment = CultivationHelper.mConfig.equipment.filter { it.type == 14 }[index]
                 title = CultivationHelper.showing(equipment.name)
                 mContext.mPersons.forEach{ p->
-                    list.addAll(p.value.equipmentList.filter { e-> e.first == equipment.id }.map {
+                    list.addAll(p.value.equipmentListPair.filter { e-> e.first == equipment.id }.map {
                         SimpleData(p.value.id, p.value.name, "", mType, mutableListOf(), it.second)
                     })
                 }
@@ -175,7 +175,7 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                 val equipment = CultivationHelper.mConfig.equipment.filter { it.type == 15 }[index]
                 title = CultivationHelper.showing(equipment.name)
                 mContext.mPersons.forEach{ p->
-                    list.addAll(p.value.equipmentList.filter { e-> e.first == equipment.id }.map {
+                    list.addAll(p.value.equipmentListPair.filter { e-> e.first == equipment.id }.map {
                         SimpleData(p.value.id, p.value.name, "", mType, mutableListOf(), it.second)
                     })
                 }

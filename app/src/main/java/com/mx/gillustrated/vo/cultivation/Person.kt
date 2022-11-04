@@ -36,7 +36,7 @@ class Person() :Parcelable {
         var speed:Int = 20
         var extraProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//update once deps tian linggen
 
-        var equipmentList:MutableList<Triple<String, Int, String>> =  Collections.synchronizedList(mutableListOf())
+        var equipmentListPair:MutableList<Pair<String, Int>> =  Collections.synchronizedList(mutableListOf())
         var equipmentXiuwei:Int = 0 //
         var equipmentSuccess:Int = 0 //
         var equipmentProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//
@@ -111,8 +111,8 @@ class Person() :Parcelable {
                 maxHP = parcel.readInt()
                 extraProperty = parcel.createIntArray().toMutableList()
 
-                equipmentList = mutableListOf<Triple<String, Int, String>>().apply {
-                        parcel.readList(this, Triple::class.java.classLoader)
+                equipmentListPair = mutableListOf<Pair<String, Int>>().apply {
+                        parcel.readList(this, Pair::class.java.classLoader)
                 }
                 equipmentXiuwei = parcel.readInt()
                 equipmentSuccess = parcel.readInt()
@@ -188,7 +188,7 @@ class Person() :Parcelable {
                 parcel.writeInt(maxHP)
                 parcel.writeIntArray(extraProperty.toIntArray())
 
-                parcel.writeList(equipmentList)
+                parcel.writeList(equipmentListPair)
                 parcel.writeInt(equipmentXiuwei)
                 parcel.writeInt(equipmentSuccess)
                 parcel.writeIntArray(equipmentProperty.toIntArray())

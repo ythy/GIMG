@@ -96,7 +96,7 @@ class FragmentEquipment: Fragment() {
     }
 
     fun updateList(){
-        val equipments = mPerson.equipmentList.map {
+        val equipments = mPerson.equipmentListPair.map {
             val equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()
             equipment.seq = it.second
             equipment.uniqueName = if(equipment.seq > 0) "${equipment.name}-${equipment.seq}" else equipment.name
@@ -116,7 +116,7 @@ class FragmentEquipment: Fragment() {
         mEquipmentGroups.addAll(groups)
         mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
             override fun onDeleteHandler(equipment: Equipment, group:Boolean) {
-                mPerson.equipmentList.removeIf {
+                mPerson.equipmentListPair.removeIf {
                     if(group){
                         it.first == equipment.id
                     }else{
@@ -130,9 +130,9 @@ class FragmentEquipment: Fragment() {
     }
 
     fun updateEquipment(equipment:Equipment){
-        if( mPerson.equipmentList.find { it.first == equipment.id } != null)
+        if( mPerson.equipmentListPair.find { it.first == equipment.id } != null)
             return
-        mPerson.equipmentList.add(Triple(equipment.id, 0, ""))
+        mPerson.equipmentListPair.add(Pair(equipment.id, 0))
         CultivationHelper.updatePersonEquipment(mPerson)
         updateList()
     }

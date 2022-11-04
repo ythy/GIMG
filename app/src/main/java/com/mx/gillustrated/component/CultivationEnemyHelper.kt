@@ -55,7 +55,7 @@ object CultivationEnemyHelper {
                 person.teji.add(it)
             }
         }
-        person.equipmentList.addAll(listOf(Triple("7002901", 0, "")))
+        person.equipmentListPair.addAll(listOf(Pair("7002901", 0)))
         repeat(followerQuantity.first) {
             person.followerList.add(Triple("9000007", "${it + 1}号", ""))
         }
