@@ -57,7 +57,7 @@ class Person() :Parcelable {
         var specIdentityTurn:Int = 0 //spec person turn added while dead
         var nationPost:Int = 0
         var neverDead:Boolean = false
-        var winner:Int = 0
+        var battleRecord:MutableMap<Int, Int> = mutableMapOf()
 
         //extra props
         var lastBirthDay:Long = 0
@@ -73,13 +73,16 @@ class Person() :Parcelable {
         var extraSpeed:Int = 0 //tianfu 初始和读取更新
         var extraXuiweiMulti:Int = 0 //tianfu + alliance  初始和读取更新
         var allianceName:String = "" // alliance
-        var clanXiuwei:Int = 0// update depend clan battle
-        var nationXiuwei:Int = 0// update depend nation battle
+
 
         //不需要保存
         var type = 0// 标注boss用 boss > 0
         var remainHit = 0// 标注boss attack round
         var nationId = "" //每次读取时赋值
+        var clanXiuwei:Int = 0// 每次读取 && update depend clan battle
+        var nationXiuwei:Int = 0//每次读取 &&  update depend nation battle
+        var battlexiuwei:Int = 0 //每次读取和single battle后更新
+        var battleWinner:Int = 0 //每次读取和single battle后更新
 
         constructor(parcel: Parcel) : this() {
                 id = parcel.readString()!!
@@ -134,6 +137,9 @@ class Person() :Parcelable {
                 allianceXiuwei = parcel.readInt()
                 allianceSuccess = parcel.readInt()
                 allianceProperty= parcel.createIntArray().toMutableList()
+                parcel.readMap(battleRecord, Map::class.java.classLoader)
+                battlexiuwei = parcel.readInt()
+                battleWinner = parcel.readInt()
 
                 lastBirthDay = parcel.readLong()
                 ancestorLevel = parcel.readInt()
@@ -154,7 +160,6 @@ class Person() :Parcelable {
                 specIdentityTurn = parcel.readInt()
                 nationPost = parcel.readInt()
                 neverDead = parcel.readByte() != 0.toByte()
-                winner = parcel.readInt()
                 clanXiuwei = parcel.readInt()
                 nationXiuwei = parcel.readInt()
         }
@@ -205,6 +210,9 @@ class Person() :Parcelable {
                 parcel.writeInt(allianceXiuwei)
                 parcel.writeInt(allianceSuccess)
                 parcel.writeIntArray(allianceProperty.toIntArray())
+                parcel.writeMap(battleRecord)
+                parcel.writeInt(battleWinner)
+                parcel.writeInt(battlexiuwei)
 
                 parcel.writeLong(lastBirthDay)
                 parcel.writeInt(ancestorLevel)
@@ -225,7 +233,6 @@ class Person() :Parcelable {
                 parcel.writeInt(specIdentityTurn)
                 parcel.writeInt(nationPost)
                 parcel.writeByte(if (neverDead) 1 else 0)
-                parcel.writeInt(winner)
                 parcel.writeInt(clanXiuwei)
                 parcel.writeInt(nationXiuwei)
 

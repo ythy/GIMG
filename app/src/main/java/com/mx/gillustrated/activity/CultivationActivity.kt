@@ -331,8 +331,13 @@ class CultivationActivity : BaseActivity() {
 //        }
 //
 //        mPersons.forEach { (_: String, u: Person) ->
-//            u.equipmentList.removeIf { it.first == "7006601" }
+//           u.equipmentListPair.filter { it.first == "7006301" || it.first == "7006302" || it.first == "7006303" || it.first == "7006304" }
+//                    .forEach {
+//                        u.battleRecord[it.second] = it.first.toInt() % 10
+//                    }
+//            u.equipmentListPair.removeIf { it.first == "7006301" || it.first == "7006302" || it.first == "7006303" || it.first == "7006304" }
 //        }
+//        CultivationHelper.updateSingleBattleBonus(mPersons)
 //        mBattleRound.nation = 0
 
 
@@ -407,6 +412,7 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.updateAllianceBattleBonus(mAlliance)
         CultivationHelper.updateClanBattleBonus(mClans)
         CultivationHelper.updateNationBattleBonus(mNations, mPersons)
+        CultivationHelper.updateSingleBattleBonus(mPersons)
         if(out == null || out.trim() == ""){
             startWorld()
         }else{
@@ -1382,15 +1388,14 @@ class CultivationActivity : BaseActivity() {
                 if(result)
                     break
             }
-            repeat(minSize){ index->
-                val count = minSize - index //32 ~ 1
-                val person = restPersons[count - 1]
-                person.winner += index + 1
-                writeHistory("第${mBattleRound.single}届 Single Battle No $count : ${person.name}", person)
+            repeat(minSize){ index-> //
+                val reverseIndex = minSize - index //32 ~ 1
+                val person = restPersons[reverseIndex - 1]
+                person.battleRecord[mBattleRound.single] = reverseIndex
+                writeHistory("第${mBattleRound.single}届 Single Battle No $reverseIndex : ${person.name}", person)
             }
-            repeat(CultivationSetting.BattleSettings.SingleBonusCount){ index->
-                CultivationHelper.gainJiEquipment(restPersons[index], 13, index, mBattleRound.single)
-            }
+            CultivationHelper.updateSingleBattleBonus(mPersons)
+
             if(!block){
                 Thread.sleep(5000)
             }

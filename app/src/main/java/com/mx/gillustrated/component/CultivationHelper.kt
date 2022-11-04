@@ -150,6 +150,19 @@ object CultivationHelper {
         }
     }
 
+    fun updateSingleBattleBonus(allPerson:ConcurrentHashMap<String, Person>){
+        allPerson.forEach { data->
+            var xiuwei = 0
+            data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
+                if(t in 1..BattleSettings.SingleBonusCount){
+                    xiuwei += getValidBonus(u.size, BattleSettings.SingleBonus[0]) * BattleSettings.SingleBonus[t]
+                }
+            }
+            data.value.battlexiuwei = xiuwei
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.SingleMinSize + 1 - it }
+        }
+    }
+
     // rank total 4
     fun updateNationBattleBonus(allNations:ConcurrentHashMap<String, Nation>, allPersons:ConcurrentHashMap<String, Person>){
         allNations.forEach { data->
@@ -518,7 +531,7 @@ object CultivationHelper {
             person.allianceXiuwei += alliance.xiuweiBattle
         }
         val postXiuwei = getNationXiuwei(person)
-        val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei
+        val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
                             + person.clanXiuwei + person.nationXiuwei + postXiuwei
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()

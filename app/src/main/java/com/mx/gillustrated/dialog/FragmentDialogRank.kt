@@ -124,10 +124,12 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
             }
             2 ->{
                 title = "Single"
-                mContext.mPersons.forEach{ p->
-                    list.addAll(p.value.equipmentListPair.filter { e-> e.first == "7006301" }.map {
-                        SimpleData(p.value.id, p.value.name, "", mType, mutableListOf(), it.second)
-                    })
+                repeat(CultivationHelper.mBattleRound.single){ r->
+                    val round = r + 1
+                    val person = mContext.mPersons.map { it.value }.find { it.battleRecord[round] == 1 }
+                    if (person != null){
+                        list.add(SimpleData(person.id, person.name, "", mType, mutableListOf(), round))
+                    }
                 }
             }
             3 ->{
@@ -157,6 +159,16 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                     val round = it + 1
                     if (nation.battleRecord[round] != null){
                         list.add(SimpleData(it.toString(), nation.battleRecord[round].toString(), "", mType, mutableListOf(), round))
+                    }
+                }
+            }
+            6 ->{
+                title = "Single Ranking"
+                val person = mContext.mPersons[mId]!!
+                repeat(CultivationHelper.mBattleRound.single){
+                    val round = it + 1
+                    if (person.battleRecord[round] != null){
+                        list.add(SimpleData(it.toString(), person.battleRecord[round].toString(), "", mType, mutableListOf(), round))
                     }
                 }
             }

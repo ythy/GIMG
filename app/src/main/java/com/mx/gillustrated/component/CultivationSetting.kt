@@ -20,7 +20,8 @@ object CultivationSetting {
         const val NationBonusCount = 3
         val NationBonus = arrayOf(5,3,2,1,0,0,0,0,0,0,0)
         const val SingleMinSize = 32
-        const val SingleBonusCount = 4
+        const val SingleBonusCount = 8
+        val SingleBonus = arrayOf(5,30,20,15,10,6,4,2,1,0,0)
     }
 
     const val SP_JIE_TURN = 81

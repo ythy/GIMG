@@ -87,6 +87,14 @@ class FragmentDialogPerson : DialogFragment() {
         onCloseHandler()
     }
 
+    @OnClick(R.id.tv_winner)
+    fun onWinnerClickHandler(){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogRank.newInstance(6, mPerson.id)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_rank_info")
+    }
+
     @BindView(R.id.sch_fav)
     lateinit var mSwitchFav:Switch
 
@@ -277,7 +285,8 @@ class FragmentDialogPerson : DialogFragment() {
             obj
         }.joinToString()
         mDialogView.props.text = getProperty()
-        mDialogView.clan.text = "${mPerson.winner}  ${CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.name ?: "")}"
+        mDialogView.winner.text = "${mPerson.battleWinner}-${mPerson.battlexiuwei}↑"
+        mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.name ?: "")
         mDialogView.jingjie.text = CultivationHelper.showing(mPerson.jinJieName)
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"
@@ -392,6 +401,9 @@ class FragmentDialogPerson : DialogFragment() {
 
         @BindView(R.id.tv_clan)
         lateinit var clan:TextView
+
+        @BindView(R.id.tv_winner)
+        lateinit var winner:TextView
 
         @BindView(R.id.tv_props)
         lateinit var props:TextView

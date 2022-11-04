@@ -63,7 +63,7 @@ class FragmentDialogClan : DialogFragment() {
         newFragment.show(ft, "dialog_person_info")
     }
 
-    @OnClick(R.id.tv_name)
+    @OnClick(R.id.tv_xiuwei)
     fun onWinnerClickHandler(){
         val ft = mContext.supportFragmentManager.beginTransaction()
         val newFragment = FragmentDialogRank.newInstance(4, mId)
