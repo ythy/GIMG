@@ -323,12 +323,12 @@ class CultivationActivity : BaseActivity() {
 //            }
 //        }
 
-        SpecPersonFirstName2.forEach { spec->
-            val person = mPersons.map { it.value }.find { it.name == spec.name.first + spec.name.second }
-            if (person != null && person.specIdentity == 0){
-                person.specIdentity = spec.identity
-            }
-        }
+//        SpecPersonFirstName2.forEach { spec->
+//            val person = mPersons.map { it.value }.find { it.name == spec.name.first + spec.name.second }
+//            if (person != null && person.specIdentity == 0){
+//                person.specIdentity = spec.identity
+//            }
+//        }
 //
 //        mPersons.forEach { (_: String, u: Person) ->
 //           u.equipmentListPair.filter { it.first == "7006301" || it.first == "7006302" || it.first == "7006303" || it.first == "7006304" }
