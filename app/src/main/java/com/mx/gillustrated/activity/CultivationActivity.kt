@@ -323,12 +323,12 @@ class CultivationActivity : BaseActivity() {
 //            }
 //        }
 
-//        SpecPersonFirstName2.forEach { spec->
-//            val person = mPersons.map { it.value }.find { it.name == spec.name.first + spec.name.second }
-//            if (person != null && person.specIdentity == 0){
-//                person.specIdentity = spec.identity
-//            }
-//        }
+        SpecPersonFirstName2.forEach { spec->
+            val person = mPersons.map { it.value }.find { it.name == spec.name.first + spec.name.second }
+            if (person != null && person.specIdentity == 0){
+                person.specIdentity = spec.identity
+            }
+        }
 //
 //        mPersons.forEach { (_: String, u: Person) ->
 //           u.equipmentListPair.filter { it.first == "7006301" || it.first == "7006302" || it.first == "7006303" || it.first == "7006304" }
@@ -625,14 +625,19 @@ class CultivationActivity : BaseActivity() {
 
     fun optimizeClanPersons(){
         mClans.forEach { (_: String, u: Clan) ->
-            u.clanPersonList.map { it.value }.sortedBy { it.ancestorLevel }.forEach {
-                if(it.ancestorLevel > 0 && getOnlinePersonDetail(it.parent?.first) == null ){
-                    deadHandler(it)
-                }
-            }
+            killClanPersons(u)
         }
         showToast("Clan Person 优化完成")
     }
+
+    private fun killClanPersons(clan:Clan?){
+        clan?.clanPersonList?.map { it.value }?.sortedBy { it.ancestorLevel }?.forEach {
+            if(it.ancestorLevel > 0 && getOnlinePersonDetail(it.parent?.first) == null && !isDeadException(it) ){
+                deadHandler(it)
+            }
+        }
+    }
+
 
     private fun deadHandler(it:Person, currentXun:Long = mCurrentXun){
         mPersons.remove(it.id)
@@ -647,8 +652,9 @@ class CultivationActivity : BaseActivity() {
         if(alliance != null && alliance.zhuPerson == it)
             alliance.zhuPerson = null
         if(mClans[it.ancestorId] != null){
-            mClans[it.ancestorId]!!.clanPersonList.remove(it.id)
+            mClans[it.ancestorId]?.clanPersonList?.remove(it.id)
             if(it.ancestorId == it.id){
+                killClanPersons(mClans[it.ancestorId ?: ""])
                 mClans.remove(it.id)
             }
         }
