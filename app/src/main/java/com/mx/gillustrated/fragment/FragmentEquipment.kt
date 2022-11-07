@@ -101,18 +101,18 @@ class FragmentEquipment: Fragment() {
             equipment.seq = it.second
             equipment.uniqueName = if(equipment.seq > 0) "${equipment.name}-${equipment.seq}" else equipment.name
             equipment
-        }.sortedWith(compareByDescending<Equipment> {
-            if(it.type <= 10 ) it.type + 100 + 10 * ( 10 - it.type ) // +100 : type<=10整体排序靠前; 10 * x  type越小加得越多
-            else it.type
+        }.sortedWith(compareBy<Equipment> {
+            it.type
         }.thenByDescending { it.rarity }.thenBy { it.seq })
 
         mEquipmentGroups.clear()
-        val groups = equipments.groupBy{ it.type * 10000 + (if( it.type <= 10) 0 else it.rarity) }
+        val groups = equipments.groupBy{ it.type }
         .map {
             it.value[0].children.clear()
             it.value[0].children.addAll(it.value)
             it.value[0]
         }
+
         mEquipmentGroups.addAll(groups)
         mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
             override fun onDeleteHandler(equipment: Equipment, group:Boolean) {

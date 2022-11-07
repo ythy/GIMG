@@ -298,7 +298,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun temp(){
-        val specConfig = CultivationSetting.getAllSpecPersons()
+        val specConfig = getAllSpecPersons()
         mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
             val config = specConfig.find { c-> c.identity == u.specIdentity }
             if (config != null){
@@ -789,12 +789,14 @@ class CultivationActivity : BaseActivity() {
         //以下辅助操作
         when {
             inDurationByXun("Xun100000", 100000) && isPaused -> {
-                optimizeClanPersons()
                 mDeadPersons.clear()
                 addSpecPerson()
                 saveAllData(false)
             }
-            inDurationByXun("Xun12000", 12000) && isPaused -> bePerson()
+            inDurationByXun("Xun12000", 12000) -> {
+                optimizeClanPersons()
+                bePerson()
+            }
             else -> randomBattle(currentXun)
         }
         updateCareerEffect(currentXun)
