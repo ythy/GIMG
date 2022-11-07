@@ -522,7 +522,6 @@ class CultivationActivity : BaseActivity() {
                     mAlliance[configAlliance.id] = newAlliance(configAlliance)
                 }
             }
-
             mAlliance.forEach {
                 if(mConfig.alliance.find { a-> a.id == it.value.id } == null){
                     mAlliance.remove(it.value.id)
@@ -534,6 +533,13 @@ class CultivationActivity : BaseActivity() {
                                 if(p.value.ancestorId == p.value.id){
                                     mClans.remove(p.value.id)
                                 }
+                            }
+                        }
+                    }
+                    mPersons.forEach { p->
+                        if(p.value.children.isNotEmpty()){
+                            synchronized(p.value.children){
+                                p.value.children.removeIf { c-> getOnlinePersonDetail(c) == null }
                             }
                         }
                     }
@@ -741,7 +747,16 @@ class CultivationActivity : BaseActivity() {
             val next = CultivationHelper.getNextJingJie(it.jingJieId)
             it.xiuXei = 0
             val totalSuccess = CultivationHelper.getTotalSuccess(it)
-            val random = Random().nextInt(100)
+            // 9zhuan↑  81zhuan↑↑ ← decrease  random
+            var difficulty = 1
+            if(next == null && it.lifeTurn > 0){
+                if(it.lifeTurn % 81 == 0){
+                    difficulty = mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81)
+                }else if(it.lifeTurn % 9 == 0){
+                    difficulty = mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9)
+                }
+            }
+            val random = Random().nextInt(100 * difficulty)
             if (random <= totalSuccess) {//成功
                 if (next != null) {
                     val commonText = "${personDataString[1]} ${CultivationHelper.getJinJieName(next.name)}，${personDataString[2]} $random/$totalSuccess"
@@ -757,7 +772,7 @@ class CultivationActivity : BaseActivity() {
                     val allianceNow = mAlliance[it.allianceId]
                     it.lifetime += next.lifetime * (100 + (allianceNow?.lifetime ?: 0)) / 100
                 } else {
-                    val commonText = "转转成功，${personDataString[2]} $random/$totalSuccess"
+                    val commonText = "转转成功$difficulty，${personDataString[2]} $random/$totalSuccess"
                     writeHistory("${getPersonBasicString(it)} $commonText", it)
                     it.jingJieId = mConfig.jingJieType[0].id
                     it.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name)

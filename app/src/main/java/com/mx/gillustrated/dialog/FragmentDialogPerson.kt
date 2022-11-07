@@ -274,8 +274,7 @@ class FragmentDialogPerson : DialogFragment() {
             mThreadRunnable = false
         }
         mSwitchFav.isChecked = mPerson.isFav
-        val lifeTurn = if(mPerson.lifeTurn == 0) "" else ".${mPerson.lifeTurn}"
-        mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}$lifeTurn-${mPerson.ancestorLevel}"
+        mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}${CultivationHelper.showLifeTurn(mPerson)}${CultivationHelper.showAncestorLevel(mPerson)}"
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
         mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}/${mPerson.lifetime - mPerson.age}"

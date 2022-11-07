@@ -1438,17 +1438,6 @@
       "speedG1": 70
     },
     {
-      "id": "6000505",
-      "name": "杀",
-      "type": 4,
-      "nation": "6200004",
-      "lifetime": 50,
-      "xiuwei": 100,
-      "xiuweiMulti": 100,
-      "property": [0,50,0,10,0,0,0,0],
-      "speedG1": 60
-    },
-    {
       "id": "6000601",
       "name": "才",
       "type": 5,
@@ -1512,6 +1501,17 @@
       "xiuwei": 100,
       "xiuweiMulti": 100,
       "property": [50,40,10,10,0,0,0,0],
+      "speedG1": 70
+    },
+    {
+      "id": "6000704",
+      "name": "杀",
+      "type": 6,
+      "nation": "6200006",
+      "lifetime": 50,
+      "xiuwei": 100,
+      "xiuweiMulti": 100,
+      "property": [0,50,0,20,0,0,0,0],
       "speedG1": 70
     }
   ],
@@ -2287,7 +2287,7 @@
     },
     {
       "id": "6200004",
-      "name": "\u4e09\u56fd"
+      "name": "\u4e09\u56fd\u82f1\u96c4"
     },
     {
       "id": "6200005",

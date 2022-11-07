@@ -25,12 +25,15 @@ object CultivationSetting {
     }
 
     const val SP_JIE_TURN = 81
+    const val SP_NAN_9 = 5
+    const val SP_NAN_81 = 10
     val EVENT_WEIGHT = listOf("1200-50","7200-40","8400-40","9600-100")
     const val SP_PUNISH_BOSS_MILLION = 200
 
-    val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed")
+    val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed", "\u9b41", "\u5f71")
     val SpecPersonFirstNameWeight:Pair<Int, Int> = Pair(50, 20)// tianfu.linggen
 
+    // 1xxx spec; 2xxx real; 30xx sanguoyingxiong;
     val SpecPersonFirstName2:MutableList<PresetInfo> = mutableListOf(
             PresetInfo(12000010, Pair("\u6bdb","\u6b23"),12000021, 1000, 2000),
             PresetInfo(12000021, Pair("\u674e","\u4e00\u6850"),12000010, 1000, 2000),
@@ -72,6 +75,7 @@ object CultivationSetting {
             PresetInfo(13020091, Pair("\u4efb","\u76c8\u76c8"), 0, 200, 600)
     )
 
+    //achieved immutable
     private val SpecPersonFirstName4:MutableList<PresetInfo> = mutableListOf(
             PresetInfo(14000010, Triple("\u66f9", "\u64cd", 3047),0,500, 1000),
             PresetInfo(14000020, Triple("\u53f8\u9a6c", "\u61ff", 3011), 0,200, 600),
@@ -118,18 +122,7 @@ object CultivationSetting {
             PresetInfo(14030090, Triple("\u534e", "\u96c4",3037)), PresetInfo(14030100, Triple("\u6587","\u4e11",3043)),
             PresetInfo(14030111, Triple("\u5415", "\u73b2\u7eee", 3002), 0, 200, 600, Pair(14030010, 14030041)),
             PresetInfo(14030120, Triple("\u5e9e", "\u5fb7",3038)), PresetInfo(14030130, Triple("\u5218", "\u8868",3036)),
-            PresetInfo(14030140, Triple("\u534e", "\u4f57",3048)),
-
-            PresetInfo(14040010, Pair("\u5218", "\u7109"), 0, 100, 100),
-            PresetInfo(14040020, Pair("\u7559", "\u8d5e"), 0, 100, 100),
-            PresetInfo(14040030, Pair("\u5173", "\u7d22"), 14040081, 200, 600),
-            PresetInfo(14040041, Pair("\u8d75", "\u8944"), 0, 200, 600, Pair(14010040, 14010101)),
-            PresetInfo(14040050, Pair("\u8bb8", "\u52ad"), 0, 100, 200),
-            PresetInfo(14040061, Pair("\u738b", "\u8363"), 0, 100, 200),
-            PresetInfo(14040071, Pair("\u82b1", "\u9b18"), 14040030, 100, 200, Pair(14010140, 14010151)),
-            PresetInfo(14040081, Pair("\u9c8d", "\u4e09\u5a18"), 14040030, 100, 200),
-            PresetInfo(14040090, Pair("\u738b", "\u53cc")), PresetInfo(14040100, Pair("\u9648", "\u7433")),
-            PresetInfo(14040101, Pair("\u5468", "\u5983"), 0, 100, 100, Pair(14020060, 14020051))
+            PresetInfo(14030140, Triple("\u534e", "\u4f57",3048))
 
     )
 
@@ -180,7 +173,18 @@ object CultivationSetting {
             PresetInfo(16010061, Pair("\u6f58","\u91d1\u83b2"),16010050, 100, 100),
 
             PresetInfo(16020010, Pair("\u6641","\u76d6"),0, 100, 200),
-            PresetInfo(16020020, Pair("\u738b","\u4f26"))
+            PresetInfo(16020020, Pair("\u738b","\u4f26")),
+
+            PresetInfo(16030010, Pair("\u5218", "\u7109"), 0, 100, 100),
+            PresetInfo(16030020, Pair("\u7559", "\u8d5e"), 0, 100, 100),
+            PresetInfo(16030030, Pair("\u5173", "\u7d22"), 16030081, 200, 600),
+            PresetInfo(16030041, Pair("\u8d75", "\u8944"), 0, 200, 600, Pair(14010040, 14010101)),
+            PresetInfo(16030050, Pair("\u8bb8", "\u52ad"), 0, 100, 200),
+            PresetInfo(16030061, Pair("\u738b", "\u8363"), 0, 100, 200),
+            PresetInfo(16030071, Pair("\u82b1", "\u9b18"), 16030030, 100, 200, Pair(14010140, 14010151)),
+            PresetInfo(16030081, Pair("\u9c8d", "\u4e09\u5a18"), 16030030, 100, 200),
+            PresetInfo(16030090, Pair("\u738b", "\u53cc")), PresetInfo(16030100, Pair("\u9648", "\u7433")),
+            PresetInfo(16030101, Pair("\u5468", "\u5983"), 0, 100, 100, Pair(14020060, 14020051))
     )
 
 

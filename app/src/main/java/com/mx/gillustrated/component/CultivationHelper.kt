@@ -625,6 +625,16 @@ object CultivationHelper {
         return Random().nextInt(Math.max(1, weight)) == 0
     }
 
+    fun showLifeTurn(person:Person):String{
+        return if(person.lifeTurn == 0) ""
+        else ".${person.lifeTurn / 81}:${person.lifeTurn % 81}"
+    }
+
+    fun showAncestorLevel(person:Person):String{
+        return if(person.ancestorLevel == 0) ""
+        else "-${person.ancestorLevel}"
+    }
+
     // symbol 需要唯一
     fun inDurationByXun(symbols:String, duration:Int, currentXun:Long = mCurrentXun):Boolean{
         val lastXun = mXunDuration[Pair(symbols, duration)]
