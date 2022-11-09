@@ -1,6 +1,7 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
+import com.j256.ormlite.stmt.query.In
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
 import com.mx.gillustrated.component.CultivationSetting.BattleSettings
 import com.mx.gillustrated.util.NameUtil
@@ -52,7 +53,7 @@ object CultivationHelper {
                 person.allianceSuccess = alliance.success
                 person.allianceProperty = alliance.property
                 person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
-                person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
+                person.lifetime = mCurrentXun + getLifetimeBonusInitial(person, alliance)
                 person.nationId = alliance.nation
                 break
             }
@@ -66,7 +67,7 @@ object CultivationHelper {
         person.allianceSuccess = alliance.success
         person.allianceProperty = alliance.property
         person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
-        person.lifetime = person.age + (person.lifetime - person.age) * ( 100 + alliance.lifetime ) / 100
+        person.lifetime = mCurrentXun + getLifetimeBonusInitial(person, alliance, changed)
         if(alliance.type >= 3 && !changed){
             person.singled = true
             person.dink = true
@@ -79,7 +80,6 @@ object CultivationHelper {
         originAlliance.personList.remove(person.id)
         if(originAlliance.zhuPerson == person)
             originAlliance.zhuPerson = null
-        person.equipmentListPair.removeIf { it.first == "7006101" || it.first == "7006102" }
         joinFixedAlliance(person, newAlliance, true)
     }
 
@@ -119,7 +119,7 @@ object CultivationHelper {
             return
         }
         val personList = Collections.synchronizedList( persons.map { it.value }.filter { it.type == 0 })
-        alliance.zhuPerson = personList.sortedBy { it.lastBirthDay }.first()
+        alliance.zhuPerson = personList.sortedBy { it.birthtime }.first()
     }
 
     private fun updateG1InAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
@@ -353,8 +353,7 @@ object CultivationHelper {
         }
     }
 
-    fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?,
-                              lifetime:Long = 100, parent:Pair<Person, Person>? = null, fav:Boolean = false, mix: CultivationSetting.PersonFixedInfoMix? = null): Person {
+    fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?, parent:Pair<Person, Person>? = null, fav:Boolean = false, mix: CultivationSetting.PersonFixedInfoMix? = null): Person {
         val personGender = gender ?: when (Random().nextInt(2)) {
             0 -> NameUtil.Gender.Male
             else -> NameUtil.Gender.Female
@@ -366,7 +365,6 @@ object CultivationHelper {
 
         val lingGen = getLingGen(parent, mix?.lingGenId, mix?.lingGenWeight ?: 1)
         val tianFus = getTianFu(parent, mix?.tianFuIds, mix?.tianFuWeight ?: 1)
-        val birthDay:Pair<Long, Long> = Pair(mCurrentXun, 0)
         val result = Person()
         result.id =  UUID.randomUUID().toString()
         result.name = personName.first + personName.second
@@ -375,15 +373,14 @@ object CultivationHelper {
         result.lingGenType = lingGen.first
         result.lingGenName = lingGen.third
         result.lingGenId = lingGen.second
-        result.birthDay.add(birthDay)
-        result.lastBirthDay = mCurrentXun
+        result.birthtime = mCurrentXun
         setPersonJingjie(result)
         result.profile = if(fav) 1001 else getRandomProfile(result.gender)
         result.neverDead = fav
         result.tianfus = tianFus
         result.teji = Collections.synchronizedList(getTeji())
         result.careerList = Collections.synchronizedList(getCareer().map { Triple(it, 0, "") })
-        result.lifetime = lifetime + (tianFus.find { it.type == 3 }?.bonus ?: 0)
+        result.lifetime = result.birthtime + getLifetimeBonusInitial(result)
         updatePersonExtraProperty(result)
 
         if(parent != null){
@@ -428,7 +425,7 @@ object CultivationHelper {
     }
 
     fun getPersonBasicString(person:Person):String{
-        return "${person.name} (${person.age}/${person.lifetime}:${person.jinJieName}) ${person.lingGenName} "
+        return "${person.name} (${person.jinJieName}) ${person.lingGenName} "
     }
 
     fun updatePersonExtraProperty(person: Person, alliance: Alliance? = null){
@@ -575,13 +572,13 @@ object CultivationHelper {
     }
 
     fun updatePartner(allPerson:ConcurrentHashMap<String, Person>){
-        val males = allPerson.filter { !it.value.singled && it.value.gender == NameUtil.Gender.Male && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value }.toMutableList()
-        val females =  Collections.synchronizedList(allPerson.filter { !it.value.singled && it.value.gender == NameUtil.Gender.Female && it.value.partner == null && (it.value.lifetime - it.value.age > 200) }.map { it.value })
+        val males = allPerson.filter { !it.value.singled && it.value.gender == NameUtil.Gender.Male && it.value.partner == null && (it.value.lifetime - mCurrentXun > 200) }.map { it.value }.toMutableList()
+        val females =  Collections.synchronizedList(allPerson.filter { !it.value.singled && it.value.gender == NameUtil.Gender.Female && it.value.partner == null && (it.value.lifetime - mCurrentXun > 200) }.map { it.value })
         if(males.size > 5 && females.size > 5){
             synchronized(females){
                 val man = males[Random().nextInt(males.size)]
-                val manAge = man.age
-                val womanPair = females.map { Pair(it.id, it.age) }.sortedBy { Math.abs(manAge - it.second) }[0]
+                val manAge = man.birthtime
+                val womanPair = females.map { Pair(it.id, it.birthtime) }.sortedBy { Math.abs(manAge - it.second) }[0]
                 val woman = allPerson[womanPair.first]
                 if(woman == null || ( man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId))
                     return
@@ -612,6 +609,16 @@ object CultivationHelper {
         }
     }
 
+    private fun getJingJieBonusYear(id:String):Int{
+        val list = mConfig.jingJieType.filter { it.color > 0 }
+        val current = list.find { it.id == id }
+        return if(current != null){
+            list.find { it.id == "${id.toInt() / 10}1" }?.lifetime ?: CultivationSetting.LIFE_TIME_YEAR
+        }else{
+            CultivationSetting.LIFE_TIME_YEAR
+        }
+    }
+
     fun getYearString(xun:Long = mCurrentXun):String{
         val wan = Math.max(1, xun / 12 / 10000)
         return "$wan${showing("万年")}"
@@ -633,6 +640,29 @@ object CultivationHelper {
     fun showAncestorLevel(person:Person):String{
         return if(person.ancestorLevel == 0) ""
         else "-${person.ancestorLevel}"
+    }
+
+    fun showAge(person:Person):String{
+        return "${getYearString(person.birthtime)}:${getYearString(person.lifetime)}"
+    }
+
+    fun showAgeRemained(person:Person):String{
+        return "${(person.lifetime - mCurrentXun) / 12}"
+    }
+
+    fun getLifetimeBonusInitial(person:Person, alliance: Alliance? = null, changed:Boolean = false):Long{
+        // basic : nian
+        val basic = if ( !changed )  CultivationSetting.LIFE_TIME_YEAR + (person.tianfus.find { it.type == 3 }?.bonus ?: 0)
+                             else getJingJieBonusYear(person.jingJieId)
+        return if (alliance == null) basic * 12L else basic.toLong() * 12L * ( 100 + alliance.lifetime) / 100
+    }
+
+    fun getLifetimeBonusRealm(person:Person, alliance: Alliance? = null):Long{
+        // basic : nian
+        val list = mConfig.jingJieType.filter { it.color > 0 }
+        val current = list.find { it.id == person.jingJieId }
+        val basic = current?.lifetime ?: 0
+        return if (alliance == null) basic * 12L else basic.toLong() * 12L * ( 100 + alliance.lifetime) / 100
     }
 
     // symbol 需要唯一

@@ -47,7 +47,7 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         }
         val person = list[arg0]
         component.name.text = "${CultivationHelper.showing(person.name)}${CultivationHelper.showLifeTurn(person)}"
-        component.age.text = "${person.lifetime-person.age}"
+        component.age.text = CultivationHelper.showAgeRemained(person)
         component.jingjie.text = CultivationHelper.showing(person.jinJieName)
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))
         component.xiuwei.text = "${person.xiuXei}/${person.jinJieMax}"

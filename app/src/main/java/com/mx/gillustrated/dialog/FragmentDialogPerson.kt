@@ -277,7 +277,7 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}${CultivationHelper.showLifeTurn(mPerson)}${CultivationHelper.showAncestorLevel(mPerson)}"
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
-        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}/${mPerson.lifetime - mPerson.age}"
+        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}/${CultivationHelper.showAgeRemained(mPerson)}"
         mDialogView.career.text = mPerson.careerList.map {
             val obj = CultivationHelper.mConfig.career.find { c-> c.id == it.first }!!.copy()
             obj.level = it.second

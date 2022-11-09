@@ -248,7 +248,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         etFirstName.setText(CultivationHelper.showing(mPerson.lastName))
         etLastName.setText(CultivationHelper.showing(mPerson.name.substring(mPerson.lastName.length)))
 
-        tvAge.text = "${mPerson.age}/${mPerson.lifetime}"
+        tvAge.text = CultivationHelper.showAge(mPerson)
 
         val alliance = mContext.mAlliance[mPerson.allianceId]
         if(alliance != null){

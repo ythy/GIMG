@@ -366,7 +366,6 @@ class CultivationActivity : BaseActivity() {
             mPersons.forEach {
                 if(it.value.children.isNotEmpty())
                     it.value.children = Collections.synchronizedList(it.value.children)
-                it.value.birthDay = Collections.synchronizedList(it.value.birthDay)
                 it.value.equipmentListPair = Collections.synchronizedList(it.value.equipmentListPair)
                 CultivationHelper.updatePersonEquipment(it.value)
                 CultivationHelper.updatePersonExtraProperty(it.value)
@@ -426,9 +425,9 @@ class CultivationActivity : BaseActivity() {
     private fun startWorld(){
         writeHistory("进入世界...")
         addMultiPerson(mInitPersonCount)
-        val li = addPersion(Pair("李", "逍遥"), NameUtil.Gender.Male, 100, null, true,
+        val li = addPersion(Pair("李", "逍遥"), NameUtil.Gender.Male, null, true,
                 CultivationSetting.PersonFixedInfoMix(null, null, 200, 600))
-        val nu = addPersion(Pair("阿", "奴"), NameUtil.Gender.Female, 100, null, true,
+        val nu = addPersion(Pair("阿", "奴"), NameUtil.Gender.Female, null, true,
                 CultivationSetting.PersonFixedInfoMix(null, null, 200, 600))
         CultivationHelper.createPartner(li, nu)
     }
@@ -664,12 +663,6 @@ class CultivationActivity : BaseActivity() {
                 mClans.remove(it.id)
             }
         }
-        synchronized(it.birthDay){
-            val pair = Pair(it.birthDay.last().first, currentXun)
-            it.birthDay.removeIf { it.second == 0L }
-            it.birthDay.add(pair)
-        }
-
         if(it.specIdentity > 0 && alliance != null){ //特殊处理SpecName
             val config = getAllSpecPersons().find { p-> p.identity == it.specIdentity } //maybe null
             var person:Person? = null
@@ -721,8 +714,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updatePersonByXun(it:Person, currentXun:Long, step: Int){
-        it.age = (it.lastTotalXun + currentXun - it.lastBirthDay) / 12
-        if (it.age > it.lifetime ) {
+        if (it.lifetime < currentXun ) {
             if(isDeadException(it)){
                 it.lifetime += 5000
                 it.lifeTurn = Math.max(0, it.lifeTurn - 1)
@@ -758,6 +750,7 @@ class CultivationActivity : BaseActivity() {
             }
             val random = Random().nextInt(100 * difficulty)
             if (random <= totalSuccess) {//成功
+                val allianceNow = mAlliance[it.allianceId]
                 if (next != null) {
                     val commonText = "${personDataString[1]} ${CultivationHelper.getJinJieName(next.name)}，${personDataString[2]} $random/$totalSuccess"
                     val lastJingJieDigt = CultivationHelper.getJingJieLevel(it.jingJieId)
@@ -769,8 +762,7 @@ class CultivationActivity : BaseActivity() {
                     it.jingJieSuccess = next.success
                     it.jinJieColor = next.color
                     it.jinJieMax = next.max
-                    val allianceNow = mAlliance[it.allianceId]
-                    it.lifetime += next.lifetime * (100 + (allianceNow?.lifetime ?: 0)) / 100
+                    it.lifetime +=  CultivationHelper.getLifetimeBonusRealm(it, allianceNow)
                 } else {
                     val commonText = "转转成功$difficulty，${personDataString[2]} $random/$totalSuccess"
                     writeHistory("${getPersonBasicString(it)} $commonText", it)
@@ -780,7 +772,7 @@ class CultivationActivity : BaseActivity() {
                     it.jinJieColor = mConfig.jingJieType[0].color
                     it.jinJieMax = mConfig.jingJieType[0].max
                     it.lifeTurn += 1
-                    it.lifetime = it.age + 100 * ( 100 + mAlliance[it.allianceId]!!.lifetime ) / 100 + it.lifeTurn * 5 + (it.tianfus.find { t-> t.type == 3 }?.bonus ?: 0)
+                    it.lifetime =  currentXun + CultivationHelper.getLifetimeBonusInitial(it, allianceNow) + it.lifeTurn
                 }
             } else {
                 val commonText = if (next != null)
@@ -911,19 +903,18 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun addPersion(fixedName:Pair<String, String?>?, fixedGender:NameUtil.Gender?,
-                           lifetime: Long = 100, parent: Pair<Person, Person>? = null, fav:Boolean = false, mix: CultivationSetting.PersonFixedInfoMix? = null):Person{
-        val person = CultivationHelper.getPersonInfo(fixedName, fixedGender, lifetime, parent, fav, mix)
+    private fun addPersion(fixedName:Pair<String, String?>?, fixedGender:NameUtil.Gender?, parent: Pair<Person, Person>? = null, fav:Boolean = false, mix: CultivationSetting.PersonFixedInfoMix? = null):Person{
+        val person = CultivationHelper.getPersonInfo(fixedName, fixedGender, parent, fav, mix)
         combinedPersonRelationship(person)
         return person
     }
 
     fun combinedPersonRelationship(person: Person, log:Boolean = true){
+        CultivationHelper.joinAlliance(person, mAlliance)
         mPersons[person.id] = person
         if(mClans[person.ancestorId] != null){
             mClans[person.ancestorId]!!.clanPersonList[person.id] = person
         }
-        CultivationHelper.joinAlliance(person, mAlliance)
         if(log){
             addPersonEvent(person,"加入")
             writeHistory("${getPersonBasicString(person)} 加入", person)
@@ -960,13 +951,23 @@ class CultivationActivity : BaseActivity() {
             Thread.sleep(500)
             val person = mDeadPersons[id]
             if(person != null){
-                person.lifetime += 5000L
-                person.lastBirthDay = mCurrentXun
-                person.lastTotalXun += person.birthDay.last().second -  person.birthDay.last().first
-                person.birthDay.add(Pair(mCurrentXun, 0))
                 mDeadPersons.remove(id)
+                person.id =  UUID.randomUUID().toString()
+                if(person.specIdentityTurn == 0)
+                    person.fullName = person.name
+                person.specIdentityTurn = person.specIdentityTurn + 1
+                person.name = person.fullName + CultivationSetting.createLifeTurnName(person.specIdentityTurn)
+                person.teji = Collections.synchronizedList(mutableListOf())
+                person.followerList =  Collections.synchronizedList(mutableListOf())
+                person.careerList =  Collections.synchronizedList(mutableListOf())
+                person.pointXiuWei = person.maxXiuWei
+                person.jingJieId = mConfig.jingJieType[0].id
+                person.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name)
+                person.jingJieSuccess = mConfig.jingJieType[0].success
+                person.jinJieColor = mConfig.jingJieType[0].color
+                person.jinJieMax = mConfig.jingJieType[0].max
                 combinedPersonRelationship(person, false)
-                val commonText = " 复活，寿命增加5000"
+                val commonText = "\u590d\u6d3b"
                 addPersonEvent(person,commonText)
                 writeHistory("${getPersonBasicString(person)} $commonText", person)
             }
@@ -982,7 +983,7 @@ class CultivationActivity : BaseActivity() {
             Thread.sleep(500)
             val person = mPersons[id]
             if(person != null){
-                person.lifetime = person.age
+                person.lifetime = mCurrentXun
                 deadHandler(person, mCurrentXun)
             }
             val message = Message.obtain()
@@ -1090,7 +1091,7 @@ class CultivationActivity : BaseActivity() {
                 val baseNumber = if(children.isEmpty()) 10L else Math.pow((children.size * 2).toDouble(), 5.0).toLong()
                 if(partner != null && !partner.dink && baseNumber < Int.MAX_VALUE){
                     if(isTrigger(baseNumber.toInt())){
-                        val child = addPersion(Pair(partner.lastName, null), null, 100,
+                        val child = addPersion(Pair(partner.lastName, null), null,
                                     Pair(partner, it))
                         synchronized(it.children){
                             it.children.add(child.id)
@@ -1114,7 +1115,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun updateBoss(xun:Long){
         if(inDurationByXun("BossUpdated", 12, xun)) {
-            mBoss.map(Map.Entry<String, Person>::value).filter { (xun - it.lastBirthDay) / 12 < it.lifetime && it.remainHit > 0  }.forEach { u ->
+            mBoss.map(Map.Entry<String, Person>::value).filter { it.lifetime > xun && it.remainHit > 0  }.forEach { u ->
                 val targets = mPersons.map { it.value }.shuffled()
                 val person = targets[0]
                 if (CultivationHelper.getProperty(person)[0] > 0){
@@ -1177,8 +1178,8 @@ class CultivationActivity : BaseActivity() {
             val currentHP = CultivationHelper.getProperty(it)[0]
             if(currentHP < -10){
                 val supplement = Math.abs(currentHP)
-                if(it.lifetime - it.age - supplement > 200){
-                    it.lifetime -= supplement
+                if(it.lifetime - mCurrentXun > supplement * 12 + 2000){
+                    it.lifetime -= supplement * 12
                     it.HP += supplement
                 }
             }
@@ -1331,7 +1332,7 @@ class CultivationActivity : BaseActivity() {
             }
         }
         if(spec.parent == null || parent != null ){
-            val person = CultivationHelper.getPersonInfo(spec.name,  getIdentityGender(spec.identity), 100, parent, false,
+            val person = CultivationHelper.getPersonInfo(spec.name,  getIdentityGender(spec.identity), parent, false,
                     CultivationSetting.PersonFixedInfoMix(null, null, spec.tianfuWeight, spec.linggenWeight))
             person.specIdentity = spec.identity
             if(spec.profile > 0){
@@ -1353,6 +1354,7 @@ class CultivationActivity : BaseActivity() {
                 CultivationHelper.joinFixedAlliance(person, alliance)
             }else{
                 CultivationHelper.joinAlliance(person, mAlliance)
+                person.singled = true
             }
             addPersonEvent(person,"加入")
             writeHistory("${getPersonBasicString(person)} 加入", person)

@@ -9,18 +9,19 @@ class Person() :Parcelable {
         var id:String = ""
         var name: String = ""
         var lastName: String = ""
+        var fullName: String = ""
         var gender: NameUtil.Gender = NameUtil.Gender.Default
         lateinit var lingGenType: LingGen
         var lingGenId:String = "" //Tian spec
         var lingGenName:String = ""
-        var birthDay:MutableList<Pair<Long, Long>> =  Collections.synchronizedList(mutableListOf())
-        var lifetime:Long = 100
+        var birthtime:Long = 0
+        var lifetime:Long = 0 // if  lifetime < currentXun  , go dead
         var events:MutableList<PersonEvent> = Collections.synchronizedList(mutableListOf())
         var tianfus:MutableList<TianFu> = mutableListOf()
         var isFav:Boolean = false
         var profile:Int = 0
-        var partner:String? = null //赋值一次
-        var partnerName:String? = null //赋值一次
+        var partner:String? = null
+        var partnerName:String? = null
         var parent:Pair<String, String>? = null//唯一
         var parentName:Pair<String, String>? = null//赋值一次，显示用
         var children:MutableList<String> =  Collections.synchronizedList(mutableListOf())
@@ -53,6 +54,7 @@ class Person() :Parcelable {
         var allianceXiuwei:Int = 0 //alliance 增益 zhu / speed； 每轮更新
         var allianceSuccess:Int = 0 //alliance 增益 初始和读取更新
         var allianceProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//alliance 初始和读取更新
+        var allianceName:String = "" // alliance 初始和读取更新
         var specIdentity:Int = 0 //spec person nid
         var specIdentityTurn:Int = 0 //spec person turn added while dead
         var nationPost:Int = 0
@@ -60,11 +62,8 @@ class Person() :Parcelable {
         var battleRecord:MutableMap<Int, Int> = mutableMapOf()
 
         //extra props
-        var lastBirthDay:Long = 0
-        var lastTotalXun:Long = 0
         var ancestorLevel:Int = 0 // 0 初代
         var ancestorId:String? = null// 一次
-        var age:Long = 0 // now -  birthDay
         var jinJieName = "" //  updated by xun
         var jinJieColor = 0 //  updated by xun
         var jinJieMax:Int = 0 // updated by xun
@@ -72,7 +71,7 @@ class Person() :Parcelable {
         var extraTupo:Int = 0 //tianfu 初始和读取更新
         var extraSpeed:Int = 0 //tianfu 初始和读取更新
         var extraXuiweiMulti:Int = 0 //tianfu + alliance  初始和读取更新
-        var allianceName:String = "" // alliance
+
 
 
         //不需要保存
@@ -88,13 +87,12 @@ class Person() :Parcelable {
                 id = parcel.readString()!!
                 name = parcel.readString()!!
                 lastName = parcel.readString()!!
+                fullName = parcel.readString()!!
                 gender = NameUtil.Gender.valueOf(parcel.readString()!!)
                 lingGenType = parcel.readParcelable(LingGen::class.java.classLoader)!!
                 lingGenId = parcel.readString()!!
                 lingGenName = parcel.readString()!!
-                birthDay = mutableListOf<Pair<Long, Long>>().apply {
-                    parcel.readList(this, Pair::class.java.classLoader)
-                }
+                birthtime = parcel.readLong()
                 lifetime = parcel.readLong()
                 events =  Collections.synchronizedList(parcel.createTypedArrayList(PersonEvent))
                 tianfus = Collections.synchronizedList(parcel.createTypedArrayList(TianFu))
@@ -141,10 +139,8 @@ class Person() :Parcelable {
                 battlexiuwei = parcel.readInt()
                 battleWinner = parcel.readInt()
 
-                lastBirthDay = parcel.readLong()
                 ancestorLevel = parcel.readInt()
                 ancestorId = parcel.readString()
-                age = parcel.readLong()
                 jinJieName = parcel.readString()
                 jinJieColor = parcel.readInt()
                 jinJieMax = parcel.readInt()
@@ -168,12 +164,13 @@ class Person() :Parcelable {
                 parcel.writeString(id)
                 parcel.writeString(name)
                 parcel.writeString(lastName)
+                parcel.writeString(fullName)
                 parcel.writeString(gender.props)
                 parcel.writeParcelable(lingGenType, flags)
                 parcel.writeString(lingGenId)
                 parcel.writeString(lingGenName)
-                parcel.writeList(birthDay)
                 parcel.writeLong(lifetime)
+                parcel.writeLong(birthtime)
                 parcel.writeTypedList(events)
                 parcel.writeTypedList(tianfus)
                 parcel.writeByte(if (isFav) 1 else 0)
@@ -214,10 +211,8 @@ class Person() :Parcelable {
                 parcel.writeInt(battleWinner)
                 parcel.writeInt(battlexiuwei)
 
-                parcel.writeLong(lastBirthDay)
                 parcel.writeInt(ancestorLevel)
                 parcel.writeString(ancestorId)
-                parcel.writeLong(age)
                 parcel.writeString(jinJieName)
                 parcel.writeInt(jinJieColor)
                 parcel.writeInt(jinJieMax)
