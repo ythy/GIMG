@@ -961,6 +961,7 @@ class CultivationActivity : BaseActivity() {
                 person.followerList =  Collections.synchronizedList(mutableListOf())
                 person.careerList =  Collections.synchronizedList(mutableListOf())
                 person.pointXiuWei = person.maxXiuWei
+                person.xiuXei = 0
                 person.jingJieId = mConfig.jingJieType[0].id
                 person.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name)
                 person.jingJieSuccess = mConfig.jingJieType[0].success

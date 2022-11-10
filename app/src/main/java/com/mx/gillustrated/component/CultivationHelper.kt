@@ -490,8 +490,7 @@ object CultivationHelper {
     }
 
     fun getEquipmentsMaxCount(equipment: Equipment, size:Int):Int{
-        val maxCount = if(equipment.type == 16 || equipment.type == 13) equipment.maxCount else 1
-        return getMaxBonus(size, maxCount)
+        return getMaxBonus(size, 1)
     }
 
     fun getMaxBonus(size:Int, max:Int = 1):Int{

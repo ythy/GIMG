@@ -106,7 +106,7 @@ class FragmentEquipment: Fragment() {
         }.thenByDescending { it.rarity }.thenBy { it.seq })
 
         mEquipmentGroups.clear()
-        val groups = equipments.groupBy{ it.type }
+        val groups = equipments.groupBy{ if(it.type <= 3) it.type  else it.type +  it.id.toInt() % 10 }
         .map {
             it.value[0].children.clear()
             it.value[0].children.addAll(it.value)
