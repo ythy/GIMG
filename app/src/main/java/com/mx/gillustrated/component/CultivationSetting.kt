@@ -78,7 +78,7 @@ object CultivationSetting {
 
     //achieved immutable
     private val SpecPersonFirstName4:MutableList<PresetInfo> = mutableListOf(
-            PresetInfo(14000010, Triple("\u66f9", "\u64cd", 3047),0,500, 1000),
+            PresetInfo(14000010, Triple("\u66f9", "\u64cd", 3047),16030141,500, 1000),
             PresetInfo(14000020, Triple("\u53f8\u9a6c", "\u61ff", 3011), 0,200, 600),
             PresetInfo(14000030, Triple("\u90ed", "\u5609", 3019), 0,100, 200),
             PresetInfo(14000041, Triple("\u7504", "\u5b93", 3009), 0, 100, 200),
@@ -96,13 +96,13 @@ object CultivationSetting {
             PresetInfo(14010040, Triple("\u8d75", "\u4e91", 3044), 14010101,100, 200),
             PresetInfo(14010050, Triple("\u8bf8\u845b", "\u4eae", 3013), 14010061,500, 1000),
             PresetInfo(14010061, Triple("\u9ec4", "\u6708\u82f1", 3006), 14010050,100, 100),
-            PresetInfo(14010070, Triple("\u5e9e","\u7edf", 3012)), PresetInfo(14010080, Triple("\u9a6c","\u8d85", 3035)),
+            PresetInfo(14010070, Triple("\u5e9e","\u7edf", 3012)), PresetInfo(14010080, Triple("\u9a6c","\u8d85", 3035), 16030111),
             PresetInfo(14010090, Triple("\u9ec4", "\u5fe0", 3014)), PresetInfo(14010101, Triple("\u9a6c","\u4e91\u7984", 3008), 14010040),
             PresetInfo(14010110, Triple("\u9b4f", "\u5ef6", 3032)), PresetInfo(14010121, Triple("\u5173", "\u94f6\u5c4f", 3001), 0,200, 600),
             PresetInfo(14010130, Triple("\u738b", "\u5e73", 3022)), PresetInfo(14010140, Triple("\u5b5f", "\u83b7", 3031), 14010151),
             PresetInfo(14010151, Triple("\u795d", "\u878d", 3011), 14010140),
 
-            PresetInfo(14020010, Triple("\u5b59", "\u6743", 3046), 0,200, 600),
+            PresetInfo(14020010, Triple("\u5b59", "\u6743", 3046), 16030121,200, 600),
             PresetInfo(14020020, Triple("\u5b59", "\u7b56", 3003),14020041,100, 200),
             PresetInfo(14020030, Triple("\u9646", "\u900a", 3005)),
             PresetInfo(14020041, Triple("\u5927", "\u4e54",3005), 14020020,100, 200),
@@ -165,6 +165,7 @@ object CultivationSetting {
             PresetInfo(16000110, Pair("\u79e6","\u660e")), PresetInfo(16000120, Pair("\u67f4","\u8fdb")),
             PresetInfo(16000130, Pair("\u674e","\u9035"),0, 100, 200),
             PresetInfo(16000140, Pair("\u6234","\u5b97")),
+            PresetInfo(16000150, Pair("\u5f20","\u987a"),0,100,100),
 
             PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
             PresetInfo(16010020, Pair("\u9ad8","\u4fc5"),0, 100, 100),
@@ -185,16 +186,29 @@ object CultivationSetting {
             PresetInfo(16030071, Pair("\u82b1", "\u9b18"), 16030030, 100, 200, Pair(14010140, 14010151)),
             PresetInfo(16030081, Pair("\u9c8d", "\u4e09\u5a18"), 16030030, 100, 200),
             PresetInfo(16030090, Pair("\u738b", "\u53cc")), PresetInfo(16030100, Pair("\u9648", "\u7433")),
-            PresetInfo(16030101, Pair("\u5468", "\u5983"), 0, 100, 100, Pair(14020060, 14020051))
+            PresetInfo(16030101, Pair("\u5468", "\u5983"), 0, 100, 100, Pair(14020060, 14020051)),
+            PresetInfo(16030111, Pair("\u6768", "\u5a49"), 14010080, 100, 200),
+            PresetInfo(16030121, Pair("\u6f58", "\u6dd1"), 14020010, 100, 200),
+            PresetInfo(16030131, Pair("\u6a0a", "\u7389\u51e4"), 14010040, 100, 200),
+            PresetInfo(16030141, Pair("\u675c", "\u592b\u4eba"), 14000010, 100, 200),
+            PresetInfo(16030151, Pair("\u66f9", "\u91d1\u7389"), 0, 200, 600, Pair(14000010, 16030141))
     )
 
+    private val SpecPersonFirstName7:MutableList<PresetInfo> = mutableListOf(
+            PresetInfo(17000010, Pair("\u54c8\u8fea\u65af",""),0, 1000, 600000),
+            PresetInfo(17000021, Pair("\u96c5\u5178\u5a1c",""),0, 1000, 600000),
+            PresetInfo(17000030, Pair("\u6ce2\u585e\u51ac",""),0, 1000, 600000),
+            PresetInfo(17000041, Pair("\u6f58\u591a\u62c9",""),0, 100, 200)
+    )
 
+    // key = type
     fun getSpecPersonsByType():HashMap<Int, MutableList<PresetInfo>>{
         val persons = hashMapOf<Int, MutableList<PresetInfo>>()
         persons[3] = SpecPersonFirstName3
         persons[4] = SpecPersonFirstName4
         persons[5] = SpecPersonFirstName5
         persons[6] = SpecPersonFirstName6
+        persons[7] = SpecPersonFirstName7
         return persons
     }
 
@@ -205,6 +219,7 @@ object CultivationSetting {
         persons.addAll(SpecPersonFirstName4)
         persons.addAll(SpecPersonFirstName5)
         persons.addAll(SpecPersonFirstName6)
+        persons.addAll(SpecPersonFirstName7)
         return persons
     }
 

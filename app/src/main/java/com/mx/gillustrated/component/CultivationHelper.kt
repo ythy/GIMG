@@ -493,11 +493,11 @@ object CultivationHelper {
         return getMaxBonus(size, 1)
     }
 
-    fun getMaxBonus(size:Int, max:Int = 1):Int{
+    private fun getMaxBonus(size:Int, max:Int = 1):Int{
         return Math.max(max, Math.round( Math.log(size.toDouble())).toInt())
     }
 
-    fun getValidBonus(size:Int, max:Int = 1):Int{
+    private fun getValidBonus(size:Int, max:Int = 1):Int{
         return Math.min(size, getMaxBonus(size, max))
     }
 
@@ -515,7 +515,7 @@ object CultivationHelper {
         return getXiuweiGrow(person, alliance)
     }
 
-    fun getXiuweiGrow(person:Person, alliance: Alliance):Int{
+    private fun getXiuweiGrow(person:Person, alliance: Alliance):Int{
         synchronized(person){
             person.allianceXiuwei = alliance.xiuwei
             if(alliance.speedG1PersonList.contains(person.id)){
