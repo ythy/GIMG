@@ -468,7 +468,13 @@ object CultivationHelper {
     }
 
     fun updatePersonEquipment(person:Person){
-        val equipments = person.equipmentListPair.mapNotNull { mConfig.equipment.find { e-> e.id == it.first } }
+        val equipments = person.equipmentListPair.mapNotNull {
+            var e = mConfig.equipment.find { e-> e.id == it.first }
+            if (e?.type == 5){
+                e = CultivationSetting.getEquitmentCustom(it)
+            }
+            e
+        }
         person.equipmentXiuwei = 0
         person.equipmentSuccess = 0
         person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
@@ -476,7 +482,7 @@ object CultivationHelper {
             equipments.filter { it.type > 3 }.groupBy { it.id }.forEach { (_, u) ->
                 for (index in 0 until u.size){
                     val effectEquipment = u[index]
-                    if( index > getEquipmentsMaxCount(effectEquipment, u.size)){
+                    if(index > getEquipmentsMaxCount(effectEquipment, u.size)){
                         break
                     }
                     summationEquipmentValues(person, effectEquipment)
@@ -490,7 +496,10 @@ object CultivationHelper {
     }
 
     fun getEquipmentsMaxCount(equipment: Equipment, size:Int):Int{
-        return getMaxBonus(size, 1)
+        return if (equipment.type == 5)
+            size
+        else
+            getMaxBonus(size, 1)
     }
 
     private fun getMaxBonus(size:Int, max:Int = 1):Int{

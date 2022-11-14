@@ -462,6 +462,9 @@ class CultivationActivity : BaseActivity() {
                     }
                     showToast("不用谢")
                 }
+                R.id.menu_lucky ->{
+                    addSpecialEquipmentEvent()
+                }
                 R.id.menu_add_spec ->{
                     addSpecPerson()
                 }
@@ -815,7 +818,7 @@ class CultivationActivity : BaseActivity() {
         updateCareerEffect(currentXun)
         updateClans(currentXun)
         updateBoss(currentXun)
-        randomSpecialEvent(currentXun)
+        randomSpecialEquipmentEvent(currentXun)
         updateNationPost(currentXun)
     }
 
@@ -1024,13 +1027,27 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun randomSpecialEvent(xun: Long){
-//        if(inDurationByXun("SpecialEvent", 121212, xun)) {
-//            val luky = mPersons.map { it.value }.shuffled().first()
-//            if(isTrigger(10)){
-//
-//            }
-//        }
+    private fun randomSpecialEquipmentEvent(xun: Long){
+        if(inDurationByXun("SpecialEvent", 121212, xun)) {
+            if(isTrigger(10)) {
+                val lucky = mPersons.map { it.value }.shuffled().first()
+                addSpecialEquipmentEvent(lucky)
+            }
+        }
+    }
+
+    private fun addSpecialEquipmentEvent(person:Person? = null){
+        val lucky = person ?: mPersons.map { it.value }.shuffled().first()
+        val spec = CultivationSetting.createEquitmentCustom()
+        if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
+            return
+        }
+        lucky.equipmentListPair.add(spec)
+        CultivationHelper.updatePersonEquipment(lucky)
+        val equipment = CultivationSetting.getEquitmentCustom(spec)
+        val commonText = "\u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
+        addPersonEvent(lucky, commonText)
+        writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
     }
 
     private fun updateNationPost(xun:Long, force:Boolean = false){
@@ -1131,6 +1148,9 @@ class CultivationActivity : BaseActivity() {
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
                         writeHistory("${u.name} 倒", u)
                         gainTeji(person, 50 * u.type)
+                        if(isTrigger(50 / u.type)) {
+                            addSpecialEquipmentEvent(person)
+                        }
                         CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
                     }else{
                         u.remainHit --
@@ -1421,6 +1441,9 @@ class CultivationActivity : BaseActivity() {
                 val person = restPersons[reverseIndex - 1]
                 person.battleRecord[mBattleRound.single] = reverseIndex
                 writeHistory("第${mBattleRound.single}届 Single Battle No $reverseIndex : ${person.name}", person)
+                if(isTrigger(reverseIndex * 10)) {
+                    addSpecialEquipmentEvent(person)
+                }
             }
             CultivationHelper.updateSingleBattleBonus(mPersons)
 

@@ -17,6 +17,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationEquipmentAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.dialog.FragmentDialogEquipment
 import com.mx.gillustrated.vo.cultivation.Equipment
 import com.mx.gillustrated.vo.cultivation.Person
@@ -97,9 +98,13 @@ class FragmentEquipment: Fragment() {
 
     fun updateList(){
         val equipments = mPerson.equipmentListPair.map {
-            val equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()
-            equipment.seq = it.second
-            equipment.uniqueName = if(equipment.seq > 0) "${equipment.name}-${equipment.seq}" else equipment.name
+            var equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()
+            if(equipment.type == 5){
+                equipment = CultivationSetting.getEquitmentCustom(it)
+            }else{
+                equipment.seq = it.second
+                equipment.uniqueName = if(equipment.seq > 0) "${equipment.name}-${equipment.seq}" else equipment.name
+            }
             equipment
         }.sortedWith(compareBy<Equipment> {
             it.type

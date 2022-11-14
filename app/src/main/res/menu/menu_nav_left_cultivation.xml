@@ -25,6 +25,9 @@
             android:id="@+id/menu_grace"
             android:title="putiantongqing"/>
         <item
+            android:id="@+id/menu_lucky"
+            android:title="lucky"/>
+        <item
             android:id="@+id/menu_add_spec"
             android:title="autoPersons"/>
     </group>

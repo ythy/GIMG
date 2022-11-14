@@ -44,7 +44,7 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val gro
 
         val values = getGroup(groupPosition)
         val child = values.children
-        if(values.type <= 10)
+        if(values.type <= 3 || values.type == 9)
             component.name.text = CultivationHelper.showing(values.name)
         else
             component.name.text = "${CultivationHelper.showing(values.name)}(${child.size}/${CultivationHelper.getEquipmentsMaxCount(values, child.size)})"

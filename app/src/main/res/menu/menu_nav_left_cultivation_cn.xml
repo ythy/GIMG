@@ -25,6 +25,9 @@
             android:id="@+id/menu_grace"
             android:title="普天同庆"/>
         <item
+            android:id="@+id/menu_lucky"
+            android:title="天官赐福"/>
+        <item
             android:id="@+id/menu_add_spec"
             android:title="预设人物"/>
     </group>

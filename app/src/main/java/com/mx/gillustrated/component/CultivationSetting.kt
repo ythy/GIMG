@@ -1,7 +1,10 @@
 package com.mx.gillustrated.component
 
 import com.mx.gillustrated.util.NameUtil
+import com.mx.gillustrated.vo.cultivation.Equipment
 import com.mx.gillustrated.vo.cultivation.Person
+import java.util.*
+import kotlin.collections.HashMap
 
 object CultivationSetting {
 
@@ -9,10 +12,11 @@ object CultivationSetting {
     val PostColors = arrayOf("#E2D223", "#BE0012", "#0272E4", "#12A703", "#EF7362")
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
+
     object BattleSettings {
         const val AllianceMinSize = 16
         const val AllianceBonusCount = 4
-        val AllianceBonus = arrayOf(5,8,5,3,1,0,0,0,0,0,0)// [0]: equipment maxCount, [1..10]: bonus
+        val AllianceBonus = arrayOf(5,8,5,3,1,0,0,0,0,0,0)// [0]: equipment maxCount, [1..10]: bonus count by BonusCount
         const val ClanMinSize = 4
         const val ClanBonusCount = 3
         val ClanBonus = arrayOf(5,3,2,1,0,0,0,0,0,0,0)
@@ -246,8 +250,48 @@ object CultivationSetting {
         }
     }
 
+    val amuletList = mutableListOf("\u6d3b\u529b", "\u6b8b\u66b4", "\u7a33\u56fa", "\u95ea\u7535")
+    val amuletWeight = mutableListOf(1, 10, 50, 200, 1000, 5000, 20000)
+    val amuletBonus = mutableListOf(5, 10, 15, 20, 30, 40, 50)
+    val amuletName = mutableListOf("\u51f9\u51f8", "\u7cbe\u826f", "\u5de5\u5320", "\u73e0\u5b9d\u5320", "\u5927\u5e08", "\u5b97\u5e08", "\u602a\u5f02")
+    fun createEquitmentCustom():Pair<String, Int>{
+        val sizeRandom = Random().nextInt(50)
+        val size = when(sizeRandom) {
+            0 -> 2
+            in(1..5) -> 1
+            else -> 0
+        }
+        val type = Random().nextInt(amuletList.size)
+        var index = amuletWeight.size
+        while (index-- > 0){
+            if(CultivationHelper.isTrigger(amuletWeight[index])){
+                break
+            }
+        }
+        val config = CultivationHelper.mConfig.equipment.filter { it.type == 5}.sortedBy { it.rarity }
+        return Pair(config[size].id, "${type + 1}0$index".toInt())
+    }
 
-
+    fun getEquitmentCustom(spec:Pair<String, Int>):Equipment{
+        val type = spec.second / 100 - 1
+        val rarity = spec.second % 100
+        val config = CultivationHelper.mConfig.equipment.find { it.id == spec.first}!!.copy()
+        val equipment = Equipment()
+        equipment.id = config.id
+        equipment.name = config.name
+        equipment.seq = spec.second
+        equipment.rarity = rarity + config.rarity
+        equipment.uniqueName = "${amuletName[rarity]}之${amuletList[type]}${equipment.name}"
+        equipment.type = config.type
+        val bonus = when(config.rarity) {
+            1 -> 1
+            2 -> 2
+            3 -> 4
+            else -> 1
+        }
+        equipment.property[type] = if(type == 0) amuletBonus[rarity] * bonus * 5 else amuletBonus[rarity] * bonus
+        return equipment
+    }
 
 
     data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?, var tianFuWeight: Int = 1, var lingGenWeight:Int = 1)
