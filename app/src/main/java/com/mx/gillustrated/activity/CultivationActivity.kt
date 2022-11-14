@@ -1038,13 +1038,13 @@ class CultivationActivity : BaseActivity() {
 
     private fun addSpecialEquipmentEvent(person:Person? = null){
         val lucky = person ?: mPersons.map { it.value }.shuffled().first()
-        val spec = CultivationSetting.createEquitmentCustom()
+        val spec = CultivationSetting.createEquipmentCustom()
         if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
             return
         }
         lucky.equipmentListPair.add(spec)
         CultivationHelper.updatePersonEquipment(lucky)
-        val equipment = CultivationSetting.getEquitmentCustom(spec)
+        val equipment = CultivationSetting.getEquipmentCustom(spec)
         val commonText = "\u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
         addPersonEvent(lucky, commonText)
         writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)

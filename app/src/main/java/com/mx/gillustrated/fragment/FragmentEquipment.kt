@@ -100,7 +100,7 @@ class FragmentEquipment: Fragment() {
         val equipments = mPerson.equipmentListPair.map {
             var equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()
             if(equipment.type == 5){
-                equipment = CultivationSetting.getEquitmentCustom(it)
+                equipment = CultivationSetting.getEquipmentCustom(it)
             }else{
                 equipment.seq = it.second
                 equipment.uniqueName = if(equipment.seq > 0) "${equipment.name}-${equipment.seq}" else equipment.name

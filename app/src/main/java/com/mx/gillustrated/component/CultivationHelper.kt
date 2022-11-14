@@ -471,7 +471,7 @@ object CultivationHelper {
         val equipments = person.equipmentListPair.mapNotNull {
             var e = mConfig.equipment.find { e-> e.id == it.first }
             if (e?.type == 5){
-                e = CultivationSetting.getEquitmentCustom(it)
+                e = CultivationSetting.getEquipmentCustom(it)
             }
             e
         }

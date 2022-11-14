@@ -254,7 +254,7 @@ object CultivationSetting {
     val amuletWeight = mutableListOf(1, 10, 50, 200, 1000, 5000, 20000)
     val amuletBonus = mutableListOf(5, 10, 15, 20, 30, 40, 50)
     val amuletName = mutableListOf("\u51f9\u51f8", "\u7cbe\u826f", "\u5de5\u5320", "\u73e0\u5b9d\u5320", "\u5927\u5e08", "\u5b97\u5e08", "\u602a\u5f02")
-    fun createEquitmentCustom():Pair<String, Int>{
+    fun createEquipmentCustom():Pair<String, Int>{
         val sizeRandom = Random().nextInt(50)
         val size = when(sizeRandom) {
             0 -> 2
@@ -272,7 +272,7 @@ object CultivationSetting {
         return Pair(config[size].id, "${type + 1}0$index".toInt())
     }
 
-    fun getEquitmentCustom(spec:Pair<String, Int>):Equipment{
+    fun getEquipmentCustom(spec:Pair<String, Int>):Equipment{
         val type = spec.second / 100 - 1
         val rarity = spec.second % 100
         val config = CultivationHelper.mConfig.equipment.find { it.id == spec.first}!!.copy()
