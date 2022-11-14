@@ -592,11 +592,10 @@ object CultivationHelper {
         man.partnerName = woman.name
         woman.partner = man.id
         woman.partnerName = man.name
-        addPersonEvent(man,"与${woman.name}结伴")
-        addPersonEvent(woman,"与${man.name}结伴")
-        writeHistory("${getPersonBasicString(man)} 与 ${getPersonBasicString(woman)} 结伴了")
+        addPersonEvent(man,"与${woman.name}\u7ed3\u4f34")
+        addPersonEvent(woman,"与${man.name}\u7ed3\u4f34")
+        writeHistory("${getPersonBasicString(man)} 与 ${getPersonBasicString(woman)} \u7ed3\u4f34了")
     }
-
 
     fun getJingJieLevel(id:String):Triple<Int, Int, Int>{
         val list = mConfig.jingJieType.filter { it.color > 0 }

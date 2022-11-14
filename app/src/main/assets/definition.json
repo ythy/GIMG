@@ -1549,17 +1549,6 @@
       "xiuweiMulti": 100,
       "property": [0,50,0,20,0,0,0,0],
       "speedG1": 70
-    },
-    {
-      "id": "6000801",
-      "name": "希",
-      "type": 7,
-      "nation": "6200007",
-      "lifetime": 50,
-      "xiuwei": 100,
-      "xiuweiMulti": 100,
-      "property": [0,100,50,50,0,0,0,0],
-      "speedG1": 200
     }
   ],
   "equipment": [
@@ -2343,10 +2332,6 @@
     {
       "id": "6200006",
       "name": "\u56db\u5927"
-    },
-    {
-      "id": "6200007",
-      "name": "\u795e\u8bdd"
     }
   ]
 }

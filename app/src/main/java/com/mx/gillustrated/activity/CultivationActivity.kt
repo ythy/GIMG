@@ -67,7 +67,7 @@ class CultivationActivity : BaseActivity() {
 
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
-    private var isPaused = false// Activity 是否不可见
+    private var isHidden = false// Activity 是否不可见
     private var mSpeed = 10L//流失速度
     private val mInitPersonCount = 1000//初始化Person数量
     private var readRecord = true
@@ -273,10 +273,10 @@ class CultivationActivity : BaseActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         if(!isFinishing){
-            isPaused = true
+            isHidden = true
             val serviceIntent = Intent(this, StopService::class.java)
             this.startForegroundService(serviceIntent)
         }
@@ -284,7 +284,7 @@ class CultivationActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        isPaused = false
+        isHidden = false
         val serviceIntent = Intent(this, StopService::class.java)
         stopService(serviceIntent)
     }
@@ -294,7 +294,7 @@ class CultivationActivity : BaseActivity() {
         super.onDestroy()
         mThreadRunnable = false
         mHistoryThreadRunnable = false
-        isPaused = false
+        isHidden = false
     }
 
     private fun temp(){
@@ -614,13 +614,13 @@ class CultivationActivity : BaseActivity() {
 
     fun setTimeLooper(flag:Boolean){
         if(flag){
-            if(!isPaused){
+            if(!isHidden){
                 mBtnTime.tag = "ON"
                 mBtnTime.text = resources.getString(R.string.cultivation_stop)
             }
             mThreadRunnable = true
         }else{
-            if(!isPaused) {
+            if(!isHidden) {
                 mBtnTime.tag = "OFF"
                 mBtnTime.text = resources.getString(R.string.cultivation_start)
             }
@@ -703,7 +703,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun xunHandler(currentXun:Long, step:Int) {
         val year = CultivationHelper.getYearString(currentXun)
-        if(!isPaused && mDate.text != year) {
+        if(!isHidden && mDate.text != year) {
             mDate.text = year
         }
         for ((_: String, it: Person) in mPersons) {
@@ -801,7 +801,7 @@ class CultivationActivity : BaseActivity() {
         }
         //以下辅助操作
         when {
-            inDurationByXun("Xun100000", 100000) && isPaused -> {
+            inDurationByXun("Xun100000", 100000) && isHidden -> {
                 mDeadPersons.clear()
                 addSpecPerson()
                 saveAllData(false)
@@ -857,7 +857,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updateHistory(){
-        if(isPaused)
+        if(isHidden)
             return
         if(mHistoryData.size > 500 && mThreadRunnable){
             mHistoryData.clear()
@@ -1025,7 +1025,12 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun randomSpecialEvent(xun: Long){
-
+//        if(inDurationByXun("SpecialEvent", 121212, xun)) {
+//            val luky = mPersons.map { it.value }.shuffled().first()
+//            if(isTrigger(10)){
+//
+//            }
+//        }
     }
 
     private fun updateNationPost(xun:Long, force:Boolean = false){
@@ -1164,9 +1169,6 @@ class CultivationActivity : BaseActivity() {
             mClans.forEach {
                 if(it.value.clanPersonList.isEmpty()){
                     mClans.remove(it.key)
-                }
-                else if(it.value.zhu == null &&  mPersons[it.value.id] != null){
-                    it.value.zhu = mPersons[it.value.id]
                 }
             }
         }
@@ -1749,7 +1751,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     fun showToast(content:String){
-        if(isPaused)
+        if(isHidden)
             return
         try {
             Toast.makeText(this, content, Toast.LENGTH_SHORT).show()

@@ -104,7 +104,7 @@ object CultivationSetting {
 
             PresetInfo(14020010, Triple("\u5b59", "\u6743", 3046), 16030121,200, 600),
             PresetInfo(14020020, Triple("\u5b59", "\u7b56", 3003),14020041,100, 200),
-            PresetInfo(14020030, Triple("\u9646", "\u900a", 3005)),
+            PresetInfo(14020030, Triple("\u9646", "\u900a", 3005), 16030161),
             PresetInfo(14020041, Triple("\u5927", "\u4e54",3005), 14020020,100, 200),
             PresetInfo(14020051, Triple("\u5c0f", "\u4e54",3004), 14020060,100, 200),
             PresetInfo(14020060, Triple("\u5468", "\u745c", 3006), 14020051,500, 1000),
@@ -191,14 +191,9 @@ object CultivationSetting {
             PresetInfo(16030121, Pair("\u6f58", "\u6dd1"), 14020010, 100, 200),
             PresetInfo(16030131, Pair("\u6a0a", "\u7389\u51e4"), 14010040, 100, 200),
             PresetInfo(16030141, Pair("\u675c", "\u592b\u4eba"), 14000010, 100, 200),
-            PresetInfo(16030151, Pair("\u66f9", "\u91d1\u7389"), 0, 200, 600, Pair(14000010, 16030141))
-    )
-
-    private val SpecPersonFirstName7:MutableList<PresetInfo> = mutableListOf(
-            PresetInfo(17000010, Pair("\u54c8\u8fea\u65af",""),0, 1000, 600000),
-            PresetInfo(17000021, Pair("\u96c5\u5178\u5a1c",""),0, 1000, 600000),
-            PresetInfo(17000030, Pair("\u6ce2\u585e\u51ac",""),0, 1000, 600000),
-            PresetInfo(17000041, Pair("\u6f58\u591a\u62c9",""),0, 100, 200)
+            PresetInfo(16030151, Pair("\u66f9", "\u91d1\u7389"), 0, 200, 600, Pair(14000010, 16030141)),
+            PresetInfo(16030161, Pair("\u5b59", "\u8339"), 14020030, 100, 200, Pair(14020020, 14020041)),
+            PresetInfo(16030171, Pair("\u5468", "\u5937"), 14010040, 100, 200)
     )
 
     // key = type
@@ -208,7 +203,6 @@ object CultivationSetting {
         persons[4] = SpecPersonFirstName4
         persons[5] = SpecPersonFirstName5
         persons[6] = SpecPersonFirstName6
-        persons[7] = SpecPersonFirstName7
         return persons
     }
 
@@ -219,7 +213,6 @@ object CultivationSetting {
         persons.addAll(SpecPersonFirstName4)
         persons.addAll(SpecPersonFirstName5)
         persons.addAll(SpecPersonFirstName6)
-        persons.addAll(SpecPersonFirstName7)
         return persons
     }
 
