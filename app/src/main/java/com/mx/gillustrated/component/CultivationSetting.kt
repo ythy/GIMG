@@ -250,18 +250,30 @@ object CultivationSetting {
         }
     }
 
-    fun createDecadeSeq(index:Int):String{
+    private fun createAmuletDecadeSeq(index:Int):String{
         return  when(index){
             in 0..9 -> "0$index"
             else -> "${Math.min(99, index)}"
         }
     }
 
+    // weight: max 10000
+    data class AmuletType(val type:Int, val name:String, val weight:Int, val rarity:Int, val property:MutableList<Boolean>, val xiuwei:Boolean)
     private object Amulet {
-        val type = mutableListOf("\u6d3b\u529b", "\u6b8b\u66b4", "\u7a33\u56fa", "\u95ea\u7535", "\u602a\u5f02", "\u6bc1\u706d")
+        val type = mutableListOf(
+                AmuletType(101,  "\u6d3b\u529b", 10, 0, mutableListOf(true,false,false,false), false),
+                AmuletType(102,  "\u6b8b\u66b4", 10, 0, mutableListOf(false,true,false,false), false),
+                AmuletType(103,  "\u7a33\u56fa", 10, 0, mutableListOf(false,false,true,false), false),
+                AmuletType(104,  "\u95ea\u7535", 10, 0, mutableListOf(false,false,false,true), false),
+                AmuletType(105,  "\u7075\u529b", 10, 0, mutableListOf(false,false,false,false), true),
+                AmuletType(111,  "\u602a\u5f02", 50, 1, mutableListOf(false,true,true,false), false),
+                AmuletType(112,  "\u53cd\u4e09", 50, 1, mutableListOf(false,true,false,true), false),
+                AmuletType(113,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false)
+        )
         const val level = 7//↓
         val weight = mutableListOf(1, 10, 50, 200, 1000, 5000, 20000)
         val bonus = mutableListOf(5, 10, 15, 20, 30, 40, 50)
+        val xiuwei = mutableListOf(10, 20, 30, 40, 50, 80, 100)
         val prefix = mutableListOf("\u51f9\u51f8", "\u7cbe\u826f", "\u5de5\u5320", "\u73e0\u5b9d\u5320", "\u5927\u5e08", "\u5b97\u5e08", "\u795e\u5320")
     }
 
@@ -271,15 +283,18 @@ object CultivationSetting {
             in 1..5 -> 1
             else -> 0
         }
-        val type =  when(Random().nextInt(43)) {
-            in 0..9 -> 0
-            in 10..19 -> 1
-            in 20..29 -> 2
-            in 30..39 -> 3
-            in 40..41 -> 4
-            42 -> 5
-            else -> 0
-        }
+        val max = 10000
+        val randomNumber = Random().nextInt( Amulet.type.sumBy { max / it.weight })
+        var type = 0 // ↓ 选取type
+
+        Amulet.type.fold(0, { acc, amuletType ->
+            val rangeRight = acc + max / amuletType.weight
+            if (randomNumber < rangeRight && type == 0){
+                type = amuletType.type
+            }
+            rangeRight
+        })
+
         var level = Amulet.level
         while (level-- > 0){
             if(CultivationHelper.isTrigger(Amulet.weight[level])){
@@ -287,11 +302,12 @@ object CultivationSetting {
             }
         }
         val config = CultivationHelper.mConfig.equipment.filter { it.type == 5 }.sortedBy { it.rarity }
-        return Pair(config[size].id, "${type + 1}${createDecadeSeq(level)}".toInt())
+        return Pair(config[size].id, "$type${createAmuletDecadeSeq(level)}".toInt())
     }
 
     fun getEquipmentCustom(spec:Pair<String, Int>):Equipment{
-        val type = spec.second / 100 - 1
+        val type = spec.second / 100
+        val amuletType = Amulet.type.find { it.type == type } ?: Amulet.type[0]
         val level = spec.second % 100
         val config = CultivationHelper.mConfig.equipment.find { it.id == spec.first}!!.copy()
         val equipment = Equipment()
@@ -299,7 +315,7 @@ object CultivationSetting {
         equipment.name = config.name
         equipment.seq = spec.second
         equipment.rarity = level + config.rarity
-        equipment.uniqueName = "${Amulet.prefix[level]}之${Amulet.type[type]}${equipment.name}"
+        equipment.uniqueName = "${Amulet.prefix[level]}之${amuletType.name}${equipment.name}"
         equipment.type = config.type
 
         val sizeBonus = when(config.rarity) {
@@ -309,20 +325,13 @@ object CultivationSetting {
             else -> 1
         }
 
-        when(type){
-            0 -> equipment.property[type] =  Amulet.bonus[level] * sizeBonus * 5
-            in 1..3 -> equipment.property[type] =  Amulet.bonus[level] * sizeBonus
-            4 -> {
-                equipment.property[1] =  Amulet.bonus[level] * sizeBonus
-                equipment.property[2] =  Amulet.bonus[level] * sizeBonus
-                equipment.rarity += 1
-            }
-            5 -> {
-                equipment.property[0] =  Amulet.bonus[level] * sizeBonus * 5
-                equipment.property[1] =  Amulet.bonus[level] * sizeBonus
-                equipment.property[2] =  Amulet.bonus[level] * sizeBonus
-                equipment.property[4] =  Amulet.bonus[level] * sizeBonus
-                equipment.rarity += 2
+        equipment.xiuwei = if(amuletType.xiuwei) Amulet.xiuwei[level] * sizeBonus else 0
+        equipment.rarity += amuletType.rarity
+        equipment.property.forEachIndexed { index, _ ->
+            if (index < 4){
+                if (amuletType.property[index]){
+                    equipment.property[index] =  Amulet.bonus[level] * sizeBonus * (if (index == 0) 5 else 1)
+                }
             }
         }
         return equipment
