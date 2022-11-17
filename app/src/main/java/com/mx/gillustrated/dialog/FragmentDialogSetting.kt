@@ -109,13 +109,23 @@ class FragmentDialogSetting : DialogFragment() {
     }
 
     @OnClick(R.id.btn_talent)
-    fun onTanlentClick(){
+    fun onTalentClick(){
         val ft = childFragmentManager.beginTransaction()
         // Create and show the dialog.
         val newFragment = FragmentDialogPersonList.newInstance(3)
         newFragment.isCancelable = false
         newFragment.show(ft, "dialog_person_list")
     }
+
+    @OnClick(R.id.btn_amulet)
+    fun onAmuletClick(){
+        val ft = childFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogPersonList.newInstance(4)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_person_list")
+    }
+
 
 
     lateinit var mActivity: CultivationActivity

@@ -25,7 +25,7 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 //type 0 all; 1 fav; 2 carrer rarity>=8 ; 3 lifeturn == 0 & lingGen type > 1 & tianFu rarity sum > 10;
-//type 4  rank by xiuwei
+//type 4 persons has amulet
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFragment() {
@@ -206,6 +206,9 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             }
             3 -> mContext.mPersons.map { it.value }.filter { p->
                 p.lifeTurn == 0 && p.ancestorLevel == 0 && ( p.lingGenType.type >= 3 || (p.lingGenType.type > 0 && p.tianfus.sumBy { s-> s.rarity } > 5))
+            }
+            4 -> mContext.mPersons.map { it.value }.filter { p->
+               p.equipmentListPair.find { e-> e.second > 10000 } != null
             }
             else -> mContext.mPersons.map { it.value }
         }

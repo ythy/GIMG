@@ -469,7 +469,7 @@ object CultivationHelper {
 
     fun updatePersonEquipment(person:Person){
         val equipments = person.equipmentListPair.mapNotNull {
-            var e = mConfig.equipment.find { e-> e.id == it.first }
+            var e = mConfig.equipment.find { e-> e.id == it.first }?.copy()
             if (e?.type == 5){
                 e = CultivationSetting.getEquipmentCustom(it)
             }

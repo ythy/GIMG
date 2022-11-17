@@ -250,88 +250,90 @@ object CultivationSetting {
         }
     }
 
-    private fun createAmuletDecadeSeq(index:Int):String{
-        return  when(index){
-            in 0..9 -> "0$index"
-            else -> "${Math.min(99, index)}"
-        }
-    }
-
     // weight: max 10000
-    data class AmuletType(val type:Int, val name:String, val weight:Int, val rarity:Int, val property:MutableList<Boolean>, val xiuwei:Boolean)
+    data class AmuletType(val type:Int, val name:String, val weight:Int, val rarity:Int, val addProperty:MutableList<Boolean>,
+                          val addXiuwei:Boolean, val props:MutableList<AmuletProps>, val config:MutableList<AmuletConfig>)
+    data class AmuletProps(val seq:String, val weight:Int, val bonus:Int, val xiuwei:Int, val prefix:String)
+    data class AmuletConfig(val id:String, val weight:Int, val bonus:Int)
+
     private object Amulet {
-        val type = mutableListOf(
-                AmuletType(101,  "\u6d3b\u529b", 10, 0, mutableListOf(true,false,false,false), false),
-                AmuletType(102,  "\u6b8b\u66b4", 10, 0, mutableListOf(false,true,false,false), false),
-                AmuletType(103,  "\u7a33\u56fa", 10, 0, mutableListOf(false,false,true,false), false),
-                AmuletType(104,  "\u95ea\u7535", 10, 0, mutableListOf(false,false,false,true), false),
-                AmuletType(105,  "\u7075\u529b", 10, 0, mutableListOf(false,false,false,false), true),
-                AmuletType(111,  "\u602a\u5f02", 50, 1, mutableListOf(false,true,true,false), false),
-                AmuletType(112,  "\u53cd\u4e09", 50, 1, mutableListOf(false,true,false,true), false),
-                AmuletType(113,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false)
+        val configNormal = mutableListOf(
+                AmuletConfig("7005101",1, 1),
+                AmuletConfig("7005102",50, 2),
+                AmuletConfig("7005103",500, 4)
         )
-        const val level = 7//↓
-        val weight = mutableListOf(1, 10, 50, 200, 1000, 5000, 20000)
-        val bonus = mutableListOf(5, 10, 15, 20, 30, 40, 50)
-        val xiuwei = mutableListOf(10, 20, 30, 40, 50, 80, 100)
-        val prefix = mutableListOf("\u51f9\u51f8", "\u7cbe\u826f", "\u5de5\u5320", "\u73e0\u5b9d\u5320", "\u5927\u5e08", "\u5b97\u5e08", "\u795e\u5320")
+
+        val propsNormal = mutableListOf(
+                AmuletProps("00",1, 5, 10, "\u51f9\u51f8"),
+                AmuletProps("01",10, 10, 20, "\u7cbe\u826f"),
+                AmuletProps("02",50, 15, 30, "\u5de5\u5320"),
+                AmuletProps("03",200, 20, 40, "\u73e0\u5b9d\u5320"),
+                AmuletProps("04",1000, 30, 50, "\u5927\u5e08"),
+                AmuletProps("05",5000, 40, 80, "\u5b97\u5e08"),
+                AmuletProps("06",20000, 50, 100, "\u795e\u5320")
+        )
+
+        val types = mutableListOf(
+                AmuletType(101,  "\u6d3b\u529b", 10, 0, mutableListOf(true,false,false,false), false, propsNormal, configNormal),
+                AmuletType(102,  "\u6b8b\u66b4", 10, 0, mutableListOf(false,true,false,false), false, propsNormal, configNormal),
+                AmuletType(103,  "\u7a33\u56fa", 10, 0, mutableListOf(false,false,true,false), false, propsNormal, configNormal),
+                AmuletType(104,  "\u95ea\u7535", 10, 0, mutableListOf(false,false,false,true), false, propsNormal, configNormal),
+                AmuletType(105,  "\u7075\u529b", 10, 0, mutableListOf(false,false,false,false), true, propsNormal, configNormal),
+                AmuletType(111,  "\u602a\u5f02", 50, 1, mutableListOf(false,true,true,false), false, propsNormal, configNormal),
+                AmuletType(112,  "\u53cd\u4e09", 50, 1, mutableListOf(false,true,false,true), false, propsNormal, configNormal),
+                AmuletType(113,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false, propsNormal, configNormal),
+                AmuletType(114,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false, propsNormal, configNormal)
+        )
+
     }
 
     fun createEquipmentCustom():Pair<String, Int>{
-        val size = when(Random().nextInt(50)) {
-            0 -> 2
-            in 1..5 -> 1
-            else -> 0
-        }
+        //↓ 选取type
+        var amuletType:AmuletType? = null
         val max = 10000
-        val randomNumber = Random().nextInt( Amulet.type.sumBy { max / it.weight })
-        var type = 0 // ↓ 选取type
-
-        Amulet.type.fold(0, { acc, amuletType ->
-            val rangeRight = acc + max / amuletType.weight
-            if (randomNumber < rangeRight && type == 0){
-                type = amuletType.type
+        val randomNumber = Random().nextInt( Amulet.types.sumBy { max / it.weight })
+        Amulet.types.fold(0, { acc, type ->
+            val rangeRight = acc + max / type.weight
+            if (amuletType == null && randomNumber < rangeRight){
+                amuletType = type
             }
             rangeRight
         })
-
-        var level = Amulet.level
-        while (level-- > 0){
-            if(CultivationHelper.isTrigger(Amulet.weight[level])){
-                break
+        //↓ 选取props
+        var props:AmuletProps? = null
+        amuletType!!.props.sortedByDescending { it.weight }.forEach {
+            if(props == null && CultivationHelper.isTrigger(it.weight) ){
+                props = it
             }
         }
-        val config = CultivationHelper.mConfig.equipment.filter { it.type == 5 }.sortedBy { it.rarity }
-        return Pair(config[size].id, "$type${createAmuletDecadeSeq(level)}".toInt())
+        //↓ 选取equipment
+        var config:AmuletConfig? = null
+        amuletType!!.config.sortedByDescending { it.weight }.forEach {
+            if(config == null && CultivationHelper.isTrigger(it.weight) ){
+                config = it
+            }
+        }
+        return Pair(config!!.id, "${amuletType!!.type}${props!!.seq}".toInt())
     }
 
     fun getEquipmentCustom(spec:Pair<String, Int>):Equipment{
-        val type = spec.second / 100
-        val amuletType = Amulet.type.find { it.type == type } ?: Amulet.type[0]
-        val level = spec.second % 100
-        val config = CultivationHelper.mConfig.equipment.find { it.id == spec.first}!!.copy()
+        val amuletType = Amulet.types.find { it.type ==  spec.second / 100 }!!
+        val props = amuletType.props.find { it.seq.toInt() == spec.second % 100 }!!
+        val config = amuletType.config.find { it.id == spec.first }!!
+        val equipmentConfig = CultivationHelper.mConfig.equipment.find { it.id == config.id}!!.copy()
         val equipment = Equipment()
-        equipment.id = config.id
-        equipment.name = config.name
+        equipment.id = equipmentConfig.id
+        equipment.name = equipmentConfig.name
+        equipment.type = equipmentConfig.type
         equipment.seq = spec.second
-        equipment.rarity = level + config.rarity
-        equipment.uniqueName = "${Amulet.prefix[level]}之${amuletType.name}${equipment.name}"
-        equipment.type = config.type
-
-        val sizeBonus = when(config.rarity) {
-            1 -> 1
-            2 -> 2
-            3 -> 4
-            else -> 1
-        }
-
-        equipment.xiuwei = if(amuletType.xiuwei) Amulet.xiuwei[level] * sizeBonus else 0
-        equipment.rarity += amuletType.rarity
-        equipment.property.forEachIndexed { index, _ ->
-            if (index < 4){
-                if (amuletType.property[index]){
-                    equipment.property[index] =  Amulet.bonus[level] * sizeBonus * (if (index == 0) 5 else 1)
-                }
+        equipment.rarity = equipmentConfig.rarity + props.seq.toInt() + amuletType.rarity
+        equipment.uniqueName = "${props.prefix}之${amuletType.name}${equipment.name}"
+        equipment.xiuwei = if(amuletType.addXiuwei) props.xiuwei * config.bonus else 0
+        equipment.property.take(4).forEachIndexed { index, _ ->
+            if (amuletType.addProperty[index]){
+                equipment.property[index] =  props.bonus * config.bonus * (if (index == 0) 5 else 1)
+            }else{
+                equipment.property[index] = 0
             }
         }
         return equipment
