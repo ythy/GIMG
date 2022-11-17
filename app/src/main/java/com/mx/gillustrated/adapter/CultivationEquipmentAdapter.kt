@@ -12,6 +12,7 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
+import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.vo.cultivation.Equipment
@@ -102,7 +103,8 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val gro
             component = convertView.tag as ViewHolderChild
 
         val values = getChild(groupPosition, childPosition)
-        component.name.text = CultivationHelper.showing(values.uniqueName)
+        val tejiString = if (values.teji.size > 0) "(${values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }})" else  ""
+        component.name.text = CultivationHelper.showing(values.uniqueName+tejiString)
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         component.xiuwei.text = "${values.xiuwei}"
         component.success.text = "${values.success}"

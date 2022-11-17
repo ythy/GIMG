@@ -253,7 +253,7 @@ object CultivationSetting {
     // weight: max 10000
     data class AmuletType(val type:Int, val name:String, val weight:Int, val rarity:Int, val addProperty:MutableList<Boolean>,
                           val addXiuwei:Boolean, val props:MutableList<AmuletProps>, val config:MutableList<AmuletConfig>)
-    data class AmuletProps(val seq:String, val weight:Int, val bonus:Int, val xiuwei:Int, val prefix:String)
+    data class AmuletProps(val seq:String, val weight:Int, val bonus:Int, val xiuwei:Int, val prefix:String, val teji:MutableList<String> = mutableListOf())
     data class AmuletConfig(val id:String, val weight:Int, val bonus:Int)
 
     private object Amulet {
@@ -261,6 +261,10 @@ object CultivationSetting {
                 AmuletConfig("7005101",1, 1),
                 AmuletConfig("7005102",50, 2),
                 AmuletConfig("7005103",500, 4)
+        )
+
+        val configSmall = mutableListOf(
+                AmuletConfig("7005101",1, 1)
         )
 
         val propsNormal = mutableListOf(
@@ -273,6 +277,10 @@ object CultivationSetting {
                 AmuletProps("06",20000, 50, 100, "\u795e\u5320")
         )
 
+        val propsTalaxia = mutableListOf(
+                AmuletProps("05",1, 50, 100, "\u5854\u62c9\u590f", mutableListOf("8001005"))
+        )
+
         val types = mutableListOf(
                 AmuletType(101,  "\u6d3b\u529b", 10, 0, mutableListOf(true,false,false,false), false, propsNormal, configNormal),
                 AmuletType(102,  "\u6b8b\u66b4", 10, 0, mutableListOf(false,true,false,false), false, propsNormal, configNormal),
@@ -282,23 +290,29 @@ object CultivationSetting {
                 AmuletType(111,  "\u602a\u5f02", 50, 1, mutableListOf(false,true,true,false), false, propsNormal, configNormal),
                 AmuletType(112,  "\u53cd\u4e09", 50, 1, mutableListOf(false,true,false,true), false, propsNormal, configNormal),
                 AmuletType(113,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false, propsNormal, configNormal),
-                AmuletType(114,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false, propsNormal, configNormal)
+                AmuletType(114,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false, propsNormal, configNormal),
+                AmuletType(201,  "\u5224\u51b3", 1000,3, mutableListOf(false,true,false,true), true, propsTalaxia, configSmall)
         )
 
     }
 
-    fun createEquipmentCustom():Pair<String, Int>{
+    fun createEquipmentCustom(fixType:Int = 0):Pair<String, Int>{
         //↓ 选取type
         var amuletType:AmuletType? = null
-        val max = 10000
-        val randomNumber = Random().nextInt( Amulet.types.sumBy { max / it.weight })
-        Amulet.types.fold(0, { acc, type ->
-            val rangeRight = acc + max / type.weight
-            if (amuletType == null && randomNumber < rangeRight){
-                amuletType = type
-            }
-            rangeRight
-        })
+        if(fixType == 0){
+            val max = 10000
+            val randomNumber = Random().nextInt( Amulet.types.sumBy { max / it.weight })
+            Amulet.types.fold(0, { acc, type ->
+                val rangeRight = acc + max / type.weight
+                if (amuletType == null && randomNumber < rangeRight){
+                    amuletType = type
+                }
+                rangeRight
+            })
+        }else{
+            amuletType = Amulet.types.find { it.type == fixType}
+        }
+
         //↓ 选取props
         var props:AmuletProps? = null
         amuletType!!.props.sortedByDescending { it.weight }.forEach {
@@ -336,6 +350,7 @@ object CultivationSetting {
                 equipment.property[index] = 0
             }
         }
+        equipment.teji = props.teji
         return equipment
     }
 

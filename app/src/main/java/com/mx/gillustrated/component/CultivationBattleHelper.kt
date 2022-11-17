@@ -12,7 +12,7 @@ object CultivationBattleHelper {
 
     fun battleEnemy(allPersons:ConcurrentHashMap<String, Person>, person: Person, enemy: Enemy):Boolean{
         val props1 = CultivationHelper.getProperty(person)
-        val battlePerson = BattleObject(props1[0], props1[1], props1[2], props1[3], props1[4], 0, person.teji)
+        val battlePerson = BattleObject(props1[0], props1[1], props1[2], props1[3], props1[4], 0, getAllTeji(person))
         val battleEnemy = BattleObject(enemy.HP, enemy.maxHP, enemy.attack, enemy.defence, enemy.speed, 1)
         val battleId = UUID.randomUUID().toString()
         battlePerson.battleId = battleId
@@ -49,8 +49,8 @@ object CultivationBattleHelper {
 
         val props1 = CultivationHelper.getProperty(person1)
         val props2 = CultivationHelper.getProperty(person2)
-        val battlePerson1 = BattleObject(props1[0], props1[1], props1[2], props1[3], props1[4], 0, person1.teji)
-        val battlePerson2 = BattleObject(props2[0], props2[1], props2[2], props2[3], props2[4], 0, person2.teji)
+        val battlePerson1 = BattleObject(props1[0], props1[1], props1[2], props1[3], props1[4], 0, getAllTeji(person1))
+        val battlePerson2 = BattleObject(props2[0], props2[1], props2[2], props2[3], props2[4], 0, getAllTeji(person2))
         val battleId = UUID.randomUUID().toString()
         battlePerson1.battleId = battleId
         replenishInfo(allPersons, person1, battlePerson1)
@@ -463,7 +463,23 @@ object CultivationBattleHelper {
         }
     }
 
-    private fun tejiDetail(id:String):TeJi{
+
+    fun getAllTeji(person: Person):MutableList<String>{
+        val result = mutableListOf<String>()
+        result.addAll(person.teji)
+        person.equipmentListPair.map {
+            var equipment = mConfig.equipment.find { e-> e.id == it.first}!!.copy()
+            if(equipment.type == 5){
+                equipment = CultivationSetting.getEquipmentCustom(it)
+            }
+            equipment
+        }.filter { it.teji.size > 0 }.forEach {
+            result.addAll(it.teji)
+        }
+        return result
+    }
+
+    fun tejiDetail(id:String):TeJi{
         return CultivationHelper.mConfig.teji.find { it.id == id }!!
     }
 

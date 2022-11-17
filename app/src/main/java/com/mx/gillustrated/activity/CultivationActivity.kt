@@ -298,19 +298,31 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun temp(){
-        val specConfig = getAllSpecPersons()
-        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
-            val config = specConfig.find { c-> c.identity == u.specIdentity }
-            if (config != null){
-                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
-                u.lastName = config.name.first
-                if (config.profile > 0)
-                    u.profile = config.profile
-                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
-                    mPersons[u.partner ?: ""]?.partnerName = u.name
-                }
+//        val specConfig = getAllSpecPersons()
+//        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
+//            val config = specConfig.find { c-> c.identity == u.specIdentity }
+//            if (config != null){
+//                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
+//                u.lastName = config.name.first
+//                if (config.profile > 0)
+//                    u.profile = config.profile
+//                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
+//                    mPersons[u.partner ?: ""]?.partnerName = u.name
+//                }
+//            }
+//        }
+
+            val lucky = mPersons.map { it.value }.shuffled().first()
+            val spec = CultivationSetting.createEquipmentCustom(201)
+            if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
+                return
             }
-        }
+            lucky.equipmentListPair.add(spec)
+            CultivationHelper.updatePersonEquipment(lucky)
+            val equipment = CultivationSetting.getEquipmentCustom(spec)
+            val commonText = "\u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
+            addPersonEvent(lucky, commonText)
+            writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
 
 //        val allianceList = Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 }.sortedBy { it.id })
 //        for ( i in 0 until allianceList.size){

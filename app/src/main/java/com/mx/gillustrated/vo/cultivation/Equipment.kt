@@ -3,6 +3,7 @@ package com.mx.gillustrated.vo.cultivation
 import android.os.Parcel
 import android.os.Parcelable
 import com.mx.gillustrated.component.CultivationHelper
+import java.nio.channels.MulticastChannel
 import java.util.*
 
 class Equipment() :Parcelable {
@@ -17,6 +18,7 @@ class Equipment() :Parcelable {
     var maxCount:Int = 1//重复计算属性上限，默认1
     //以下字段不在配置里
     var uniqueName:String = ""
+    var teji:MutableList<String> = mutableListOf()
     var children:MutableList<Equipment> = mutableListOf()
 
     constructor(parcel: Parcel) : this() {
@@ -31,6 +33,7 @@ class Equipment() :Parcelable {
         property = parcel.createIntArray().toMutableList()
         maxCount = parcel.readInt()
         children = parcel.createTypedArrayList(Equipment)
+        teji = Collections.synchronizedList(parcel.createStringArrayList())
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -45,6 +48,7 @@ class Equipment() :Parcelable {
         parcel.writeIntArray(property.toIntArray())
         parcel.writeInt(maxCount)
         parcel.writeTypedList(children)
+        parcel.writeStringList(teji)
     }
 
     override fun describeContents(): Int {
@@ -69,6 +73,7 @@ class Equipment() :Parcelable {
         equipment.property = this.property
         equipment.maxCount = this.maxCount
         equipment.children = this.children
+        equipment.teji = this.teji
         return equipment
     }
 
