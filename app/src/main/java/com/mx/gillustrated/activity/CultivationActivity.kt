@@ -839,6 +839,9 @@ class CultivationActivity : BaseActivity() {
         setMicroMainExecutor()
         mMainExecutor.scheduleAtFixedRate({
             if(mThreadRunnable){
+                if(CultivationHelper.isServiceRunning(this, StopService::class.java)){
+                    isHidden = true
+                }
                 val step = 1000 / mSpeed // 旬增量，mSpeed == 1000 时, 基础增量； mSpeed == 10 时， 100倍增量
                 val message = Message.obtain()
                 message.what = 1
@@ -1321,8 +1324,8 @@ class CultivationActivity : BaseActivity() {
         }
 
         getAllSpecPersons().forEach { p ->
+            val current = mPersons.map { it.value }.find { it.specIdentity == p.identity }
             if(p.partner > 0){
-                val current = mPersons.map { it.value }.find { it.specIdentity == p.identity }
                 if(current != null && current.partner == null ){
                     val partner = mPersons.map { it.value }.find { it.specIdentity == p.partner }
                     if(partner != null){
@@ -1336,6 +1339,18 @@ class CultivationActivity : BaseActivity() {
                         addPersonEvent(partner, "与${current.name}\u7ed3\u4f34")
                         addPersonEvent(current, "与${partner.name}\u7ed3\u4f34")
                         writeHistory("${getPersonBasicString(partner)} 与 ${getPersonBasicString(current)} \u7ed3\u4f34了")
+                    }
+                }
+            }
+            if(p.parent != null){
+                if(current != null && current.parent == null){
+                    val dad = mPersons.map { it.value }.find { it.specIdentity == p.parent?.first }
+                    val mum = mPersons.map { it.value }.find { it.specIdentity == p.parent?.second }
+                    if(dad != null && mum != null){
+                        current.parent = Pair(dad.id, mum.id)
+                        current.parentName = Pair(dad.name, mum.name)
+                        dad.children.add(current.id)
+                        mum.children.add(current.id)
                     }
                 }
             }

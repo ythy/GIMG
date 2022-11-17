@@ -1,6 +1,9 @@
 package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
+import androidx.core.content.ContextCompat
 import com.j256.ormlite.stmt.query.In
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
 import com.mx.gillustrated.component.CultivationSetting.BattleSettings
@@ -713,6 +716,16 @@ object CultivationHelper {
             mConfig.jingJieType[nextIndex]
         else
             null
+    }
+
+    fun isServiceRunning(context: Context,  serviceClass: Class<*>): Boolean {
+        val manager =  context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
+        for (service in manager!!.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 
     private val LevelMapper = mapOf(
