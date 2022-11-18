@@ -317,7 +317,7 @@ class CultivationActivity : BaseActivity() {
 //            u.events.removeIf { it.content.indexOf("\u5929\u5b98\u8d50\u798f") > -1 }
 //        }
 
-        mutableListOf(201, 202, 203, 204).forEach { type->
+        mutableListOf(205, 206, 207, 208).forEach { type->
                 val lucky = mPersons.map { it.value }.shuffled().first()
                 val spec = CultivationSetting.createEquipmentCustom(type)
                 if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){

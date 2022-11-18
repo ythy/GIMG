@@ -281,10 +281,14 @@ object CultivationSetting {
                 AmuletProps(6,20000, 7,50, 100, "\u795e\u5320\u4e4b")
         )
 
-        val propsTalaxia = mutableListOf(AmuletProps(0,1,9,50, 100, "", mutableListOf("8001005")))
-        val propsHuoju = mutableListOf(AmuletProps(0,1,7,50, 100, ""))
+        val propsTal = mutableListOf(AmuletProps(0,1,9,50, 100, "", mutableListOf("8001005")))
+        val propsTorch = mutableListOf(AmuletProps(0,1,9,100, 100, ""))
         val propsGheed = mutableListOf(AmuletProps(0,1,6,40, 100, ""))
         val propsJordan = mutableListOf(AmuletProps(0,1,9,100, 200, ""))
+        val propsBul = mutableListOf(AmuletProps(0,1,10,100, 200, "", mutableListOf("8003006")))
+        val propsNagel = mutableListOf(AmuletProps(0,1,4,0, 50, ""))
+        val propsRaven = mutableListOf(AmuletProps(0,1,5,50, 0, ""))
+        val propsMara = mutableListOf(AmuletProps(0,1,6,50, 100, ""))
 
         val types = mutableListOf(
                 AmuletType(101,  "\u6d3b\u529b", 10, 0, mutableListOf(true,false,false,false), false, propsNormal, configNormal),
@@ -297,10 +301,14 @@ object CultivationSetting {
                 AmuletType(113,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false, propsNormal, configNormal),
                 AmuletType(114,  "\u4e0d\u673d", 100,2, mutableListOf(true,true,false,false), true, propsNormal, configNormal),
 
-                AmuletType(201,  "\u5854-\u62c9\u590f\u7684\u5224\u51b3", 2000,0, mutableListOf(false,true,false,true), true, propsTalaxia, configNecklace),
-                AmuletType(202,  "\u5730\u72f1\u706b\u70ac", 1000,0, mutableListOf(true,false,true,false), true, propsHuoju, configLarge),
-                AmuletType(203,  "\u57fa\u5fb7\u7684\u8fd0\u6c14", 1000,0, mutableListOf(false,false,false,true), true, propsGheed, configGrand),
-                AmuletType(204,  "\u4e54\u4e39\u4e4b\u77f3", 5000,0, mutableListOf(true,false,false,false), true, propsJordan, configRing)
+                AmuletType(201,  "\u5854-\u62c9\u590f\u7684\u5224\u51b3", 5000,0, mutableListOf(false,true,false,true), true, propsTal, configNecklace),
+                AmuletType(202,  "\u5730\u72f1\u706b\u70ac", 5000,0, mutableListOf(true,false,true,false), true, propsTorch, configLarge),
+                AmuletType(203,  "\u57fa\u5fb7\u7684\u8fd0\u6c14", 2000,0, mutableListOf(false,false,false,true), true, propsGheed, configGrand),
+                AmuletType(204,  "\u4e54\u4e39\u4e4b\u77f3", 5000,0, mutableListOf(true,false,false,false), true, propsJordan, configRing),
+                AmuletType(205,  "\u5e03\u5c14\u51ef\u7d22\u4e4b\u6212", 5000,0, mutableListOf(false,true,false,false), false, propsBul, configRing),
+                AmuletType(206,  "\u62ff\u5404\u7684\u6212\u6307", 200,0, mutableListOf(false,false,false,false), true, propsNagel, configRing),
+                AmuletType(207,  "\u4e4c\u9e26\u4e4b\u971c", 200,0, mutableListOf(true,false,false,true), false, propsRaven, configRing),
+                AmuletType(208,  "\u4e4c\u9e26\u4e4b\u971c", 1000,0, mutableListOf(false,false,true,false), true, propsMara, configNecklace)
         )
 
     }
