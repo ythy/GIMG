@@ -1863,29 +1863,27 @@
     {
       "id": "7005101",
       "name": "\u5c0f\u62a4\u8eab\u7b26",
-      "type": 5,
-      "rarity": 1,
-      "xiuwei": 0,
-      "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
+      "type": 5
     },
     {
       "id": "7005102",
       "name": "\u5927\u578b\u62a4\u8eab\u7b26",
-      "type": 5,
-      "rarity": 2,
-      "xiuwei": 0,
-      "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
+      "type": 5
     },
     {
       "id": "7005103",
       "name": "\u8d85\u5927\u578b\u62a4\u8eab\u7b26",
-      "type": 5,
-      "rarity": 3,
-      "xiuwei": 0,
-      "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
+      "type": 5
+    },
+    {
+      "id": "7005104",
+      "name": "\u9879\u94fe",
+      "type": 5
+    },
+    {
+      "id": "7005105",
+      "name": "\u6212\u6307",
+      "type": 5
     },
     {
       "id": "7006501",

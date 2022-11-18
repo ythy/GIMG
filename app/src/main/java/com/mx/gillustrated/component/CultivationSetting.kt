@@ -250,36 +250,41 @@ object CultivationSetting {
         }
     }
 
+    fun createDecadeSeq(index:Int):String{
+        return  when(index){
+            in 0..9 -> "0$index"
+            else -> "${Math.min(99, index)}"
+        }
+    }
+
     // weight: max 10000
-    data class AmuletType(val type:Int, val name:String, val weight:Int, val rarity:Int, val addProperty:MutableList<Boolean>,
+    data class AmuletType(val id:Int, val name:String, val weight:Int, val rarityBonus:Int, val addProperty:MutableList<Boolean>,
                           val addXiuwei:Boolean, val props:MutableList<AmuletProps>, val config:MutableList<AmuletConfig>)
-    data class AmuletProps(val seq:String, val weight:Int, val bonus:Int, val xiuwei:Int, val prefix:String, val teji:MutableList<String> = mutableListOf())
-    data class AmuletConfig(val id:String, val weight:Int, val bonus:Int)
+    data class AmuletProps(val id:Int, val weight:Int, val rarityBase:Int, val bonus:Int, val xiuwei:Int, val prefix:String, val teji:MutableList<String> = mutableListOf())
+    data class AmuletConfig(val equipmentId:String, val weight:Int, val rarityBonus:Int, val propsMulti:Int)
 
     private object Amulet {
-        val configNormal = mutableListOf(
-                AmuletConfig("7005101",1, 1),
-                AmuletConfig("7005102",50, 2),
-                AmuletConfig("7005103",500, 4)
-        )
-
-        val configSmall = mutableListOf(
-                AmuletConfig("7005101",1, 1)
-        )
+        val configSmall = mutableListOf(AmuletConfig("7005101",1, 0, 1))
+        val configLarge = mutableListOf(AmuletConfig("7005102",50, 1, 2))
+        val configGrand = mutableListOf(AmuletConfig("7005103",500, 2, 4))
+        val configNecklace = mutableListOf(AmuletConfig("7005104",1, 0, 1))
+        val configRing = mutableListOf(AmuletConfig("7005105",1, 0, 1))
+        val configNormal = mutableListOf(configSmall[0], configLarge[0], configGrand[0])
 
         val propsNormal = mutableListOf(
-                AmuletProps("00",1, 5, 10, "\u51f9\u51f8"),
-                AmuletProps("01",10, 10, 20, "\u7cbe\u826f"),
-                AmuletProps("02",50, 15, 30, "\u5de5\u5320"),
-                AmuletProps("03",200, 20, 40, "\u73e0\u5b9d\u5320"),
-                AmuletProps("04",1000, 30, 50, "\u5927\u5e08"),
-                AmuletProps("05",5000, 40, 80, "\u5b97\u5e08"),
-                AmuletProps("06",20000, 50, 100, "\u795e\u5320")
+                AmuletProps(0,1, 1,5, 10, "\u51f9\u51f8\u4e4b"),
+                AmuletProps(1,10, 2, 10, 20, "\u7cbe\u826f\u4e4b"),
+                AmuletProps(2,50, 3, 15, 30, "\u5de5\u5320\u4e4b"),
+                AmuletProps(3,200, 4, 20, 40, "\u73e0\u5b9d\u5320\u4e4b"),
+                AmuletProps(4,1000,5, 30, 50, "\u5927\u5e08\u4e4b"),
+                AmuletProps(5,5000, 6, 40, 80, "\u5b97\u5e08\u4e4b"),
+                AmuletProps(6,20000, 7,50, 100, "\u795e\u5320\u4e4b")
         )
 
-        val propsTalaxia = mutableListOf(
-                AmuletProps("05",1, 50, 100, "\u5854\u62c9\u590f", mutableListOf("8001005"))
-        )
+        val propsTalaxia = mutableListOf(AmuletProps(0,1,9,50, 100, "", mutableListOf("8001005")))
+        val propsHuoju = mutableListOf(AmuletProps(0,1,7,50, 100, ""))
+        val propsGheed = mutableListOf(AmuletProps(0,1,6,40, 100, ""))
+        val propsJordan = mutableListOf(AmuletProps(0,1,9,100, 200, ""))
 
         val types = mutableListOf(
                 AmuletType(101,  "\u6d3b\u529b", 10, 0, mutableListOf(true,false,false,false), false, propsNormal, configNormal),
@@ -290,8 +295,12 @@ object CultivationSetting {
                 AmuletType(111,  "\u602a\u5f02", 50, 1, mutableListOf(false,true,true,false), false, propsNormal, configNormal),
                 AmuletType(112,  "\u53cd\u4e09", 50, 1, mutableListOf(false,true,false,true), false, propsNormal, configNormal),
                 AmuletType(113,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false, propsNormal, configNormal),
-                AmuletType(114,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false, propsNormal, configNormal),
-                AmuletType(201,  "\u5224\u51b3", 1000,3, mutableListOf(false,true,false,true), true, propsTalaxia, configSmall)
+                AmuletType(114,  "\u4e0d\u673d", 100,2, mutableListOf(true,true,false,false), true, propsNormal, configNormal),
+
+                AmuletType(201,  "\u5854-\u62c9\u590f\u7684\u5224\u51b3", 2000,0, mutableListOf(false,true,false,true), true, propsTalaxia, configNecklace),
+                AmuletType(202,  "\u5730\u72f1\u706b\u70ac", 1000,0, mutableListOf(true,false,true,false), true, propsHuoju, configLarge),
+                AmuletType(203,  "\u57fa\u5fb7\u7684\u8fd0\u6c14", 1000,0, mutableListOf(false,false,false,true), true, propsGheed, configGrand),
+                AmuletType(204,  "\u4e54\u4e39\u4e4b\u77f3", 5000,0, mutableListOf(true,false,false,false), true, propsJordan, configRing)
         )
 
     }
@@ -310,42 +319,53 @@ object CultivationSetting {
                 rangeRight
             })
         }else{
-            amuletType = Amulet.types.find { it.type == fixType}
+            amuletType = Amulet.types.find { it.id == fixType}
         }
 
         //↓ 选取props
         var props:AmuletProps? = null
-        amuletType!!.props.sortedByDescending { it.weight }.forEach {
-            if(props == null && CultivationHelper.isTrigger(it.weight) ){
-                props = it
+        if(amuletType!!.props.size == 1){
+            props = amuletType!!.props[0]
+        }else{
+            amuletType!!.props.sortedByDescending { it.weight }.forEach {
+                if(props == null && CultivationHelper.isTrigger(it.weight) ){
+                    props = it
+                }
             }
         }
+
         //↓ 选取equipment
         var config:AmuletConfig? = null
-        amuletType!!.config.sortedByDescending { it.weight }.forEach {
-            if(config == null && CultivationHelper.isTrigger(it.weight) ){
-                config = it
+        if(amuletType!!.config.size == 1){
+            config = amuletType!!.config[0]
+        }else {
+            amuletType!!.config.sortedByDescending { it.weight }.forEach {
+                if (config == null && CultivationHelper.isTrigger(it.weight)) {
+                    config = it
+                }
             }
         }
-        return Pair(config!!.id, "${amuletType!!.type}${props!!.seq}".toInt())
+        return Pair(config!!.equipmentId, "${amuletType!!.id}${createDecadeSeq(props!!.id)}".toInt())
     }
 
     fun getEquipmentCustom(spec:Pair<String, Int>):Equipment{
-        val amuletType = Amulet.types.find { it.type ==  spec.second / 100 }!!
-        val props = amuletType.props.find { it.seq.toInt() == spec.second % 100 }!!
-        val config = amuletType.config.find { it.id == spec.first }!!
-        val equipmentConfig = CultivationHelper.mConfig.equipment.find { it.id == config.id}!!.copy()
+        val amuletType = Amulet.types.find { it.id ==  spec.second / 100 }!!
+        val props = amuletType.props.find { it.id == spec.second % 100 } ?: amuletType.props[0]
+        val config = amuletType.config.find { it.equipmentId == spec.first } ?: amuletType.config[0]
+        val equipmentConfig = CultivationHelper.mConfig.equipment.find { it.id == config.equipmentId}!!.copy()
+        val configPropsMulti = if(amuletType.config.size == 1) 1 else config.propsMulti
+        val configRarityBonus = if(amuletType.config.size == 1) 0 else config.rarityBonus
         val equipment = Equipment()
         equipment.id = equipmentConfig.id
         equipment.name = equipmentConfig.name
         equipment.type = equipmentConfig.type
         equipment.seq = spec.second
-        equipment.rarity = equipmentConfig.rarity + props.seq.toInt() + amuletType.rarity
-        equipment.uniqueName = "${props.prefix}之${amuletType.name}${equipment.name}"
-        equipment.xiuwei = if(amuletType.addXiuwei) props.xiuwei * config.bonus else 0
+        equipment.rarity = props.rarityBase + amuletType.rarityBonus + configRarityBonus
+        equipment.uniqueName = if (amuletType.props.size == 1) amuletType.name else "${props.prefix}${amuletType.name}${equipment.name}"
+        equipment.xiuwei = if(amuletType.addXiuwei) props.xiuwei * configPropsMulti else 0
         equipment.property.take(4).forEachIndexed { index, _ ->
             if (amuletType.addProperty[index]){
-                equipment.property[index] =  props.bonus * config.bonus * (if (index == 0) 5 else 1)
+                equipment.property[index] =  props.bonus * configPropsMulti * (if (index == 0) 5 else 1)
             }else{
                 equipment.property[index] = 0
             }

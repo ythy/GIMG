@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
@@ -17,7 +18,7 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.vo.cultivation.Equipment
 
-class CultivationEquipmentAdapter constructor(mContext: Context, private val grouplist: List<Equipment>, private val callbacks: EquipmentAdapterCallback) : BaseExpandableListAdapter() {
+class CultivationEquipmentAdapter constructor(private val mContext: Context, private val grouplist: List<Equipment>, private val callbacks: EquipmentAdapterCallback) : BaseExpandableListAdapter() {
 
     override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
         return false
@@ -103,7 +104,7 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val gro
             component = convertView.tag as ViewHolderChild
 
         val values = getChild(groupPosition, childPosition)
-        val tejiString = if (values.teji.size > 0) "(${values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }})" else  ""
+        val tejiString = if (values.teji.size > 0) "+" else  ""
         component.name.text = CultivationHelper.showing(values.uniqueName+tejiString)
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         component.xiuwei.text = "${values.xiuwei}"
@@ -112,6 +113,10 @@ class CultivationEquipmentAdapter constructor(mContext: Context, private val gro
 
         component.del.setOnClickListener{
             callbacks.onDeleteHandler(values, false)
+        }
+        component.name.setOnClickListener{
+            if(tejiString == "+")
+                Toast.makeText(mContext, values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
         }
         return convertView
     }

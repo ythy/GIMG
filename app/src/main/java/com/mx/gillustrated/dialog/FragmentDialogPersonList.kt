@@ -220,6 +220,8 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                 it.name.startsWith(filterString, true) || PinyinUtil.convert(it.name).startsWith(filterString, true)
             })
 
+        if(mType == 4)
+            mSort = "E"
 
         when (mSort) {
             "X" -> mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it, mContext.mAlliance) }
@@ -229,6 +231,9 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                     .thenByDescending { it.xiuXei } )
             "B" -> mPersonData.sortWith(compareByDescending<Person> {it.battleWinner}
                     .thenByDescending { it.lifeTurn })
+            "E" -> mPersonData.sortWith(compareByDescending<Person> { it.equipmentListPair.filter {
+                        e-> e.second > 10000
+                    }.sumBy { s-> CultivationSetting.getEquipmentCustom(s).rarity }})
         }
 
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()

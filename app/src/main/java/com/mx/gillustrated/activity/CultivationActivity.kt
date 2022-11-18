@@ -312,17 +312,25 @@ class CultivationActivity : BaseActivity() {
 //            }
 //        }
 
-            val lucky = mPersons.map { it.value }.shuffled().first()
-            val spec = CultivationSetting.createEquipmentCustom(201)
-            if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
-                return
+//        mPersons.forEach { (_: String, u: Person) ->
+//            u.equipmentListPair.removeIf { it.second > 10000 }
+//            u.events.removeIf { it.content.indexOf("\u5929\u5b98\u8d50\u798f") > -1 }
+//        }
+
+        mutableListOf(201, 202, 203, 204).forEach { type->
+                val lucky = mPersons.map { it.value }.shuffled().first()
+                val spec = CultivationSetting.createEquipmentCustom(type)
+                if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
+                    return
+                }
+                lucky.equipmentListPair.add(spec)
+                CultivationHelper.updatePersonEquipment(lucky)
+                val equipment = CultivationSetting.getEquipmentCustom(spec)
+                val commonText = "SuperLucky \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
+                addPersonEvent(lucky, commonText)
+                writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
             }
-            lucky.equipmentListPair.add(spec)
-            CultivationHelper.updatePersonEquipment(lucky)
-            val equipment = CultivationSetting.getEquipmentCustom(spec)
-            val commonText = "\u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
-            addPersonEvent(lucky, commonText)
-            writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
+
 
 //        val allianceList = Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 }.sortedBy { it.id })
 //        for ( i in 0 until allianceList.size){
@@ -342,14 +350,8 @@ class CultivationActivity : BaseActivity() {
 //            }
 //        }
 //
-//        mPersons.forEach { (_: String, u: Person) ->
-//           u.equipmentListPair.filter { it.first == "7006301" || it.first == "7006302" || it.first == "7006303" || it.first == "7006304" }
-//                    .forEach {
-//                        u.battleRecord[it.second] = it.first.toInt() % 10
-//                    }
-//            u.equipmentListPair.removeIf { it.first == "7006301" || it.first == "7006302" || it.first == "7006303" || it.first == "7006304" }
-//        }
-//        CultivationHelper.updateSingleBattleBonus(mPersons)
+
+//       CultivationHelper.updateSingleBattleBonus(mPersons)
 //        mBattleRound.nation = 0
 
 
@@ -475,7 +477,7 @@ class CultivationActivity : BaseActivity() {
                     showToast("不用谢")
                 }
                 R.id.menu_lucky ->{
-                    addSpecialEquipmentEvent()
+                    addSpecialEquipmentEvent(null, "Lucky")
                 }
                 R.id.menu_add_spec ->{
                     addSpecPerson()
@@ -1046,12 +1048,12 @@ class CultivationActivity : BaseActivity() {
         if(inDurationByXun("SpecialEvent", 121212, xun)) {
             if(isTrigger(10)) {
                 val lucky = mPersons.map { it.value }.shuffled().first()
-                addSpecialEquipmentEvent(lucky)
+                addSpecialEquipmentEvent(lucky, "Special")
             }
         }
     }
 
-    private fun addSpecialEquipmentEvent(person:Person? = null){
+    private fun addSpecialEquipmentEvent(person:Person? = null, tag:String = ""){
         val lucky = person ?: mPersons.map { it.value }.shuffled().first()
         val spec = CultivationSetting.createEquipmentCustom()
         if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
@@ -1060,7 +1062,7 @@ class CultivationActivity : BaseActivity() {
         lucky.equipmentListPair.add(spec)
         CultivationHelper.updatePersonEquipment(lucky)
         val equipment = CultivationSetting.getEquipmentCustom(spec)
-        val commonText = "\u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
+        val commonText = "$tag \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
         addPersonEvent(lucky, commonText)
         writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
     }
@@ -1164,7 +1166,7 @@ class CultivationActivity : BaseActivity() {
                         writeHistory("${u.name} 倒", u)
                         gainTeji(person, 50 * u.type)
                         if(isTrigger(50 / u.type)) {
-                            addSpecialEquipmentEvent(person)
+                            addSpecialEquipmentEvent(person, "Boss")
                         }
                         CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
                     }else{
@@ -1469,7 +1471,7 @@ class CultivationActivity : BaseActivity() {
                 person.battleRecord[mBattleRound.single] = reverseIndex
                 writeHistory("第${mBattleRound.single}届 Single Battle No $reverseIndex : ${person.name}", person)
                 if(isTrigger(reverseIndex * 10)) {
-                    addSpecialEquipmentEvent(person)
+                    addSpecialEquipmentEvent(person, "Single")
                 }
             }
             CultivationHelper.updateSingleBattleBonus(mPersons)
