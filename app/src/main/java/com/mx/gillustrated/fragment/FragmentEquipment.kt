@@ -19,6 +19,7 @@ import com.mx.gillustrated.adapter.CultivationEquipmentAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.dialog.FragmentDialogEquipment
+import com.mx.gillustrated.dialog.FragmentDialogRank
 import com.mx.gillustrated.vo.cultivation.Equipment
 import com.mx.gillustrated.vo.cultivation.Person
 
@@ -108,18 +109,25 @@ class FragmentEquipment: Fragment() {
             equipment
         }.sortedWith(compareBy<Equipment> {
             it.type
-        }.thenByDescending { it.rarity }.thenBy { it.seq })
+        }.thenByDescending { it.rarity }.thenByDescending { it.seq })
 
         mEquipmentGroups.clear()
         val groups = equipments.groupBy{ if(it.type <= 3) it.type  else it.type * 100 +  it.id.toInt() % 10 }
         .map {
             it.value[0].children.clear()
-            it.value[0].children.addAll(it.value)
+            it.value[0].childrenAll.clear()
+            it.value[0].children.addAll(it.value.subList(0, Math.min(20, it.value.size)))
+            it.value[0].childrenAll.addAll(it.value)
             it.value[0]
         }
 
         mEquipmentGroups.addAll(groups)
         mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
+
+            override fun onOpenDetailList(equipment: Equipment) {
+                openRankDialog(equipment.id)
+            }
+
             override fun onDeleteHandler(equipment: Equipment, group:Boolean) {
                 mPerson.equipmentListPair.removeIf {
                     if(group){
@@ -131,6 +139,7 @@ class FragmentEquipment: Fragment() {
                 CultivationHelper.updatePersonEquipment(mPerson)
                 updateList()
             }
+
         }))
     }
 
@@ -142,5 +151,11 @@ class FragmentEquipment: Fragment() {
         updateList()
     }
 
+    private fun openRankDialog(id:String){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogRank.newInstance(7, mPerson.id, id)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_rank_info")
+    }
 
 }

@@ -24,12 +24,12 @@ import com.mx.gillustrated.vo.cultivation.SimpleData
 
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
-class FragmentDialogRank constructor(private val mType:Int, private val mId:String)  : DialogFragment() {
+class FragmentDialogRank constructor(private val mType:Int, private val mId:String, private val mSpec:String)  : DialogFragment() {
 
     companion object{
 
-        fun newInstance(type:Int, id:String = ""): FragmentDialogRank {
-            return FragmentDialogRank(type, id)
+        fun newInstance(type:Int, id:String = "", spec:String = ""): FragmentDialogRank {
+            return FragmentDialogRank(type, id, spec)
         }
 
     }
@@ -171,6 +171,14 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                         list.add(SimpleData(it.toString(), person.battleRecord[round].toString(), "", mType, mutableListOf(), round))
                     }
                 }
+            }
+            7 ->{
+                val person = mContext.mPersons[mId]!!
+                val equipment = CultivationHelper.mConfig.equipment.find { f-> f.id == mSpec }!!
+                title = equipment.name
+                list.addAll(person.equipmentListPair.filter { it.first == mSpec }.sortedByDescending { it.second }.mapIndexed { index, pair ->
+                    SimpleData("", "", "", mType, mutableListOf(), pair.second)
+                })
             }
             in 10..19 ->{
                 val index = mType - 10

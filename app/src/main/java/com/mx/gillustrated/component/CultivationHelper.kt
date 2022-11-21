@@ -251,16 +251,7 @@ object CultivationHelper {
         return Triple(lingGen, lingGenId, lingGenName)
     }
 
-    private fun getParentWeightForLingGen(person: Person?):Int{
-        return  when(person?.lingGenType?.type ?: 0) {
-            1 -> 5000
-            2 -> 500
-            3 -> 200
-            4 -> 100
-            5 -> 1
-            else -> 10000
-        }
-    }
+
 
     private fun getLingGen(parent: Pair<Person, Person>?, lingGenTypeFixed:String? = null, lingGenWeight:Int):Triple<LingGen, String, String>{
         if(lingGenTypeFixed != null){
@@ -269,14 +260,12 @@ object CultivationHelper {
         val lingGenName: String
         val lingGenId: String
         var lingGen: LingGen? = null
-        val firstNumber = getParentWeightForLingGen(parent?.first)
-        val secondNumber = getParentWeightForLingGen(parent?.second)
-        if(parent != null && isTrigger(40000 / (firstNumber + secondNumber))){
-            val selectNumber = Random().nextInt(firstNumber + secondNumber)
-            val maxPerson:Person = if(selectNumber < firstNumber){
-                parent.first
+        if(parent != null && isTrigger(parent.first.lingGenType.inherit + parent.second.lingGenType.inherit)){
+            val parentList = mutableListOf(parent.first, parent.second).sortedByDescending { it.lingGenType.inherit }
+            val maxPerson:Person = if (isTrigger(parentList[0].lingGenType.inherit)){
+                parentList[0]
             }else{
-                parent.second
+                parentList[1]
             }
             lingGen = maxPerson.lingGenType
             lingGenId = maxPerson.lingGenId

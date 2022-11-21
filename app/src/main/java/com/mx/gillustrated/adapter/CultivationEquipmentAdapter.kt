@@ -45,7 +45,7 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             component = convertView.tag as ViewHolderGroup
 
         val values = getGroup(groupPosition)
-        val child = values.children
+        val child = values.childrenAll
         if(values.type <= 3 || values.type == 9)
             component.name.text = CultivationHelper.showing(values.name)
         else
@@ -117,6 +117,9 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
         component.name.setOnClickListener{
             if(tejiString == "+")
                 Toast.makeText(mContext, values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
+            else if(values.type > 10) {
+                callbacks.onOpenDetailList(values)
+            }
         }
         return convertView
     }
@@ -177,6 +180,7 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
 
     interface EquipmentAdapterCallback {
         fun onDeleteHandler(equipment: Equipment, group:Boolean)
+        fun onOpenDetailList(equipment: Equipment)
     }
 
 }

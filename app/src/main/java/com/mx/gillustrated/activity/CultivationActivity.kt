@@ -317,19 +317,19 @@ class CultivationActivity : BaseActivity() {
 //            u.events.removeIf { it.content.indexOf("\u5929\u5b98\u8d50\u798f") > -1 }
 //        }
 
-        mutableListOf(205, 206, 207, 208).forEach { type->
-                val lucky = mPersons.map { it.value }.shuffled().first()
-                val spec = CultivationSetting.createEquipmentCustom(type)
-                if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
-                    return
-                }
-                lucky.equipmentListPair.add(spec)
-                CultivationHelper.updatePersonEquipment(lucky)
-                val equipment = CultivationSetting.getEquipmentCustom(spec)
-                val commonText = "SuperLucky \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
-                addPersonEvent(lucky, commonText)
-                writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
-            }
+//        mutableListOf(205, 206, 207, 208).forEach { type->
+//                val lucky = mPersons.map { it.value }.shuffled().first()
+//                val spec = CultivationSetting.createEquipmentCustom(type)
+//                if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
+//                    return
+//                }
+//                lucky.equipmentListPair.add(spec)
+//                CultivationHelper.updatePersonEquipment(lucky)
+//                val equipment = CultivationSetting.getEquipmentCustom(spec)
+//                val commonText = "SuperLucky \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
+//                addPersonEvent(lucky, commonText)
+//                writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
+//            }
 
 
 //        val allianceList = Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 }.sortedBy { it.id })
@@ -1884,7 +1884,6 @@ class CultivationActivity : BaseActivity() {
                         activity.setTimeLooper(true)
                     }
                 }else if(msg.what == 6){
-                    activity.showToast("BE操作完成")
                     activity.setTimeLooper(true)
                 }else if(msg.what == 7){
                     activity.updateHistory()

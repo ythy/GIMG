@@ -19,7 +19,8 @@ class Equipment() :Parcelable {
     //以下字段不在配置里
     var uniqueName:String = ""
     var teji:MutableList<String> = mutableListOf()
-    var children:MutableList<Equipment> = mutableListOf()
+    var childrenAll:MutableList<Equipment> = mutableListOf() //计算用
+    var children:MutableList<Equipment> = mutableListOf() // 显示用
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()!!
@@ -33,6 +34,7 @@ class Equipment() :Parcelable {
         property = parcel.createIntArray().toMutableList()
         maxCount = parcel.readInt()
         children = parcel.createTypedArrayList(Equipment)
+        childrenAll = parcel.createTypedArrayList(Equipment)
         teji = Collections.synchronizedList(parcel.createStringArrayList())
     }
 
@@ -48,6 +50,7 @@ class Equipment() :Parcelable {
         parcel.writeIntArray(property.toIntArray())
         parcel.writeInt(maxCount)
         parcel.writeTypedList(children)
+        parcel.writeTypedList(childrenAll)
         parcel.writeStringList(teji)
     }
 
@@ -73,6 +76,7 @@ class Equipment() :Parcelable {
         equipment.property = this.property
         equipment.maxCount = this.maxCount
         equipment.children = this.children
+        equipment.childrenAll = this.childrenAll
         equipment.teji = this.teji
         return equipment
     }
