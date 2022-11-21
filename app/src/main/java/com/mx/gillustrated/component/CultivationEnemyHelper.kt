@@ -70,7 +70,7 @@ object CultivationEnemyHelper {
     }
 
     fun generateLiYuanBa(alliance: Alliance): Person {
-        val person = CultivationHelper.getPersonInfo(Pair("李", "\u5143\u9738"), NameUtil.Gender.Male,null, false,
+        val person = CultivationHelper.getPersonInfo(Pair("李", "\u5143\u9738"), NameUtil.Gender.Male,null,
                 CultivationSetting.PersonFixedInfoMix(null, null, 1000, 1000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 1
@@ -79,7 +79,7 @@ object CultivationEnemyHelper {
     }
 
     fun generateShadowMao(alliance: Alliance): Person {
-        val person = CultivationHelper.getPersonInfo(Pair("毛", "\u6b23(\u6697\u5f71)"), NameUtil.Gender.Male,null, false,
+        val person = CultivationHelper.getPersonInfo(Pair("毛", "\u6b23(\u6697\u5f71)"), NameUtil.Gender.Male,null,
                 CultivationSetting.PersonFixedInfoMix(null, null, 4000, 4000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 2
@@ -88,7 +88,7 @@ object CultivationEnemyHelper {
     }
 
     fun generateShadowQiu(alliance: Alliance): Person {
-        val person = CultivationHelper.getPersonInfo(Pair("\u7403\u7403", "(\u5706\u6eda\u6eda)"), NameUtil.Gender.Female, null, false,
+        val person = CultivationHelper.getPersonInfo(Pair("\u7403\u7403", "(\u5706\u6eda\u6eda)"), NameUtil.Gender.Female, null,
                 CultivationSetting.PersonFixedInfoMix(null, null, 6000, 6000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 3
@@ -97,7 +97,7 @@ object CultivationEnemyHelper {
     }
 
     fun generateYaoWang(alliance: Alliance): Person {
-        val person = CultivationHelper.getPersonInfo(Pair("王", "一"), NameUtil.Gender.Female, null, false,
+        val person = CultivationHelper.getPersonInfo(Pair("王", "一"), NameUtil.Gender.Female, null,
                 CultivationSetting.PersonFixedInfoMix(null, null, 8000, 80000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 4

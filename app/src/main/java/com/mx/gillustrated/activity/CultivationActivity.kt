@@ -381,6 +381,7 @@ class CultivationActivity : BaseActivity() {
                 if(it.value.children.isNotEmpty())
                     it.value.children = Collections.synchronizedList(it.value.children)
                 it.value.equipmentListPair = Collections.synchronizedList(it.value.equipmentListPair)
+                it.value.lingGenType = mConfig.lingGenType.find { g-> g.id == it.value.lingGenType.id }!!
                 CultivationHelper.updatePersonEquipment(it.value)
                 CultivationHelper.updatePersonExtraProperty(it.value)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
@@ -437,13 +438,8 @@ class CultivationActivity : BaseActivity() {
 
 
     private fun startWorld(){
-        writeHistory("进入世界...")
+        writeHistory("进入世界...")//
         addMultiPerson(mInitPersonCount)
-        val li = addPersion(Pair("李", "逍遥"), NameUtil.Gender.Male, null, true,
-                CultivationSetting.PersonFixedInfoMix(null, null, 200, 600))
-        val nu = addPersion(Pair("阿", "奴"), NameUtil.Gender.Female, null, true,
-                CultivationSetting.PersonFixedInfoMix(null, null, 200, 600))
-        CultivationHelper.createPartner(li, nu)
     }
 
     private fun initLayout(){
@@ -675,28 +671,26 @@ class CultivationActivity : BaseActivity() {
             alliance.zhuPerson = null
         if(mClans[it.ancestorId] != null){
             mClans[it.ancestorId]?.clanPersonList?.remove(it.id)
-            if(it.ancestorId == it.id){
-                killClanPersons(mClans[it.ancestorId ?: ""])
-                mClans.remove(it.id)
-            }
         }
         if(it.specIdentity > 0 && alliance != null){ //特殊处理SpecName
             val config = getAllSpecPersons().find { p-> p.identity == it.specIdentity } //maybe null
-            var person:Person? = null
-            if(alliance.type == 0 && config != null){ //Name2
-                person = addSingleSpecPerson(config)
-            }else if(alliance.type == 1){
-                val firstName = SpecPersonFirstName[CultivationSetting.getIdentitySeq(it.specIdentity) - 1]
-                person = addSingleSpecPerson(PresetInfo(it.specIdentity, Pair(it.lastName, firstName),
-                        0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second),
-                        alliance)
-            }else if(config != null){
-                person = addSingleSpecPerson(config, alliance)
-            }
+            if(config != null){
+                val person = when {
+                    alliance.type == 0 -> //Name2
+                        addSingleSpecPerson(config)
+                    alliance.type == 1 -> {
+                        val firstName = SpecPersonFirstName[CultivationSetting.getIdentitySeq(it.specIdentity) - 1]
+                        addSingleSpecPerson(PresetInfo(it.specIdentity, Pair(it.lastName, firstName),
+                                0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second),
+                                alliance)
+                    }
+                    else -> addSingleSpecPerson(config, alliance)
+                }
 
-            if(person != null){
-                person.specIdentityTurn = it.specIdentityTurn + 1
-                person.name = person.name + CultivationSetting.createLifeTurnName(person.specIdentityTurn)
+                if(person != null){
+                    person.specIdentityTurn = it.specIdentityTurn + 1
+                    person.name = person.name + CultivationSetting.createLifeTurnName(person.specIdentityTurn)
+                }
             }
         }
     }
@@ -782,7 +776,9 @@ class CultivationActivity : BaseActivity() {
                     it.lifetime +=  CultivationHelper.getLifetimeBonusRealm(it, allianceNow)
                 } else {
                     val commonText = "转转成功$difficulty，${personDataString[2]} $random/$totalSuccess"
-                    writeHistory("${getPersonBasicString(it)} $commonText", it)
+                    if(difficulty > 1 || it.isFav){
+                        writeHistory("${getPersonBasicString(it)} $commonText", it)
+                    }
                     it.jingJieId = mConfig.jingJieType[0].id
                     it.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name)
                     it.jingJieSuccess = mConfig.jingJieType[0].success
@@ -923,8 +919,8 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun addPersion(fixedName:Pair<String, String?>?, fixedGender:NameUtil.Gender?, parent: Pair<Person, Person>? = null, fav:Boolean = false, mix: CultivationSetting.PersonFixedInfoMix? = null):Person{
-        val person = CultivationHelper.getPersonInfo(fixedName, fixedGender, parent, fav, mix)
+    private fun addPersion(fixedName:Pair<String, String?>?, fixedGender:NameUtil.Gender?, parent: Pair<Person, Person>? = null, mix: CultivationSetting.PersonFixedInfoMix? = null):Person{
+        val person = CultivationHelper.getPersonInfo(fixedName, fixedGender, parent, mix)
         combinedPersonRelationship(person)
         return person
     }
@@ -1204,6 +1200,12 @@ class CultivationActivity : BaseActivity() {
         }
         if(inDurationByXun("ClanUpdated", 12, xun)) {
             mClans.forEach {
+                if(getOnlinePersonDetail(it.key) == null){
+                    it.value.clanPersonList.forEach { p->
+                        deadHandler(p.value)
+                    }
+                    it.value.clanPersonList.clear()
+                }
                 if(it.value.clanPersonList.isEmpty()){
                     mClans.remove(it.key)
                 }
@@ -1384,7 +1386,7 @@ class CultivationActivity : BaseActivity() {
             }
         }
         if(spec.parent == null || parent != null ){
-            val person = CultivationHelper.getPersonInfo(spec.name,  getIdentityGender(spec.identity), parent, false,
+            val person = CultivationHelper.getPersonInfo(spec.name,  getIdentityGender(spec.identity), parent,
                     CultivationSetting.PersonFixedInfoMix(null, null, spec.tianfuWeight, spec.linggenWeight))
             person.specIdentity = spec.identity
             if(spec.profile > 0){

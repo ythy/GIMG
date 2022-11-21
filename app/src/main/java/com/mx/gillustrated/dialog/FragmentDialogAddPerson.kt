@@ -57,7 +57,7 @@ class FragmentDialogAddPerson: DialogFragment()  {
             parent = Pair(mContext.mPersons[mum.partner!!]!!, mum) //这里可能有强转导致的并发问题
         }
         val person = CultivationHelper.getPersonInfo(Pair(etNameFirst.text.toString().trim(), etNameLast.text.toString().trim()),
-                if(rbMale.isChecked) NameUtil.Gender.Male else NameUtil.Gender.Female, parent, false,
+                if(rbMale.isChecked) NameUtil.Gender.Male else NameUtil.Gender.Female, parent,
                 CultivationSetting.PersonFixedInfoMix(null, null, etTianFu.text.toString().toInt(), etLingGen.text.toString().toInt()))
         if(parent != null){
             synchronized(parent.first.children){

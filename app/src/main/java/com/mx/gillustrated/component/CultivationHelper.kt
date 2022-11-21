@@ -345,7 +345,7 @@ object CultivationHelper {
         }
     }
 
-    fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?, parent:Pair<Person, Person>? = null, fav:Boolean = false, mix: CultivationSetting.PersonFixedInfoMix? = null): Person {
+    fun getPersonInfo(name:Pair<String, String?>?, gender: NameUtil.Gender?, parent:Pair<Person, Person>? = null, mix: CultivationSetting.PersonFixedInfoMix? = null): Person {
         val personGender = gender ?: when (Random().nextInt(2)) {
             0 -> NameUtil.Gender.Male
             else -> NameUtil.Gender.Female
@@ -367,8 +367,7 @@ object CultivationHelper {
         result.lingGenId = lingGen.second
         result.birthtime = mCurrentXun
         setPersonJingjie(result)
-        result.profile = if(fav) 1001 else getRandomProfile(result.gender)
-        result.neverDead = fav
+        result.profile = getRandomProfile(result.gender)
         result.tianfus = tianFus
         result.teji = Collections.synchronizedList(getTeji())
         result.careerList = Collections.synchronizedList(getCareer().map { Triple(it, 0, "") })
