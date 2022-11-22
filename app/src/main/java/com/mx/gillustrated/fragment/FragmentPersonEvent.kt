@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import butterknife.*
@@ -14,10 +15,12 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationEventAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.dialog.FragmentDialogPerson
+import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import com.mx.gillustrated.vo.cultivation.PersonEvent
 
-class FragmentPersonEvent : Fragment(){
+class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageCallback) : Fragment(){
 
     lateinit var mContext:CultivationActivity
 
@@ -34,6 +37,14 @@ class FragmentPersonEvent : Fragment(){
             specRender()
         else
             normalRender()
+    }
+
+    @BindView(R.id.sch_sex)
+    lateinit var mSS: Switch
+
+    @OnCheckedChanged(R.id.sch_sex)
+    fun onSSHandler(checked:Boolean){
+        mCallback.update(4, if(checked) "Y" else "N")
     }
 
 
@@ -58,6 +69,11 @@ class FragmentPersonEvent : Fragment(){
         mPerson = mContext.getPersonData(id)!!
         if(mPerson.specIdentity > 0)
             mSeq.text = mPerson.specIdentity.toString()
+        if(mPerson.profile in 1701..1799 && mPerson.gender == NameUtil.Gender.Female){
+            mSS.visibility = View.VISIBLE
+        }else{
+            mSS.visibility = View.GONE
+        }
         normalRender()
     }
 

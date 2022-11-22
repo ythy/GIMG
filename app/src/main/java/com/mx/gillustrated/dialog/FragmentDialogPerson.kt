@@ -25,6 +25,7 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.fragment.*
+import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
 import java.lang.ref.WeakReference
@@ -114,7 +115,7 @@ class FragmentDialogPerson : DialogFragment() {
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
-
+    private var showSS:Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -168,8 +169,8 @@ class FragmentDialogPerson : DialogFragment() {
         }).start()
     }
 
-    val innerCallback = object:IViewpageCallback{
-        override fun update(type: Int) {
+    private val innerCallback = object:IViewpageCallback{
+        override fun update(type: Int, params:String) {
             when (type){
                 1 -> {
                     setTianfu()
@@ -177,6 +178,10 @@ class FragmentDialogPerson : DialogFragment() {
                 }
                 2 -> setProfile()
                 3 -> updateView()
+                4 -> {
+                    showSS = params == "Y"
+                    setProfile()
+                }
             }
         }
 
@@ -187,7 +192,7 @@ class FragmentDialogPerson : DialogFragment() {
         bundle.putString("id", mPerson.id)
         val equip = FragmentEquipment()
         equip.arguments = bundle
-        val his = FragmentPersonEvent()
+        val his = FragmentPersonEvent(innerCallback)
         his.arguments = bundle
         val info = FragmentPersonInfo(innerCallback)
         info.arguments = bundle
@@ -228,12 +233,16 @@ class FragmentDialogPerson : DialogFragment() {
             mDialogView.profileBorder.backgroundTintList = null
             mDialogView.profileBorder.setPadding(0,0,0,0)
         }
+        var profile = mPerson.profile
+        if(!showSS && mPerson.gender == NameUtil.Gender.Female && mPerson.profile in 1701..1799){
+            profile = 0
+        }
         try {
             val imageDir = File(Environment.getExternalStorageDirectory(),
                     MConfig.SD_CULTIVATION_HEADER_PATH + "/" + person.gender)
-            var file = File(imageDir.path, person.profile.toString() + ".png")
+            var file = File(imageDir.path, "$profile.png")
             if (!file.exists()) {
-                file = File(imageDir.path, person.profile.toString() + ".jpg")
+                file = File(imageDir.path, "$profile.jpg")
             }
             if (file.exists()) {
                 val bmp = MediaStore.Images.Media.getBitmap(mContext.contentResolver, Uri.fromFile(file))
@@ -425,6 +434,6 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     interface IViewpageCallback{
-        fun update(type:Int)
+        fun update(type:Int, params:String = "")
     }
 }

@@ -24,6 +24,14 @@
                     android:id="@+id/tv_seq"/>
             </LinearLayout>
             <Switch
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/sch_sex"
+                style="@style/BaseSwitchStyle"
+                android:layout_marginEnd="5dp"
+                android:checked="false"
+                android:text="S"/>
+            <Switch
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/sch_del"

@@ -31,20 +31,6 @@ class FragmentEquipment: Fragment() {
     @BindView(R.id.lv_equipment)
     lateinit var mListView: ExpandableListView
 
-    @OnClick(R.id.btn_add_equipment)
-    fun onAddClickHandler(){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogEquipment.
-                newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
-                    override fun onItemSelected(equipment: Equipment) {
-                        updateEquipment(equipment)
-                    }
-                }, mutableListOf(1))
-        newFragment.isCancelable = true
-        newFragment.show(ft, "dialog_equipment")
-    }
-
     @OnClick(R.id.btn_add_equipment_bao)
     fun onAddBaoClickHandler(){
         val ft = mContext.supportFragmentManager.beginTransaction()
@@ -54,25 +40,10 @@ class FragmentEquipment: Fragment() {
                     override fun onItemSelected(equipment: Equipment) {
                         updateEquipment(equipment)
                     }
-                }, mutableListOf(0, 9))
+                }, mutableListOf(9))
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_equipment")
     }
-
-    @OnClick(R.id.btn_add_equipment_armor)
-    fun onAddArmorClickHandler(){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogEquipment.
-                newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
-                    override fun onItemSelected(equipment: Equipment) {
-                        updateEquipment(equipment)
-                    }
-                }, mutableListOf(2,3))
-        newFragment.isCancelable = true
-        newFragment.show(ft, "dialog_equipment")
-    }
-
 
 
     lateinit var mContext: CultivationActivity
