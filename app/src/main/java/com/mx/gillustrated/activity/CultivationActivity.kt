@@ -164,7 +164,10 @@ class CultivationActivity : BaseActivity() {
 
     @OnClick(R.id.btn_time)
     fun onTimeClickHandler(){
-        setTimeLooper(mBtnTime.tag == "OFF")
+        if(mBtnTime.tag == "OFF")
+            setTimeLooper(true)
+        else
+            setTimeLooper(false)
     }
 
 //    @OnClick(R.id.btn_add_speed)
@@ -342,6 +345,13 @@ class CultivationActivity : BaseActivity() {
 //                }
 //            }
 //        }
+        val specConfig = getAllSpecPersons()
+        mPersons.map { it.value }.filter { mAlliance[it.allianceId]?.type != 1 && it.specIdentity > 0 }.forEach { p->
+            val spec = specConfig.find { it.identity == p.specIdentity }
+            if(spec == null){
+                p.specIdentity = 0
+            }
+        }
 
 //        SpecPersonFirstName2.forEach { spec->
 //            val person = mPersons.map { it.value }.find { it.name == spec.name.first + spec.name.second }
@@ -439,6 +449,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun startWorld(){
         writeHistory("进入世界...")//
+        addSpecPerson()
         addMultiPerson(mInitPersonCount)
     }
 
@@ -849,9 +860,7 @@ class CultivationActivity : BaseActivity() {
         setMicroMainExecutor()
         mMainExecutor.scheduleAtFixedRate({
             if(mThreadRunnable){
-                if(CultivationHelper.isServiceRunning(this, StopService::class.java)){
-                    isHidden = true
-                }
+                isHidden = CultivationHelper.isServiceRunning(this, StopService::class.java)
                 val step = 1000 / mSpeed // 旬增量，mSpeed == 1000 时, 基础增量； mSpeed == 10 时， 100倍增量
                 val message = Message.obtain()
                 message.what = 1
@@ -1431,8 +1440,11 @@ class CultivationActivity : BaseActivity() {
             mPersons.clear()
             mDeadPersons.clear()
             mAlliance.clear()
+            mNations.clear()
             mBattleRound = BattleRound()
+            mXunDuration = ConcurrentHashMap()
             createAlliance()
+            createNation()
             val message = Message.obtain()
             message.what = 4
             mTimeHandler.sendMessage(message)

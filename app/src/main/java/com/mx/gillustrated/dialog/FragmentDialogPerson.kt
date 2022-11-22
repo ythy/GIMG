@@ -17,6 +17,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import butterknife.*
+import com.google.android.material.tabs.TabLayout
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.PersonPagerAdapter
@@ -100,6 +101,9 @@ class FragmentDialogPerson : DialogFragment() {
 
     @BindView(R.id.vp_person)
     lateinit var mViewPager: ViewPager
+
+    @BindView(R.id.tabLayout)
+    lateinit var mTabLayout: TabLayout
 
     @OnCheckedChanged(R.id.sch_fav)
     fun onFavSwitch(checked:Boolean){
@@ -201,8 +205,12 @@ class FragmentDialogPerson : DialogFragment() {
         mFragments.add(teji)
         mFragments.add(follower)
         mFragments.add(his)
-        mViewPager.adapter = PersonPagerAdapter(childFragmentManager, mFragments)
+        val title = mutableListOf("Eq.", "In.", "Tj.", "Fw.", "Ev.")
+        mViewPager.adapter = PersonPagerAdapter(childFragmentManager, mFragments, title)
         mViewPager.currentItem = 0
+
+        mTabLayout.setupWithViewPager(mViewPager)
+
     }
 
     private fun updateViewPager(){

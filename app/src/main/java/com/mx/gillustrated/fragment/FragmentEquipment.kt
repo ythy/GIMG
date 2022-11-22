@@ -31,7 +31,6 @@ class FragmentEquipment: Fragment() {
     @BindView(R.id.lv_equipment)
     lateinit var mListView: ExpandableListView
 
-
     @OnClick(R.id.btn_add_equipment)
     fun onAddClickHandler(){
         val ft = mContext.supportFragmentManager.beginTransaction()
