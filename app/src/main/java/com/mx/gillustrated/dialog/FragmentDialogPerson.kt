@@ -6,11 +6,9 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
@@ -30,7 +28,6 @@ import com.mx.gillustrated.fragment.*
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
 import java.lang.ref.WeakReference
-import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
