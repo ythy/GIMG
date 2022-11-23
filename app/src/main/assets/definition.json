@@ -1344,9 +1344,9 @@
       "nation": "6200001",
       "tianfu": 1,
       "level": 10,
-      "lifetime": -50,
+      "lifetime": -20,
       "maxPerson": 30,
-      "xiuwei": 100,
+      "xiuwei": 50,
       "property": [0,30,0,0,0,0,0,0],
       "speedG1": 30
     },
@@ -1917,12 +1917,21 @@
     },
     {
       "id": "7009003",
-      "name": "\u73e0\u73af(丁)",
+      "name": "\u73e0\u73af",
       "type": 9,
       "rarity": 10,
-      "xiuwei": 1000,
+      "xiuwei": 900,
       "success": 0,
       "property": [0,200,0,200,0,0,0,0]
+    },
+    {
+      "id": "7009004",
+      "name": "\u6263\u9489",
+      "type": 9,
+      "rarity": 11,
+      "xiuwei": 900,
+      "success": 0,
+      "property": [0,300,0,300,0,0,0,0]
     },
     {
       "id": "7006501",

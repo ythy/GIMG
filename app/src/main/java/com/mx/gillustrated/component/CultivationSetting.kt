@@ -35,18 +35,15 @@ object CultivationSetting {
     val EVENT_WEIGHT = listOf("1200-50","7200-40","8400-40","9600-100")
     const val SP_PUNISH_BOSS_MILLION = 200
 
-    val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed", "\u9b41", "\u5f71")
+    val SpecPersonFirstName:MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed", "\u9b41", "\u5f71", "\u8bed")
     val SpecPersonFirstNameWeight:Pair<Int, Int> = Pair(50, 20)// tianfu.linggen
 
-    // 1xxx spec; 2xxx real; 30xx sanguoyingxiong;
+
     val SpecPersonFirstName2:MutableList<PresetInfo> = mutableListOf(
             PresetInfo(12000010, Pair("\u6bdb","\u6b23"),12000021, 1000, 2000),
             PresetInfo(12000021, Pair("\u674e","\u4e00\u6850"),12000010, 1000, 2000),
             PresetInfo(12000031, Pair("\u674e","\u4e00\u6850\u2161"),12000010, 500, 1000),
             PresetInfo(12000041, Pair("\u6bdb","\u6c47\u5f64"),0, 1000, 2000, Pair(12000010, 12000021)),
-
-            PresetInfo(12000110, Pair("\u6731\u5229\u5b89","\u68ad\u7f57"),12000121, 1000, 600000),
-            PresetInfo(12000121, Pair("\u57ce\u6237","\u7eb1\u7ec7"),12000110, 1000, 600000),
 
             PresetInfo(12000200, Triple("\u674e","\u900d\u9065", 1001),12000211, 500, 1000),
             PresetInfo(12000211, Triple("\u963f","\u5974", 1001),12000200, 200, 600)

@@ -43,7 +43,7 @@ object CultivationHelper {
         }else{
             allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.map { it.value }.toMutableList()
         }
-        options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfus.filter { f->f.rarity >=2 }.size >= it.value.tianfu  && it.value.personList.size < it.value.maxPerson }.map { it.value })
+        options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfus.filter { f->f.rarity >=3 }.size >= it.value.tianfu  && it.value.personList.size < it.value.maxPerson }.map { it.value })
         val random = Random().nextInt(options.map { 100 / it.level }.sum() )
         var count = 0
         for (i in 0 until options.size){

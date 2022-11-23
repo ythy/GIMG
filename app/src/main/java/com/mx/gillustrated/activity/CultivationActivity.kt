@@ -545,26 +545,11 @@ class CultivationActivity : BaseActivity() {
                     mAlliance[configAlliance.id] = newAlliance(configAlliance)
                 }
             }
-            mAlliance.forEach {
-                if(mConfig.alliance.find { a-> a.id == it.value.id } == null){
-                    mAlliance.remove(it.value.id)
-                    mPersons.forEach { p->
-                        if(p.value.allianceId == it.value.id){
-                            mPersons.remove(p.value.id)
-                            if(mClans[p.value.ancestorId] != null){
-                                mClans[p.value.ancestorId]!!.clanPersonList.remove(p.value.id)
-                                if(p.value.ancestorId == p.value.id){
-                                    mClans.remove(p.value.id)
-                                }
-                            }
-                        }
-                    }
-                    mPersons.forEach { p->
-                        if(p.value.children.isNotEmpty()){
-                            synchronized(p.value.children){
-                                p.value.children.removeIf { c-> getOnlinePersonDetail(c) == null }
-                            }
-                        }
+            mAlliance.forEach { alliance->
+                if(mConfig.alliance.find { a-> a.id == alliance.value.id } == null){
+                    mAlliance.remove(alliance.value.id)
+                    mPersons.filter { it.value.allianceId == alliance.value.id}.forEach { (_, u) ->
+                        deadHandler(u)
                     }
                 }
             }
@@ -683,6 +668,7 @@ class CultivationActivity : BaseActivity() {
         if(mClans[it.ancestorId] != null){
             mClans[it.ancestorId]?.clanPersonList?.remove(it.id)
         }
+
         if(it.specIdentity > 0 && alliance != null){ //特殊处理SpecName
             val config = getAllSpecPersons().find { p-> p.identity == it.specIdentity } //maybe null
             if(config != null){
@@ -1134,7 +1120,7 @@ class CultivationActivity : BaseActivity() {
                 val partner = getOnlinePersonDetail(it.partner)
                 val children = it.children.filter { c-> getOnlinePersonDetail(c) != null }
                 val baseNumber = if(children.isEmpty()) 10L else Math.pow((children.size * 2).toDouble(), 5.0).toLong()
-                if(partner != null && !partner.dink && baseNumber < Int.MAX_VALUE){
+                if(partner != null && partner.children.size < 5 && !partner.dink && baseNumber < Int.MAX_VALUE){
                     if(isTrigger(baseNumber.toInt())){
                         val child = addPersion(Pair(partner.lastName, null), null,
                                     Pair(partner, it))
