@@ -1533,39 +1533,6 @@
       "speedG1": 70
     },
     {
-      "id": "6000601",
-      "name": "才",
-      "type": 5,
-      "nation": "6200005",
-      "lifetime": 50,
-      "xiuwei": 100,
-      "xiuweiMulti": 100,
-      "property": [0,80,10,10,0,0,0,0],
-      "speedG1": 100
-    },
-    {
-      "id": "6000602",
-      "name": "勇",
-      "type": 5,
-      "nation": "6200005",
-      "lifetime": 50,
-      "xiuwei": 100,
-      "xiuweiMulti": 100,
-      "property": [0,100,0,0,0,0,0,0],
-      "speedG1": 100
-    },
-    {
-      "id": "6000603",
-      "name": "帝",
-      "type": 5,
-      "nation": "6200005",
-      "lifetime": 50,
-      "xiuwei": 100,
-      "xiuweiMulti": 100,
-      "property": [100,70,0,10,0,0,0,0],
-      "speedG1": 100
-    },
-    {
       "id": "6000701",
       "name": "梁",
       "type": 6,
@@ -2417,10 +2384,6 @@
     {
       "id": "6200004",
       "name": "\u4e09\u56fd\u82f1\u96c4"
-    },
-    {
-      "id": "6200005",
-      "name": "\u4e94\u5343\u5e74"
     },
     {
       "id": "6200006",

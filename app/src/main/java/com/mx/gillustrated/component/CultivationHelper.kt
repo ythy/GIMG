@@ -493,12 +493,12 @@ object CultivationHelper {
             getMaxBonus(size, 1)
     }
 
-    private fun getMaxBonus(size:Int, max:Int = 1):Int{
-        return Math.max(max, Math.round( Math.log(size.toDouble())).toInt())
+    private fun getMaxBonus(size:Int, min:Int = 1):Int{
+        return Math.max(min, Math.round( Math.log(size.toDouble())).toInt())
     }
 
-    private fun getValidBonus(size:Int, max:Int = 1):Int{
-        return Math.min(size, getMaxBonus(size, max))
+    private fun getValidBonus(size:Int, min:Int = 1):Int{
+        return Math.min(size, getMaxBonus(size, min))
     }
 
     private fun summationEquipmentValues(person: Person, effectEquipment: Equipment){

@@ -927,8 +927,9 @@ class CultivationActivity : BaseActivity() {
             mClans[person.ancestorId]!!.clanPersonList[person.id] = person
         }
         if(log){
+            val extra = person.parentName
             addPersonEvent(person,"加入")
-            writeHistory("${getPersonBasicString(person)} 加入", person)
+            writeHistory("${getPersonBasicString(person)} 加入${ if (extra == null) "" else " ←$extra"}", person)
         }
 
     }
