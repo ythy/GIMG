@@ -43,7 +43,6 @@ class Person() :Parcelable {
         var equipmentProperty:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)//
         var teji:MutableList<String> =  Collections.synchronizedList(mutableListOf())
         var followerList:MutableList<Triple<String, String, String>> =  Collections.synchronizedList(mutableListOf())
-        var careerList:MutableList<Triple<String, Int, String>> =  Collections.synchronizedList(mutableListOf())
 
         var jingJieId:String = ""
         var jingJieSuccess:Int = 0
@@ -82,6 +81,7 @@ class Person() :Parcelable {
         var nationXiuwei:Int = 0//每次读取 &&  update depend nation battle
         var battlexiuwei:Int = 0 //每次读取和single battle后更新
         var battleWinner:Int = 0 //每次读取和single battle后更新
+        var careerDetailList:MutableList<Career> =  Collections.synchronizedList(mutableListOf())
 
         constructor(parcel: Parcel) : this() {
                 id = parcel.readString()!!
@@ -122,9 +122,6 @@ class Person() :Parcelable {
                 followerList = mutableListOf<Triple<String, String, String>>().apply {
                         parcel.readList(this, Triple::class.java.classLoader)
                 }
-                careerList = mutableListOf<Triple<String, Int, String>>().apply {
-                        parcel.readList(this, Triple::class.java.classLoader)
-                }
 
                 jingJieId = parcel.readString()
                 jingJieSuccess = parcel.readInt()
@@ -158,6 +155,8 @@ class Person() :Parcelable {
                 neverDead = parcel.readByte() != 0.toByte()
                 clanXiuwei = parcel.readInt()
                 nationXiuwei = parcel.readInt()
+
+                careerDetailList =  Collections.synchronizedList(parcel.createTypedArrayList(Career))
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -196,7 +195,6 @@ class Person() :Parcelable {
                 parcel.writeIntArray(equipmentProperty.toIntArray())
                 parcel.writeStringList(teji)
                 parcel.writeList(followerList)
-                parcel.writeList(careerList)
 
                 parcel.writeString(jingJieId)
                 parcel.writeInt(jingJieSuccess)
@@ -230,6 +228,8 @@ class Person() :Parcelable {
                 parcel.writeByte(if (neverDead) 1 else 0)
                 parcel.writeInt(clanXiuwei)
                 parcel.writeInt(nationXiuwei)
+
+                parcel.writeTypedList(careerDetailList)
 
         }
 

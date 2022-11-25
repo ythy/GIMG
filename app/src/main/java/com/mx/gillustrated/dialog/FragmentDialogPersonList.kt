@@ -199,11 +199,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
         mPersonData.clear()
         val persons = when (mType) {
             1 -> mContext.mPersons.map { it.value }.filter { it.isFav || it.neverDead }
-            2 -> mContext.mPersons.map { it.value }.filter { p->
-                val list = p.careerList.map { l-> CultivationHelper.mConfig.career.find{ c-> c.id == l.first} }
-                        .sortedByDescending { it?.rarity }
-                list.isNotEmpty() && list[0]?.rarity!! >= 8
-            }
+            2 -> mContext.mPersons.map { it.value }.filter { p-> p.careerDetailList.maxBy { m-> m.rarity }?.rarity ?: 0 >= 8 }
             3 -> mContext.mPersons.map { it.value }.filter { p->
                 p.lifeTurn == 0 && p.ancestorLevel == 0 && ( p.lingGenType.type >= 3 || (p.lingGenType.type > 0 && p.tianfus.sumBy { s-> s.rarity } > 5))
             }
@@ -222,6 +218,8 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
 
         if(mType == 4)
             mSort = "E"
+        if(mType == 2)
+            mSort = "C"
 
         when (mSort) {
             "X" -> mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it, mContext.mAlliance) }
@@ -234,6 +232,11 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             "E" -> mPersonData.sortWith(compareByDescending<Person> { it.equipmentListPair.filter {
                         e-> e.second > 10000
                     }.sumBy { s-> CultivationSetting.getEquipmentCustom(s).rarity }})
+            "C" -> mPersonData.sortedByDescending{
+                val max = it.careerDetailList.maxBy { m-> m.rarity }!!
+                max.rarity * 1000 + max.level
+            }
+
         }
 
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()

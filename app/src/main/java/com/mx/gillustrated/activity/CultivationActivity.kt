@@ -395,11 +395,14 @@ class CultivationActivity : BaseActivity() {
                 CultivationHelper.updatePersonEquipment(it.value)
                 CultivationHelper.updatePersonExtraProperty(it.value)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
-                if(it.value.careerList.isEmpty()){
-                    it.value.careerList = Collections.synchronizedList(CultivationHelper.getCareer().map { c->Triple(c, 0, "") })
-                    it.value.pointXiuWei = it.value.maxXiuWei
+                if(it.value.careerDetailList.isEmpty()){
+                    resetCustomBonusSingle(it.value)
                 }else{
-                    it.value.careerList = Collections.synchronizedList(it.value.careerList)
+                    it.value.careerDetailList = Collections.synchronizedList(it.value.careerDetailList.map {
+                        val config = mConfig.career.find { c-> c.id == it.id }!!.copy()
+                        config.level = it.level
+                        config
+                    })
                 }
             }
             mAlliance.putAll(backup.alliance.mapValues {
@@ -969,10 +972,7 @@ class CultivationActivity : BaseActivity() {
                     person.fullName = person.name
                 person.specIdentityTurn = person.specIdentityTurn + 1
                 person.name = person.fullName + CultivationSetting.createLifeTurnName(person.specIdentityTurn)
-                person.teji = Collections.synchronizedList(mutableListOf())
-                person.followerList =  Collections.synchronizedList(mutableListOf())
-                person.careerList =  Collections.synchronizedList(mutableListOf())
-                person.pointXiuWei = person.maxXiuWei
+                resetCustomBonusSingle(person)
                 person.xiuXei = 0
                 person.jingJieId = mConfig.jingJieType[0].id
                 person.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name)
@@ -1227,20 +1227,15 @@ class CultivationActivity : BaseActivity() {
 
     private fun updateCareer(){
         for ((_: String, person: Person) in mPersons) {
-            val list = person.careerList.map { t->
-                val career = mConfig.career.find { c-> c.id == t.first }!!.copy()
-                career.level = t.second
-                career
-            }
-            var addonCareer:String? = null
-            var changed = false
-            if(list.all { it.level >= it.maxLevel }){
+            val list = person.careerDetailList
+            var addonCareer:Career? = null
+            if(list.size == 0 || list.all { it.level >= it.maxLevel }){
                 if(person.pointXiuWei > 50000000) {
                     person.pointXiuWei -= 50000000
-                    if(isTrigger(Math.pow(5.0, person.careerList.size.toDouble()).toInt())){
-                        addonCareer = CultivationHelper.getCareer()[0]
-                        if(person.careerList.find { f-> f.first == addonCareer } == null){
-                            val commonText = "\u83b7\u5f97\u804c\u4e1a : ${mConfig.career.find { f-> f.id == addonCareer }?.name}"
+                    if(isTrigger(Math.pow(5.0, list.size.toDouble()).toInt())){
+                        addonCareer = CultivationHelper.getCareer()
+                        if(list.find { f-> f.id == addonCareer?.id } == null){
+                            val commonText = "\u83b7\u5f97\u804c\u4e1a : ${mConfig.career.find { f-> f.id == addonCareer?.id }?.name}"
                             addPersonEvent(person, commonText)
                             writeHistory("${getPersonBasicString(person)} $commonText", person)
                         }else{
@@ -1253,17 +1248,13 @@ class CultivationActivity : BaseActivity() {
                     if(it.level < it.maxLevel && person.pointXiuWei > it.upgradeBasicXiuwei){
                         person.pointXiuWei -= it.upgradeBasicXiuwei
                         if(isTrigger(it.level)){
-                            changed = true
                             it.level ++
                         }
                     }
                 }
-                if(changed){
-                    person.careerList = Collections.synchronizedList(list.map { Triple(it.id, it.level, "") })
-                }
             }
             if(addonCareer != null){
-                person.careerList.add(Triple(addonCareer, 0, ""))
+                person.careerDetailList.add(addonCareer)
             }
         }
     }
@@ -1271,11 +1262,7 @@ class CultivationActivity : BaseActivity() {
     private fun updateCareerEffect(xun:Long){
         if(inDurationByXun("CareerEffect", 120, xun)) {
             for ((_: String, person: Person) in mPersons) {
-                person.careerList.map { t->
-                    val obj = mConfig.career.find { c-> c.id == t.first }!!.copy()
-                    obj.level = t.second
-                    obj
-                }.forEach { career->
+                person.careerDetailList.forEach { career->
                     if(career.id == "6100001" || career.id == "6100002" || career.id == "6100003" || career.id == "6100006"){
                         val equipmentType = if (career.id == "6100001") 0 else if (career.id == "6100002") 1 else if (career.id == "6100003") 2 else 3
                         val equipment = CultivationHelper.makeEquipment(equipmentType, career.level)
@@ -1785,22 +1772,25 @@ class CultivationActivity : BaseActivity() {
 
     private fun resetCustomBonus(){
         mPersons.forEach { (_: String, u: Person) ->
-            u.followerList.clear()
-            u.careerList = Collections.synchronizedList(CultivationHelper.getCareer().map { c->Triple(c, 0, "") })
-            u.pointXiuWei = u.maxXiuWei
-            u.teji.clear()
-            u.equipmentListPair.removeIf {
-                val equipment = mConfig.equipment.find { e-> it.first == e.id }
-                equipment?.type ?: 0 <= 10
-            }
-            u.events.removeIf {
-                it.content.contains("\u83b7\u5f97") || it.content.contains("\u5236\u9020")
-                        || it.content.contains("\u53ec\u5524") || it.content.contains("Battle")
-            }
-            CultivationHelper.updatePersonEquipment(u)
+            resetCustomBonusSingle(u)
         }
-        showToast("重置完成")
     }
+
+    private fun resetCustomBonusSingle(person: Person){
+        person.followerList.clear()
+        person.teji.clear()
+        person.careerDetailList = Collections.synchronizedList(mutableListOf())
+        person.pointXiuWei = person.maxXiuWei
+        person.equipmentListPair.removeIf {
+            val equipment = mConfig.equipment.find { e-> it.first == e.id }
+            equipment?.type ?: 0 <= 3
+        }
+        person.events.removeIf {
+            it.content.contains("\u5236\u9020") || it.content.contains("\u53ec\u5524")
+        }
+        CultivationHelper.updatePersonEquipment(person)
+    }
+
 
     fun showToast(content:String){
         if(isHidden)

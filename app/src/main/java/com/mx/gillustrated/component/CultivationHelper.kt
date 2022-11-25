@@ -303,14 +303,14 @@ object CultivationHelper {
         return result
     }
 
-    fun getCareer():MutableList<String>{
-        val result = mutableListOf<String>()
+    fun getCareer():Career{
+        var result:Career? = null
         mConfig.career.sortedByDescending { it.rarity }.forEach {
-            if(result.isEmpty() && Random().nextInt( it.weight ) == 0){
-                result.add(it.id)
+            if(result == null && Random().nextInt( it.weight ) == 0){
+                result = it.copy()
             }
         }
-        return result
+        return result!!
     }
 
     fun makeEquipment(type: Int, weight: Int):Equipment?{
@@ -370,7 +370,6 @@ object CultivationHelper {
         result.profile = getRandomProfile(result.gender)
         result.tianfus = tianFus
         result.teji = Collections.synchronizedList(getTeji())
-        result.careerList = Collections.synchronizedList(getCareer().map { Triple(it, 0, "") })
         result.lifetime = result.birthtime + getLifetimeBonusInitial(result)
         updatePersonExtraProperty(result)
 

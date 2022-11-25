@@ -292,11 +292,7 @@ class FragmentDialogPerson : DialogFragment() {
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
         mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}/${CultivationHelper.showAgeRemained(mPerson)}"
-        mDialogView.career.text = mPerson.careerList.map {
-            val obj = CultivationHelper.mConfig.career.find { c-> c.id == it.first }!!.copy()
-            obj.level = it.second
-            obj
-        }.joinToString()
+        mDialogView.career.text = mPerson.careerDetailList.joinToString()
         mDialogView.props.text = getProperty()
         mDialogView.winner.text = "${mPerson.battleWinner}-${mPerson.battlexiuwei}↑"
         mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.name ?: "")

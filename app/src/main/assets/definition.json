@@ -2374,42 +2374,42 @@
     {
       "id": "6100002",
       "name": "\u5251\u5320",
-      "rarity": 4,
-      "weight": 10,
+      "rarity": 5,
+      "weight": 100,
       "maxLevel": 100,
-      "upgradeBasicXiuwei": 20000000
+      "upgradeBasicXiuwei": 40000000
     },
     {
       "id": "6100003",
       "name": "\u7532\u5320",
-      "rarity": 5,
-      "weight": 50,
+      "rarity": 6,
+      "weight": 200,
       "maxLevel": 100,
-      "upgradeBasicXiuwei": 40000000
+      "upgradeBasicXiuwei": 60000000
     },
     {
       "id": "6100004",
       "name": "\u5524\u5e08",
       "rarity": 9,
-      "weight": 300,
+      "weight": 1000,
       "maxLevel": 120,
-      "upgradeBasicXiuwei": 80000000
+      "upgradeBasicXiuwei": 200000000
     },
     {
       "id": "6100005",
       "name": "\u7075\u4f53",
-      "rarity": 10,
-      "weight": 500,
-      "maxLevel": 120,
-      "upgradeBasicXiuwei": 100000000
+      "rarity": 11,
+      "weight": 3000,
+      "maxLevel": 150,
+      "upgradeBasicXiuwei": 500000000
     },
     {
       "id": "6100006",
       "name": "\u5e26\u5320",
-      "rarity": 6,
-      "weight": 100,
+      "rarity": 7,
+      "weight": 400,
       "maxLevel": 100,
-      "upgradeBasicXiuwei": 50000000
+      "upgradeBasicXiuwei": 80000000
     }
   ],
   "nation": [
