@@ -46,7 +46,8 @@ object CultivationSetting {
             PresetInfo(12000041, Pair("\u6bdb", "\u6c47\u5f64"), 0, 1000, 2000, Pair(12000010, 12000021)),
 
             PresetInfo(12000200, Triple("\u674e", "\u900d\u9065", 1001), 12000211, 500, 1000),
-            PresetInfo(12000211, Triple("\u963f", "\u5974", 1001), 12000200, 200, 600)
+            PresetInfo(12000211, Triple("\u963f", "\u5974", 1001), 12000200, 200, 600),
+            PresetInfo(12000250, Pair("\u7EC7\u7530", "\u4FE1\u957F"), 0, 500, 1000)
     )
 
     //13 00 001 0
