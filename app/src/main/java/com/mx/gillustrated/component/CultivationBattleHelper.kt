@@ -476,6 +476,10 @@ object CultivationBattleHelper {
         }.filter { it.teji.size > 0 }.forEach {
             result.addAll(it.teji)
         }
+        val exclusives =  mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity) && it.teji.size > 0}
+        exclusives.forEach {
+            result.addAll(it.teji)
+        }
         return result
     }
 

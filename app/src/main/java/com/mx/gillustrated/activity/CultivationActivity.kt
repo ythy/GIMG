@@ -1156,7 +1156,6 @@ class CultivationActivity : BaseActivity() {
                         u.lifetime = 0
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
                         writeHistory("${u.name} 倒", u)
-                        gainTeji(person, 50 * u.type)
                         if(isTrigger(50 / u.type)) {
                             addSpecialEquipmentEvent(person, "Boss")
                         }

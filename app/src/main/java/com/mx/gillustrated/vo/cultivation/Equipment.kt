@@ -16,9 +16,10 @@ class Equipment() :Parcelable {
     var success:Int = 0
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
     var maxCount:Int = 1//重复计算属性上限，默认1
+    var spec:MutableList<Int> = mutableListOf()//专属
+    var teji:MutableList<String> = mutableListOf()
     //以下字段不在配置里
     var uniqueName:String = ""
-    var teji:MutableList<String> = mutableListOf()
     var childrenAll:MutableList<Equipment> = mutableListOf() //计算用
     var children:MutableList<Equipment> = mutableListOf() // 显示用
 
@@ -36,6 +37,7 @@ class Equipment() :Parcelable {
         children = parcel.createTypedArrayList(Equipment)
         childrenAll = parcel.createTypedArrayList(Equipment)
         teji = Collections.synchronizedList(parcel.createStringArrayList())
+        spec = Collections.synchronizedList(parcel.createIntArray().toMutableList())
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -52,6 +54,7 @@ class Equipment() :Parcelable {
         parcel.writeTypedList(children)
         parcel.writeTypedList(childrenAll)
         parcel.writeStringList(teji)
+        parcel.writeIntArray(spec.toIntArray())
     }
 
     override fun describeContents(): Int {
@@ -78,6 +81,7 @@ class Equipment() :Parcelable {
         equipment.children = this.children
         equipment.childrenAll = this.childrenAll
         equipment.teji = this.teji
+        equipment.spec = this.spec
         return equipment
     }
 

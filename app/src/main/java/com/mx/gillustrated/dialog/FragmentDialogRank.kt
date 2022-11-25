@@ -69,7 +69,7 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                 newFragment.arguments = bundle
                 newFragment.show(ft, "dialog_clan_info")
             }
-            in 3..9 ->{
+            in 3..7 ->{
 
             }
             else ->{
@@ -180,15 +180,15 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                     SimpleData("", "", "", mType, mutableListOf(), pair.second)
                 })
             }
-            in 10..19 ->{
-                val index = mType - 10
-                val equipment = CultivationHelper.mConfig.equipment.filter { it.type == 14 }[index]
-                title = CultivationHelper.showing(equipment.name)
-                mContext.mPersons.forEach{ p->
-                    list.addAll(p.value.equipmentListPair.filter { e-> e.first == equipment.id }.map {
-                        SimpleData(p.value.id, p.value.name, "", mType, mutableListOf(), it.second)
-                    })
-                }
+            8 ->{ // seq = name
+                title = "Exclusives"
+                val exclusives =  CultivationHelper.mConfig.equipment.filter { it.type == 8 }.sortedByDescending { it.id }
+                list.addAll(
+                    exclusives.map{ equipment ->
+                        val persons = mContext.mPersons.map { it.value }.filter { equipment.spec.contains(it.specIdentity) }
+                        SimpleData(if (persons.size == 1) persons[0].id else "", persons.joinToString { it.name }, equipment.name, mType, mutableListOf(), -1)
+                    }
+                )
             }
             in 20..29 ->{
                 val index = mType - 20

@@ -466,6 +466,7 @@ object CultivationHelper {
             }
             e
         }
+        val exclusives =  mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity)}
         person.equipmentXiuwei = 0
         person.equipmentSuccess = 0
         person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
@@ -483,6 +484,9 @@ object CultivationHelper {
                 val effectEquipment = u.maxBy { it.rarity }!!
                 summationEquipmentValues(person, effectEquipment)
             }
+        }
+        exclusives.forEach {
+            summationEquipmentValues(person, it)
         }
     }
 

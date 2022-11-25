@@ -68,6 +68,11 @@ class FragmentEquipment: Fragment() {
     }
 
     fun updateList(){
+        val exclusives =  CultivationHelper.mConfig.equipment.filter { it.type == 8 && it.spec.contains(mPerson.specIdentity)}.map {
+            it.children.clear()
+            it.childrenAll.clear()
+            it
+        }
         val equipments = mPerson.equipmentListPair.map {
             var equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()
             if(equipment.type == 5){
@@ -86,12 +91,16 @@ class FragmentEquipment: Fragment() {
         .map {
             it.value[0].children.clear()
             it.value[0].childrenAll.clear()
-            it.value[0].children.addAll(it.value.subList(0, Math.min(20, it.value.size)))
+            if(it.value[0].type == 5){
+                it.value[0].children.addAll(it.value)
+            }else
+                it.value[0].children.addAll(it.value.subList(0, Math.min(10, it.value.size)))
             it.value[0].childrenAll.addAll(it.value)
             it.value[0]
         }
-
+        mEquipmentGroups.addAll(exclusives)
         mEquipmentGroups.addAll(groups)
+
         mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
 
             override fun onOpenDetailList(equipment: Equipment) {

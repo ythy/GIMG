@@ -48,7 +48,14 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
         val child = values.childrenAll
         if(values.type <= 3 || values.type == 9)
             component.name.text = CultivationHelper.showing(values.name)
-        else
+        else if(values.type == 8){
+            val tejiString = if (values.teji.size > 0) "+" else  ""
+            component.name.text = CultivationHelper.showing(values.name + tejiString)
+            component.name.setOnClickListener{
+                if(tejiString == "+")
+                    Toast.makeText(mContext, values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
+            }
+        }else
             component.name.text = "${CultivationHelper.showing(values.name)}(${child.size}/${CultivationHelper.getEquipmentsMaxCount(values, child.size)})"
 
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
@@ -59,6 +66,12 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             component.success.text = maxEquipment.success.toString()
             (0 until 4).forEach { index ->
                 properties[index] += maxEquipment.property[index]
+            }
+        }else if(values.type == 8){
+            component.xiuwei.text = values.xiuwei.toString()
+            component.success.text = values.success.toString()
+            (0 until 4).forEach { index ->
+                properties[index] += values.property[index]
             }
         }else{
             val filterChildren = child.filterIndexed { index, equipment ->
@@ -110,6 +123,12 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
         component.xiuwei.text = "${values.xiuwei}"
         component.success.text = "${values.success}"
         component.props.text = values.property.take(4).joinToString()
+
+        if(values.type == 9 || values.type == 5){//bao and amulet can delete
+            component.del.visibility = View.VISIBLE
+        }else{
+            component.del.visibility = View.GONE
+        }
 
         component.del.setOnClickListener{
             callbacks.onDeleteHandler(values, false)

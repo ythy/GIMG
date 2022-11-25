@@ -123,9 +123,6 @@ object CultivationSetting {
             PresetInfo(14030140, Triple("\u534e", "\u4f57", 3048))
 
     )
-    private val SpecPersonFirstName7:MutableList<PresetInfo> = mutableListOf(
-            PresetInfo(14030140, Triple("\u534e", "\u4f57", 3048))
-    )
 
     private val SpecPersonFirstName6:MutableList<PresetInfo> = mutableListOf(
             PresetInfo(16000010, Pair("\u5b8b","\u6c5f"),0, 100, 200),
@@ -176,7 +173,6 @@ object CultivationSetting {
         val persons = hashMapOf<Int, MutableList<PresetInfo>>()
         persons[3] = SpecPersonFirstName3
         persons[4] = SpecPersonFirstName4
-        //persons[5] = SpecPersonFirstName5
         persons[6] = SpecPersonFirstName6
         return persons
     }
@@ -186,7 +182,6 @@ object CultivationSetting {
         persons.addAll(SpecPersonFirstName2)
         persons.addAll(SpecPersonFirstName3)
         persons.addAll(SpecPersonFirstName4)
-        //persons.addAll(SpecPersonFirstName5)
         persons.addAll(SpecPersonFirstName6)
         return persons
     }

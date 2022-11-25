@@ -126,6 +126,11 @@ class FragmentDialogSetting : DialogFragment() {
         newFragment.show(ft, "dialog_person_list")
     }
 
+    @OnClick(R.id.btn_exclusive)
+    fun onExclusiveClick(){
+        openDialog(8)
+    }
+
 
 
     lateinit var mActivity: CultivationActivity
