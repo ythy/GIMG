@@ -111,7 +111,7 @@ object CultivationHelper {
                     xiuwei += getValidBonus(u.size, BattleSettings.AllianceBonus[0]) * BattleSettings.AllianceBonus[t]
                 }
             }
-            data.value.xiuweiBattle = xiuwei
+            data.value.xiuweiBattle = Math.min(xiuwei, BattleSettings.AllianceMaxXiuwei)
             data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.AllianceMinSize + 1 - it }
         }
     }
@@ -145,10 +145,10 @@ object CultivationHelper {
                     xiuwei += getValidBonus(u.size, BattleSettings.ClanBonus[0]) * BattleSettings.ClanBonus[t]
                 }
             }
-            data.value.xiuweiBattle = xiuwei
+            data.value.xiuweiBattle = Math.min(xiuwei, BattleSettings.ClanMaxXiuwei)
             data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.ClanMinSize + 1 - it }
             data.value.clanPersonList.forEach { (_: String, clanPerson: Person) ->
-                clanPerson.clanXiuwei = xiuwei
+                clanPerson.clanXiuwei = data.value.xiuweiBattle
             }
         }
     }

@@ -16,9 +16,11 @@ object CultivationSetting {
     object BattleSettings {
         const val AllianceMinSize = 16
         const val AllianceBonusCount = 4
+        const val AllianceMaxXiuwei = 50
         val AllianceBonus = arrayOf(5, 8, 5, 3, 1, 0, 0, 0, 0, 0, 0)// [0]: equipment maxCount, [1..10]: bonus count by BonusCount
         const val ClanMinSize = 4
         const val ClanBonusCount = 3
+        const val ClanMaxXiuwei = 20
         val ClanBonus = arrayOf(5, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0)
         const val NationMinSize = 4
         const val NationBonusCount = 3

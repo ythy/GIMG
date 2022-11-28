@@ -45,10 +45,9 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
         <LinearLayout
-            android:layout_width="0px"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:layout_weight="1">
+            android:gravity="start">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,10 +55,21 @@
                 android:id="@+id/tv_total"/>
         </LinearLayout>
         <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="end"
+                android:inputType="number"
+                android:id="@+id/et_min"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="right">
+            android:layout_weight="1"
+            android:gravity="end">
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

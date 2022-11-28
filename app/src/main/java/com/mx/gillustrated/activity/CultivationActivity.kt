@@ -28,6 +28,7 @@ import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName2
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
 import com.mx.gillustrated.component.CultivationHelper.getPersonBasicString
+import com.mx.gillustrated.component.CultivationHelper.getXiuweiGrow
 import com.mx.gillustrated.component.CultivationHelper.mBattleRound
 import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
@@ -671,7 +672,6 @@ class CultivationActivity : BaseActivity() {
         if(mClans[it.ancestorId] != null){
             mClans[it.ancestorId]?.clanPersonList?.remove(it.id)
         }
-
         if(it.specIdentity > 0 && alliance != null){ //特殊处理SpecName
             val config = getAllSpecPersons().find { p-> p.identity == it.specIdentity } //maybe null
             if(config != null){
@@ -926,7 +926,7 @@ class CultivationActivity : BaseActivity() {
     fun combinedPersonRelationship(person: Person, log:Boolean = true){
         CultivationHelper.joinAlliance(person, mAlliance)
         mPersons[person.id] = person
-        if(mClans[person.ancestorId] != null){
+        if(mClans[person.ancestorId] != null && getXiuweiGrow(person, mAlliance) >= mClans[person.ancestorId]?.minXiuwei!!){
             mClans[person.ancestorId]!!.clanPersonList[person.id] = person
         }
         if(log){
@@ -1191,6 +1191,12 @@ class CultivationActivity : BaseActivity() {
                         mClans[t] = clan
                     }
                 }
+            }
+            mClans.forEach {
+                it.value.clanPersonList = ConcurrentHashMap(mPersons.filter { m ->
+                    m.value.ancestorId == it.key &&
+                            (getXiuweiGrow(m.value, mAlliance) >= it.value.minXiuwei || m.value.id == it.key)
+                })
             }
         }
         if(inDurationByXun("ClanUpdated", 12, xun)) {
@@ -1496,7 +1502,7 @@ class CultivationActivity : BaseActivity() {
             while (true){
                 writeHistory("Clan Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundClanHandler(clans, restClans,10, 10)
+                val result = roundClanHandler(clans, restClans,10, 5)
                 if(result)
                     break
             }
@@ -1541,7 +1547,7 @@ class CultivationActivity : BaseActivity() {
             while (true){
                 writeHistory("Bang Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundBangHandler(alliances, restAlliance, 20, 50)
+                val result = roundBangHandler(alliances, restAlliance, 20, 10)
                 if(result)
                     break
             }
@@ -1591,7 +1597,7 @@ class CultivationActivity : BaseActivity() {
             while (true){
                 writeHistory("Nation Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundNationHandler(nations, restNation, 20, 100)
+                val result = roundNationHandler(nations, restNation, 20, 20)
                 if(result)
                     break
             }
@@ -1715,9 +1721,9 @@ class CultivationActivity : BaseActivity() {
     //true: fiest win
     private fun roundMultiBattle(firstPersonList:ConcurrentHashMap<String, Person>, secondPersonList:ConcurrentHashMap<String, Person>, round:Int, count:Int):Boolean{
         val firstPersons = firstPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
-                .sortedByDescending { it.maxXiuWei }.take(count).shuffled()
+                .sortedByDescending { it.battleWinner }.take(count).shuffled()
         val secondPersons = secondPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
-                .sortedByDescending { it.maxXiuWei }.take(count).shuffled()
+                .sortedByDescending { it.battleWinner }.take(count).shuffled()
 
         if(firstPersons.isEmpty()){
             return false

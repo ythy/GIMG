@@ -63,6 +63,14 @@ class FragmentDialogClan : DialogFragment() {
         newFragment.show(ft, "dialog_person_info")
     }
 
+    @OnTextChanged(R.id.et_min)
+    fun onMinChangedHandler(text:CharSequence){
+        val current = text.toString()
+        if(current.toIntOrNull() != null && current.toInt() > 0){
+            mContext.mClans[mId]?.minXiuwei = current.toInt()
+        }
+    }
+
     @OnClick(R.id.tv_xiuwei)
     fun onWinnerClickHandler(){
         val ft = mContext.supportFragmentManager.beginTransaction()
@@ -98,6 +106,7 @@ class FragmentDialogClan : DialogFragment() {
         val clan = mContext.mClans[mId]
         if(clan != null){
             mDialogView.name.text = CultivationHelper.showing(clan.name)
+            mDialogView.minXiuwei.setText("${clan.minXiuwei}")
             mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
             updateView()
             registerTimeLooper()
@@ -155,6 +164,8 @@ class FragmentDialogClan : DialogFragment() {
         @BindView(R.id.lv_person)
         lateinit var persons:ListView
 
+        @BindView(R.id.et_min)
+        lateinit var minXiuwei:EditText
 
         init {
             ButterKnife.bind(this, view)
