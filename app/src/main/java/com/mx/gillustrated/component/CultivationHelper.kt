@@ -288,13 +288,14 @@ object CultivationHelper {
 
      fun getTeji(weight:Int = 1, multi:Boolean = true):MutableList<String>{
          val result = mutableListOf<String>()
+         val tejiList = mConfig.teji.filter { it.type != 4 }
          if(!multi){
-             val teji = mConfig.teji.filter { it.type != 4 }.shuffled()[0]
+             val teji =tejiList.shuffled()[0]
              if(isTrigger( teji.weight / Math.max(1, weight))){
                  result.add(teji.id)
              }
          }else{
-             mConfig.teji.filter { it.type != 4 }.forEach {
+             tejiList.forEach {
                  if(isTrigger( it.weight / Math.max(1, weight))){
                      result.add(it.id)
                  }
@@ -330,7 +331,7 @@ object CultivationHelper {
     }
 
     fun makeFollower(weight: Int):Follower?{
-        val list = mConfig.follower.filter { it.rarity * 10 < weight && it.type == 0 }.map {
+        val list = mConfig.follower.filter { it.type == 0 && weight > it.rarity * 10  }.map {
             it.copy()
         }.shuffled()
         return if(list.isEmpty())
@@ -338,7 +339,7 @@ object CultivationHelper {
         else{
             val follower = list[0]
             val success = Random().nextInt( (Math.pow(follower.rarity.toDouble(), 5.0) / Math.log(weight.toDouble())).toInt() ) == 0
-            if(success)
+            if(success)// rarity 9: 11784 - 13000
                 follower
             else
                 null

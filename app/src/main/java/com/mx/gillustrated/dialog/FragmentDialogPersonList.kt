@@ -232,7 +232,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             "E" -> mPersonData.sortWith(compareByDescending<Person> { it.equipmentListPair.filter {
                         e-> e.second > 10000
                     }.sumBy { s-> CultivationSetting.getEquipmentCustom(s).rarity }})
-            "C" -> mPersonData.sortedByDescending{
+            "C" -> mPersonData.sortByDescending{
                 val max = it.careerDetailList.maxBy { m-> m.rarity }!!
                 max.rarity * 1000 + max.level
             }

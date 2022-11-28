@@ -1285,7 +1285,7 @@ class CultivationActivity : BaseActivity() {
                         }
                     }
                     if(career.id == "6100005" && isTrigger(2)){
-                        if(person.teji.size > Math.max(5, career.level / 10)  )
+                        if(person.teji.size >= Math.max(3, career.level / 20)  )
                             return
                         gainTeji(person, career.level)
                     }
@@ -1786,7 +1786,8 @@ class CultivationActivity : BaseActivity() {
             equipment?.type ?: 0 <= 3
         }
         person.events.removeIf {
-            it.content.contains("\u5236\u9020") || it.content.contains("\u53ec\u5524")
+            it.content.contains("\u5236\u9020") || it.content.contains("\u53ec\u5524") ||
+                    it.content.contains("\u83B7\u5F97\u7279\u6280")  || it.content.contains("\u83b7\u5f97\u804c\u4e1a")
         }
         CultivationHelper.updatePersonEquipment(person)
     }
