@@ -70,6 +70,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end">
+            <EditText
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_abdicate" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ButtonMiddle"
+                android:id="@+id/btn_abdicate"
+                android:text="ABD"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

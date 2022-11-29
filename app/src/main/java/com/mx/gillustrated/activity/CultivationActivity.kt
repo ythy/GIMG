@@ -1180,15 +1180,7 @@ class CultivationActivity : BaseActivity() {
                     .groupBy { it.ancestorId }.forEach { (t, u) ->
                 if (u.size >= 5 && mPersons[t] != null ) {
                     if (mClans[t] == null) {
-                        val clan = Clan()
-                        clan.id = t!!
-                        clan.name = u[0].lastName
-                        clan.zhu = mPersons[t]
-                        clan.createDate = xun
-                        u.forEach { p ->
-                            clan.clanPersonList[p.id] = p
-                        }
-                        mClans[t] = clan
+                        CultivationHelper.createClan(mPersons[t]!!, mClans, mPersons)
                     }
                 }
             }

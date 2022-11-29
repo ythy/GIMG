@@ -3,8 +3,6 @@ package com.mx.gillustrated.component
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
-import androidx.core.content.ContextCompat
-import com.j256.ormlite.stmt.query.In
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
 import com.mx.gillustrated.component.CultivationSetting.BattleSettings
 import com.mx.gillustrated.util.NameUtil
@@ -149,6 +147,37 @@ object CultivationHelper {
             data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.ClanMinSize + 1 - it }
             data.value.clanPersonList.forEach { (_: String, clanPerson: Person) ->
                 clanPerson.clanXiuwei = data.value.xiuweiBattle
+            }
+        }
+    }
+
+    fun createClan(person: Person, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>):Clan{
+        val clan = Clan()
+        clan.id = person.id
+        clan.name = if (person.ancestorLevel == 0) person.lastName else "${person.lastName}[${person.ancestorLevel}]"
+        clan.zhu = person
+        clan.createDate = mCurrentXun
+        clan.clanPersonList = ConcurrentHashMap(allPersons.filter { it.value.ancestorId == clan.id })
+        allClan[clan.id] = clan
+        return clan
+    }
+
+    fun abdicateInClan(person: Person, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>){
+        val originClanId = person.ancestorId!!
+        person.ancestorId = person.id
+        changedAncestorId(person, allPersons)
+        allClan[originClanId]!!.clanPersonList.forEach { (_: String, u: Person) ->
+            if (u.ancestorId != originClanId)
+                allClan[originClanId]!!.clanPersonList.remove(u.id)
+        }
+        createClan(person, allClan, allPersons)
+    }
+
+    private fun changedAncestorId(person: Person, allPersons:ConcurrentHashMap<String, Person>){
+        person.children.forEach {
+            allPersons[it]?.ancestorId = person.ancestorId
+            if(allPersons[it]?.gender == NameUtil.Gender.Male && allPersons[it]?.children?.size ?: 0 > 0){
+                changedAncestorId(allPersons[it]!!, allPersons)
             }
         }
     }

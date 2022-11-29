@@ -16,9 +16,8 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
-import com.mx.gillustrated.vo.cultivation.Alliance
-import com.mx.gillustrated.vo.cultivation.Clan
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 
@@ -77,6 +76,17 @@ class FragmentDialogClan : DialogFragment() {
         val newFragment = FragmentDialogRank.newInstance(4, mId)
         newFragment.isCancelable = false
         newFragment.show(ft, "dialog_rank_info")
+    }
+
+    @OnClick(R.id.btn_abdicate)
+    fun onAbdicateClickHandler(){
+        val name = mDialogView.abdicate.text.toString()
+        val person = mContext.mPersons.map { it.value }.find { it.name == name || PinyinUtil.convert(it.name) == name }
+        if (person != null && person.gender == NameUtil.Gender.Male){
+            CultivationHelper.abdicateInClan(person, mContext.mClans, mContext.mPersons)
+            mDialogView.abdicate.setText("")
+            Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
+        }
     }
 
     lateinit var mId:String
@@ -166,6 +176,9 @@ class FragmentDialogClan : DialogFragment() {
 
         @BindView(R.id.et_min)
         lateinit var minXiuwei:EditText
+
+        @BindView(R.id.et_abdicate)
+        lateinit var abdicate:EditText
 
         init {
             ButterKnife.bind(this, view)
