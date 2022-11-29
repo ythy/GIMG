@@ -97,7 +97,7 @@ class FragmentTeJi: Fragment() {
         mListView.adapter = CultivationTeJiAdapter(this.context!!, mTeJi, object : CultivationTeJiAdapter.TeJiAdapterCallback {
             override fun onDeleteHandler(teji: TeJi) {
                 mPerson.teji.removeIf {
-                    it == teji.id
+                    it == teji.id && teji.form == 0
                 }
                 updateList()
             }
@@ -109,6 +109,15 @@ class FragmentTeJi: Fragment() {
         val tejis = mPerson.teji.map {
             mConfigTeji.find { e-> e.id == it}!!.copy()
         }.toMutableList()
+        val exclusives =  CultivationHelper.mConfig.equipment.filter {
+            it.type == 8 && it.spec.contains(mPerson.specIdentity) && it.teji.size > 0}
+        exclusives.forEach {
+            tejis.addAll(it.teji.map {
+                val teji = mConfigTeji.find { e-> e.id == it}!!.copy()
+                teji.form = 1
+                teji
+            })
+        }
         tejis.sortByDescending { it.rarity }
         mTeJi.clear()
         mTeJi.addAll(tejis)

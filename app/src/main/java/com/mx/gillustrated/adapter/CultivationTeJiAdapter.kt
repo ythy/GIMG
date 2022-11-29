@@ -49,6 +49,10 @@ class CultivationTeJiAdapter constructor(mContext: Context, private val list: Li
         component.name.text = CultivationHelper.showing(values.name)
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         component.description.text = CultivationHelper.showing(values.description)
+        if (values.form == 1)
+            component.del.visibility = View.GONE
+        else
+            component.del.visibility = View.VISIBLE
 
         component.del.setOnClickListener{
             callbacks.onDeleteHandler(values)
