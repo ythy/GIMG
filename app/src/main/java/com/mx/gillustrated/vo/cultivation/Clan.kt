@@ -28,9 +28,10 @@ open class ClanBak() :Parcelable {
 
     fun toClan(personMap: ConcurrentHashMap<String, Person>):Clan{
         val clan = Clan()
+        val zhu = personMap[this.id]
         clan.id = this.id
         clan.name = this.name
-        clan.zhu = personMap[this.id]
+        clan.zhu = zhu
         clan.createDate = this.createDate
         clan.clanPersonList.putAll(personMap.filterKeys { this.persons.contains(it) })
         clan.battleRecord = ConcurrentHashMap(this.battleRecord)

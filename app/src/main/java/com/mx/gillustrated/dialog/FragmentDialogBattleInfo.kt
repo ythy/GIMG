@@ -23,6 +23,7 @@ import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationBattleHelper.BattleObject
 import com.mx.gillustrated.component.CultivationHelper.showing
+import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.BattleInfo
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
@@ -127,12 +128,16 @@ class FragmentDialogBattleInfo  : DialogFragment() {
 
         if(person == null)
             return
+        var profile = person.profile
+        if(person.gender == NameUtil.Gender.Female && person.profile in 1701..1799){
+            profile = 0
+        }
         try {
             val imageDir = File(Environment.getExternalStorageDirectory(),
                     MConfig.SD_CULTIVATION_HEADER_PATH + "/" + person.gender)
-            var file = File(imageDir.path, person.profile.toString() + ".png")
+            var file = File(imageDir.path,  "$profile.png")
             if (!file.exists()) {
-                file = File(imageDir.path, person.profile.toString() + ".jpg")
+                file = File(imageDir.path, "$profile.jpg")
             }
             if (file.exists()) {
                 val bmp = MediaStore.Images.Media.getBitmap(context?.contentResolver, Uri.fromFile(file))
