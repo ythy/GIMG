@@ -45,6 +45,7 @@ object CultivationBattleHelper {
         return firstWin
     }
 
+    // allPersons pass null if partner don`t join battle
     fun battlePerson(allPersons:ConcurrentHashMap<String, Person>?, person1: Person, person2: Person, round:Int):Boolean{
 
         val props1 = CultivationHelper.getProperty(person1)
@@ -116,7 +117,7 @@ object CultivationBattleHelper {
             val allOpponent = battlePersons[Math.abs(index - 1)]
             currentList.forEach { current ->
                 if (hasTeji("8003003", current)) {
-                    current.minDamage = 10
+                    current.minDamage = 20
                     addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8003003").name}\u6548\u679c, \u6700\u5c0f\u4f24\u5bb310", "8003003")
                 }
                 if (hasTeji("8001005", current)) {
@@ -127,13 +128,15 @@ object CultivationBattleHelper {
                     addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8001004").name}\u6548\u679c, \u9644\u52a0\u4f24\u5bb320", "8001004")
                 }
                 if(hasTeji("8002004", current)){
-                    val opponent = getBattleObject(allOpponent)
-                    opponent.hp -= 50
-                    addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8002004").name}\u6548\u679c, ${showName(opponent, false)}HP-50", "8002004")
+                    allOpponent.forEach { opponent ->
+                        opponent.hp -= 50
+                        addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8002004").name}\u6548\u679c, ${showName(opponent, false)}HP-50", "8002004")
+                    }
                 } else if(hasTeji("8002003", current)){
-                    val opponent = getBattleObject(allOpponent)
-                    opponent.hp -= 30
-                    addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8002003").name}\u6548\u679c, ${showName(opponent, false)}HP-30", "8002003")
+                    allOpponent.forEach { opponent ->
+                        opponent.hp -= 30
+                        addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8002003").name}\u6548\u679c, ${showName(opponent, false)}HP-30", "8002003")
+                    }
                 }
                 if(hasTeji("8002007", current)){//weakness 50
                     allOpponent.forEach { opponent ->
@@ -192,13 +195,15 @@ object CultivationBattleHelper {
             val allOpponent = battlePersons[Math.abs(index - 1)]
             currentList.forEach { current ->
                 if(hasTeji("8002002", current) && isTrigger(tejiDetail("8002002").chance, current)){
-                    val opponent = getBattleObject(allOpponent)
-                    opponent.hp -= 20
-                    addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002002").name}\u6548\u679c, ${showName(opponent)}HP-20", "8002002")
+                    allOpponent.forEach { opponent ->
+                        opponent.hp -= 20
+                        addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002002").name}\u6548\u679c, ${showName(opponent)}HP-20", "8002002")
+                    }
                 } else if(hasTeji("8002001", current) && isTrigger(tejiDetail("8002001").chance, current)){
-                    val opponent = getBattleObject(allOpponent)
-                    opponent.hp -= 10
-                    addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002001").name}\u6548\u679c, ${showName(opponent)}HP-10", "8002001")
+                    allOpponent.forEach { opponent ->
+                        opponent.hp -= 10
+                        addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002001").name}\u6548\u679c, ${showName(opponent)}HP-10", "8002001")
+                    }
                 }
                 if(hasTeji("8002005", current) && isTrigger(tejiDetail("8002005").chance, current)){
                     current.hp += 20
@@ -290,6 +295,8 @@ object CultivationBattleHelper {
     }
 
     private fun inBattles(attacker: BattleObject, defender: BattleObject){
+        if(attacker.hp <= 0 || defender.hp <= 0)
+            return
         val battleId = attacker.battleId
         if(isStatuTrigger(attacker, "8100004")){//盲
             addBattleDetail(battleId, "${showName(attacker)} ${statusDetail("8100004").name}\u53d1\u52a8")

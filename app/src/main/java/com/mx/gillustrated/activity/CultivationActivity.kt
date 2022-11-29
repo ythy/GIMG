@@ -1038,7 +1038,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun randomSpecialEquipmentEvent(xun: Long){
         if(inDurationByXun("SpecialEvent", 121212, xun)) {
-            if(isTrigger(10)) {
+            if(isTrigger(100)) {
                 val lucky = mPersons.map { it.value }.shuffled().first()
                 addSpecialEquipmentEvent(lucky, "Special")
             }
@@ -1156,7 +1156,7 @@ class CultivationActivity : BaseActivity() {
                         u.lifetime = 0
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
                         writeHistory("${u.name} 倒", u)
-                        if(isTrigger(50 / u.type)) {
+                        if(isTrigger(500 / u.type)) {
                             addSpecialEquipmentEvent(person, "Boss")
                         }
                         CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
@@ -1455,7 +1455,7 @@ class CultivationActivity : BaseActivity() {
                 val person = restPersons[reverseIndex - 1]
                 person.battleRecord[mBattleRound.single] = reverseIndex
                 writeHistory("第${mBattleRound.single}届 Single Battle No $reverseIndex : ${person.name}", person)
-                if(isTrigger(reverseIndex * 10)) {
+                if(isTrigger(reverseIndex * 100)) {
                     addSpecialEquipmentEvent(person, "Single")
                 }
             }
@@ -1725,7 +1725,7 @@ class CultivationActivity : BaseActivity() {
         var firstIndex = 0
         var secondIndex = 0
         while (true) {
-            val result = CultivationBattleHelper.battlePerson(mPersons, firstPersons[firstIndex],
+            val result = CultivationBattleHelper.battlePerson(null, firstPersons[firstIndex],
                     secondPersons[secondIndex], round)
             if (result) {
                 secondIndex++
