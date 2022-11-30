@@ -10,6 +10,15 @@ import java.util.*
 @SuppressLint("SetTextI18n")
 object CultivationEnemyHelper {
 
+    data class BossSetting(val name:String, val type:Int, val bonus: Int, val ratity:Int)
+
+    val bossSettings = mutableListOf(
+            BossSetting("\u674e\u5143\u9738\u4e4b\u9b42", 6,20, 5),
+            BossSetting("\u6697\u5f71\u4e4b\u9b42", 6,30, 7),
+            BossSetting("\u7403\u4e4b\u9b42", 6,40, 8),
+            BossSetting("\u738b\u4e4b\u9b42", 6,50, 9)
+    )
+
     //暂时弃用
     fun generateEnemy(type:Int): Enemy {
         val basis = type + 1

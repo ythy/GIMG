@@ -14,6 +14,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationBattleHelper
+import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.vo.cultivation.Equipment
@@ -55,9 +56,14 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
                 if(tejiString == "+")
                     Toast.makeText(mContext, values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
             }
-        }else
-            component.name.text = "${CultivationHelper.showing(values.name)}(${child.size}/${CultivationHelper.getEquipmentsMaxCount(values, child.size)})"
-
+        }else if(values.type == 5){
+            component.name.text = "${CultivationHelper.showing(values.name)}(${values.children.size})"
+        }else if(values.type == 6){
+            component.name.text = "${CultivationHelper.showing(values.name)}(${values.seq}/${CultivationHelper.getValidBonus(values.seq)})"
+            component.name.setOnClickListener{
+                callbacks.onOpenDetailList(values)
+            }
+        }
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         val properties = mutableListOf(0,0,0,0)
         if(values.type <= 3 ){
@@ -73,20 +79,16 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             (0 until 4).forEach { index ->
                 properties[index] += values.property[index]
             }
-        }else{
-            val filterChildren = child.filterIndexed { index, equipment ->
-                if(equipment.type <= 10)
-                    true
-                else
-                    index < CultivationHelper.getEquipmentsMaxCount(equipment, child.size)
-            }
-            component.xiuwei.text = filterChildren.sumBy { it.xiuwei }.toString()
-            component.success.text = filterChildren.sumBy { it.success }.toString()
-            filterChildren.forEach { equipment->
+        }else if(values.type == 9 || values.type == 5){
+            component.xiuwei.text = child.sumBy { it.xiuwei }.toString()
+            component.success.text = child.sumBy { it.success }.toString()
+            child.forEach { equipment->
                 (0 until 4).forEach { index ->
                     properties[index] += equipment.property[index]
                 }
             }
+        }else if(values.type == 6){
+            component.xiuwei.text = (CultivationEnemyHelper.bossSettings[values.id.toInt()].bonus * CultivationHelper.getValidBonus(values.seq)).toString()
         }
         component.props.text = properties.joinToString()
         return convertView
@@ -136,9 +138,6 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
         component.name.setOnClickListener{
             if(tejiString == "+")
                 Toast.makeText(mContext, values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
-            else if(values.type > 10) {
-                callbacks.onOpenDetailList(values)
-            }
         }
         return convertView
     }

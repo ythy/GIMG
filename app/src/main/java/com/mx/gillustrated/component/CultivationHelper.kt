@@ -17,6 +17,7 @@ object CultivationHelper {
     lateinit var mConfig:Config
     lateinit var mBattleRound:BattleRound
     lateinit var mXunDuration:ConcurrentHashMap<Pair<String, Int>, Long>
+    lateinit var mBossRecord:MutableList<MutableMap<Int, String>>
     var maxFemaleProfile = 0 // 默认0号 1001开始不随机使用
     var maxMaleProfile = 0 // 默认0号 1001开始不随机使用
     var pinyinMode:Boolean = false //是否pinyin模式
@@ -192,6 +193,30 @@ object CultivationHelper {
             }
             data.value.battlexiuwei = xiuwei
             data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.SingleMinSize + 1 - it }
+        }
+    }
+
+    fun updateBossBattleBonus(allPerson:ConcurrentHashMap<String, Person>){
+        allPerson.forEach { data->
+            data.value.bossXiuwei = 0
+            data.value.bossRound = mutableListOf(0,0,0,0,0,0,0,0,0)
+        }
+        mBossRecord.forEachIndexed { index, mutableMap ->
+            mutableMap.forEach { (t, u) ->
+                val person = allPerson[u]
+                if (person == null){
+                    mutableMap.remove(t)
+                }else{
+                    person.bossRound[index]++
+                }
+            }
+        }
+        allPerson.forEach { data->
+            data.value.bossRound.forEachIndexed { index, total->
+                if(index <= 3){
+                    data.value.bossXiuwei += CultivationEnemyHelper.bossSettings[index].bonus * getValidBonus(total)
+                }
+            }
         }
     }
 
@@ -480,13 +505,6 @@ object CultivationHelper {
                 person.attack + attack,  person.defence + defence, person.speed + speed, extraHP)
     }
 
-    //type 11,12,13,14 -> B,C,S,E
-    fun gainJiEquipment(person:Person, type:Int, level:Int = 0, round:Int = 0){
-        val equipment = mConfig.equipment.filter{ it.type == type}.sortedBy { it.id }[level]
-        person.equipmentListPair.add(Pair(equipment.id, round))
-        updatePersonEquipment(person)
-    }
-
     fun updatePersonEquipment(person:Person){
         val equipments = person.equipmentListPair.mapNotNull {
             var e = mConfig.equipment.find { e-> e.id == it.first }?.copy()
@@ -502,11 +520,7 @@ object CultivationHelper {
         if(equipments.isNotEmpty()){
             equipments.filter { it.type > 3 }.groupBy { it.id }.forEach { (_, u) ->
                 for (index in 0 until u.size){
-                    val effectEquipment = u[index]
-                    if(index > getEquipmentsMaxCount(effectEquipment, u.size)){
-                        break
-                    }
-                    summationEquipmentValues(person, effectEquipment)
+                    summationEquipmentValues(person,  u[index])
                 }
             }
             equipments.filter { it.type <= 3 }.groupBy { it.type }.forEach { (_, u) ->
@@ -519,18 +533,11 @@ object CultivationHelper {
         }
     }
 
-    fun getEquipmentsMaxCount(equipment: Equipment, size:Int):Int{
-        return if (equipment.type == 5)
-            size
-        else
-            getMaxBonus(size, 1)
-    }
-
     private fun getMaxBonus(size:Int, min:Int = 1):Int{
         return Math.max(min, Math.round( Math.log(size.toDouble())).toInt())
     }
 
-    private fun getValidBonus(size:Int, min:Int = 1):Int{
+    fun getValidBonus(size:Int, min:Int = 1):Int{
         return Math.min(size, getMaxBonus(size, min))
     }
 
@@ -561,7 +568,7 @@ object CultivationHelper {
         }
         val postXiuwei = getNationXiuwei(person)
         val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
-                            + person.clanXiuwei + person.nationXiuwei + postXiuwei
+                            + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + postXiuwei
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
     }

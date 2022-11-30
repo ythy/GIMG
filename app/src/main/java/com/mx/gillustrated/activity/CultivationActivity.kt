@@ -35,6 +35,7 @@ import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
 import com.mx.gillustrated.component.CultivationHelper.isTrigger
 import com.mx.gillustrated.component.CultivationHelper.inDurationByXun
+import com.mx.gillustrated.component.CultivationHelper.mBossRecord
 import com.mx.gillustrated.component.CultivationHelper.mXunDuration
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
@@ -128,6 +129,7 @@ class CultivationActivity : BaseActivity() {
             backupInfo.xun = mCurrentXun
             backupInfo.battleRound = mBattleRound
             backupInfo.xunDuration = mXunDuration.mapKeys { m-> "${m.key.first}-${m.key.second}" }
+            backupInfo.bossRecord = mBossRecord
             backupInfo.alliance = mAlliance.mapValues { it.value.toConfig() }
             mPersons.forEach { p->
                 val it = p.value
@@ -420,9 +422,22 @@ class CultivationActivity : BaseActivity() {
                 val arr = m.key.split("-")
                 Pair(arr[0], arr[1].toInt())
             })
+            mBossRecord = backup.bossRecord
+            if(mBossRecord[0].isEmpty()){
+                mPersons.forEach { (_: String, person: Person) ->
+                    person.equipmentListPair.filter { p-> p.first == "7006501" || p.first == "7006502"
+                            || p.first == "7006503" || p.first == "7006504"}.forEach { pair->
+                        val index = pair.first.toInt() % 10 - 1
+                        mBossRecord[index][pair.second] = person.id
+                    }
+                    person.equipmentListPair.removeIf {  p-> p.first == "7006501" || p.first == "7006502"
+                            || p.first == "7006503" || p.first == "7006504" }
+                }
+            }
         }else{
             mBattleRound = BattleRound()
             mXunDuration = ConcurrentHashMap()
+            mBossRecord =  mutableListOf(mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf())
         }
         createAlliance() //此处处理了删除alliance的情况
         createNation()
@@ -441,6 +456,7 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.updateClanBattleBonus(mClans)
         CultivationHelper.updateNationBattleBonus(mNations, mPersons)
         CultivationHelper.updateSingleBattleBonus(mPersons)
+        CultivationHelper.updateBossBattleBonus(mPersons)
         if(out == null || out.trim() == ""){
             startWorld()
         }else{
@@ -1159,7 +1175,8 @@ class CultivationActivity : BaseActivity() {
                         if(isTrigger(500 / u.type)) {
                             addSpecialEquipmentEvent(person, "Boss")
                         }
-                        CultivationHelper.gainJiEquipment(person, 15, u.type - 1, mBattleRound.boss[u.type - 1])
+                        mBossRecord[u.type - 1][mBattleRound.boss[u.type - 1]] = person.id
+                        CultivationHelper.updateBossBattleBonus(mPersons)
                     }else{
                         u.remainHit --
                         val punishWeight = mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)

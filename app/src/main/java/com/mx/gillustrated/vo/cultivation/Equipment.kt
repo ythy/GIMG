@@ -10,7 +10,7 @@ class Equipment() :Parcelable {
     lateinit var id:String
     lateinit var name:String
     var seq:Int = 0
-    var type:Int = 0 // 0 Bao; 1 Wu; 2 Jia, >10 huizhang
+    var type:Int = 0 // 0 Bao; 1 Wu; 2 Jia, 3 Yao; 5 Amulet; 6 boss?; 8 exclusive?; 9 spec; ?: 不添加至equipment list
     var rarity:Int = 0//5 30, 6 40，7 50，8 ~
     var xiuwei:Int = 0
     var success:Int = 0

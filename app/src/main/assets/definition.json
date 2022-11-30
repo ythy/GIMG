@@ -2103,42 +2103,6 @@
       "xiuwei": 900,
       "success": 0,
       "property": [0,300,0,300,0,0,0,0]
-    },
-    {
-      "id": "7006501",
-      "name": "\u674e\u5143\u9738\u4e4b\u9b42",
-      "type": 15,
-      "rarity": 5,
-      "xiuwei": 20,
-      "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
-    },
-    {
-      "id": "7006502",
-      "name": "\u6697\u5f71\u4e4b\u9b42",
-      "type": 15,
-      "rarity": 7,
-      "xiuwei": 30,
-      "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
-    },
-    {
-      "id": "7006503",
-      "name": "\u7403\u4e4b\u9b42",
-      "type": 15,
-      "rarity": 8,
-      "xiuwei": 40,
-      "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
-    },
-    {
-      "id": "7006504",
-      "name": "\u738b\u4e4b\u9b42",
-      "type": 15,
-      "rarity": 9,
-      "xiuwei": 50,
-      "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
     }
   ],
 

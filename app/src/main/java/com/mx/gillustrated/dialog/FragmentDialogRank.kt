@@ -19,6 +19,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationRankAdapter
 import com.mx.gillustrated.component.CultivationBattleHelper
+import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.vo.cultivation.SimpleData
 
@@ -173,11 +174,12 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                 }
             }
             7 ->{
-                val person = mContext.mPersons[mId]!!
-                val equipment = CultivationHelper.mConfig.equipment.find { f-> f.id == mSpec }!!
-                title = equipment.name
-                list.addAll(person.equipmentListPair.filter { it.first == mSpec }.sortedByDescending { it.second }.mapIndexed { index, pair ->
-                    SimpleData("", "", "", mType, mutableListOf(), pair.second)
+                val equipment = CultivationHelper.mBossRecord[mSpec.toInt()].filter {
+                    it.value == mId
+                }.map { it.key }
+                title = CultivationEnemyHelper.bossSettings[mSpec.toInt()].name
+                list.addAll(equipment.map{ index ->
+                    SimpleData("", "", "", mType, mutableListOf(), index)
                 })
             }
             8 ->{ // seq = name
@@ -192,13 +194,12 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
             }
             in 20..29 ->{
                 val index = mType - 20
-                val equipment = CultivationHelper.mConfig.equipment.filter { it.type == 15 }[index]
-                title = CultivationHelper.showing(equipment.name)
-                mContext.mPersons.forEach{ p->
-                    list.addAll(p.value.equipmentListPair.filter { e-> e.first == equipment.id }.map {
-                        SimpleData(p.value.id, p.value.name, "", mType, mutableListOf(), it.second)
-                    })
-                }
+                val record = CultivationHelper.mBossRecord[index]
+                title = CultivationHelper.showing(CultivationEnemyHelper.bossSettings[index].name)
+                list.addAll(record.map { r->
+                    SimpleData(r.value,  mContext.mPersons[r.value]?.name ?: "", "", mType, mutableListOf(), r.key)
+                })
+
             }
         }
         mTitle.text = title

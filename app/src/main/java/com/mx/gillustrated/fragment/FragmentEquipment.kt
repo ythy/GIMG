@@ -16,6 +16,7 @@ import butterknife.OnClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationEquipmentAdapter
+import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.dialog.FragmentDialogEquipment
@@ -78,28 +79,41 @@ class FragmentEquipment: Fragment() {
             if(equipment.type == 5){
                 equipment = CultivationSetting.getEquipmentCustom(it)
             }else{
-                equipment.seq = it.second
-                equipment.uniqueName = if(equipment.seq > 0) "${equipment.name}-${equipment.seq}" else equipment.name
+                equipment.uniqueName = equipment.name
             }
             equipment
         }.sortedWith(compareBy<Equipment> {
             it.type
         }.thenByDescending { it.rarity }.thenByDescending { it.seq })
-
+        val bossEquipment = mPerson.bossRound.mapIndexedNotNull{ index, count ->
+            if (count == 0)
+                null
+            else{
+                val equipment = Equipment()
+                equipment.rarity = CultivationEnemyHelper.bossSettings[index].ratity
+                equipment.id = index.toString()
+                equipment.name = CultivationEnemyHelper.bossSettings[index].name
+                equipment.type = CultivationEnemyHelper.bossSettings[index].type
+                equipment.seq = count
+                equipment.uniqueName = equipment.name
+                equipment.children.clear()
+                equipment.childrenAll.clear()
+                equipment
+            }
+        }
         mEquipmentGroups.clear()
+        // 0 1 2 3 by type / 5 by id ; 9 by id / 6 and 8 不在equiplist
         val groups = equipments.groupBy{ if(it.type <= 3) it.type  else it.type * 100 +  it.id.toInt() % 10 }
         .map {
             it.value[0].children.clear()
             it.value[0].childrenAll.clear()
-            if(it.value[0].type == 5){
-                it.value[0].children.addAll(it.value)
-            }else
-                it.value[0].children.addAll(it.value.subList(0, Math.min(10, it.value.size)))
+            it.value[0].children.addAll(it.value)
             it.value[0].childrenAll.addAll(it.value)
             it.value[0]
         }
         mEquipmentGroups.addAll(exclusives)
         mEquipmentGroups.addAll(groups)
+        mEquipmentGroups.addAll(bossEquipment)
 
         mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
 

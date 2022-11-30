@@ -77,6 +77,8 @@ class Person() :Parcelable {
         var type = 0// 标注boss用 boss > 0
         var remainHit = 0// 标注boss attack round
         var nationId = "" //每次读取时赋值
+        var bossXiuwei:Int = 0// 每次读取 && update depend boss battle
+        var bossRound:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
         var clanXiuwei:Int = 0// 每次读取 && update depend clan battle
         var nationXiuwei:Int = 0//每次读取 &&  update depend nation battle
         var battlexiuwei:Int = 0 //每次读取和single battle后更新
@@ -157,6 +159,8 @@ class Person() :Parcelable {
                 nationXiuwei = parcel.readInt()
 
                 careerDetailList =  Collections.synchronizedList(parcel.createTypedArrayList(Career))
+                bossXiuwei = parcel.readInt()
+                bossRound= parcel.createIntArray().toMutableList()
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -230,6 +234,8 @@ class Person() :Parcelable {
                 parcel.writeInt(nationXiuwei)
 
                 parcel.writeTypedList(careerDetailList)
+                parcel.writeInt(bossXiuwei)
+                parcel.writeIntArray(bossRound.toIntArray())
 
         }
 
