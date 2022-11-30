@@ -532,7 +532,7 @@ class CultivationActivity : BaseActivity() {
             mConfig.alliance.forEach { configAlliance->
                 val alliance = mAlliance[configAlliance.id]
                 if(alliance != null){
-                    alliance.name = configAlliance.name + "界"
+                    alliance.name = configAlliance.name
                     alliance.nation = configAlliance.nation
                     alliance.type = configAlliance.type
                     alliance.level = configAlliance.level
@@ -585,7 +585,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun newAlliance(it:AllianceConfig):Alliance{
         val alliance = Alliance()
-        alliance.name = it.name + "界"
+        alliance.name = it.name
         alliance.id = it.id
         alliance.type = it.type
         alliance.nation = it.nation

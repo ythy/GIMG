@@ -15,7 +15,7 @@ class TeJi() : Parcelable {
     var status:String = ""
     var statusRound:Int = 0 // combining with status
     //不在配置，不保存
-    var form:Int = 0 // 0 list 1 equipment
+    var form:Int = 0 // 0 list 1 ex equipment 2 amulet
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()

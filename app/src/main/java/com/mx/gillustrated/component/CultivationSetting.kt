@@ -37,7 +37,7 @@ object CultivationSetting {
     val EVENT_WEIGHT = listOf("1200-50", "7200-40", "8400-40", "9600-100")
     const val SP_PUNISH_BOSS_MILLION = 200
 
-    val SpecPersonFirstName: MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed", "\u9b41", "\u5f71", "\u8bed", "\u96e8")
+    val SpecPersonFirstName: MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed", "\u9b41", "\u5f71", "\u8bed", "\u96e8", "\u82B1")
     val SpecPersonFirstNameWeight: Pair<Int, Int> = Pair(50, 20)// tianfu.linggen
 
 
@@ -230,7 +230,7 @@ object CultivationSetting {
         custom type 8
         rarity:
         12 - 400 teji2 xiuwei300
-        11 - 300 teji2
+        11 - 300 teji 1/2 xiuwei200
         10 - 200 teji xiuwei 0/50/100/200
         9 - 150 xiuwei100
         8 - 100 xiuwei50 hp300

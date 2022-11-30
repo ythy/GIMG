@@ -17,6 +17,8 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationTeJiAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationHelper.mConfig
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.dialog.FragmentDialogEquipment
 import com.mx.gillustrated.dialog.FragmentDialogTeJi
 import com.mx.gillustrated.vo.cultivation.Equipment
@@ -109,15 +111,31 @@ class FragmentTeJi: Fragment() {
         val tejis = mPerson.teji.map {
             mConfigTeji.find { e-> e.id == it}!!.copy()
         }.toMutableList()
-        val exclusives =  CultivationHelper.mConfig.equipment.filter {
+        CultivationHelper.mConfig.equipment.filter {
             it.type == 8 && it.spec.contains(mPerson.specIdentity) && it.teji.size > 0}
-        exclusives.forEach {
+        .forEach {
             tejis.addAll(it.teji.map {
                 val teji = mConfigTeji.find { e-> e.id == it}!!.copy()
                 teji.form = 1
                 teji
             })
         }
+         mPerson.equipmentListPair.mapNotNull {
+            val equipment = mConfig.equipment.find { e-> e.id == it.first}!!.copy()
+            if(equipment.type == 5){
+                CultivationSetting.getEquipmentCustom(it)
+            }else{
+                null
+            }
+        }.filter { it.teji.size > 0 }
+         .forEach {
+            tejis.addAll(it.teji.map {
+                val teji = mConfigTeji.find { e-> e.id == it}!!.copy()
+                teji.form = 2
+                teji
+            })
+        }
+
         tejis.sortByDescending { it.rarity }
         mTeJi.clear()
         mTeJi.addAll(tejis)

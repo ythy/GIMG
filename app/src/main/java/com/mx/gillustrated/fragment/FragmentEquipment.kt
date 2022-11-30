@@ -72,7 +72,7 @@ class FragmentEquipment: Fragment() {
             it.children.clear()
             it.childrenAll.clear()
             it
-        }
+        }.sortedByDescending { it.rarity }
         val equipments = mPerson.equipmentListPair.map {
             var equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()
             if(equipment.type == 5){
