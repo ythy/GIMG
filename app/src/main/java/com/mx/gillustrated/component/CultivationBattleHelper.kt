@@ -118,7 +118,7 @@ object CultivationBattleHelper {
             currentList.forEach { current ->
                 if (hasTeji("8003003", current)) {
                     current.minDamage = 20
-                    addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8003003").name}\u6548\u679c, \u6700\u5c0f\u4f24\u5bb310", "8003003")
+                    addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8003003").name}\u6548\u679c, \u6700\u5c0f\u4f24\u5bb320", "8003003")
                 }
                 if (hasTeji("8001005", current)) {
                     current.extraDamage += 40
@@ -312,19 +312,19 @@ object CultivationBattleHelper {
         }
         val attackerValue = getBattleValue(attacker.attack)
         var defenderValue = getBattleValue(defender.defence)
+        val triggerBaseList:MutableList<String> = mutableListOf()
         if(hasTeji("8003005", attacker) && isTrigger(tejiDetail("8003005").chance, attacker)){
             defenderValue = 0
-            addBattleDetail(battleId, "${showName(attacker)}\u7279\u6280:${tejiDetail("8003005").name}\u53d1\u52a8, ${showName(defender)}\u9632\u5fa10", "8003005")
+            triggerBaseList.add(tejiDetail("8003005").name)
         }
         var attackResult = attackerValue - defenderValue
         if(hasTeji("8003002", attacker) && attackResult > 0 && isTrigger(tejiDetail("8003002").chance, attacker) ){
             attackResult = Math.round( attackResult * 2.0f)
-            addBattleDetail(battleId, "${showName(attacker)}\u7279\u6280:${tejiDetail("8003002").name}\u53d1\u52a8, \u4f24\u5bb3\u7ed3\u679c2\u500d", "8003002")
+            triggerBaseList.add(tejiDetail("8003002").name)
         }
-
         val hpReduced = Math.max(attacker.minDamage, attackResult)
         defender.hp -= hpReduced + attacker.extraDamage
-        addBattleDetail(battleId, "${showName(attacker)}\u7684\u653b\u51fb，${showName(defender)}HP-${hpReduced + attacker.extraDamage}")
+        addBattleDetail(battleId, "${showName(attacker)}\u7684\u653b\u51fb ${triggerBaseList.joinToString()}}，${showName(defender)}HP-${hpReduced + attacker.extraDamage}")
 
         if(hasTeji("8003009", defender) && isTrigger(tejiDetail("8003009").chance, defender, attacker) ){// anti-shake
             val antiValue = Math.round( hpReduced * 0.5f)
@@ -347,6 +347,8 @@ object CultivationBattleHelper {
             if(status != null)
                 addBattleDetail(battleId, "${showName(attacker)}\u7279\u6280:${tejiDetail("8005002").name}\u53d1\u52a8, ${status.name}发动", "8005002")
         }
+
+
     }
 
     private fun getSpeed(propsList:MutableList<BattleObject>, randomBasis:Int):Int{

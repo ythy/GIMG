@@ -2360,9 +2360,9 @@
     {
       "id": "8005001",
       "name": "\u4e03\u715e\u661f",
-      "description": "50%\u6982\u7387\u5267\u6bd23\u56de\u5408",
+      "description": "20%\u6982\u7387\u5267\u6bd23\u56de\u5408",
       "type": 5,
-      "chance": 50,
+      "chance": 20,
       "status": "8100003",
       "statusRound": 3,
       "rarity": 8,
@@ -2371,9 +2371,9 @@
     {
       "id": "8005002",
       "name": "\u4e5d\u66dc\u661f",
-      "description": "50%\u6982\u7387\u81f4\u76f23\u56de\u5408",
+      "description": "20%\u6982\u7387\u81f4\u76f23\u56de\u5408",
       "type": 5,
-      "chance": 50,
+      "chance": 20,
       "status": "8100004",
       "statusRound": 3,
       "rarity": 8,
