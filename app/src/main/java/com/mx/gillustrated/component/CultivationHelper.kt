@@ -204,12 +204,11 @@ object CultivationHelper {
         mBossRecord.forEachIndexed { index, mutableMap ->
             mutableMap.forEach { (t, u) ->
                 val person = allPerson[u]
-                if (person == null){
-                    mutableMap.remove(t)
-                }else{
+                if (person != null){
                     person.bossRound[index]++
                 }
             }
+            mutableMap.entries.removeIf { allPerson[it.value] == null }
         }
         allPerson.forEach { data->
             data.value.bossRound.forEachIndexed { index, total->

@@ -690,17 +690,17 @@ class CultivationActivity : BaseActivity() {
         }
         if(it.specIdentity > 0 && alliance != null){ //特殊处理SpecName
             val config = getAllSpecPersons().find { p-> p.identity == it.specIdentity } //maybe null
-            if(config != null){
+            if(config != null || alliance.type == 1){
                 val person = when {
                     alliance.type == 0 -> //Name2
-                        addSingleSpecPerson(config)
+                        addSingleSpecPerson(config!!)
                     alliance.type == 1 -> {
                         val firstName = SpecPersonFirstName[CultivationSetting.getIdentitySeq(it.specIdentity) - 1]
                         addSingleSpecPerson(PresetInfo(it.specIdentity, Pair(it.lastName, firstName),
                                 0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second),
                                 alliance)
                     }
-                    else -> addSingleSpecPerson(config, alliance)
+                    else -> addSingleSpecPerson(config!!, alliance)
                 }
 
                 if(person != null){

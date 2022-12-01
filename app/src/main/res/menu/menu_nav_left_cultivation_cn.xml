@@ -3,7 +3,7 @@
     <group android:id="@+id/group1" android:checkableBehavior="single">
         <item
             android:id="@+id/menu_battle_bang"
-            android:title="帮战"/>
+            android:title="门派战"/>
         <item
             android:id="@+id/menu_battle_clan"
             android:title="家族战"/>
@@ -12,7 +12,7 @@
             android:title="个人战"/>
         <item
             android:id="@+id/menu_battle_nation"
-            android:title="国战"/>
+            android:title="联盟战"/>
         <item
             android:id="@+id/menu_enemy_list"
             android:title="天降Boss"/>
