@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Alliance
 import com.mx.gillustrated.vo.cultivation.Clan
@@ -54,7 +55,7 @@ class CultivationClanListAdapter  constructor(mContext: Context, private val lis
             component.zhu.text = CultivationHelper.showing(clan.zhu!!.name)
         else
             component.zhu.text = ""
-        component.persons.text = personList.size.toString()
+        component.persons.text = "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
         component.total.text  = clan.totalXiuwei.toString()
         component.winner.text = clan.battleWinner.toString()
         return convertView

@@ -53,6 +53,7 @@ class FragmentDialogSetting : DialogFragment() {
         val current = text.toString()
         if(current.toIntOrNull() != null && current.toInt() > 0){
             mActivity.mSP.edit().putInt("cultivation_jie", current.toInt()).apply()
+            CultivationSetting.TEMP_SP_JIE_TURN = current.toInt()
         }
     }
 

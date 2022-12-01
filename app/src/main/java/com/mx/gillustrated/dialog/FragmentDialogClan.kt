@@ -16,6 +16,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
@@ -147,7 +148,7 @@ class FragmentDialogClan : DialogFragment() {
             onCloseHandler()
             return
         }
-        mDialogView.total.text = personList.size.toString()
+        mDialogView.total.text = "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
         mDialogView.zhu.text = if(clan.zhu?.name == null ) "" else CultivationHelper.showing(clan.zhu!!.name)
         mDialogView.xiuwei.text = "${clan.battleWinner}-${clan.xiuweiBattle}↑"
         mPersonList.clear()

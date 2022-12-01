@@ -10,6 +10,7 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Alliance
 
@@ -43,7 +44,7 @@ class AllianceListAdapter  constructor(mContext: Context, private val list: List
             component = convertView.tag as ViewHolder
 
         component.name.text =  CultivationHelper.showing("${nation.find { it.id == list[arg0].nation }?.name}-${list[arg0].name}")
-        component.persons.text = list[arg0].personList.size.toString()
+        component.persons.text =  "${list[arg0].personList.size}-${list[arg0].personList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
         component.total.text  = list[arg0].totalXiuwei.toString()
         component.winner.text  = list[arg0].battleWinner.toString()
         return convertView

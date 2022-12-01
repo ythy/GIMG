@@ -16,6 +16,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Alliance
@@ -158,7 +159,7 @@ class FragmentDialogAlliance : DialogFragment() {
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
 
-        mDialogView.total.text = mPersonList.size.toString()
+        mDialogView.total.text = "${mPersonList.size}-${mPersonList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
     }
 
     private fun showPersonInfo(id:String?){

@@ -10,6 +10,7 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.vo.cultivation.Nation
 
 class CultivationNationAdapter  constructor(mContext: Context, private val list: List<Nation>) : BaseAdapter() {
@@ -41,7 +42,7 @@ class CultivationNationAdapter  constructor(mContext: Context, private val list:
             component = convertView.tag as ViewHolder
 
         component.name.text =  CultivationHelper.showing(list[arg0].name)
-        component.persons.text = list[arg0].nationPersonList.size.toString()
+        component.persons.text = "${ list[arg0].nationPersonList.size}-${ list[arg0].nationPersonList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
         component.winner.text = list[arg0].battleWinner.toString()
         component.total.text  = list[arg0].totalTurn.toString()
         return convertView

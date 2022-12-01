@@ -385,6 +385,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun init(json:String?){
+        CultivationSetting.TEMP_SP_JIE_TURN = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
         val out:String? = if(readRecord) json else null
         if(out != null && out.trim() != ""){
             val backup = Gson().fromJson(out, BakInfo::class.java)
