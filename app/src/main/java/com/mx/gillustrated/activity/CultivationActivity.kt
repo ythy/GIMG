@@ -423,7 +423,10 @@ class CultivationActivity : BaseActivity() {
                 Pair(arr[0], arr[1].toInt())
             })
             mBossRecord = backup.bossRecord
-            if(mBossRecord[0].isEmpty()){
+            if(mBossRecord.isEmpty()){
+                repeat(CultivationEnemyHelper.bossSettings.size) {
+                    mBossRecord.add(mutableMapOf())
+                }
                 mPersons.forEach { (_: String, person: Person) ->
                     person.equipmentListPair.filter { p-> p.first == "7006501" || p.first == "7006502"
                             || p.first == "7006503" || p.first == "7006504"}.forEach { pair->
@@ -437,7 +440,10 @@ class CultivationActivity : BaseActivity() {
         }else{
             mBattleRound = BattleRound()
             mXunDuration = ConcurrentHashMap()
-            mBossRecord =  mutableListOf(mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf())
+            mBossRecord = mutableListOf()
+            repeat(CultivationEnemyHelper.bossSettings.size) {
+                mBossRecord.add(mutableMapOf())
+            }
         }
         createAlliance() //此处处理了删除alliance的情况
         createNation()

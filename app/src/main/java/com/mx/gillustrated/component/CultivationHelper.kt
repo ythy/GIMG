@@ -88,10 +88,9 @@ object CultivationHelper {
     fun updateAllianceGain(allAlliance:ConcurrentHashMap<String, Alliance>, updated:Boolean = false){
         allAlliance.forEach { data->
             val alliance = data.value
-            val alivePersons = alliance.personList
+            val alivePersons = ConcurrentHashMap(alliance.personList.filter { it.value.type == 0 })
             if(alivePersons.isNotEmpty()){
                 if(updated) {
-                    //updateHuInAlliance(alliance, alivePersons)
                     updateZhuInAlliance(alliance, alivePersons)
                     updateG1InAlliance(alliance, alivePersons)
                 }
@@ -120,13 +119,13 @@ object CultivationHelper {
         if(alliance.zhuPerson != null){
             return
         }
-        val personList = Collections.synchronizedList( persons.map { it.value }.filter { it.type == 0 })
+        val personList = Collections.synchronizedList( persons.map { it.value })
         alliance.zhuPerson = personList.sortedBy { it.birthtime }.first()
     }
 
     private fun updateG1InAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
         val total = Math.min(10, Math.max(1, persons.size / 4))
-        val personList =  Collections.synchronizedList( persons.map { it.value }.filter { it.type == 0 })
+        val personList =  Collections.synchronizedList( persons.map { it.value })
         alliance.speedG1PersonList.clear()
         personList.sortByDescending { it.extraSpeed }
         for (i in 0 until total){
@@ -199,7 +198,10 @@ object CultivationHelper {
     fun updateBossBattleBonus(allPerson:ConcurrentHashMap<String, Person>){
         allPerson.forEach { data->
             data.value.bossXiuwei = 0
-            data.value.bossRound = mutableListOf(0,0,0,0,0,0,0,0,0)
+            data.value.bossRound = mutableListOf()
+            repeat(CultivationEnemyHelper.bossSettings.size) {
+                data.value.bossRound.add(0)
+            }
         }
         mBossRecord.forEachIndexed { index, mutableMap ->
             mutableMap.forEach { (t, u) ->
@@ -212,9 +214,7 @@ object CultivationHelper {
         }
         allPerson.forEach { data->
             data.value.bossRound.forEachIndexed { index, total->
-                if(index <= 3){
-                    data.value.bossXiuwei += CultivationEnemyHelper.bossSettings[index].bonus * getValidBonus(total)
-                }
+                data.value.bossXiuwei += CultivationEnemyHelper.bossSettings[index].bonus * getValidBonus(total)
             }
         }
     }

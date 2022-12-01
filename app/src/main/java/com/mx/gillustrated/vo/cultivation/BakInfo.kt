@@ -8,5 +8,5 @@ class BakInfo {
     var nation:Map<String, NationBak> = HashMap()
     var battleRound:BattleRound? = null
     var xunDuration:Map<String, Long> = HashMap()
-    var bossRecord:MutableList<MutableMap<Int, String>> = mutableListOf(mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf(),mutableMapOf())
+    var bossRecord:MutableList<MutableMap<Int, String>> = mutableListOf()
 }
