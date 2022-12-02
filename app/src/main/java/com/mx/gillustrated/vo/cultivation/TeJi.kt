@@ -14,6 +14,7 @@ class TeJi() : Parcelable {
     var chance:Int = 100
     var status:String = ""
     var statusRound:Int = 0 // combining with status
+    var power:Int = 0
     //不在配置，不保存
     var form:Int = 0 // 0 list 1 ex equipment 2 amulet
 
@@ -27,6 +28,7 @@ class TeJi() : Parcelable {
         status = parcel.readString()
         chance = parcel.readInt()
         form = parcel.readInt()
+        power = parcel.readInt()
     }
 
     override fun toString(): String {
@@ -45,6 +47,7 @@ class TeJi() : Parcelable {
         teJi.status = this.status
         teJi.statusRound = this.statusRound
         teJi.form = this.form
+        teJi.power = this.power
         return teJi
     }
 
@@ -58,6 +61,7 @@ class TeJi() : Parcelable {
         parcel.writeInt(chance)
         parcel.writeString(status)
         parcel.writeInt(form)
+        parcel.writeInt(power)
     }
 
     override fun describeContents(): Int {

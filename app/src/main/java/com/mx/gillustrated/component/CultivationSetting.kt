@@ -142,6 +142,7 @@ object CultivationSetting {
             PresetInfo(16000130, Pair("\u674e","\u9035"),0, 100, 200),
             PresetInfo(16000140, Pair("\u6234","\u5b97")),
             PresetInfo(16000150, Pair("\u5f20","\u987a"),0,100,100),
+            PresetInfo(16000160, Pair("\u674E","\u5E94"),0,100,100),
 
             PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
             PresetInfo(16010020, Pair("\u9ad8","\u4fc5"),0, 100, 100),
@@ -149,6 +150,9 @@ object CultivationSetting {
             PresetInfo(16010040, Pair("\u7ae5","\u8d2f")),
             PresetInfo(16010050, Pair("\u897f\u95e8","\u5e86"),16010061),
             PresetInfo(16010061, Pair("\u6f58","\u91d1\u83b2"),16010050, 100, 100),
+            PresetInfo(16010071, Pair("\u674E","\u5E08\u5E08"),0, 100, 200),
+            PresetInfo(16010080, Pair("\u6881","\u4E16\u6770")), PresetInfo(16010090, Pair("\u6768","\u622C")),
+            PresetInfo(16010100, Pair("\u8D75","\u4F76"),0, 200, 600),
 
             PresetInfo(16020010, Pair("\u6641","\u76d6"),0, 100, 200),
             PresetInfo(16020020, Pair("\u738b","\u4f26")),

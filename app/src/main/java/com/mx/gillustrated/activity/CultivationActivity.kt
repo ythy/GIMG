@@ -304,19 +304,19 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun temp(){
-//        val specConfig = getAllSpecPersons()
-//        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
-//            val config = specConfig.find { c-> c.identity == u.specIdentity }
-//            if (config != null){
-//                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
-//                u.lastName = config.name.first
-//                if (config.profile > 0)
-//                    u.profile = config.profile
-//                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
-//                    mPersons[u.partner ?: ""]?.partnerName = u.name
-//                }
-//            }
-//        }
+        val specConfig = getAllSpecPersons()
+        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
+            val config = specConfig.find { c-> c.identity == u.specIdentity }
+            if (config != null){
+                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
+                u.lastName = config.name.first
+                if (config.profile > 0)
+                    u.profile = config.profile
+                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
+                    mPersons[u.partner ?: ""]?.partnerName = u.name
+                }
+            }
+        }
 
 //        mPersons.forEach { (_: String, u: Person) ->
 //            u.equipmentListPair.removeIf { it.second > 10000 }
@@ -348,13 +348,13 @@ class CultivationActivity : BaseActivity() {
 //                }
 //            }
 //        }
-        val specConfig = getAllSpecPersons()
-        mPersons.map { it.value }.filter { mAlliance[it.allianceId]?.type != 1 && it.specIdentity > 0 }.forEach { p->
-            val spec = specConfig.find { it.identity == p.specIdentity }
-            if(spec == null){
-                p.specIdentity = 0
-            }
-        }
+//        val specConfig = getAllSpecPersons()
+//        mPersons.map { it.value }.filter { mAlliance[it.allianceId]?.type != 1 && it.specIdentity > 0 }.forEach { p->
+//            val spec = specConfig.find { it.identity == p.specIdentity }
+//            if(spec == null){
+//                p.specIdentity = 0
+//            }
+//        }
 
 //        SpecPersonFirstName2.forEach { spec->
 //            val person = mPersons.map { it.value }.find { it.name == spec.name.first + spec.name.second }

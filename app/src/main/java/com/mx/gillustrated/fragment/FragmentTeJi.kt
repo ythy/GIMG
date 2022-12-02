@@ -121,12 +121,12 @@ class FragmentTeJi: Fragment() {
             })
         }
          mPerson.equipmentListPair.mapNotNull {
-            val equipment = mConfig.equipment.find { e-> e.id == it.first}!!.copy()
-            if(equipment.type == 5){
-                CultivationSetting.getEquipmentCustom(it)
-            }else{
-                null
-            }
+             val equipment = mConfig.equipment.find { e-> e.id == it.first}!!.copy()
+             when {
+                 equipment.type == 5 -> CultivationSetting.getEquipmentCustom(it)
+                 equipment.type == 9 -> equipment
+                 else -> null
+             }
         }.filter { it.teji.size > 0 }
          .forEach {
             tejis.addAll(it.teji.map {

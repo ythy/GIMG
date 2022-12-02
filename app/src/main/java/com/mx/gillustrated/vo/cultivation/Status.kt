@@ -7,5 +7,6 @@ class Status {
     var rarity: Int = 0
     var chance:Int = 100
     var target = 0 // 0 mine; 1 opponent
+    var power:Int = 0
 
 }
