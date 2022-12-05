@@ -2494,7 +2494,7 @@
       "type": 6,
       "chance": 90,
       "power": 200,
-      "rarity": 10,
+      "rarity": 11,
       "weight": 9000000
     },
     {
@@ -2505,7 +2505,7 @@
       "chance": 60,
       "power": 50,
       "rarity": 10,
-      "weight": 9000000
+      "weight": 8000000
     },
     {
       "id": "8006003",
@@ -2525,7 +2525,19 @@
       "chance": 40,
       "power": 30,
       "rarity": 8,
-      "weight": 2000000
+      "weight": 3000000
+    },
+    {
+      "id": "8006005",
+      "name": "\u4E5D\u9634\u767D\u9AA8\u722A",
+      "description": "80%\u6982\u7387,\u9644\u52A0\u638C\u6CD5\u653B\u51FB",
+      "type": 6,
+      "chance": 80,
+      "power": 150,
+      "status": "8100003",
+      "rarity": 11,
+      "weight": 9000000,
+      "spec": ["13020031"]
     }
   ],
   "status": [

@@ -80,8 +80,8 @@ class Equipment() :Parcelable {
         equipment.maxCount = this.maxCount
         equipment.children = this.children
         equipment.childrenAll = this.childrenAll
-        equipment.teji = this.teji
-        equipment.spec = this.spec
+        equipment.spec =  Collections.synchronizedList(this.spec)
+        equipment.teji = Collections.synchronizedList(this.teji)
         return equipment
     }
 

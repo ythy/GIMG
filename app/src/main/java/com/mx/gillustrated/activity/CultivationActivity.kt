@@ -47,6 +47,7 @@ import com.mx.gillustrated.component.CultivationSetting.createIdentitySeq
 import com.mx.gillustrated.component.CultivationSetting.PresetInfo
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstNameWeight
 import com.mx.gillustrated.component.CultivationSetting.getAllSpecPersons
+import com.mx.gillustrated.component.CultivationSetting.getIdentityType
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.service.StopService
 import com.mx.gillustrated.util.CultivationBakUtil
@@ -315,7 +316,13 @@ class CultivationActivity : BaseActivity() {
                 if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
                     mPersons[u.partner ?: ""]?.partnerName = u.name
                 }
+            }else if(getIdentityType(u.specIdentity) != 1) {
+                deadHandler(u, true)
             }
+        }
+
+        mPersons.filterValues { it.specIdentity == 0 && it.profile < 1000 }.forEach { (_, u) ->
+            u.profile = CultivationHelper.getRandomProfile(u.gender)
         }
 
 //        mPersons.forEach { (_: String, u: Person) ->
@@ -680,7 +687,7 @@ class CultivationActivity : BaseActivity() {
     }
 
 
-    private fun deadHandler(it:Person, currentXun:Long = mCurrentXun){
+    private fun deadHandler(it:Person, force:Boolean = false){
         mPersons.remove(it.id)
         mDeadPersons[it.id] = it
         it.nationPost = 0
@@ -695,7 +702,7 @@ class CultivationActivity : BaseActivity() {
         if(mClans[it.ancestorId] != null){
             mClans[it.ancestorId]?.clanPersonList?.remove(it.id)
         }
-        if(it.specIdentity > 0 && alliance != null){ //特殊处理SpecName
+        if(it.specIdentity > 0 && alliance != null && !force){ //特殊处理SpecName
             val config = getAllSpecPersons().find { p-> p.identity == it.specIdentity } //maybe null
             if(config != null || alliance.type == 1){
                 val person = when {
@@ -755,7 +762,7 @@ class CultivationActivity : BaseActivity() {
                 addPersonEvent(it,"转转-1,残:${it.lifeTurn}")
             }else{
                 if(getOnlinePersonDetail(it.id) != null)
-                    deadHandler(it, currentXun)
+                    deadHandler(it)
                 return
             }
         }
@@ -763,7 +770,7 @@ class CultivationActivity : BaseActivity() {
         var remainingStep = step
         loop@ while (remainingStep-- > 0){
             val currentJinJie = CultivationHelper.getJingJie(it.jingJieId)
-            val xiuweiGrow = CultivationHelper.getXiuweiGrow(it, mAlliance)
+            val xiuweiGrow = getXiuweiGrow(it, mAlliance)
             it.maxXiuWei += xiuweiGrow
             it.pointXiuWei += xiuweiGrow
             it.xiuXei += xiuweiGrow
@@ -1020,7 +1027,7 @@ class CultivationActivity : BaseActivity() {
             val person = mPersons[id]
             if(person != null){
                 person.lifetime = mCurrentXun
-                deadHandler(person, mCurrentXun)
+                deadHandler(person)
             }
             val message = Message.obtain()
             message.what = 6

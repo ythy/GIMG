@@ -3,6 +3,7 @@ package com.mx.gillustrated.vo.cultivation
 import android.os.Parcel
 import android.os.Parcelable
 import com.mx.gillustrated.component.CultivationHelper
+import java.util.*
 
 class TeJi() : Parcelable {
     lateinit var id:String
@@ -15,6 +16,7 @@ class TeJi() : Parcelable {
     var status:String = ""
     var statusRound:Int = 0 // combining with status
     var power:Int = 0
+    var spec:MutableList<Int> = mutableListOf()//专属
     //不在配置，不保存
     var form:Int = 0 // 0 list 1 ex equipment 2 amulet
 
@@ -29,6 +31,7 @@ class TeJi() : Parcelable {
         chance = parcel.readInt()
         form = parcel.readInt()
         power = parcel.readInt()
+        spec = Collections.synchronizedList(parcel.createIntArray().toMutableList())
     }
 
     override fun toString(): String {
@@ -48,6 +51,7 @@ class TeJi() : Parcelable {
         teJi.statusRound = this.statusRound
         teJi.form = this.form
         teJi.power = this.power
+        teJi.spec =  Collections.synchronizedList(this.spec)
         return teJi
     }
 
@@ -62,6 +66,7 @@ class TeJi() : Parcelable {
         parcel.writeString(status)
         parcel.writeInt(form)
         parcel.writeInt(power)
+        parcel.writeIntArray(spec.toIntArray())
     }
 
     override fun describeContents(): Int {

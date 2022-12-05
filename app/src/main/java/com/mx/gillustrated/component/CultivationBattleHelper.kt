@@ -337,24 +337,7 @@ object CultivationBattleHelper {
         defender.hp -= hpReduced + attacker.extraDamage
         addBattleDetail(battleId, "${showName(attacker)}\u7684\u653b\u51fb ${triggerBaseList.joinToString()}，$attackerValue - $defenderValue ${showName(defender)}HP-${hpReduced + attacker.extraDamage}")
 
-        if(hasTeji("8006001", attacker) && isTrigger(tejiDetail("8006001").chance, attacker) ){
-            defender.hp -= tejiDetail("8006001").power
-            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006001").name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail("8006001").power}")
-        }
-        if(hasTeji("8006002", attacker) && isTrigger(tejiDetail("8006002").chance, attacker) ){
-            defender.hp -= tejiDetail("8006002").power
-            defender.speed -= tejiDetail("8006002").power
-            defender.speed = Math.max(1, defender.speed)
-            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006002").name}\u53D1\u52A8，${showName(defender)}HP/SPEED-${tejiDetail("8006002").power}")
-        }
-        if(hasTeji("8006003", attacker) && isTrigger(tejiDetail("8006003").chance, attacker) ){
-            defender.hp -= tejiDetail("8006003").power
-            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006003").name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail("8006003").power}")
-        }
-        if(hasTeji("8006004", attacker) && isTrigger(tejiDetail("8006004").chance, attacker) ){
-            defender.hp -= tejiDetail("8006004").power
-            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006004").name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail("8006004").power}")
-        }
+        magicInBattle(battleId, attacker, defender)
 
         if(hasTeji("8003009", defender) && isTrigger(tejiDetail("8003009").chance, defender, attacker) ){// anti-shake
             val multi = tejiDetail("8003009").power.toFloat() / 100
@@ -381,6 +364,36 @@ object CultivationBattleHelper {
         }
 
     }
+
+    //zhao shi
+    private fun magicInBattle(battleId:String, attacker:BattleObject, defender: BattleObject){
+        if(hasTeji("8006001", attacker) && isTrigger(tejiDetail("8006001").chance, attacker) ){
+            defender.hp -= tejiDetail("8006001").power
+            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006001").name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail("8006001").power}")
+        }
+        if(hasTeji("8006002", attacker) && isTrigger(tejiDetail("8006002").chance, attacker) ){
+            defender.hp -= tejiDetail("8006002").power
+            defender.speed -= tejiDetail("8006002").power
+            defender.speed = Math.max(1, defender.speed)
+            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006002").name}\u53D1\u52A8，${showName(defender)}HP/SPEED-${tejiDetail("8006002").power}")
+        }
+        if(hasTeji("8006003", attacker) && isTrigger(tejiDetail("8006003").chance, attacker) ){
+            defender.hp -= tejiDetail("8006003").power
+            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006003").name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail("8006003").power}")
+        }
+        if(hasTeji("8006004", attacker) && isTrigger(tejiDetail("8006004").chance, attacker) ){
+            defender.hp -= tejiDetail("8006004").power
+            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006004").name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail("8006004").power}")
+        }
+        if(hasTeji("8006005", attacker) && isTrigger(tejiDetail("8006005").chance, attacker) ){
+            defender.hp -= tejiDetail("8006005").power
+            val status = addStatus(attacker, defender, "8006005")
+            val statusString = if(status != null) "${status.name}\u53D1\u52A8, " else ""
+            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006005").name}\u53D1\u52A8，$statusString${showName(defender)}HP-${tejiDetail("8006005").power}")
+        }
+
+    }
+
 
     private fun getSpeed(propsList:MutableList<BattleObject>, randomBasis:Int):Int{
         val speedList = propsList.map { props->
@@ -525,6 +538,8 @@ object CultivationBattleHelper {
         exclusives.forEach {
             result.addAll(it.teji)
         }
+        result.addAll(mConfig.teji.filter { it.type == 6 && it.spec.contains(person.specIdentity)}.map { it.id })
+
         return result
     }
 

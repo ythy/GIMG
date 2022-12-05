@@ -194,16 +194,21 @@ object CultivationSetting {
         return persons
     }
 
-    //1300 0010
-    fun getIdentityIndex(identity:Int):Int{
-        return (identity / 10000) % 10
+    //1 '3' 000010
+    fun getIdentityType(identity:Int):Int{
+        return (identity / 1000000) % 10
     }
-    //13020061
+
+    //13 '00' 0010
+    fun getIdentityIndex(identity:Int):Int{
+        return (identity / 10000) % 100
+    }
+    //1302006 '1'
     fun getIdentityGender(identity:Int):NameUtil.Gender{
         return if (identity % 10 == 0 ) NameUtil.Gender.Male else if (identity % 10 == 1) NameUtil.Gender.Female else NameUtil.Gender.Default
     }
 
-    //例 1300 001 0  1 ~ 999
+    //例 1300 '001' 0  1 ~ 999
     fun getIdentitySeq(identity:Int):Int{
         return identity.toString().substring(4, 7).toInt()
     }
