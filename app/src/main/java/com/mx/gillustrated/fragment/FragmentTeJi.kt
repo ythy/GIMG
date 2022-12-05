@@ -138,6 +138,9 @@ class FragmentTeJi: Fragment() {
         tejis.addAll(mConfig.teji.filter { it.type == 6 && it.spec.contains(mPerson.specIdentity)}.map {
             val teji = it.copy()
             teji.form = 3
+            if(teji.specName.isNotEmpty()){
+                teji.name = teji.specName[teji.spec.indexOf(mPerson.specIdentity)]
+            }
             teji
         })
         tejis.sortByDescending { it.rarity }

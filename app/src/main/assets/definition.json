@@ -2538,6 +2538,18 @@
       "rarity": 11,
       "weight": 9000000,
       "spec": ["13020031"]
+    },
+    {
+      "id": "8006006",
+      "name": "\u5929\u4E0B\u4F1A\u4E09\u7EDD",
+      "description": "60%\u6982\u7387,\u9644\u52A0\u62DB\u5F0F\u653B\u51FB",
+      "type": 6,
+      "chance": 60,
+      "power": 60,
+      "rarity": 9,
+      "weight": 5000000,
+      "spec": ["13000010", "13000020", "13000050"],
+      "specName": ["\u6392\u4E91\u638C", "\u98CE\u795E\u817F", "\u5929\u971C\u62F3"]
     }
   ],
   "status": [

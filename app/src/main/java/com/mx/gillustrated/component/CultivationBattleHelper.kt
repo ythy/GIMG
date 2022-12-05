@@ -514,7 +514,7 @@ object CultivationBattleHelper {
         if(partner != null){
             val partnerProps = CultivationHelper.getProperty(partner)
             val partnerBattleObject = BattleObject(partnerProps[0], partnerProps[0], partnerProps[1], partnerProps[2], partnerProps[3],
-                    3, partner.teji)
+                    3, getAllTeji(partner))
             partnerBattleObject.name = "${person.name}-${partner.name}"
             partnerBattleObject.battleId = battlePerson.battleId
             battlePerson.follower.add(partnerBattleObject)
