@@ -367,9 +367,11 @@ object CultivationBattleHelper {
 
     //zhao shi
     private fun magicInBattle(battleId:String, attacker:BattleObject, defender: BattleObject){
-        if(hasTeji("8006001", attacker) && isTrigger(tejiDetail("8006001").chance, attacker) ){
-            defender.hp -= tejiDetail("8006001").power
-            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006001").name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail("8006001").power}")
+        mutableListOf("8006001", "8006003", "8006004", "8006006").forEach {
+            if(hasTeji(it, attacker) && isTrigger(tejiDetail(it, attacker).chance, attacker) ){
+                defender.hp -= tejiDetail(it, attacker).power
+                addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail(it, attacker).name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail(it, attacker).power}")
+            }
         }
         if(hasTeji("8006002", attacker) && isTrigger(tejiDetail("8006002").chance, attacker) ){
             defender.hp -= tejiDetail("8006002").power
@@ -377,23 +379,13 @@ object CultivationBattleHelper {
             defender.speed = Math.max(1, defender.speed)
             addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006002").name}\u53D1\u52A8，${showName(defender)}HP/SPEED-${tejiDetail("8006002").power}")
         }
-        if(hasTeji("8006003", attacker) && isTrigger(tejiDetail("8006003").chance, attacker) ){
-            defender.hp -= tejiDetail("8006003").power
-            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006003").name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail("8006003").power}")
-        }
-        if(hasTeji("8006004", attacker) && isTrigger(tejiDetail("8006004").chance, attacker) ){
-            defender.hp -= tejiDetail("8006004").power
-            addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006004").name}\u53D1\u52A8，${showName(defender)}HP-${tejiDetail("8006004").power}")
-        }
         if(hasTeji("8006005", attacker) && isTrigger(tejiDetail("8006005").chance, attacker) ){
             defender.hp -= tejiDetail("8006005").power
             val status = addStatus(attacker, defender, "8006005")
             val statusString = if(status != null) "${status.name}\u53D1\u52A8, " else ""
             addBattleDetail(battleId, "${showName(attacker)} ${tejiDetail("8006005").name}\u53D1\u52A8，$statusString${showName(defender)}HP-${tejiDetail("8006005").power}")
         }
-
     }
-
 
     private fun getSpeed(propsList:MutableList<BattleObject>, randomBasis:Int):Int{
         val speedList = propsList.map { props->
@@ -484,7 +476,7 @@ object CultivationBattleHelper {
         battleEnemy.name = enemy.name
         battleEnemy.follower = enemy.followerList.filter { !it.isDead }.map { follower->
             val props = follower.property
-            val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji)
+            val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji.map { f-> convertTejiObject(f) }.toMutableList())
             result.name = "${enemy.name}-${follower.name}${follower.uniqueName}"
             result.followerReference = follower
             result.battleId = battleEnemy.battleId
@@ -502,7 +494,7 @@ object CultivationBattleHelper {
             battlePerson.follower = person.followerList.map {
                 val follower = mConfig.follower.find { f-> f.id == it.first }!!
                 val props = follower.property
-                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji)
+                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji.map { f-> convertTejiObject(f) }.toMutableList())
                 result.name = "${person.name}-${follower.name}${it.second}"
                 result.battleId = battlePerson.battleId
                 result
@@ -522,7 +514,7 @@ object CultivationBattleHelper {
     }
 
 
-    fun getAllTeji(person: Person):MutableList<String>{
+    fun getAllTeji(person: Person):MutableList<TeJiObject>{
         val result = mutableListOf<String>()
         result.addAll(person.teji)
         person.equipmentListPair.map {
@@ -540,11 +532,32 @@ object CultivationBattleHelper {
         }
         result.addAll(mConfig.teji.filter { it.type == 6 && it.spec.contains(person.specIdentity)}.map { it.id })
 
-        return result
+        return result.map {
+            convertTejiObject(it, person)
+        }.toMutableList()
+    }
+
+    fun convertTejiObject(id:String, person: Person? = null):TeJiObject{
+        val tejiObject = TeJiObject(id)
+        val tejiDetail = tejiDetail(id)
+        tejiObject.name = tejiDetail.name
+        if(person != null && tejiDetail.specName.isNotEmpty()){
+            tejiObject.name = tejiDetail.specName[tejiDetail.spec.indexOf(person.specIdentity)]
+        }
+        tejiObject.type = tejiDetail.type
+        tejiObject.power = tejiDetail.power
+        tejiObject.chance = tejiDetail.chance
+        tejiObject.status = tejiDetail.status
+        tejiObject.statusRound = tejiDetail.statusRound
+        return tejiObject
     }
 
     fun tejiDetail(id:String):TeJi{
         return CultivationHelper.mConfig.teji.find { it.id == id }!!
+    }
+
+    fun tejiDetail(id:String, person:BattleObject):TeJiObject{
+        return person.kills.find { it.id == id }!!
     }
 
     private fun statusDetail(id:String):Status{
@@ -552,7 +565,7 @@ object CultivationBattleHelper {
     }
 
     private fun hasTeji(id: String, person:BattleObject):Boolean{
-        return person.kills.find { it == id } != null
+        return person.kills.find { it.id == id } != null
     }
 
     private fun isTrigger(chance:Int = 50, current: BattleObject? = null, opponent:BattleObject? = null):Boolean{
@@ -574,7 +587,7 @@ object CultivationBattleHelper {
 
     class BattleObject(h: Int, m:Int, a: Int, d: Int, s: Int, t:Int) {
 
-        constructor(h: Int, m:Int, a: Int, d: Int, s: Int, t:Int, k:MutableList<String>):this(h, m, a,d,s,t){
+        constructor(h: Int, m:Int, a: Int, d: Int, s: Int, t:Int, k:MutableList<TeJiObject>):this(h, m, a,d,s,t){
             kills = k
         }
 
@@ -597,7 +610,7 @@ object CultivationBattleHelper {
         val hpBasis:Int = h
         val maxhp:Int = m
         val type:Int = t //normal = 0, enemy = 1, follower = 2, partner = 3
-        var kills:MutableList<String> = mutableListOf()
+        var kills:MutableList<TeJiObject> = mutableListOf()
         var battleId:String = ""
         var name: String = ""
         val attackInit:Int = a
@@ -605,4 +618,24 @@ object CultivationBattleHelper {
         val speedInit:Int = s
         var followerReference:Follower? = null
     }
+
+    class TeJiObject(val id:String){
+        lateinit var name:String
+        var type:Int = 0
+        var power:Int = 0
+        var chance:Int = 100
+        var status:String = ""
+        var statusRound:Int = 0 // combining with status
+
+        var attackMulti: Int = 0
+        var defenceMulti:Int = 0
+        var speedMulti:Int = 0
+        var hpMulti:Int = 0
+        var hp:Int = 0
+        var extraDamage:Int = 0
+        var minDamage:Int = 0
+        var maxInjure:Int = 0
+        var target:Int = 0 // 0 current; 1 all opponent; 2 single opponent
+    }
+
 }

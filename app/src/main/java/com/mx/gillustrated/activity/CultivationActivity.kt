@@ -321,9 +321,7 @@ class CultivationActivity : BaseActivity() {
             }
         }
 
-        mPersons.filterValues { it.specIdentity == 0 && it.profile < 1000 }.forEach { (_, u) ->
-            u.profile = CultivationHelper.getRandomProfile(u.gender)
-        }
+
 
 //        mPersons.forEach { (_: String, u: Person) ->
 //            u.equipmentListPair.removeIf { it.second > 10000 }
@@ -1800,9 +1798,12 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun resetCustomBonus(){
-        mPersons.forEach { (_: String, u: Person) ->
-            resetCustomBonusSingle(u)
+        mPersons.filterValues { it.specIdentity == 0 && it.profile < 1000 }.forEach { (_, u) ->
+            u.profile = CultivationHelper.getRandomProfile(u.gender)
         }
+//        mPersons.forEach { (_: String, u: Person) ->
+//            resetCustomBonusSingle(u)
+//        }
     }
 
     private fun resetCustomBonusSingle(person: Person){
