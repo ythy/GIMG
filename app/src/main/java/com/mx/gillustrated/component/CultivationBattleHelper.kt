@@ -134,7 +134,7 @@ object CultivationBattleHelper {
                         opponent.hp -= tejiDetail("8002004").power
                         addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8002004").name}\u6548\u679c, ${showName(opponent, false)}HP-50", "8002004")
                     }
-                } else if(hasTeji("8002003", current)){
+                }else if(hasTeji("8002003", current)){
                     allOpponent.forEach { opponent ->
                         opponent.hp -= tejiDetail("8002003").power
                         addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8002003").name}\u6548\u679c, ${showName(opponent, false)}HP-30", "8002003")
@@ -148,7 +148,7 @@ object CultivationBattleHelper {
                         opponent.speed -=  Math.round(opponent.speedBasis * multi)
                         addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8002007").name}\u6548\u679c, ${showName(opponent, false)}\u865a\u5f3150%", "8002007")
                     }
-                } else if(hasTeji("8002006", current)){//weakness 20
+                }else if(hasTeji("8002006", current)){//weakness 20
                     allOpponent.forEach { opponent->
                         val multi = tejiDetail("8002006").power.toFloat() / 100
                         opponent.attack -= Math.round(opponent.attackBasis * multi)
@@ -163,7 +163,7 @@ object CultivationBattleHelper {
                     current.defence += Math.round(current.defenceBasis * multi)
                     current.speed += Math.round(current.speedBasis * multi)
                     addBattleDetail(battleId, "${showName(current, false)}\u7279\u6280:${tejiDetail("8002009").name}\u6548\u679c, \u5c5e\u6027\u589e\u5f3a50%", "8002009")
-                } else if(hasTeji("8002008", current)){//gain 20
+                }else if(hasTeji("8002008", current)){//gain 20
                     val multi = tejiDetail("8002008").power.toFloat() / 100
                     current.attack += Math.round(current.attackBasis * multi)
                     current.defence += Math.round(current.defenceBasis * multi)
@@ -208,7 +208,7 @@ object CultivationBattleHelper {
                         opponent.hp -= tejiDetail("8002002").power
                         addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002002").name}\u6548\u679c, ${showName(opponent)}HP-20", "8002002")
                     }
-                } else if(hasTeji("8002001", current) && isTrigger(tejiDetail("8002001").chance, current)){
+                }else if(hasTeji("8002001", current) && isTrigger(tejiDetail("8002001").chance, current)){
                     allOpponent.forEach { opponent ->
                         opponent.hp -= tejiDetail("8002001").power
                         addBattleDetail(battleId, "${showName(current)}\u7279\u6280:${tejiDetail("8002001").name}\u6548\u679c, ${showName(opponent)}HP-10", "8002001")
