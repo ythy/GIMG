@@ -541,7 +541,7 @@ object CultivationBattleHelper {
         val tejiObject = TeJiObject(id)
         val tejiDetail = tejiDetail(id)
         tejiObject.name = tejiDetail.name
-        if(person != null && tejiDetail.specName.isNotEmpty()){
+        if(person != null && tejiDetail.specName.isNotEmpty() && tejiDetail.spec.contains(person.specIdentity)){
             tejiObject.name = tejiDetail.specName[tejiDetail.spec.indexOf(person.specIdentity)]
         }
         tejiObject.type = tejiDetail.type
@@ -553,7 +553,7 @@ object CultivationBattleHelper {
     }
 
     fun tejiDetail(id:String):TeJi{
-        return CultivationHelper.mConfig.teji.find { it.id == id }!!
+        return CultivationHelper.mConfig.teji.find { it.id == id }!!.copy()
     }
 
     fun tejiDetail(id:String, person:BattleObject):TeJiObject{

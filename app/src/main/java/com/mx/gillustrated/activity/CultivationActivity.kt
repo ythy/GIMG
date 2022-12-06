@@ -1798,7 +1798,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun resetCustomBonus(){
-        mPersons.filterValues { it.specIdentity == 0 && it.profile < 1000 }.forEach { (_, u) ->
+        mPersons.filterValues { it.profile < 1000 }.forEach { (_, u) ->
             u.profile = CultivationHelper.getRandomProfile(u.gender)
         }
 //        mPersons.forEach { (_: String, u: Person) ->

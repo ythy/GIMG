@@ -53,7 +53,7 @@ object CultivationEnemyHelper {
     }
 
     private fun updateBossProps(person: Person, tejiQuantity:Int, followerQuantity:Pair<Int, Int>, jingJieLevel:Int, hp:Int, hit:Int, specTeji:List<String> = listOf()){
-        val tejiList = CultivationHelper.mConfig.teji.filter { it.type != 4 }.shuffled()
+        val tejiList = CultivationHelper.mConfig.teji.filter { it.type != 4 && it.type != 6 }.shuffled()
         person.teji.addAll(tejiList.subList(0, tejiQuantity).map { it.id })
         if(!person.teji.contains("8001006")){//神迹
             person.teji.add("8001006")
