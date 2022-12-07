@@ -391,6 +391,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun init(json:String?){
         CultivationSetting.TEMP_SP_JIE_TURN = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
+        CultivationSetting.TEMP_TALENT_PROTECT = mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT)
         val out:String? = if(readRecord) json else null
         if(out != null && out.trim() != ""){
             val backup = Gson().fromJson(out, BakInfo::class.java)
@@ -724,10 +725,11 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun isDeadException(person:Person):Boolean{
-        val lifeTurn = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
         if(person.isFav || person.neverDead){
             return true
-        }else if(person.lifeTurn >= lifeTurn){
+        }else if(person.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN){
+            return true
+        }else if(person.specIdentity == 0 && CultivationHelper.isTalent(person)){
             return true
         }
         return false
@@ -1098,7 +1100,7 @@ class CultivationActivity : BaseActivity() {
     fun updateNationPost(id:String):Nation?{
         val mNation = mNations[id]!!
         val ps = ConcurrentHashMap(mPersons.filter {
-            it.value.nationId == mNation.id && it.value.lingGenType.type < 5 })
+            it.value.nationId == mNation.id })
                 .map { it.value }.toMutableList()
         if (ps.size < 11)
             return null

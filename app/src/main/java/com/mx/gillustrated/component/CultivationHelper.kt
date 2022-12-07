@@ -745,6 +745,15 @@ object CultivationHelper {
             null
     }
 
+    fun isTalent(person: Person):Boolean{
+        val tianfu = person.tianfus.sumBy { it.rarity }
+        return if(person.lingGenType.type < 3 )
+            tianfu >  CultivationSetting.TEMP_TALENT_PROTECT
+        else
+            tianfu + 2 * (person.lingGenType.type - 2) >  CultivationSetting.TEMP_TALENT_PROTECT
+    }
+
+
     fun isServiceRunning(context: Context,  serviceClass: Class<*>): Boolean {
         val manager =  context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
         for (service in manager!!.getRunningServices(Integer.MAX_VALUE)) {

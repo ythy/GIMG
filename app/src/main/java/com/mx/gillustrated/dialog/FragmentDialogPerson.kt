@@ -284,6 +284,7 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     fun updateView(){
+        val telent = mContext.mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT)
         if(mContext.getOnlinePersonDetail(mPerson.id) == null){
             mThreadRunnable = false
         }
@@ -291,7 +292,7 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}${CultivationHelper.showLifeTurn(mPerson)}${CultivationHelper.showAncestorLevel(mPerson)}"
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
-        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}/${CultivationHelper.showAgeRemained(mPerson)}"
+        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}${if(CultivationHelper.isTalent(mPerson)) "⭐" else ""}/${CultivationHelper.showAgeRemained(mPerson)}"
         mDialogView.career.text = mPerson.careerDetailList.joinToString()
         mDialogView.props.text = getProperty()
         mDialogView.winner.text = "${mPerson.battleWinner}-${mPerson.battlexiuwei}↑"

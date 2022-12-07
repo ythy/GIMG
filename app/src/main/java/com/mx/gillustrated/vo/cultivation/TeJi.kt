@@ -16,6 +16,7 @@ class TeJi() : Parcelable {
     var status:String = ""
     var statusRound:Int = 0 // combining with status
     var power:Int = 0
+    var extraPower:MutableList<Int> = mutableListOf(0,0,0,0)
     var spec:MutableList<Int> = mutableListOf()//专属
     var specName:MutableList<String> = mutableListOf()//专属
     //不在配置，不保存
@@ -34,6 +35,7 @@ class TeJi() : Parcelable {
         power = parcel.readInt()
         spec = Collections.synchronizedList(parcel.createIntArray().toMutableList())
         specName = Collections.synchronizedList(parcel.createStringArrayList())
+        extraPower = Collections.synchronizedList(parcel.createIntArray().toMutableList())
     }
 
     override fun toString(): String {
@@ -55,6 +57,7 @@ class TeJi() : Parcelable {
         teJi.power = this.power
         teJi.spec =  Collections.synchronizedList(this.spec)
         teJi.specName =  Collections.synchronizedList(this.specName)
+        teJi.extraPower =  Collections.synchronizedList(this.extraPower)
         return teJi
     }
 
@@ -71,6 +74,7 @@ class TeJi() : Parcelable {
         parcel.writeInt(power)
         parcel.writeIntArray(spec.toIntArray())
         parcel.writeStringList(specName)
+        parcel.writeIntArray(extraPower.toIntArray())
 
     }
 

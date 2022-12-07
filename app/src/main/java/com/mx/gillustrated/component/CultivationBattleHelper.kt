@@ -338,14 +338,24 @@ object CultivationBattleHelper {
         }
         if(hasTeji("8006002", attacker) && isTrigger(tejiDetail("8006002").chance, attacker) ){
             defender.hp -= tejiDetail("8006002").power
-            defender.speed -= tejiDetail("8006002").power
+            val extraPower = tejiDetail("8006002").extraPower
+            defender.speed -= extraPower[3]
             defender.speed = Math.max(1, defender.speed)
-            printBattleInfo(battleId, attacker, 1, "${showName(defender)}HP/SPEED-", "8006002")
+            printBattleInfo(battleId, attacker, 1, "${showName(defender)} SPEED-${extraPower[3]},HP-", "8006002")
         }
         if(hasTeji("8006005", attacker) && isTrigger(tejiDetail("8006005").chance, attacker) ){
             defender.hp -= tejiDetail("8006005").power
             val status = addStatus(attacker, defender, "8006005")
             printBattleInfo(battleId, attacker, 1, "${showName(defender)}HP-", "8006005", status)
+        }
+        if(hasTeji("8006007", attacker) && isTrigger(tejiDetail("8006007").chance, attacker) ){
+            defender.hp -= tejiDetail("8006007").power
+            val extraPower = tejiDetail("8006007").extraPower
+            defender.speed -= extraPower[3]
+            defender.defence -= extraPower[2]
+            defender.speed = Math.max(1, defender.speed)
+            defender.defence = Math.max(1, defender.defence)
+            printBattleInfo(battleId, attacker, 1, "${showName(defender)} SPEED-${extraPower[3]} DEF-${extraPower[2]}, HP-", "8006007")
         }
     }
 
@@ -517,6 +527,7 @@ object CultivationBattleHelper {
         }
         tejiObject.type = tejiDetail.type
         tejiObject.power = tejiDetail.power
+        tejiObject.extraPower = tejiDetail.extraPower
         tejiObject.chance = tejiDetail.chance
         tejiObject.status = tejiDetail.status
         tejiObject.statusRound = tejiDetail.statusRound
@@ -594,6 +605,7 @@ object CultivationBattleHelper {
         lateinit var name:String
         var type:Int = 0
         var power:Int = 0
+        var extraPower = mutableListOf<Int>()
         var chance:Int = 100
         var status:String = ""
         var statusRound:Int = 0 // combining with status
