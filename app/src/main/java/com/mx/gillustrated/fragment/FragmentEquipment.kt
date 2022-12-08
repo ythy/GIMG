@@ -70,9 +70,16 @@ class FragmentEquipment: Fragment() {
 
     fun updateList(){
         val exclusives =  CultivationHelper.mConfig.equipment.filter { it.type == 8 && it.spec.contains(mPerson.specIdentity)}.map {
-            it.children.clear()
-            it.childrenAll.clear()
-            it
+            val ex = it.copy()
+            ex.children.clear()
+            ex.childrenAll.clear()
+            if(ex.specName.isNotEmpty()){
+                val index = ex.spec.indexOf(mPerson.specIdentity)
+                if(index < ex.specName.size) {
+                    ex.name = ex.specName[index]
+                }
+            }
+            ex
         }.sortedByDescending { it.rarity }
         val equipments = mPerson.equipmentListPair.map {
             var equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()

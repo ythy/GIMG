@@ -522,8 +522,11 @@ object CultivationBattleHelper {
         val tejiObject = TeJiObject(id)
         val tejiDetail = tejiDetail(id)
         tejiObject.name = tejiDetail.name
-        if(person != null && tejiDetail.specName.isNotEmpty() && tejiDetail.spec.contains(person.specIdentity)){
-            tejiObject.name = tejiDetail.specName[tejiDetail.spec.indexOf(person.specIdentity)]
+        if(person != null && tejiDetail.specName.isNotEmpty()){
+            val index = tejiDetail.spec.indexOf(person.specIdentity)
+            if(index < tejiDetail.specName.size){
+                tejiObject.name = tejiDetail.specName[index]
+            }
         }
         tejiObject.type = tejiDetail.type
         tejiObject.power = tejiDetail.power

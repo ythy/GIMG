@@ -17,6 +17,7 @@ class Equipment() :Parcelable {
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
     var maxCount:Int = 1//重复计算属性上限，默认1
     var spec:MutableList<Int> = mutableListOf()//专属
+    var specName:MutableList<String> = mutableListOf()//专属
     var teji:MutableList<String> = mutableListOf()
     //以下字段不在配置里
     var uniqueName:String = ""
@@ -38,6 +39,7 @@ class Equipment() :Parcelable {
         childrenAll = parcel.createTypedArrayList(Equipment)
         teji = Collections.synchronizedList(parcel.createStringArrayList())
         spec = Collections.synchronizedList(parcel.createIntArray().toMutableList())
+        specName = Collections.synchronizedList(parcel.createStringArrayList())
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -55,6 +57,7 @@ class Equipment() :Parcelable {
         parcel.writeTypedList(childrenAll)
         parcel.writeStringList(teji)
         parcel.writeIntArray(spec.toIntArray())
+        parcel.writeStringList(specName)
     }
 
     override fun describeContents(): Int {
@@ -80,8 +83,9 @@ class Equipment() :Parcelable {
         equipment.maxCount = this.maxCount
         equipment.children = this.children
         equipment.childrenAll = this.childrenAll
-        equipment.spec =  Collections.synchronizedList(this.spec)
-        equipment.teji = Collections.synchronizedList(this.teji)
+        equipment.spec =  Collections.synchronizedList(this.spec.toMutableList())
+        equipment.teji = Collections.synchronizedList(this.teji.toMutableList())
+        equipment.specName = Collections.synchronizedList(this.specName.toMutableList())
         return equipment
     }
 

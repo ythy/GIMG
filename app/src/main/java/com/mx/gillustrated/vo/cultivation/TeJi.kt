@@ -55,9 +55,9 @@ class TeJi() : Parcelable {
         teJi.statusRound = this.statusRound
         teJi.form = this.form
         teJi.power = this.power
-        teJi.spec =  Collections.synchronizedList(this.spec)
-        teJi.specName =  Collections.synchronizedList(this.specName)
-        teJi.extraPower =  Collections.synchronizedList(this.extraPower)
+        teJi.spec =  Collections.synchronizedList(this.spec.toMutableList())
+        teJi.specName =  Collections.synchronizedList(this.specName.toMutableList())
+        teJi.extraPower =  Collections.synchronizedList(this.extraPower.toMutableList())
         return teJi
     }
 

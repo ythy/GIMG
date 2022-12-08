@@ -139,7 +139,10 @@ class FragmentTeJi: Fragment() {
             val teji = it.copy()
             teji.form = 3
             if(teji.specName.isNotEmpty()){
-                teji.name = teji.specName[teji.spec.indexOf(mPerson.specIdentity)]
+                val index = teji.spec.indexOf(mPerson.specIdentity)
+                if(index < teji.specName.size) {
+                    teji.name = teji.specName[index]
+                }
             }
             teji
         })
