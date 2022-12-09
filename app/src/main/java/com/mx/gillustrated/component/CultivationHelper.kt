@@ -746,11 +746,24 @@ object CultivationHelper {
     }
 
     fun isTalent(person: Person):Boolean{
-        val tianfu = person.tianfus.sumBy { it.rarity }
+        return talentValue(person) > CultivationSetting.TEMP_TALENT_PROTECT
+
+    }
+
+    fun talentValue(person: Person):Int{
+        val tianfu = person.tianfus.sumBy {
+            when(it.type){
+                1 ->  Math.round(it.rarity.toFloat() * 1f)
+                2 ->  Math.round(it.rarity.toFloat() * 1.5f)
+                3 ->  Math.round(it.rarity.toFloat() * 0.5f)
+                4 ->  Math.round(it.rarity.toFloat() * 2f)
+                else -> 0
+            }
+        }
         return if(person.lingGenType.type < 3 )
-            tianfu >  CultivationSetting.TEMP_TALENT_PROTECT
+            tianfu
         else
-            tianfu + 2 * (person.lingGenType.type - 2) >  CultivationSetting.TEMP_TALENT_PROTECT
+            tianfu + 2 * (person.lingGenType.type - 2)
     }
 
 

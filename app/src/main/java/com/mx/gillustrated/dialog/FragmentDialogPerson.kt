@@ -3,6 +3,7 @@ package com.mx.gillustrated.dialog
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Paint
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.view.ContentInfoCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -284,7 +286,6 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     fun updateView(){
-        val telent = mContext.mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT)
         if(mContext.getOnlinePersonDetail(mPerson.id) == null){
             mThreadRunnable = false
         }
@@ -292,11 +293,11 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}${CultivationHelper.showLifeTurn(mPerson)}${CultivationHelper.showAncestorLevel(mPerson)}"
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
-        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}${if(CultivationHelper.isTalent(mPerson)) "⭐" else ""}/${CultivationHelper.showAgeRemained(mPerson)}"
+        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}${CultivationHelper.talentValue(mPerson)}${if(CultivationHelper.isTalent(mPerson)) "⭐" else ""}/${CultivationHelper.showAgeRemained(mPerson)}"
         mDialogView.career.text = mPerson.careerDetailList.joinToString()
         mDialogView.props.text = getProperty()
         mDialogView.winner.text = "${mPerson.battleWinner}-${mPerson.battlexiuwei}↑"
-        mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.name ?: "")
+        mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.nickName ?: "")
         mDialogView.jingjie.text = CultivationHelper.showing(mPerson.jinJieName)
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"
@@ -314,16 +315,9 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun setFamily(){
-        mDialogView.partner.text = if(mPerson.partnerName != null) "<${getContent(mPerson.partnerName)}>"  else ""
-        mDialogView.partner.visibility = if(mPerson.partnerName != null) View.VISIBLE else View.GONE
-        val partner = mContext.getOnlinePersonDetail(mPerson.partner)
-
-        val dadName = if(mPerson.parentName != null) "[${mPerson.parentName!!.first}" else null
-        val mumName = if(mPerson.parentName != null) "${mPerson.parentName!!.second}]" else null
-        mDialogView.parentDad.text = getContent(dadName)
-        mDialogView.parentMum.text = getContent(mumName)
-        mDialogView.parentDad.visibility = if(mPerson.parentName != null) View.VISIBLE else View.GONE
-        mDialogView.parentMum.visibility = if(mPerson.parentName != null) View.VISIBLE else View.GONE
+        setRelationName(mDialogView.partner, mPerson.partnerName, mContext.getOnlinePersonDetail(mPerson.partner), "<", ">")
+        setRelationName(mDialogView.parentDad, mPerson.parentName?.first, mContext.getOnlinePersonDetail(mPerson.parent?.first), "[", "")
+        setRelationName(mDialogView.parentMum, mPerson.parentName?.second, mContext.getOnlinePersonDetail(mPerson.parent?.second), "", "]")
 
         val children = mPerson.children.mapNotNull { mContext.getOnlinePersonDetail(it) }
         mDialogView.children.removeAllViews()
@@ -344,6 +338,21 @@ class FragmentDialogPerson : DialogFragment() {
         }
         mDialogView.children.visibility = if(children.isNotEmpty()) View.VISIBLE else View.GONE
     }
+
+    private fun setRelationName(text:TextView, name:String?, person: Person?, prefix:String = "", suffix:String = ""){
+        if(name != null){
+            text.visibility = View.VISIBLE
+            text.text = "$prefix${getContent(name)}$suffix"
+            if(person == null){
+                text.paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
+                text.paint.isAntiAlias = true
+            }
+        }else{
+            text.visibility = View.GONE
+            text.text = ""
+        }
+    }
+
 
     private fun getContent(name:String?):String{
         if(name == null)

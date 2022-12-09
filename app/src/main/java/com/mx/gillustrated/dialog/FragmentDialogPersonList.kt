@@ -160,7 +160,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     }
 
     private fun init(){
-        mListView.adapter =  CultivationPersonListAdapter(this.context!!, mPersonData)
+        mListView.adapter =  CultivationPersonListAdapter(this.context!!, mPersonData, false)
         updateList()
         registerTimeLooper()
     }

@@ -44,6 +44,28 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical">
+            <EditText
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:id="@+id/et_nickName" />
+            <EditText
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:id="@+id/et_name" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ButtonMiddle"
+                android:id="@+id/btn_change"
+                android:text="Re"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
         <LinearLayout
             android:layout_width="40dp"
             android:layout_height="wrap_content"
@@ -55,23 +77,17 @@
                 android:id="@+id/tv_total"/>
         </LinearLayout>
         <LinearLayout
-            android:layout_width="80dp"
+            android:layout_width="280dp"
             android:layout_height="wrap_content">
             <EditText
-                android:layout_width="match_parent"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:gravity="end"
                 android:inputType="number"
                 android:id="@+id/et_min"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end">
             <EditText
-                android:layout_width="80dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/et_abdicate" />
             <Button
@@ -80,10 +96,18 @@
                 style="@style/ButtonMiddle"
                 android:id="@+id/btn_abdicate"
                 android:text="ABD"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end">
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                style="@style/ButtonMiddle"
                 android:id="@+id/btn_close"
                 android:text="OK"/>
         </LinearLayout>

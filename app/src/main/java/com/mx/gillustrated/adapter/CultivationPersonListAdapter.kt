@@ -16,7 +16,7 @@ import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.component.CultivationSetting.PostColors
 import com.mx.gillustrated.vo.cultivation.Person
 
-class CultivationPersonListAdapter constructor(private val context: Context, private val list: MutableList<Person>) : BaseAdapter() {
+class CultivationPersonListAdapter constructor(private val context: Context, private val list: MutableList<Person>, private val showStar:Boolean = true) : BaseAdapter() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
     private val nation = CultivationHelper.mConfig.nation
@@ -46,7 +46,7 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
             component = convertView.tag as Component
         }
         val person = list[arg0]
-        component.name.text = "${CultivationHelper.showing(person.name)}${CultivationHelper.showLifeTurn(person)}"
+        component.name.text = "${CultivationHelper.showing(person.name)}${if(CultivationHelper.isTalent(person) && showStar) "⭐" else ""}${CultivationHelper.showLifeTurn(person)}"
         component.age.text = CultivationHelper.showAgeRemained(person)
         component.jingjie.text = CultivationHelper.showing(person.jinJieName)
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))

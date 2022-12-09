@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
 open class ClanBak() :Parcelable {
     lateinit var id:String // person.ancestorId
     lateinit var name:String
+    var nickName:String = ""
     var createDate:Long = 0//xun
     var persons: List<String> = Collections.synchronizedList(mutableListOf())
     var battleRecord:MutableMap<Int, Int> = mutableMapOf()
@@ -24,6 +25,7 @@ open class ClanBak() :Parcelable {
         xiuweiBattle = parcel.readInt()
         battleWinner = parcel.readInt()
         minXiuwei = parcel.readInt()
+        nickName =  parcel.readString()
     }
 
     fun toClan(personMap: ConcurrentHashMap<String, Person>):Clan{
@@ -31,6 +33,7 @@ open class ClanBak() :Parcelable {
         val zhu = personMap[this.id]
         clan.id = this.id
         clan.name = this.name
+        clan.nickName = if(this.nickName == "") this.name.substring(0,1) else this.nickName
         clan.zhu = zhu
         clan.createDate = this.createDate
         clan.clanPersonList.putAll(personMap.filterKeys { this.persons.contains(it) })
@@ -42,6 +45,7 @@ open class ClanBak() :Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(name)
+        parcel.writeString(nickName)
         parcel.writeLong(createDate)
         parcel.writeStringList(persons)
         parcel.writeMap(battleRecord)
@@ -79,6 +83,7 @@ class Clan() : ClanBak(), Parcelable{
         val bak = ClanBak()
         bak.id = super.id
         bak.name = super.name
+        bak.nickName = super.nickName
         bak.createDate = super.createDate
         bak.persons = this.clanPersonList.filter { it.value.ancestorId == super.id }.map { it.key }
         bak.battleRecord = super.battleRecord

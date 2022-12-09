@@ -90,6 +90,14 @@ class FragmentDialogClan : DialogFragment() {
         }
     }
 
+    @OnClick(R.id.btn_change)
+    fun onChangeNameClickHandler(){
+        mContext.mClans[mId]?.name = mDialogView.reName.text.toString()
+        mContext.mClans[mId]?.nickName = mDialogView.nickName.text.toString()
+        updateName()
+    }
+
+
     lateinit var mId:String
     lateinit var mContext:CultivationActivity
     lateinit var mDialogView:DialogView
@@ -116,9 +124,9 @@ class FragmentDialogClan : DialogFragment() {
         mContext = activity as CultivationActivity
         val clan = mContext.mClans[mId]
         if(clan != null){
-            mDialogView.name.text = CultivationHelper.showing(clan.name)
             mDialogView.minXiuwei.setText("${clan.minXiuwei}")
             mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
+            updateName()
             updateView()
             registerTimeLooper()
         }
@@ -135,6 +143,13 @@ class FragmentDialogClan : DialogFragment() {
                 }
             }
         }).start()
+    }
+
+    private fun updateName(){
+        val clan = mContext.mClans[mId]!!
+        mDialogView.name.text = CultivationHelper.showing("${clan.nickName}${if(clan.name == clan.nickName) "" else "-${clan.name}"}")
+        mDialogView.reName.setText(CultivationHelper.showing(clan.name))
+        mDialogView.nickName.setText(CultivationHelper.showing(clan.nickName))
     }
 
     private fun updateView(){
@@ -180,6 +195,13 @@ class FragmentDialogClan : DialogFragment() {
 
         @BindView(R.id.et_abdicate)
         lateinit var abdicate:EditText
+
+        @BindView(R.id.et_name)
+        lateinit var reName:EditText
+
+        @BindView(R.id.et_nickName)
+        lateinit var nickName:EditText
+
 
         init {
             ButterKnife.bind(this, view)

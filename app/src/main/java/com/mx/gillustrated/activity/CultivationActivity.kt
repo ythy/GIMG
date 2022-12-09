@@ -679,7 +679,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun killClanPersons(clan:Clan?){
         clan?.clanPersonList?.map { it.value }?.sortedBy { it.ancestorLevel }?.forEach {
-            if(it.ancestorLevel > 0 && getOnlinePersonDetail(it.parent?.first) == null && !isDeadException(it) ){
+            if(it.ancestorId != it.id && getOnlinePersonDetail(it.parent?.first) == null && !isDeadException(it) ){
                 deadHandler(it)
             }
         }
@@ -1225,7 +1225,7 @@ class CultivationActivity : BaseActivity() {
         if(inDurationByXun("ClanUpdated", 12, xun)) {
             mClans.forEach {
                 if(getOnlinePersonDetail(it.key) == null){
-                    it.value.clanPersonList.forEach { p->
+                    it.value.clanPersonList.filter { c-> !isDeadException(c.value) }.forEach { p->
                         deadHandler(p.value)
                     }
                     it.value.clanPersonList.clear()
