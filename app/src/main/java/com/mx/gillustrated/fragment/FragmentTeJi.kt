@@ -43,40 +43,10 @@ class FragmentTeJi: Fragment() {
                     override fun onItemSelected(teJi: TeJi) {
                         updateTeji(teJi)
                     }
-                }, mutableListOf(3))
+                }, 1)
         newFragment.isCancelable = true
         newFragment.show(ft, "dialog_teji")
     }
-
-    @OnClick(R.id.btn_add_teji_spec)
-    fun onAddSpecClickHandler(){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogTeJi.
-                newInstance( object : FragmentDialogTeJi.TeJiSelectorCallback{
-                    override fun onItemSelected(teJi: TeJi) {
-                        updateTeji(teJi)
-                    }
-                }, mutableListOf(1,4,5))
-        newFragment.isCancelable = true
-        newFragment.show(ft, "dialog_teji")
-    }
-
-    @OnClick(R.id.btn_add_teji_key)
-    fun onAddKeyClickHandler(){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogTeJi.
-                newInstance( object : FragmentDialogTeJi.TeJiSelectorCallback{
-                    override fun onItemSelected(teJi: TeJi) {
-                        updateTeji(teJi)
-                    }
-                }, mutableListOf(2))
-        newFragment.isCancelable = true
-        newFragment.show(ft, "dialog_teji")
-    }
-
-
 
     lateinit var mContext: CultivationActivity
     lateinit var mPerson: Person

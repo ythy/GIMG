@@ -51,7 +51,7 @@ class FragmentDialogEquipment constructor(private val callback:EquipmentSelector
 
     fun init(){
         val list = CultivationHelper.mConfig.equipment.filter { mType.contains(it.type) }.toMutableList()
-        list.sortWith(compareBy<Equipment> {it.type}.thenBy { it.rarity })
+        list.sortWith(compareBy<Equipment> {it.type}.thenBy { it.teji.size }.thenBy { it.rarity })
         mCurrentSelected = list[0]
         val adapter = ArrayAdapter<Equipment>(context!!,
                 android.R.layout.simple_spinner_item, list)
