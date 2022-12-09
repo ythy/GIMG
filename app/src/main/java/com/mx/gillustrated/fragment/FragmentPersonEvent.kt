@@ -30,6 +30,9 @@ class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageC
     @BindView(R.id.tv_seq)
     lateinit var mSeq: TextView
 
+    @BindView(R.id.tv_deadCount)
+    lateinit var mDead: TextView
+
 
     @OnCheckedChanged(R.id.sch_del)
     fun onDelHandler(checked:Boolean){
@@ -67,6 +70,7 @@ class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageC
     fun init(){
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getPersonData(id)!!
+        mDead.text = mPerson.deadExceptTimes.toString()
         if(mPerson.specIdentity > 0)
             mSeq.text = mPerson.specIdentity.toString()
         if(mPerson.profile in 1701..1799 && mPerson.gender == NameUtil.Gender.Female){

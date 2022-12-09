@@ -670,7 +670,7 @@ object CultivationHelper {
     }
 
     fun showLifeTurn(person:Person):String{
-        return if(person.lifeTurn == 0) ""
+        return if(person.lifeTurn <= 0) ""
         else ".${person.lifeTurn / 81}:${person.lifeTurn % 81}"
     }
 
@@ -746,8 +746,7 @@ object CultivationHelper {
     }
 
     fun isTalent(person: Person):Boolean{
-        return talentValue(person) > CultivationSetting.TEMP_TALENT_PROTECT
-
+        return person.deadExceptTimes <= 9 && talentValue(person) > CultivationSetting.TEMP_TALENT_PROTECT
     }
 
     fun talentValue(person: Person):Int{

@@ -26,9 +26,9 @@ class Person() :Parcelable {
         var parentName:Pair<String, String>? = null//赋值一次，显示用
         var children:MutableList<String> =  Collections.synchronizedList(mutableListOf())
         var lifeTurn:Int = 0//
+        var deadExceptTimes:Int = 0//
         var singled:Boolean = false
         var dink:Boolean = false
-        var gold:Long = 0L
 
         var HP:Int = 100
         var maxHP:Int = 100
@@ -106,9 +106,9 @@ class Person() :Parcelable {
                 parentName = parcel.readValue(Pair::class.java.classLoader) as Pair<String, String>?
                 children = Collections.synchronizedList(parcel.createStringArrayList())
                 lifeTurn = parcel.readInt()
+                deadExceptTimes = parcel.readInt()
                 singled = parcel.readByte() != 0.toByte()
                 dink = parcel.readByte() != 0.toByte()
-                gold = parcel.readLong()
 
                 HP = parcel.readInt()
                 maxHP = parcel.readInt()
@@ -185,9 +185,9 @@ class Person() :Parcelable {
                 parcel.writeValue(parentName)
                 parcel.writeStringList(children)
                 parcel.writeInt(lifeTurn)
+                parcel.writeInt(deadExceptTimes)
                 parcel.writeByte(if (singled) 1 else 0)
                 parcel.writeByte(if (dink) 1 else 0)
-                parcel.writeLong(gold)
 
                 parcel.writeInt(HP)
                 parcel.writeInt(maxHP)

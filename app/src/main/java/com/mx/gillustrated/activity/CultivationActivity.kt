@@ -759,6 +759,7 @@ class CultivationActivity : BaseActivity() {
             if(isDeadException(it)){
                 it.lifetime += 5000
                 it.lifeTurn = Math.max(0, it.lifeTurn - 1)
+                it.deadExceptTimes++
                 addPersonEvent(it,"转转-1,残:${it.lifeTurn}")
             }else{
                 if(getOnlinePersonDetail(it.id) != null)
