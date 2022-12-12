@@ -41,6 +41,10 @@ class FragmentDialogSetting : DialogFragment() {
     @BindView(R.id.et_talent)
     lateinit var mTalent:EditText
 
+    @BindView(R.id.et_talent_exp)
+    lateinit var mTalentExp:EditText
+
+
     @BindView(R.id.et_nan9)
     lateinit var mEtNan9:EditText
 
@@ -68,6 +72,17 @@ class FragmentDialogSetting : DialogFragment() {
             CultivationSetting.TEMP_TALENT_PROTECT = current.toInt()
         }
     }
+
+    @OnTextChanged(R.id.et_talent_exp)
+    fun onTalentExpTextChangedHandler(text:CharSequence){
+        val current = text.toString()
+        if(current.toIntOrNull() != null && current.toInt() > 0){
+            mActivity.mSP.edit().putInt("cultivation_talent_exception", current.toInt()).apply()
+            CultivationSetting.TEMP_TALENT_EXP = current.toInt()
+        }
+    }
+
+
 
     @OnTextChanged(R.id.et_nan9)
     fun onNan9TextChangedHandler(text:CharSequence){
@@ -185,6 +200,7 @@ class FragmentDialogSetting : DialogFragment() {
         mEtNan9.setText(mActivity.mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9).toString())
         mEtNan81.setText(mActivity.mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81).toString())
         mTalent.setText(mActivity.mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT).toString())
+        mTalentExp.setText(mActivity.mSP.getInt("cultivation_talent_exception", CultivationSetting.SP_TALENT_EXP).toString())
 
         val punishWeight = mActivity.mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)
         mBossPunish.setText(punishWeight.toString())

@@ -32,10 +32,12 @@ object CultivationSetting {
 
     const val SP_JIE_TURN = 81
     const val SP_TALENT_PROTECT = 15
+    const val SP_TALENT_EXP = 9
     const val SP_NAN_9 = 5
     const val SP_NAN_81 = 10
     var TEMP_SP_JIE_TURN = SP_JIE_TURN
     var TEMP_TALENT_PROTECT = SP_TALENT_PROTECT
+    var TEMP_TALENT_EXP = SP_TALENT_EXP
     const val LIFE_TIME_YEAR = 100
     val EVENT_WEIGHT = listOf("1200-50", "7200-40", "8400-40", "9600-100")
     const val SP_PUNISH_BOSS_MILLION = 200

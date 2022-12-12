@@ -56,7 +56,7 @@ class CultivationClanListAdapter  constructor(mContext: Context, private val lis
         else
             component.zhu.text = ""
         component.persons.text = "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
-        component.total.text  = clan.totalXiuwei.toString()
+        component.total.text  = CultivationHelper.showLifeTurn(clan.totalXiuwei)
         component.winner.text = clan.battleWinner.toString()
         return convertView
     }

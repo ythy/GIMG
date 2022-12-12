@@ -75,15 +75,15 @@
             <Button
                 android:layout_width="50dp"
                 android:layout_height="40dp"
-                android:id="@+id/btn_list"
-                style="@style/ButtonSmall"
-                android:text="@string/cultivation_list"/>
-            <Button
-                android:layout_width="50dp"
-                android:layout_height="40dp"
                 android:id="@+id/btn_clan"
                 style="@style/ButtonSmall"
                 android:text="@string/cultivation_clan"/>
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_list"
+                style="@style/ButtonSmall"
+                android:text="@string/cultivation_list"/>
             <Button
                 android:layout_width="50dp"
                 android:layout_height="40dp"

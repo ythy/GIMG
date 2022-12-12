@@ -3,7 +3,6 @@ package com.mx.gillustrated.vo.cultivation
 import android.os.Parcel
 import android.os.Parcelable
 import com.mx.gillustrated.component.CultivationHelper
-import java.nio.channels.MulticastChannel
 import java.util.*
 
 class Equipment() :Parcelable {
