@@ -97,8 +97,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/ButtonMiddle"
-                android:id="@+id/btn_abdicate"
-                android:text="ABD"/>
+                android:id="@+id/btn_add"
+                android:text="ADD"/>
         </LinearLayout>
 
         <LinearLayout

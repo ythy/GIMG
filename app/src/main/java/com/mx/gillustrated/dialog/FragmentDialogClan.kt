@@ -79,12 +79,12 @@ class FragmentDialogClan : DialogFragment() {
         newFragment.show(ft, "dialog_rank_info")
     }
 
-    @OnClick(R.id.btn_abdicate)
-    fun onAbdicateClickHandler(){
+    @OnClick(R.id.btn_add)
+    fun onAddClickHandler(){
         val name = mDialogView.abdicate.text.toString()
         val person = mContext.mPersons.map { it.value }.find { it.name == name || PinyinUtil.convert(it.name) == name }
-        if (person != null && person.gender == NameUtil.Gender.Male){
-            CultivationHelper.abdicateInClan(person, mContext.mClans, mContext.mPersons)
+        if (person != null){
+            CultivationHelper.addPersonToClan(person,  mContext.mClans[mId]!!, mContext.mClans, mContext.mPersons)
             mDialogView.abdicate.setText("")
             Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
         }

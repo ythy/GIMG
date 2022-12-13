@@ -61,8 +61,10 @@ class Person() :Parcelable {
         var battleRecord:MutableMap<Int, Int> = mutableMapOf()
 
         //extra props
-        var ancestorLevel:Int = 0 // 0 初代
-        var ancestorId:String? = null// 一次
+        var ancestorLevel:Int = 0//加入其他clan 会变更
+        var ancestorId:String? = null// 可能多次，独立后变更为ID
+        var ancestorOrignId:String? = ancestorId// 一次
+        var ancestorOrignLevel:Int = ancestorLevel//一直累加
         var jinJieName = "" //  updated by xun
         var jinJieColor = 0 //  updated by xun
         var jinJieMax:Int = 0 // updated by xun
@@ -140,6 +142,7 @@ class Person() :Parcelable {
 
                 ancestorLevel = parcel.readInt()
                 ancestorId = parcel.readString()
+                ancestorOrignId = parcel.readString()
                 jinJieName = parcel.readString()
                 jinJieColor = parcel.readInt()
                 jinJieMax = parcel.readInt()
@@ -215,6 +218,7 @@ class Person() :Parcelable {
 
                 parcel.writeInt(ancestorLevel)
                 parcel.writeString(ancestorId)
+                parcel.writeString(ancestorOrignId)
                 parcel.writeString(jinJieName)
                 parcel.writeInt(jinJieColor)
                 parcel.writeInt(jinJieMax)

@@ -162,22 +162,37 @@ object CultivationHelper {
         return clan
     }
 
+    fun addPersonToClan(person: Person, clan:Clan, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>){
+        val originClanId = person.ancestorId!!
+        person.ancestorId = clan.id
+        val minLevel = clan.clanPersonList.minBy { it.value.ancestorLevel }?.value?.ancestorLevel ?: 0
+        person.ancestorLevel = minLevel + 1
+        allClan[originClanId]?.clanPersonList?.remove(person.id)
+        changedAncestorId(person, allClan, allPersons)
+        clan.clanPersonList[person.id] = person
+    }
+
     fun abdicateInClan(person: Person, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>){
         val originClanId = person.ancestorId!!
         person.ancestorId = person.id
-        changedAncestorId(person, allPersons)
-        allClan[originClanId]!!.clanPersonList.forEach { (_: String, u: Person) ->
-            if (u.ancestorId != originClanId)
-                allClan[originClanId]!!.clanPersonList.remove(u.id)
-        }
+        person.ancestorLevel = 0
+        allClan[originClanId]?.clanPersonList?.remove(person.id)
+        changedAncestorId(person, allClan, allPersons)
         createClan(person, allClan, allPersons)
     }
 
-    private fun changedAncestorId(person: Person, allPersons:ConcurrentHashMap<String, Person>){
+    private fun changedAncestorId(person: Person, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>){
+        if(person.gender == NameUtil.Gender.Female)
+            return
         person.children.forEach {
-            allPersons[it]?.ancestorId = person.ancestorId
-            if(allPersons[it]?.gender == NameUtil.Gender.Male && allPersons[it]?.children?.size ?: 0 > 0){
-                changedAncestorId(allPersons[it]!!, allPersons)
+            if(allPersons[it] != null){
+                val child = allPersons[it]!!
+                allClan[child.ancestorId]?.clanPersonList?.remove(it)
+                child.ancestorId = person.ancestorId
+                child.ancestorLevel = person.ancestorLevel + 1
+                if(child.gender == NameUtil.Gender.Male && child.children.size  > 0){
+                    changedAncestorId(child, allClan, allPersons)
+                }
             }
         }
     }
@@ -431,9 +446,12 @@ object CultivationHelper {
             result.parent = Pair(parent.first.id, parent.second.id)
             result.parentName = Pair(parent.first.name, parent.second.name)
             result.ancestorLevel = parent.first.ancestorLevel + 1
+            result.ancestorOrignLevel = parent.first.ancestorOrignLevel + 1
             result.ancestorId = parent.first.ancestorId ?: parent.first.id
+            result.ancestorOrignId = result.ancestorId
         }else{
             result.ancestorId = result.id
+            result.ancestorOrignId = result.ancestorId
         }
 
         return result
@@ -618,7 +636,7 @@ object CultivationHelper {
                 val manAge = man.birthtime
                 val womanPair = females.map { Pair(it.id, it.birthtime) }.sortedBy { Math.abs(manAge - it.second) }[0]
                 val woman = allPerson[womanPair.first]
-                if(woman == null || ( man.ancestorId != null && woman.ancestorId != null && man.ancestorId == woman.ancestorId))
+                if(woman == null || ( man.ancestorOrignId != null && woman.ancestorOrignId != null && man.ancestorOrignId == woman.ancestorOrignId))
                     return
                 createPartner(man, woman)
             }
@@ -676,7 +694,7 @@ object CultivationHelper {
 
     fun showLifeTurn(count:Long):String{
         return if(count <= 0) ""
-        else "${count / 81}:${count % 81}"
+        else "${count / CultivationSetting.TEMP_SP_JIE_TURN}:${count % CultivationSetting.TEMP_SP_JIE_TURN}"
     }
 
     fun showAncestorLevel(person:Person):String{

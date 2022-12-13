@@ -33,6 +33,9 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
     @BindView(R.id.et_name_last)
     lateinit var etLastName:EditText
 
+    @BindView(R.id.tv_ancestor)
+    lateinit var tvAncestor:TextView
+
     @BindView(R.id.tv_age)
     lateinit var tvAge:TextView
 
@@ -78,6 +81,17 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         }
         mCallback.update(3)
     }
+
+    @OnClick(R.id.btn_clan)
+    fun onCreateClanHandler(){
+        if(mPerson.specIdentity > 0 || mContext.mClans[mPerson.ancestorId] != null)
+            return
+        CultivationHelper.abdicateInClan(mPerson, mContext.mClans, mContext.mPersons)
+        Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
+        mCallback.update(3)
+        updateView()
+    }
+
 
     @BindView(R.id.btn_revive)
     lateinit var mBtnRevive:Button
@@ -249,6 +263,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         etLastName.setText(CultivationHelper.showing(mPerson.name.substring(mPerson.lastName.length)))
 
         tvAge.text = CultivationHelper.showAge(mPerson)
+        tvAncestor.text = "${mPerson.ancestorOrignId}/${mPerson.ancestorOrignLevel}-${mPerson.ancestorId}/${mPerson.ancestorLevel}"
 
         val alliance = mContext.mAlliance[mPerson.allianceId]
         if(alliance != null){

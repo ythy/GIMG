@@ -401,6 +401,10 @@ class CultivationActivity : BaseActivity() {
             mPersons.forEach {
                 if(it.value.children.isNotEmpty())
                     it.value.children = Collections.synchronizedList(it.value.children)
+                if(it.value.ancestorOrignId == null) {
+                    it.value.ancestorOrignId = it.value.ancestorId
+                    it.value.ancestorOrignLevel = it.value.ancestorLevel
+                }
                 it.value.equipmentListPair = Collections.synchronizedList(it.value.equipmentListPair)
                 it.value.lingGenType = mConfig.lingGenType.find { g-> g.id == it.value.lingGenType.id }!!
                 CultivationHelper.updatePersonEquipment(it.value)
