@@ -46,7 +46,13 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
             component = convertView.tag as Component
         }
         val person = list[arg0]
-        component.name.text = "${CultivationHelper.showing(person.name)}${if(CultivationHelper.isTalent(person) && showStar) "⭐" else ""}${CultivationHelper.showLifeTurn(person)}"
+        val talentSymbol = if(CultivationHelper.isTalent(person) && showStar) "⭐" else ""
+        val zhuSymbol = if(person.equipmentListPair.find { it.first == "7009001" } != null && showStar) "\uD83C\uDFC1" else ""
+        val shaoSymbol = if(person.equipmentListPair.find { it.first == "7009002" } != null && showStar) "\uD83C\uDFF4\u200D☠️" else ""
+        val gongSymbol = if(person.equipmentListPair.find { it.first == "7009003" } != null && showStar) "\uD83C\uDFF3️\u200D\uD83C\uDF08" else ""
+        val neiSymbol = if(person.equipmentListPair.find { it.first == "7009009" } != null && showStar) "\uD83C\uDF8C" else ""
+
+        component.name.text = "${CultivationHelper.showing(person.name)}$talentSymbol$zhuSymbol$shaoSymbol$gongSymbol$neiSymbol${CultivationHelper.showLifeTurn(person)}"
         component.age.text = CultivationHelper.showAgeRemained(person)
         component.jingjie.text = CultivationHelper.showing(person.jinJieName)
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))
