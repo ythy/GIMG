@@ -2113,21 +2113,22 @@
     },
     {
       "id": "7009004",
-      "name": "\u4E0A\u54C1\u7075\u8109",
+      "name": "\u7389\u73BA(\u795E\u4F53)",
       "type": 9,
-      "rarity": 10,
-      "xiuwei": 500,
+      "rarity": 13,
+      "xiuwei": 0,
       "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
+      "property": [50,10,10,10,0,0,0,0]
     },
     {
       "id": "7009005",
-      "name": "\u7075\u8109",
+      "name": "\u4E71\u4E16\u7EA2\u989C",
       "type": 9,
-      "rarity": 9,
-      "xiuwei": 300,
+      "rarity": 13,
+      "xiuwei": 0,
       "success": 0,
-      "property": [0,0,0,0,0,0,0,0]
+      "property": [50,10,10,100,0,0,0,0],
+      "teji": ["8004002"]
     },
     {
       "id": "7009006",

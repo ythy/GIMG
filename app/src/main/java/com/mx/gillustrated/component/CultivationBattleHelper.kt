@@ -147,16 +147,18 @@ object CultivationBattleHelper {
                 if(hasTeji("8004002", current)){
                     val multi = tejiDetail("8004002").power.toFloat() / 100
                     current.speed += Math.round(current.speedBasis * multi)
-                    val opponent = getBattleObject(allOpponent)
-                    val status = addStatus(current, opponent, "8004002")
-                    printBattleInfo(battleId, current, 2, "\u901F\u5EA6\u5F3A\u5316", "8004002", status)
+                    allOpponent.forEach { opponent->
+                        val status = addStatus(current, opponent, "8004002")
+                        printBattleInfo(battleId, current, 2, "\u901F\u5EA6\u5F3A\u5316", "8004002", status)
+                    }
                 }
                 if(hasTeji("8004003", current)){
                     val multi = tejiDetail("8004003").power.toFloat() / 100
                     current.speed += Math.round(current.speedBasis * multi)
-                    val opponent = getBattleObject(allOpponent)
-                    val status = addStatus(current, opponent, "8004003")
-                    printBattleInfo(battleId, current, 2, "\u901F\u5EA6\u5F3A\u5316", "8004003", status)
+                    allOpponent.forEach { opponent->
+                        val status = addStatus(current, opponent, "8004003")
+                        printBattleInfo(battleId, current, 2, "\u901F\u5EA6\u5F3A\u5316", "8004003", status)
+                    }
                 }
             }
         }

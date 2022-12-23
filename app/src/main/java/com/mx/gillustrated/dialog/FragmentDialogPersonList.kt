@@ -198,7 +198,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     private fun setOnlineList(){
         mPersonData.clear()
         val persons = when (mType) {
-            1 -> mContext.mPersons.map { it.value }.filter { it.isFav || it.neverDead }
+            1 -> mContext.mPersons.map { it.value }.filter { it.isFav || it.neverDead || it.equipmentListPair.find { e -> e.first.toInt() / 1000 == 7009 } != null }
             2 -> mContext.mPersons.map { it.value }.filter { p-> p.careerDetailList.maxBy { m-> m.rarity }?.rarity ?: 0 >= 8 }
             3 -> mContext.mPersons.map { it.value }.filter { p->
                 p.lifeTurn == 0 && p.ancestorLevel == 0 && ( p.lingGenType.type >= 3 || (p.lingGenType.type > 0 && p.tianfus.sumBy { s-> s.rarity } > 5))

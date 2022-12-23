@@ -35,6 +35,7 @@ import com.mx.gillustrated.component.CultivationHelper.mCurrentXun
 import com.mx.gillustrated.component.CultivationHelper.writeHistory
 import com.mx.gillustrated.component.CultivationHelper.isTrigger
 import com.mx.gillustrated.component.CultivationHelper.inDurationByXun
+import com.mx.gillustrated.component.CultivationHelper.isTalent
 import com.mx.gillustrated.component.CultivationHelper.mBossRecord
 import com.mx.gillustrated.component.CultivationHelper.mXunDuration
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
@@ -730,11 +731,11 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun isDeadException(person:Person):Boolean{
-        if(person.isFav || person.neverDead){
+        if(person.isFav || person.neverDead || person.equipmentListPair.find { it.first == "7009004" } != null){
             return true
         }else if(person.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN){
             return true
-        }else if(person.specIdentity == 0 && CultivationHelper.isTalent(person)){
+        }else if(person.specIdentity == 0 && isTalent(person)){
             return true
         }
         return false
@@ -821,7 +822,7 @@ class CultivationActivity : BaseActivity() {
                     it.jinJieColor = mConfig.jingJieType[0].color
                     it.jinJieMax = mConfig.jingJieType[0].max
                     it.lifeTurn += 1
-                    it.lifetime =  currentXun + CultivationHelper.getLifetimeBonusInitial(it, allianceNow) + it.lifeTurn
+                    it.lifetime =  currentXun + CultivationHelper.getLifetimeBonusInitial(it, allianceNow)
                 }
             } else {
                 val commonText = if (next != null)
@@ -1224,7 +1225,7 @@ class CultivationActivity : BaseActivity() {
             mClans.forEach {
                 it.value.clanPersonList = ConcurrentHashMap(mPersons.filter { m ->
                     m.value.ancestorId == it.key &&
-                            (getXiuweiGrow(m.value, mAlliance) >= it.value.minXiuwei || m.value.id == it.key)
+                            (getXiuweiGrow(m.value, mAlliance) >= it.value.minXiuwei || m.value.id == it.key || isTalent(m.value))
                 })
             }
         }

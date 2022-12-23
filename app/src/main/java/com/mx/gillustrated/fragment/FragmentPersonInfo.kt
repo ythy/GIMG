@@ -84,7 +84,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
     @OnClick(R.id.btn_clan)
     fun onCreateClanHandler(){
-        if(mPerson.specIdentity > 0 || mContext.mClans[mPerson.ancestorId] != null)
+        if(mPerson.specIdentity > 0)
             return
         CultivationHelper.abdicateInClan(mPerson, mContext.mClans, mContext.mPersons)
         Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
