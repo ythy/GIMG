@@ -135,7 +135,6 @@ class CultivationActivity : BaseActivity() {
             backupInfo.alliance = mAlliance.mapValues { it.value.toConfig() }
             mPersons.forEach { p->
                 val it = p.value
-                it.lingGenName = if (it.lingGenId == "") it.lingGenName else CultivationHelper.getTianName(it.lingGenId)
                 it.profile = CultivationHelper.getRandomProfile(it.gender, it.profile)
                 it.HP = Math.min(it.HP, it.maxHP)
                 it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null && getOfflinePersonDetail(f) == null }.toMutableList()
@@ -408,6 +407,7 @@ class CultivationActivity : BaseActivity() {
                 }
                 it.value.equipmentListPair = Collections.synchronizedList(it.value.equipmentListPair)
                 it.value.lingGenType = mConfig.lingGenType.find { g-> g.id == it.value.lingGenType.id }!!
+                it.value.lingGenName = if (it.value.lingGenId == "") it.value.lingGenName else CultivationHelper.getTianName(it.value.lingGenId)
                 CultivationHelper.updatePersonEquipment(it.value)
                 CultivationHelper.updatePersonExtraProperty(it.value)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
