@@ -474,14 +474,25 @@ object CultivationBattleHelper {
         battlePerson.speedBasis -= person.equipmentProperty[3]
 
         if(person.followerList.isNotEmpty()){
-            battlePerson.follower = person.followerList.map {
+            battlePerson.follower.addAll(person.followerList.map {
                 val follower = mConfig.follower.find { f-> f.id == it.first }!!
                 val props = follower.property
                 val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji.map { f-> convertTejiObject(f) }.toMutableList())
                 result.name = "${person.name}-${follower.name}${it.second}"
                 result.battleId = battlePerson.battleId
                 result
-            }.toMutableList()
+            })
+        }
+        person.equipmentListPair.forEach {
+            val equipment = mConfig.equipment.find { f-> f.id == it.first }!!.copy()
+            equipment.follower.forEach { id->
+                val follower = mConfig.follower.find { f-> f.id == id }!!.copy()
+                val props = follower.property
+                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji.map { f-> convertTejiObject(f) }.toMutableList())
+                result.name = "${person.name}-${follower.name}"
+                result.battleId = battlePerson.battleId
+                battlePerson.follower.add(result)
+            }
         }
         if(allPersons == null)
             return

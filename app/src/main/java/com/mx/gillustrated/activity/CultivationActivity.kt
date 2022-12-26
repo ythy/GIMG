@@ -790,10 +790,10 @@ class CultivationActivity : BaseActivity() {
             // 9zhuan↑  81zhuan↑↑ ← decrease  random
             var difficulty = 1
             if(next == null && it.lifeTurn > 0){
-                if(it.lifeTurn % 81 == 0){
-                    difficulty = mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81)
-                }else if(it.lifeTurn % 9 == 0){
-                    difficulty = mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9)
+                when {
+                    it.lifeTurn % ( CultivationSetting.TEMP_SP_JIE_TURN - 1) == 0 -> difficulty = mSP.getInt("cultivation_nan_final", CultivationSetting.SP_NAN_FINAL)
+                    it.lifeTurn % 81 == 0 -> difficulty = mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81)
+                    it.lifeTurn % 9 == 0 -> difficulty = mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9)
                 }
             }
             val random = Random().nextInt(100 * difficulty)

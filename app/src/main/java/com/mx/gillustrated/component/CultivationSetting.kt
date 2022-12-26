@@ -30,11 +30,12 @@ object CultivationSetting {
         val SingleBonus = arrayOf(5, 30, 20, 15, 10, 6, 4, 2, 1, 0, 0)
     }
 
-    const val SP_JIE_TURN = 81
-    const val SP_TALENT_PROTECT = 15
-    const val SP_TALENT_EXP = 9
+    const val SP_JIE_TURN = 255
+    const val SP_TALENT_PROTECT = 15 //天赋
+    const val SP_TALENT_EXP = 9 //次数
     const val SP_NAN_9 = 5
     const val SP_NAN_81 = 10
+    const val SP_NAN_FINAL = 20
     var TEMP_SP_JIE_TURN = SP_JIE_TURN
     var TEMP_TALENT_PROTECT = SP_TALENT_PROTECT
     var TEMP_TALENT_EXP = SP_TALENT_EXP

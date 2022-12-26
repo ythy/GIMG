@@ -329,7 +329,11 @@ object CultivationHelper {
         val lingGenId: String
         var lingGen: LingGen? = null
         if(parent != null && isTrigger(parent.first.lingGenType.inherit + parent.second.lingGenType.inherit)){
-            val parentList = mutableListOf(parent.first, parent.second).sortedByDescending { it.lingGenType.inherit }
+            val parentList = if(parent.first.lingGenType.inherit == parent.second.lingGenType.inherit){
+                listOf(parent.first, parent.second).shuffled()
+            }else{
+                mutableListOf(parent.first, parent.second).sortedByDescending { it.lingGenType.inherit }
+            }
             val maxPerson:Person = if (isTrigger(parentList[0].lingGenType.inherit / parentList[1].lingGenType.inherit)){
                 parentList[0]
             }else{

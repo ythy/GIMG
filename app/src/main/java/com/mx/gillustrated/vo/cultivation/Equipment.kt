@@ -18,6 +18,7 @@ class Equipment() :Parcelable {
     var spec:MutableList<Int> = mutableListOf()//专属
     var specName:MutableList<String> = mutableListOf()//专属
     var teji:MutableList<String> = mutableListOf()
+    var follower:MutableList<String> = mutableListOf()
     //以下字段不在配置里
     var uniqueName:String = ""
     var childrenAll:MutableList<Equipment> = mutableListOf() //计算用
@@ -37,6 +38,7 @@ class Equipment() :Parcelable {
         children = parcel.createTypedArrayList(Equipment)
         childrenAll = parcel.createTypedArrayList(Equipment)
         teji = Collections.synchronizedList(parcel.createStringArrayList())
+        follower = Collections.synchronizedList(parcel.createStringArrayList())
         spec = Collections.synchronizedList(parcel.createIntArray().toMutableList())
         specName = Collections.synchronizedList(parcel.createStringArrayList())
     }
@@ -55,6 +57,7 @@ class Equipment() :Parcelable {
         parcel.writeTypedList(children)
         parcel.writeTypedList(childrenAll)
         parcel.writeStringList(teji)
+        parcel.writeStringList(follower)
         parcel.writeIntArray(spec.toIntArray())
         parcel.writeStringList(specName)
     }
@@ -84,6 +87,7 @@ class Equipment() :Parcelable {
         equipment.childrenAll = this.childrenAll
         equipment.spec =  Collections.synchronizedList(this.spec.toMutableList())
         equipment.teji = Collections.synchronizedList(this.teji.toMutableList())
+        equipment.follower = Collections.synchronizedList(this.follower.toMutableList())
         equipment.specName = Collections.synchronizedList(this.specName.toMutableList())
         return equipment
     }

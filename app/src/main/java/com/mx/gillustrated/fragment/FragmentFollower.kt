@@ -15,6 +15,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationFollowerAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Follower
 import com.mx.gillustrated.vo.cultivation.Person
@@ -75,6 +76,15 @@ class FragmentFollower: Fragment() {
             follower.uniqueName = it.second
             follower
         }.sortedBy { it.rarity })
+
+        mPerson.equipmentListPair.forEach {
+            val equipment = mConfig.equipment.find { f-> f.id == it.first }!!.copy()
+            equipment.follower.forEach { id->
+                val follower = mConfig.follower.find { f-> f.id == id }!!.copy()
+                follower.uniqueName = ""
+                mFollowers.add(follower)
+            }
+        }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
     }

@@ -38,13 +38,13 @@ object CultivationEnemyHelper {
         enemy.maxHit = 50 + random.nextInt(51)
         enemy.remainHit = enemy.maxHit
         for (index in 1 until basis * 4 + 1){
-            val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000007" }!!.copy()
+            val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000101" }!!.copy()
             follower.uniqueName = "${index}号"
             enemy.followerList.add(follower)
         }
         if (type >= 2){
             for (index in 1 until basis + 1){
-                val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000008" }!!.copy()
+                val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000102" }!!.copy()
                 follower.uniqueName = "${index}号"
                 enemy.followerList.add(follower)
             }
@@ -65,10 +65,10 @@ object CultivationEnemyHelper {
         }
         person.equipmentListPair.addAll(listOf(Pair("7002901", 0)))
         repeat(followerQuantity.first) {
-            person.followerList.add(Triple("9000007", "${it + 1}号", ""))
+            person.followerList.add(Triple("9000101", "${it + 1}号", ""))
         }
         repeat(followerQuantity.second) {
-            person.followerList.add(Triple("9000008", "${it + 1}号", ""))
+            person.followerList.add(Triple("9000102", "${it + 1}号", ""))
         }
         CultivationHelper.updatePersonEquipment(person)
         CultivationHelper.setPersonJingjie(person, jingJieLevel)

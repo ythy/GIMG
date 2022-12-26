@@ -47,9 +47,9 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
 
         val values = getGroup(groupPosition)
         val child = values.childrenAll
-        if(values.type <= 3 || values.type == 9)
+        if(values.type <= 3 || values.type == 9) {
             component.name.text = CultivationHelper.showing(values.name)
-        else if(values.type == 8){
+        }else if(values.type == 8){
             val tejiString = if (values.teji.size > 0) "+" else  ""
             component.name.text = CultivationHelper.showing("\uD83D\uDD05 " + values.name + tejiString)
             component.name.setOnClickListener{
@@ -120,7 +120,8 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
 
         val values = getChild(groupPosition, childPosition)
         val tejiString = if (values.teji.size > 0) "+" else  ""
-        component.name.text = CultivationHelper.showing(values.uniqueName+tejiString)
+        val followerString = if (values.follower.size > 0) "#" else  ""
+        component.name.text = CultivationHelper.showing(values.uniqueName+tejiString+followerString)
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         component.xiuwei.text = "${values.xiuwei}"
         component.success.text = "${values.success}"
@@ -136,8 +137,14 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             callbacks.onDeleteHandler(values, false)
         }
         component.name.setOnClickListener{
-            if(tejiString == "+")
-                Toast.makeText(mContext, values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
+            var toastString = ""
+            if(tejiString == "+"){
+                toastString += values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }
+            }
+            if(followerString == "#"){
+                toastString += values.follower.joinToString {  CultivationHelper.mConfig.follower.find { f-> f.id == it }?.name ?: "" }
+            }
+            Toast.makeText(mContext, toastString, Toast.LENGTH_SHORT).show()
         }
         return convertView
     }
