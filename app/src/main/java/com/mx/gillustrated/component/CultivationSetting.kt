@@ -149,6 +149,7 @@ object CultivationSetting {
             PresetInfo(16000140, Pair("\u6234","\u5b97")),
             PresetInfo(16000150, Pair("\u5f20","\u987a"),0,100,100),
             PresetInfo(16000160, Pair("\u674E","\u5E94"),0,100,100),
+            PresetInfo(16000170, Pair("\u53F2","\u8FDB")),
 
             PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
             PresetInfo(16010020, Pair("\u9ad8","\u4fc5"),0, 100, 100),
@@ -162,6 +163,7 @@ object CultivationSetting {
 
             PresetInfo(16020010, Pair("\u6641","\u76d6"),0, 100, 200),
             PresetInfo(16020020, Pair("\u738b","\u4f26")),
+            PresetInfo(16020030, Pair("\u65B9","\u814A"),0, 200, 600),
 
             PresetInfo(16030010, Pair("\u5218", "\u7109"), 0, 100, 100),
             PresetInfo(16030020, Pair("\u7559", "\u8d5e"), 0, 100, 100),
@@ -179,7 +181,12 @@ object CultivationSetting {
             PresetInfo(16030141, Pair("\u675c", "\u592b\u4eba"), 14000010, 100, 200),
             PresetInfo(16030151, Pair("\u66f9", "\u91d1\u7389"), 0, 200, 600, Pair(14000010, 16030141)),
             PresetInfo(16030161, Pair("\u5b59", "\u8339"), 14020030, 100, 200, Pair(14020020, 14020041)),
-            PresetInfo(16030171, Pair("\u5468", "\u5937"), 14010040, 100, 200)
+            PresetInfo(16030171, Pair("\u5468", "\u5937"), 14010040, 100, 200),
+
+            PresetInfo(16040010, Pair("\u5B59", "\u5927\u5723"), 0, 1000, 2000),
+            PresetInfo(16040020, Pair("\u5510", "\u7384\u5958"), 0, 500, 1000),
+            PresetInfo(16040030, Pair("\u732A", "\u516B\u6212"), 0, 100, 200),
+            PresetInfo(16040040, Pair("\u6C99", "\u609F\u51C0"))
     )
 
     // key = type

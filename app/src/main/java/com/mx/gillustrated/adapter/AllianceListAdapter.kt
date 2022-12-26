@@ -45,7 +45,7 @@ class AllianceListAdapter  constructor(mContext: Context, private val list: List
 
         component.name.text =  CultivationHelper.showing("${nation.find { it.id == list[arg0].nation }?.name}-${list[arg0].name}")
         component.persons.text =  "${list[arg0].personList.size}-${list[arg0].personList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
-        component.total.text  = list[arg0].totalXiuwei.toString()
+        component.total.text  = CultivationHelper.showLifeTurn(list[arg0].totalXiuwei)
         component.winner.text  = list[arg0].battleWinner.toString()
         return convertView
     }
