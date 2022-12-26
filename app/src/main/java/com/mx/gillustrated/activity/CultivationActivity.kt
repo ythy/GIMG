@@ -849,6 +849,9 @@ class CultivationActivity : BaseActivity() {
         if(inDurationByXun("Xun240",240)) {
             CultivationHelper.updatePartner(mPersons)
         }
+        if(inDurationByXun("Xun1200",1200)) {
+            addPersion(null, null)
+        }
         //以下辅助操作
         when {
             inDurationByXun("Xun100000", 100000) && isHidden -> {
