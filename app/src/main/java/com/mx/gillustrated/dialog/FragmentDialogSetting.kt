@@ -38,6 +38,9 @@ class FragmentDialogSetting : DialogFragment() {
     @BindView(R.id.et_jie)
     lateinit var mEtJie:EditText
 
+    @BindView(R.id.et_reduce)
+    lateinit var mEtReduce:EditText
+
     @BindView(R.id.et_talent)
     lateinit var mTalent:EditText
 
@@ -66,6 +69,16 @@ class FragmentDialogSetting : DialogFragment() {
             CultivationSetting.TEMP_SP_JIE_TURN = current.toInt()
         }
     }
+
+    @OnTextChanged(R.id.et_reduce)
+    fun onReduceTextChangedHandler(text:CharSequence){
+        val current = text.toString()
+        if(current.toIntOrNull() != null && current.toInt() > 0){
+            mActivity.mSP.edit().putInt("cultivation_dead_reduce", current.toInt()).apply()
+            CultivationSetting.TEMP_REDUCE_TURN = current.toInt()
+        }
+    }
+
 
     @OnTextChanged(R.id.et_talent)
     fun onTalentTextChangedHandler(text:CharSequence){
@@ -208,6 +221,7 @@ class FragmentDialogSetting : DialogFragment() {
         tvbBoss.setDataProvider(listOf("霸:${battleRound.boss[0]}", "暗:${battleRound.boss[1]}", "滚:${battleRound.boss[2]}", "王:${battleRound.boss[3]}"), null)
 
         mEtJie.setText(mActivity.mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN).toString())
+        mEtReduce.setText(mActivity.mSP.getInt("cultivation_dead_reduce", CultivationSetting.SP_REDUCE_TURN).toString())
         mEtNan9.setText(mActivity.mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9).toString())
         mEtNan81.setText(mActivity.mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81).toString())
         mEtNanFinal.setText(mActivity.mSP.getInt("cultivation_nan_final", CultivationSetting.SP_NAN_FINAL).toString())

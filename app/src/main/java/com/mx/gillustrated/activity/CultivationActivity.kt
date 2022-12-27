@@ -391,6 +391,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun init(json:String?){
         CultivationSetting.TEMP_SP_JIE_TURN = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
+        CultivationSetting.TEMP_REDUCE_TURN = mSP.getInt("cultivation_dead_reduce", CultivationSetting.SP_REDUCE_TURN)
         CultivationSetting.TEMP_TALENT_PROTECT = mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT)
         CultivationSetting.TEMP_TALENT_EXP = mSP.getInt("cultivation_talent_exception", CultivationSetting.SP_TALENT_EXP)
         val out:String? = if(readRecord) json else null
@@ -685,7 +686,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun killClanPersons(clan:Clan?){
         clan?.clanPersonList?.map { it.value }?.sortedBy { it.ancestorLevel }?.forEach {
-            if(it.ancestorId != it.id && getOnlinePersonDetail(it.parent?.first) == null && !isDeadException(it) ){
+            if(it.ancestorId != it.id && getOnlinePersonDetail(it.parent?.first) == null && isDeadException(it) == 0 ){
                 deadHandler(it)
             }
         }
@@ -730,15 +731,16 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun isDeadException(person:Person):Boolean{
+    // 0 dead; 1 cost 1; 2 cost reduce turn
+    private fun isDeadException(person:Person):Int{
         if(person.isFav || person.neverDead || person.equipmentListPair.find { it.first == "7009004" } != null){
-            return true
-        }else if(person.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN){
-            return true
+            return 1
+        }else if(person.lifeTurn > CultivationSetting.TEMP_REDUCE_TURN){
+            return 2
         }else if(person.specIdentity == 0 && isTalent(person)){
-            return true
+            return 1
         }
-        return false
+        return 0
     }
 
 
@@ -762,15 +764,24 @@ class CultivationActivity : BaseActivity() {
 
     private fun updatePersonByXun(it:Person, currentXun:Long, step: Int){
         if (it.lifetime < currentXun ) {
-            if(isDeadException(it)){
-                it.lifetime += 5000
-                it.lifeTurn = Math.max(0, it.lifeTurn - 1)
-                it.deadExceptTimes++
-                addPersonEvent(it,"转转-1,残:${it.lifeTurn}")
-            }else{
-                if(getOnlinePersonDetail(it.id) != null)
-                    deadHandler(it)
-                return
+            when(isDeadException(it)){
+                0 -> {
+                    if(getOnlinePersonDetail(it.id) != null)
+                        deadHandler(it)
+                    return
+                }
+                1 -> {
+                    it.lifetime += 5000
+                    it.lifeTurn = Math.max(0, it.lifeTurn - 1)
+                    it.deadExceptTimes++
+                    addPersonEvent(it,"转转-1,残:${it.lifeTurn}")
+                }
+                2 -> {
+                    it.lifetime += 5000
+                    it.lifeTurn -= CultivationSetting.TEMP_REDUCE_TURN
+                    it.deadExceptTimes++
+                    addPersonEvent(it,"转转-${CultivationSetting.TEMP_REDUCE_TURN},残:${it.lifeTurn}")
+                }
             }
         }
 
@@ -791,7 +802,7 @@ class CultivationActivity : BaseActivity() {
             var difficulty = 1
             if(next == null && it.lifeTurn > 0){
                 when {
-                    it.lifeTurn % ( CultivationSetting.TEMP_SP_JIE_TURN - 1) == 0 -> difficulty = mSP.getInt("cultivation_nan_final", CultivationSetting.SP_NAN_FINAL)
+                    it.lifeTurn % CultivationSetting.TEMP_SP_JIE_TURN == 0 -> difficulty = mSP.getInt("cultivation_nan_final", CultivationSetting.SP_NAN_FINAL)
                     it.lifeTurn % 81 == 0 -> difficulty = mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81)
                     it.lifeTurn % 9 == 0 -> difficulty = mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9)
                 }
@@ -1235,7 +1246,7 @@ class CultivationActivity : BaseActivity() {
         if(inDurationByXun("ClanUpdated", 12, xun)) {
             mClans.forEach {
                 if(getOnlinePersonDetail(it.key) == null){
-                    it.value.clanPersonList.filter { c-> !isDeadException(c.value) }.forEach { p->
+                    it.value.clanPersonList.filter { c-> isDeadException(c.value) == 0 }.forEach { p->
                         deadHandler(p.value)
                     }
                     it.value.clanPersonList.clear()

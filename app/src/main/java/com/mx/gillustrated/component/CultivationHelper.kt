@@ -786,10 +786,10 @@ object CultivationHelper {
                 else -> 0
             }
         }
-        return if(person.lingGenType.type < 3 )
+        return if(person.lingGenType.type == 0 )
             tianfu
         else
-            tianfu + 2 * (person.lingGenType.type - 2)
+            tianfu + 2 * person.lingGenType.type
     }
 
 
