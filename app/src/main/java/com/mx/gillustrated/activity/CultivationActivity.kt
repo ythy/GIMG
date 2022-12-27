@@ -1360,39 +1360,52 @@ class CultivationActivity : BaseActivity() {
             }
         }
 
-        getAllSpecPersons().forEach { p ->
+        getAllSpecPersons().forEach spec@{ p ->
             val current = mPersons.map { it.value }.find { it.specIdentity == p.identity }
+                    ?: return@spec
+
             if(p.partner > 0){
-                if(current != null && current.partner == null ){
-                    val partner = mPersons.map { it.value }.find { it.specIdentity == p.partner }
-                    if(partner != null){
-                        current.partner = partner.id
-                        current.partnerName = partner.name
-                        val specPartnerSetting = getAllSpecPersons().find { f->f.identity == partner.specIdentity }!!
-                        if(partner.partner == null && specPartnerSetting.partner == current.specIdentity){
-                            partner.partner = current.id
-                            partner.partnerName = current.name
-                        }
-                        addPersonEvent(partner, "与${current.name}\u7ed3\u4f34")
-                        addPersonEvent(current, "与${partner.name}\u7ed3\u4f34")
-                        writeHistory("${getPersonBasicString(partner)} 与 ${getPersonBasicString(current)} \u7ed3\u4f34了")
+                val validPartner = mPersons.map { it.value }.find { it.specIdentity == p.partner }
+                val currentPartner = getOnlinePersonDetail(current.partner)
+                if(currentPartner?.specIdentity ?: 0 > 0 && currentPartner?.specIdentity != p.partner){
+                    current.partner = null
+                    current.partnerName = null
+                    current.children.clear()
+                    currentPartner!!.children.clear()
+                }
+                if(validPartner != null && current.partner == null){
+                    current.partner = validPartner.id
+                    current.partnerName = validPartner.name
+                    val specPartnerSetting = getAllSpecPersons().find { f->f.identity == p.partner }!!
+                    if(validPartner.partner == null && specPartnerSetting.partner == current.specIdentity){
+                        validPartner.partner = current.id
+                        validPartner.partnerName = current.name
                     }
+                    addPersonEvent(validPartner, "与${current.name}\u7ed3\u4f34")
+                    addPersonEvent(current, "与${validPartner.name}\u7ed3\u4f34")
+                    writeHistory("${getPersonBasicString(validPartner)} 与 ${getPersonBasicString(current)} \u7ed3\u4f34了")
                 }
             }
+
             if(p.parent != null){
-                if(current != null && current.parent == null){
-                    val dad = mPersons.map { it.value }.find { it.specIdentity == p.parent?.first }
-                    val mum = mPersons.map { it.value }.find { it.specIdentity == p.parent?.second }
+                val dad = mPersons.map { it.value }.find { it.specIdentity == p.parent?.first }
+                val mum = mPersons.map { it.value }.find { it.specIdentity == p.parent?.second }
+                if(current.parent?.first != dad?.id || current.parent?.second != mum?.id){
                     if(dad != null && mum != null){
                         current.parent = Pair(dad.id, mum.id)
                         current.parentName = Pair(dad.name, mum.name)
+                        synchronized(dad.children) {
+                            dad.children.removeIf { r -> current.id == r }
+                        }
+                        synchronized(mum.children) {
+                            mum.children.removeIf { r -> current.id == r }
+                        }
                         dad.children.add(current.id)
                         mum.children.add(current.id)
                     }
                 }
             }
         }
-
     }
 
     private fun addSingleSpecPerson(spec:PresetInfo, alliance:Alliance? = null):Person?{
