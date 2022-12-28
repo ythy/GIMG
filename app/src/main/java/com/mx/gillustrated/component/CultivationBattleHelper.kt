@@ -332,7 +332,7 @@ object CultivationBattleHelper {
 
     //zhao shi
     private fun magicInBattle(battleId:String, attacker:BattleObject, defender: BattleObject){
-        mutableListOf("8006001", "8006003", "8006004", "8006006").forEach {
+        mutableListOf("8006001", "8006003", "8006004", "8006006", "8006008").forEach {
             if(hasTeji(it, attacker) && isTrigger(tejiDetail(it, attacker).chance, attacker) ){
                 defender.hp -= tejiDetail(it, attacker).power
                 printBattleInfo(battleId, attacker, 1, "${showName(defender)}HP-", it)

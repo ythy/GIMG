@@ -4,7 +4,7 @@
     android:padding="4dp" android:gravity="center_vertical"
     android:layout_height="wrap_content">
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_weight="1">
@@ -16,7 +16,6 @@
     <LinearLayout
         android:layout_width="30dp"
         android:layout_height="wrap_content"
-        android:gravity="end"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
@@ -26,7 +25,6 @@
     <LinearLayout
         android:layout_width="20dp"
         android:layout_height="wrap_content"
-        android:gravity="end"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
@@ -34,13 +32,15 @@
             android:id="@+id/tv_success"/>
     </LinearLayout>
     <LinearLayout
-        android:layout_width="120dp"
+        android:layout_width="0dp"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
         android:gravity="end"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:id="@+id/tv_props"/>
     </LinearLayout>
 
