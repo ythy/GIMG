@@ -73,6 +73,14 @@ object CultivationBattleHelper {
             battlingOpponent(battlePersons[attackLaterIndex], battlePersons[attackFirstIndex])
             if(afterHPChangedPossibleEveryPoint(battlePersons))
                 break
+            //回合最后 处理状态轮数
+            battlePersons.forEach { l-> l.forEach { p->
+                p.statusRound.forEach { m->
+                    if(m.value > 0){
+                        p.statusRound[m.key] = m.value - 1
+                    }
+                }
+            }}
         }
     }
 
@@ -147,17 +155,17 @@ object CultivationBattleHelper {
                 if(hasTeji("8004002", current)){
                     val multi = tejiDetail("8004002").power.toFloat() / 100
                     current.speed += Math.round(current.speedBasis * multi)
+                    printBattleInfo(battleId, current, 2, "\u654C\u65B9\u5168\u4F53\u9644\u52A0\u72B6\u6001${statusDetail(tejiDetail("8004002").status).name}, \u81EA\u8EAB\u901F\u5EA6\u5F3A\u5316", "8004002")
                     allOpponent.forEach { opponent->
-                        val status = addStatus(current, opponent, "8004002")
-                        printBattleInfo(battleId, current, 2, "\u901F\u5EA6\u5F3A\u5316", "8004002", status)
+                        addStatus(current, opponent, "8004002")
                     }
                 }
                 if(hasTeji("8004003", current)){
                     val multi = tejiDetail("8004003").power.toFloat() / 100
                     current.speed += Math.round(current.speedBasis * multi)
+                    printBattleInfo(battleId, current, 2, "\u654C\u65B9\u5168\u4F53\u9644\u52A0\u72B6\u6001${statusDetail(tejiDetail("8004003").status).name}, \u81EA\u8EAB\u901F\u5EA6\u5F3A\u5316", "8004003")
                     allOpponent.forEach { opponent->
-                        val status = addStatus(current, opponent, "8004003")
-                        printBattleInfo(battleId, current, 2, "\u901F\u5EA6\u5F3A\u5316", "8004003", status)
+                        addStatus(current, opponent, "8004003")
                     }
                 }
             }
@@ -274,10 +282,6 @@ object CultivationBattleHelper {
         if(attacker.hp <= 0 || defender.hp <= 0)
             return
         val battleId = attacker.battleId
-        if(isStatuTrigger(attacker, "8100004")){//盲
-            printBattleInfo(battleId, attacker, 4, "${statusDetail("8100004").name}\u53d1\u52a8")
-            return
-        }
         if(isStatuTrigger(attacker, "8100002")){//封
             printBattleInfo(battleId, attacker, 4, "${statusDetail("8100002").name}\u53d1\u52a8, \u65e0\u6cd5\u884c\u52a8")
             return
@@ -317,16 +321,6 @@ object CultivationBattleHelper {
             attacker.hp += xiValue
             attacker.hp = Math.min(attacker.hp, attacker.maxhp)
             printBattleInfo(battleId, attacker, 3, "HP+$xiValue", "8003006")
-        }
-        if(hasTeji("8005001", attacker) && isTrigger(tejiDetail("8005001").chance, attacker)){
-            val status = addStatus(attacker, defender, "8005001")
-            if(status != null)
-                printBattleInfo(battleId, attacker, 3, "", "8005001", status)
-        }
-        if(hasTeji("8005002", attacker) && isTrigger(tejiDetail("8005002").chance, attacker)){
-            val status = addStatus(attacker, defender, "8005002")
-            if(status != null)
-                printBattleInfo(battleId, attacker, 3, "", "8005002", status)
         }
     }
 
@@ -409,11 +403,11 @@ object CultivationBattleHelper {
         val teji = tejiDetail(tejiId)
         if(teji.status != ""){
             val status = statusDetail(teji.status)
-            if(status.target == 0 && isStatusExpire(current, status.id)){
-                current.statusRound[status.id] = getRound(current.battleId) + teji.statusRound
+            if(status.target == 0){
+                current.statusRound[status.id] = current.statusRound[status.id] ?: 0 + teji.statusRound
                 return status
-            }else if(status.target == 1 && isStatusExpire(opponent, status.id)){
-                opponent.statusRound[status.id] = getRound(opponent.battleId) + teji.statusRound
+            }else if(status.target == 1){
+                opponent.statusRound[status.id] = opponent.statusRound[status.id] ?: 0 + teji.statusRound
                 return status
             }
         }
@@ -421,20 +415,16 @@ object CultivationBattleHelper {
     }
 
     private fun isStatusExpire (person: BattleObject, id:String):Boolean{
-        return  person.statusRound[id] == null || (person.statusRound[id]!! < getRound(person.battleId))
+        return  person.statusRound[id] == null || person.statusRound[id] == 0
     }
 
     private fun remainStatusRound (person: BattleObject, id:String):Int{
-        if(person.statusRound[id] == null)
-            return 0
-        if(person.statusRound[id]!! >= getRound(person.battleId))
-            return person.statusRound[id]!! + 1 - getRound(person.battleId)
-        return 0
+        return person.statusRound[id] ?: 0
     }
 
     private fun isStatuTrigger (person: BattleObject, statusId:String):Boolean{
         val status = statusDetail(statusId)
-        return  person.statusRound[statusId] != null && (person.statusRound[statusId]!! >=  getRound(person.battleId)) && isTrigger(status.chance)
+        return !isStatusExpire(person, statusId) && isTrigger(status.chance)
     }
 
     //type 1,2,3 需要teji, 4 显示, 5 gongji 6 round 7 jidao
@@ -595,7 +585,7 @@ object CultivationBattleHelper {
         var hp:Int = h
 
         var goneCount:Int = 0//gone次数
-        var statusRound:HashMap<String, Int> = HashMap()
+        var statusRound:HashMap<String, Int> = HashMap()//0 或者 null 不发动
         var extraDamage:Int = 0
         var minDamage:Int = 1
         var maxInjure:Int = 9999
