@@ -177,18 +177,18 @@ object CultivationBattleHelper {
         battlePersons.forEachIndexed { index, currentList ->
             val allOpponent = battlePersons[Math.abs(index - 1)]
             currentList.forEach { current ->
-                if(hasTeji("8002002", current) && isTrigger(tejiDetail("8002002").chance, current)){
+                if(hasTeji("8002002", current)){
                     allOpponent.forEach { opponent ->
                         opponent.hp -= tejiDetail("8002002").power
                     }
                     printBattleInfo(battleId, current, 1, "\u654C\u65B9\u5168\u4F53HP-", "8002002")
-                }else if(hasTeji("8002001", current) && isTrigger(tejiDetail("8002001").chance, current)){
+                }else if(hasTeji("8002001", current)){
                     allOpponent.forEach { opponent ->
                         opponent.hp -= tejiDetail("8002001").power
                     }
                     printBattleInfo(battleId, current, 1, "\u654C\u65B9\u5168\u4F53HP-", "8002001")
                 }
-                if(hasTeji("8002005", current) && isTrigger(tejiDetail("8002005").chance, current)){
+                if(hasTeji("8002005", current)){
                     current.hp += tejiDetail("8002005").power
                     current.hp = Math.min(current.hp, current.maxhp)
                     printBattleInfo(battleId, current, 1, "HP+", "8002005")
@@ -521,6 +521,7 @@ object CultivationBattleHelper {
         }.toMutableList()
     }
 
+    //特技有可能包含多个名称
     fun convertTejiObject(id:String, person: Person? = null):TeJiObject{
         val tejiObject = TeJiObject(id)
         val tejiDetail = tejiDetail(id)
@@ -615,16 +616,6 @@ object CultivationBattleHelper {
         var chance:Int = 100
         var status:String = ""
         var statusRound:Int = 0 // combining with status
-
-        var attackMulti: Int = 0
-        var defenceMulti:Int = 0
-        var speedMulti:Int = 0
-        var hpMulti:Int = 0
-        var hp2:Int = 0
-        var extraDamage:Int = 0
-        var minDamage:Int = 0
-        var maxInjure:Int = 0
-        var target2:Int = 0 // 0 current; 1 all opponent; 2 single opponent
     }
 
 }

@@ -16,7 +16,7 @@ object CultivationEnemyHelper {
             BossSetting("\u674e\u5143\u9738\u4e4b\u9b42", 6,20, 5),
             BossSetting("\u6697\u5f71\u4e4b\u9b42", 6,30, 7),
             BossSetting("\u7403\u4e4b\u9b42", 6,40, 8),
-            BossSetting("\u738b\u4e4b\u9b42", 6,50, 9)
+            BossSetting("\u989C\u4e4b\u9b42", 6,50, 9)
     )
 
     //暂时弃用
@@ -106,7 +106,7 @@ object CultivationEnemyHelper {
     }
 
     fun generateYaoWang(alliance: Alliance): Person {
-        val person = CultivationHelper.getPersonInfo(Pair("王", "一"), NameUtil.Gender.Female, null,
+        val person = CultivationHelper.getPersonInfo(Pair("大小乔", ""), NameUtil.Gender.Female, null,
                 CultivationSetting.PersonFixedInfoMix(null, null, 8000, 80000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 4

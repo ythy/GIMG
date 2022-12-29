@@ -2477,7 +2477,7 @@
     {
       "id": "8004002",
       "name": "\u5927\u4e54\u53d8\u8eab",
-      "description": "\u63d0\u901f2.0, \u9B45\u60D1(50%)",
+      "description": "\u63d0\u901f2.0, \u9B45\u60D1(60%)",
       "type": 4,
       "status": "8100002",
       "statusRound": 10,
@@ -2491,7 +2491,7 @@
       "description": "\u63d0\u901f2.0, \u7279\u6280\u9057\u5fd8",
       "type": 4,
       "status": "8100005",
-      "statusRound": 10,
+      "statusRound": 5,
       "power": 100,
       "rarity": 9,
       "weight": 5000000
@@ -2598,8 +2598,8 @@
       "id": "8100002",
       "name": "\u9B45\u60D1",
       "target": 1,
-      "chance": 50,
-      "description": "50%\u653b\u51fb\u5c01\u5370",
+      "chance": 60,
+      "description": "60%\u653b\u51fb\u5c01\u5370",
       "rarity": 6
     },
     {
