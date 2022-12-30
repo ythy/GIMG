@@ -133,18 +133,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="81难"/>
-            <EditText
-                android:id="@+id/et_nan_final"
-                android:inputType="number"
-                android:layout_marginStart="10dp"
-                android:gravity="end"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_marginStart="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="F难"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

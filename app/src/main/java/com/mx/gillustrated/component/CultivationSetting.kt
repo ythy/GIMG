@@ -36,7 +36,6 @@ object CultivationSetting {
     const val SP_TALENT_EXP = 99 //次数
     const val SP_NAN_9 = 5
     const val SP_NAN_81 = 10
-    const val SP_NAN_FINAL = 20
     var TEMP_SP_JIE_TURN = SP_JIE_TURN
     var TEMP_TALENT_PROTECT = SP_TALENT_PROTECT
     var TEMP_TALENT_EXP = SP_TALENT_EXP

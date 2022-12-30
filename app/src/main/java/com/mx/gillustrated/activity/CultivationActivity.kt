@@ -735,7 +735,7 @@ class CultivationActivity : BaseActivity() {
     private fun isDeadException(person:Person):Int{
         if(person.isFav || person.neverDead || person.equipmentListPair.find { it.first == "7009004" } != null){
             return 1
-        }else if(person.lifeTurn > CultivationSetting.TEMP_REDUCE_TURN){
+        }else if(person.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN){
             return 2
         }else if(person.specIdentity == 0 && isTalent(person)){
             return 1
@@ -802,7 +802,6 @@ class CultivationActivity : BaseActivity() {
             var difficulty = 1
             if(next == null && it.lifeTurn > 0){
                 when {
-                    it.lifeTurn % CultivationSetting.TEMP_SP_JIE_TURN == 0 -> difficulty = mSP.getInt("cultivation_nan_final", CultivationSetting.SP_NAN_FINAL)
                     it.lifeTurn % 81 == 0 -> difficulty = mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81)
                     it.lifeTurn % 9 == 0 -> difficulty = mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9)
                 }

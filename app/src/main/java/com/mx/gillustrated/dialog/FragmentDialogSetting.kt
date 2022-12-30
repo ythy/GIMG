@@ -54,9 +54,6 @@ class FragmentDialogSetting : DialogFragment() {
     @BindView(R.id.et_nan81)
     lateinit var mEtNan81:EditText
 
-    @BindView(R.id.et_nan_final)
-    lateinit var mEtNanFinal:EditText
-
 
     @BindView(R.id.et_boss_punish)
     lateinit var mBossPunish:EditText
@@ -113,14 +110,6 @@ class FragmentDialogSetting : DialogFragment() {
         val current = text.toString()
         if(current.toIntOrNull() != null && current.toInt() > 0){
             mActivity.mSP.edit().putInt("cultivation_nan_81", current.toInt()).apply()
-        }
-    }
-
-    @OnTextChanged(R.id.et_nan_final)
-    fun onNanFinalTextChangedHandler(text:CharSequence){
-        val current = text.toString()
-        if(current.toIntOrNull() != null && current.toInt() > 0){
-            mActivity.mSP.edit().putInt("cultivation_nan_final", current.toInt()).apply()
         }
     }
 
@@ -224,7 +213,6 @@ class FragmentDialogSetting : DialogFragment() {
         mEtReduce.setText(mActivity.mSP.getInt("cultivation_dead_reduce", CultivationSetting.SP_REDUCE_TURN).toString())
         mEtNan9.setText(mActivity.mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9).toString())
         mEtNan81.setText(mActivity.mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81).toString())
-        mEtNanFinal.setText(mActivity.mSP.getInt("cultivation_nan_final", CultivationSetting.SP_NAN_FINAL).toString())
         mTalent.setText(mActivity.mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT).toString())
         mTalentExp.setText(mActivity.mSP.getInt("cultivation_talent_exception", CultivationSetting.SP_TALENT_EXP).toString())
 
