@@ -99,7 +99,7 @@ object CultivationSetting {
             PresetInfo(14000150, Triple("\u9093", "\u827e", 3026)), PresetInfo(14000160, Triple("\u8d3e", "\u8be9", 3009)),
 
             PresetInfo(14010010, Triple("\u5218", "\u5907", 3045), 14020101, 200, 600),
-            PresetInfo(14010020, Triple("\u5173", "\u7fbd", 3020), 0, 200, 600),
+            PresetInfo(14010020, Triple("\u5173", "\u7fbd", 3020), 16030231, 200, 600),
             PresetInfo(14010030, Triple("\u5f20", "\u98de", 3015), 0, 100, 200),
             PresetInfo(14010040, Triple("\u8d75", "\u4e91", 3044), 14010101, 100, 200),
             PresetInfo(14010050, Triple("\u8bf8\u845b", "\u4eae", 3013), 14010061, 500, 1000),
@@ -151,6 +151,8 @@ object CultivationSetting {
             PresetInfo(16000150, Pair("\u5f20","\u987a"),0,100,100),
             PresetInfo(16000160, Pair("\u674E","\u5E94"),0,100,100),
             PresetInfo(16000170, Pair("\u53F2","\u8FDB")),
+            PresetInfo(16000180, Pair("\u5362","\u4FCA\u4E49"),0, 200, 600),
+            PresetInfo(16000190, Pair("\u77F3","\u79C0")),PresetInfo(16000200, Pair("\u71D5","\u9752")),
 
             PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
             PresetInfo(16010020, Pair("\u9ad8","\u4fc5"),0, 100, 100),
@@ -168,7 +170,7 @@ object CultivationSetting {
 
             PresetInfo(16030010, Pair("\u5218", "\u7109"), 0, 100, 100),
             PresetInfo(16030020, Pair("\u7559", "\u8d5e"), 0, 100, 100),
-            PresetInfo(16030030, Pair("\u5173", "\u7d22"), 16030081, 200, 600),
+            PresetInfo(16030030, Pair("\u5173", "\u7d22"), 16030081, 200, 600, Pair(14010020, 16030231)),
             PresetInfo(16030041, Pair("\u8d75", "\u8944"), 0, 200, 600, Pair(14010040, 14010101)),
             PresetInfo(16030050, Pair("\u8bb8", "\u52ad"), 0, 100, 200),
             PresetInfo(16030061, Pair("\u738b", "\u8363"), 0, 100, 200),
@@ -188,6 +190,7 @@ object CultivationSetting {
             PresetInfo(16030201, Pair("\u8D75", "\u5AE3"), 14020010, 100, 200),
             PresetInfo(16030211, Pair("\u4E01", "\u5C1A\u6DB4"), 14000010),
             PresetInfo(16030221, Pair("\u5C39", "\u592B\u4EBA"), 14000010, 100, 200),
+            PresetInfo(16030231, Pair("\u80E1", "\u91D1\u5B9A"), 14010020, 200, 600),
 
             PresetInfo(16040010, Pair("\u5B59", "\u5927\u5723"), 0, 1000, 2000),
             PresetInfo(16040020, Pair("\u5510", "\u7384\u5958"), 0, 500, 1000),
