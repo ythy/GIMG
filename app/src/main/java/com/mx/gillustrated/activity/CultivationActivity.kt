@@ -736,7 +736,8 @@ class CultivationActivity : BaseActivity() {
 
     // 0 dead; 1 cost 1; 2 cost reduce turn
     private fun isDeadException(person:Person):Int{
-        if(person.isFav || person.neverDead || person.equipmentListPair.find { it.first == "7009004" } != null){
+        if(person.isFav || person.neverDead || person.equipmentListPair.find { it.first == "7009004" } != null
+                || person.label.find { it == "4100301" } != null){
             return 1
         }else if(person.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN){
             return 2
