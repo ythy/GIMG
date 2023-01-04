@@ -8,7 +8,7 @@ import kotlin.collections.HashMap
 
 object CultivationSetting {
 
-    val CommonColors = arrayOf("#EAEFE8", "#417B29", "#367CC4", "#7435C1", "#D22E59", "#FB23B7", "#CDA812", "#F2E40A", "#04B4BA", "#C18135", "#A5529E", "#EEF192", "#FF0000", "#FDBE13", "#808769")
+    val CommonColors = arrayOf("#EAEFE8", "#539B35", "#3B86D4", "#AF85E3", "#FFA500", "#FC2CBB", "#EA5078", "#FFFF00", "#04B4BA","#CFB53B", "#8DFAB1", "#F7FFCC", "#FF0000", "#75ABA7", "#AB9BB7")
     val PostColors = arrayOf("#E2D223", "#BE0012", "#0272E4", "#12A703", "#EF7362")
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
@@ -152,7 +152,7 @@ object CultivationSetting {
             PresetInfo(16000160, Pair("\u674E","\u5E94"),0,100,100),
             PresetInfo(16000170, Pair("\u53F2","\u8FDB")),
             PresetInfo(16000180, Pair("\u5362","\u4FCA\u4E49"),0, 200, 600),
-            PresetInfo(16000190, Pair("\u77F3","\u79C0")),PresetInfo(16000200, Pair("\u71D5","\u9752")),
+            PresetInfo(16000190, Pair("\u77F3","\u79C0")), PresetInfo(16000200, Pair("\u71D5","\u9752")),
 
             PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
             PresetInfo(16010020, Pair("\u9ad8","\u4fc5"),0, 100, 100),

@@ -72,7 +72,7 @@ class Person() :Parcelable {
         var extraTupo:Int = 0 //tianfu 初始和读取更新
         var extraSpeed:Int = 0 //tianfu 初始和读取更新
         var extraXuiweiMulti:Int = 0 //tianfu + alliance  初始和读取更新
-
+        var label:MutableList<String> =  Collections.synchronizedList(mutableListOf())
 
 
         //不需要保存
@@ -164,6 +164,7 @@ class Person() :Parcelable {
                 careerDetailList =  Collections.synchronizedList(parcel.createTypedArrayList(Career))
                 bossXiuwei = parcel.readInt()
                 bossRound= parcel.createIntArray().toMutableList()
+                label = Collections.synchronizedList(parcel.createStringArrayList())
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -240,6 +241,7 @@ class Person() :Parcelable {
                 parcel.writeTypedList(careerDetailList)
                 parcel.writeInt(bossXiuwei)
                 parcel.writeIntArray(bossRound.toIntArray())
+                parcel.writeStringList(label)
 
         }
 

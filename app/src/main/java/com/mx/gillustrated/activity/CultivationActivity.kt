@@ -321,7 +321,10 @@ class CultivationActivity : BaseActivity() {
             }
         }
 
-
+         mPersons.forEach { (_: String, u: Person) ->
+             CultivationHelper.gainLabel(u)
+             CultivationHelper.updatePersonExtraProperty(u)
+         }
 
 //        mPersons.forEach { (_: String, u: Person) ->
 //            u.equipmentListPair.removeIf { it.second > 10000 }
@@ -1334,7 +1337,7 @@ class CultivationActivity : BaseActivity() {
                         }
                     }
                     if(career.id == "6100005" && isTrigger(2)){
-                        if(person.teji.size >= Math.max(3, career.level / 20)  )
+                        if(person.teji.mapNotNull { m-> mConfig.teji.find { it.id == m } }.filter { it.type < 4 }.size >= Math.max(3, career.level / 20)  )
                             return
                         gainTeji(person, career.level)
                     }

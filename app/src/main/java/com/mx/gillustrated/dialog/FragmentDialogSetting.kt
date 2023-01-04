@@ -167,6 +167,16 @@ class FragmentDialogSetting : DialogFragment() {
         newFragment.show(ft, "dialog_person_list")
     }
 
+    @OnClick(R.id.btn_label)
+    fun onLabelClick(){
+        val ft = childFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogPersonList.newInstance(5)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_person_list")
+    }
+
+
     @OnClick(R.id.btn_exclusive)
     fun onExclusiveClick(){
         openDialog(8)

@@ -26,6 +26,7 @@ import java.util.*
 
 //type 0 all; 1 fav; 2 carrer rarity>=8 ; 3 lifeturn == 0 & lingGen type > 1 & tianFu rarity sum > 10;
 //type 4 persons has amulet
+//type 5 persons has label
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFragment() {
@@ -206,6 +207,9 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             4 -> mContext.mPersons.map { it.value }.filter { p->
                p.equipmentListPair.find { e-> e.second > 10000 } != null
             }
+            5 -> mContext.mPersons.map { it.value }.filter { p -> p.label.mapNotNull{  m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumBy {
+                s-> s.weight
+            } >= 100 }
             else -> mContext.mPersons.map { it.value }
         }
         val filterString = etName.text.toString()
@@ -220,6 +224,8 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             mSort = "E"
         if(mType == 2)
             mSort = "C"
+        if(mType == 5)
+            mSort = "L"
 
         when (mSort) {
             "X" -> mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it, mContext.mAlliance) }
@@ -233,8 +239,13 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                         e-> e.second > 10000
                     }.sumBy { s-> CultivationSetting.getEquipmentCustom(s).rarity }})
             "C" -> mPersonData.sortByDescending{
-                val max = it.careerDetailList.maxBy { m-> m.rarity }!!
-                max.rarity * 1000 + max.level
+                val max = it.careerDetailList.maxBy { m-> m.rarity }
+                (max?.rarity ?: 0) * 1000 + (max?.level ?: 0)
+            }
+            "L" -> mPersonData.sortByDescending{ p->
+                p.label.mapNotNull { m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumBy {
+                    it.weight
+                }
             }
 
         }

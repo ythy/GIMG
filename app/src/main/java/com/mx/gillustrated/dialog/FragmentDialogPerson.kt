@@ -28,7 +28,9 @@ import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.fragment.*
 import com.mx.gillustrated.util.NameUtil
+import com.mx.gillustrated.vo.cultivation.Label
 import com.mx.gillustrated.vo.cultivation.Person
+import com.mx.gillustrated.vo.cultivation.TianFu
 import java.io.File
 import java.lang.ref.WeakReference
 
@@ -279,10 +281,44 @@ class FragmentDialogPerson : DialogFragment() {
                 }
             })
             mDialogView.tianfu.setDataProvider(
-                    tianFus.map { it.name },
+                    tianFus.map { getTianFuName(it) },
                     tianFus.map { CommonColors[it.rarity] })
 
         }
+
+        val labels = mPerson.label
+        if(labels.isNotEmpty()){
+            mDialogView.measures.measure(0,0)
+            mDialogView.label.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
+            mDialogView.label.setDataProvider(
+                    labels.map { getLabelName(CultivationHelper.mConfig.label.find { l -> l.id == it }!!.copy())},
+                    labels.map { CommonColors[CultivationHelper.mConfig.label.find { l -> l.id == it }!!.copy().rarity] })
+            mDialogView.label.setCallback(object : TextViewBox.Callback {
+                override fun onClick(index: Int) {
+                    val data = CultivationHelper.mConfig.label.find { it.id == labels[index] }!!
+                    Toast.makeText(context, data.toString(), Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+    }
+
+    fun getTianFuName(tianFu: TianFu):String{
+        if (CultivationHelper.pinyinMode)
+            return tianFu.name
+        when {
+            tianFu.name.contains("Power") -> return tianFu.name.replace("Power", "\u6839\u9AA8")
+            tianFu.name.contains("Clever") -> return tianFu.name.replace("Clever", "\u5929\u8D44")
+            tianFu.name.contains("Life") -> return tianFu.name.replace("Life", "\u547D\u6570")
+            tianFu.name.contains("Top") -> return tianFu.name.replace("Top", "\u609F\u6027")
+            tianFu.name.contains("Fu") -> return tianFu.name.replace("Fu", "\u798F\u6E90")
+        }
+        return ""
+    }
+
+    fun getLabelName(label:Label):String{
+        val tejiString = if (label.teji.size > 0) "+" else  ""
+        val followerString = if (label.follower.size > 0) "#" else  ""
+        return CultivationHelper.showing(label.name + tejiString + followerString)
     }
 
     fun updateView(){
@@ -300,9 +336,8 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.nickName ?: "")
         mDialogView.jingjie.text = CultivationHelper.showing(mPerson.jinJieName)
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
-        mDialogView.xiuwei.text = "${mPerson.xiuXei}/${mPerson.jinJieMax}"
         mDialogView.xiuweiAdd.text =  "${CultivationHelper.getXiuweiGrow(mPerson, mContext.mAlliance)}"
-        mDialogView.success.text = "${CultivationHelper.getTotalSuccess(mPerson)}"
+        mDialogView.success.text = "↑${CultivationHelper.getTotalSuccess(mPerson)}"
         mDialogView.lingGen.text = CultivationHelper.showing(mPerson.lingGenName)
         mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenType.color]))
 
@@ -400,9 +435,6 @@ class FragmentDialogPerson : DialogFragment() {
         @BindView(R.id.tv_jingjie)
         lateinit var jingjie:TextView
 
-        @BindView(R.id.tv_xiuwei)
-        lateinit var xiuwei:TextView
-
         @BindView(R.id.tv_success)
         lateinit var success:TextView
 
@@ -411,6 +443,9 @@ class FragmentDialogPerson : DialogFragment() {
 
         @BindView(R.id.ll_tianfu)
         lateinit var tianfu:TextViewBox
+
+        @BindView(R.id.ll_label)
+        lateinit var label:TextViewBox
 
         @BindView(R.id.tv_xiuwei_add)
         lateinit var xiuweiAdd:TextView

@@ -326,7 +326,7 @@ object CultivationBattleHelper {
 
     //zhao shi
     private fun magicInBattle(battleId:String, attacker:BattleObject, defender: BattleObject){
-        mutableListOf("8006001", "8006003", "8006004", "8006006", "8006008").forEach {
+        mutableListOf("8006001", "8006003", "8006004", "8006006", "8006008", "8006009").forEach {
             if(hasTeji(it, attacker) && isTrigger(tejiDetail(it, attacker).chance, attacker) ){
                 defender.hp -= tejiDetail(it, attacker).power
                 printBattleInfo(battleId, attacker, 1, "${showName(defender)}HP-", it)
@@ -484,6 +484,18 @@ object CultivationBattleHelper {
                 battlePerson.follower.add(result)
             }
         }
+        person.label.forEach {
+            val label = mConfig.label.find { f-> f.id == it }!!.copy()
+            label.follower.forEach { id->
+                val follower = mConfig.follower.find { f-> f.id == id }!!.copy()
+                val props = follower.property
+                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji.map { f-> convertTejiObject(f) }.toMutableList())
+                result.name = "${person.name}-${follower.name}"
+                result.battleId = battlePerson.battleId
+                battlePerson.follower.add(result)
+            }
+        }
+
         if(allPersons == null)
             return
         val partner = allPersons[person.partner ?: "none"]
@@ -515,6 +527,11 @@ object CultivationBattleHelper {
             result.addAll(it.teji)
         }
         result.addAll(mConfig.teji.filter { it.type == 6 && it.spec.contains(person.specIdentity)}.map { it.id })
+        person.label.map {
+            mConfig.label.find { e-> e.id == it}!!.copy()
+        }.filter { it.teji.isNotEmpty() }.forEach {
+            result.addAll(it.teji)
+        }
 
         return result.map {
             convertTejiObject(it, person)

@@ -116,6 +116,14 @@ class FragmentTeJi: Fragment() {
             }
             teji
         })
+        mPerson.label.forEach {
+            val label = mConfig.label.find { f-> f.id == it }!!.copy()
+            label.teji.forEach { id->
+                val teji = mConfig.teji.find { f-> f.id == id }!!.copy()
+                teji.form = 4
+                tejis.add(teji)
+            }
+        }
         tejis.sortByDescending { it.rarity }
         mTeJi.clear()
         mTeJi.addAll(tejis)

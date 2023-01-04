@@ -360,7 +360,7 @@ object CultivationHelper {
 
      fun getTeji(weight:Int = 1, multi:Boolean = true):MutableList<String>{
          val result = mutableListOf<String>()
-         val tejiList = mConfig.teji.filter { it.type != 4 && it.type != 6 }
+         val tejiList = mConfig.teji.filter { it.type < 4 }
          if(!multi){
              val teji =tejiList.shuffled()[0]
              if(isTrigger( teji.weight / Math.max(1, weight))){
@@ -374,6 +374,27 @@ object CultivationHelper {
              }
          }
         return result
+    }
+
+    fun getLabel():MutableList<String>{
+        val result = mutableListOf<String>()
+        mConfig.label.filter { it.weight > 1 } .sortedBy { it.weight }.forEach {
+            if(isTrigger(it.weight) && result.size < 4 ){
+                result.add(it.id)
+            }
+        }
+        if(result.size == 0){
+            result.add(mConfig.label.filter { it.weight == 1 }.shuffled()[0].id)
+        }
+        return result
+    }
+
+    fun gainLabel(person: Person){
+        mConfig.label.filter { it.weight > 1 && !person.label.contains(it.id) }.sortedBy { it.weight }.forEach {
+            if(isTrigger( it.weight) && person.label.size < 4 ){
+                person.label.add(it.id)
+            }
+        }
     }
 
     fun getCareer():Career{
@@ -443,6 +464,7 @@ object CultivationHelper {
         result.profile = getRandomProfile(result.gender)
         result.tianfus = tianFus
         result.teji = Collections.synchronizedList(getTeji())
+        result.label =  Collections.synchronizedList(getLabel())
         result.lifetime = result.birthtime + getLifetimeBonusInitial(result)
         updatePersonExtraProperty(result)
 
@@ -501,6 +523,13 @@ object CultivationHelper {
         person.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
         person.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
         person.extraProperty = mConfig.lingGenTian.find { it.id == person.lingGenId }?.property ?: mutableListOf(0,0,0,0,0,0,0,0)
+        if(person.label.isNotEmpty()){
+            person.label.mapNotNull { m-> mConfig.label.find { it.id == m } }.forEach { l->
+                (0..3).forEach { count->
+                    person.extraProperty[count] += l.property[count]
+                }
+            }
+        }
         person.extraXuiweiMulti =  getExtraXuiweiMulti(person, alliance)
     }
 
@@ -588,8 +617,11 @@ object CultivationHelper {
             person.allianceXiuwei += alliance.xiuweiBattle
         }
         val postXiuwei = getNationXiuwei(person)
-        val basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
+        var basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
                             + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + postXiuwei
+        person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
+            basic += it.property[4]
+        }
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
     }
@@ -614,7 +646,11 @@ object CultivationHelper {
         val tianfu = person.tianfus.find { it.type == 2 }
         val tianValue = getPersonTianfu(tianfu?.id)?.bonus ?: 0
         val allianceValue = alliance?.xiuweiMulti ?: 0
-        return tianValue + allianceValue
+        var labelValue = 0
+        person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
+            labelValue += it.property[5]
+        }
+        return tianValue + allianceValue + labelValue
     }
 
     fun getPersonTianfu(id:String?):TianFu?{

@@ -85,6 +85,14 @@ class FragmentFollower: Fragment() {
                 mFollowers.add(follower)
             }
         }
+        mPerson.label.forEach {
+            val label = mConfig.label.find { f-> f.id == it }!!.copy()
+            label.follower.forEach { id->
+                val follower = mConfig.follower.find { f-> f.id == id }!!.copy()
+                follower.uniqueName = ""
+                mFollowers.add(follower)
+            }
+        }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
     }

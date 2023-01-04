@@ -20,7 +20,7 @@ class TeJi() : Parcelable {
     var spec:MutableList<Int> = mutableListOf()//专属
     var specName:MutableList<String> = mutableListOf()//专属
     //不在配置，不保存
-    var form:Int = 0 // 0 list 1 ex equipment 2 amulet
+    var form:Int = 0 // 0 list 1 ex equipment 2 amulet 3 fixed spec person 4 label
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
