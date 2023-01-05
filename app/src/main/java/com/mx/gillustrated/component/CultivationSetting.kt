@@ -267,6 +267,19 @@ object CultivationSetting {
         9 - 150 xiuwei100
         8 - 100 xiuwei50 hp300
         7 - 50 xiuwei50 hp200
+
+        label
+        1 20
+
+        6 100, 50, -:-, 50
+        7 500, 100, 50:50, 100
+        8 2000, 150, 100:100, 150
+        9 1 0000 -, 150:150, 200, 150+
+
+        10 5 0000 -, 200:200, 300, 200+100:100
+        11 10 0000 -, 300:300, 400, 300+200:200
+        12 50 0000
+
      */
     // weight: max 10000
     data class AmuletType(val id:Int, val name:String, val weight:Int, val rarityBonus:Int, val addProperty:MutableList<Boolean>,

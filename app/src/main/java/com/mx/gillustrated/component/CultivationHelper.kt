@@ -525,8 +525,9 @@ object CultivationHelper {
         person.extraProperty = mConfig.lingGenTian.find { it.id == person.lingGenId }?.property ?: mutableListOf(0,0,0,0,0,0,0,0)
         if(person.label.isNotEmpty()){
             person.label.mapNotNull { m-> mConfig.label.find { it.id == m } }.forEach { l->
+                val label = l.copy()
                 (0..3).forEach { count->
-                    person.extraProperty[count] += l.property[count]
+                    person.extraProperty[count] = person.extraProperty[count] + label.property[count]
                 }
             }
         }

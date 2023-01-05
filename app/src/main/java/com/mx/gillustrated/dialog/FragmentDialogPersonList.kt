@@ -209,7 +209,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             }
             5 -> mContext.mPersons.map { it.value }.filter { p -> p.label.mapNotNull{  m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumBy {
                 s-> s.weight
-            } >= 100 }
+            } >= 500 }
             else -> mContext.mPersons.map { it.value }
         }
         val filterString = etName.text.toString()

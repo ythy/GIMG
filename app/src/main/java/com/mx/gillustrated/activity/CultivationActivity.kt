@@ -322,7 +322,7 @@ class CultivationActivity : BaseActivity() {
         }
 
          mPersons.forEach { (_: String, u: Person) ->
-             CultivationHelper.gainLabel(u)
+             u.label = CultivationHelper.getLabel()
              CultivationHelper.updatePersonExtraProperty(u)
          }
 
