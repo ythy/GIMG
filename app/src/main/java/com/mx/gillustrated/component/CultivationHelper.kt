@@ -378,7 +378,7 @@ object CultivationHelper {
 
     fun getLabel():MutableList<String>{
         val result = mutableListOf<String>()
-        mConfig.label.filter { it.weight > 1 } .sortedBy { it.weight }.forEach {
+        mConfig.label.filter { it.weight > 5 } .sortedBy { it.weight }.forEach {
             if(isTrigger(it.weight) && result.size < 4 ){
                 result.add(it.id)
             }
@@ -390,7 +390,7 @@ object CultivationHelper {
     }
 
     fun gainLabel(person: Person){
-        mConfig.label.filter { it.weight > 1 && !person.label.contains(it.id) }.sortedBy { it.weight }.forEach {
+        mConfig.label.filter { it.weight > 5 && !person.label.contains(it.id) }.sortedBy { it.weight }.forEach {
             if(isTrigger( it.weight) && person.label.size < 4 ){
                 person.label.add(it.id)
             }
@@ -779,6 +779,16 @@ object CultivationHelper {
         }
         return false
     }
+
+    //label 4100302 300 300
+    fun resumeLife(person: Person, allAlliance: ConcurrentHashMap<String, Alliance>){
+        if(talentValue(person) < CultivationSetting.TEMP_TALENT_PROTECT){
+            val label = mConfig.label.find { it.id == "4100302" }!!
+            val alliance = allAlliance[person.allianceId]
+            updatePersonInborn(person, label.property[6], label.property[7], alliance)
+        }
+    }
+
 
     fun getJinJieName(input:String):String{
         if(pinyinMode)

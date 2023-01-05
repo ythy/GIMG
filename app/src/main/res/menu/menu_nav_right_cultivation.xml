@@ -11,6 +11,9 @@
     </group>
     <group android:id="@+id/group12" android:checkableBehavior="single">
         <item
+            android:id="@+id/menu_shuffle"
+            android:title="shuffle"/>
+        <item
             android:id="@+id/menu_temp"
             android:title="temp"/>
     </group>

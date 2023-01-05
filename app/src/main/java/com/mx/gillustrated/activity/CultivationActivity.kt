@@ -472,6 +472,9 @@ class CultivationActivity : BaseActivity() {
             it.value.extraXuiweiMulti = CultivationHelper.getExtraXuiweiMulti(it.value,  mAlliance[it.value.allianceId]!!)
             it.value.nationId = mAlliance[it.value.allianceId]!!.nation
             it.value.nationPost = 0
+            if(it.value.label.contains("4100302")){
+                CultivationHelper.resumeLife(it.value, mAlliance)
+            }
             CultivationHelper.updatePersonEquipment(it.value)
         }
         updateNationPost(0, true)
@@ -509,6 +512,9 @@ class CultivationActivity : BaseActivity() {
                 }
                 R.id.menu_reset_wtf->{
                     resetCustomBonus()
+                }
+                R.id.menu_shuffle->{
+                    killPersonShuffle()
                 }
                 R.id.menu_temp->{
                     temp()
@@ -1832,6 +1838,16 @@ class CultivationActivity : BaseActivity() {
                 val commonText = "\u83b7\u5f97\u7279\u6280 : ${mConfig.teji.find { f-> f.id == t }?.name}"
                 addPersonEvent(person, commonText)
                 writeHistory("${getPersonBasicString(person)} $commonText", person)
+            }
+        }
+    }
+
+    private fun killPersonShuffle(){
+        mPersons.filter { it.value.specIdentity == 0 || isDeadException(it.value) != 1   }
+                .map { it.value }.toMutableList()
+                .forEach {
+            if (isTrigger(10 + it.lifeTurn / CultivationSetting.TEMP_SP_JIE_TURN)){
+                deadHandler(it)
             }
         }
     }
