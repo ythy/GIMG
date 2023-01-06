@@ -270,11 +270,11 @@ class FragmentDialogPerson : DialogFragment() {
                 override fun onClick(index: Int) {
                     val data = tianFus[index]
                     val text = when (data.type) {
-                        1 -> "\u57fa\u7840\u4fee\u4e3a"
-                        2 -> "\u4fee\u4e3a\u52a0\u901f"
-                        3 -> "Life"
-                        4 -> "\u7a81\u7834"
-                        5 -> "\u798f\u6e90"
+                        1 -> "${data.name} \u57fa\u7840\u4fee\u4e3a"
+                        2 -> "${data.name} \u4fee\u4e3a\u52a0\u901f"
+                        3 -> "${data.name} Life"
+                        4 -> "${data.name} \u7a81\u7834"
+                        5 -> "${data.name} \u798f\u6e90"
                         else -> ""
                     }
                     Toast.makeText(context, "${text}增加${data.bonus}", Toast.LENGTH_SHORT).show()
@@ -304,13 +304,13 @@ class FragmentDialogPerson : DialogFragment() {
 
     fun getTianFuName(tianFu: TianFu):String{
         if (CultivationHelper.pinyinMode)
-            return tianFu.name
+            return tianFu.name.replace(Regex("\\d"), "")
         when {
-            tianFu.name.contains("Power") -> return tianFu.name.replace("Power", "\u6839\u9AA8")
-            tianFu.name.contains("Clever") -> return tianFu.name.replace("Clever", "\u5929\u8D44")
-            tianFu.name.contains("Life") -> return tianFu.name.replace("Life", "\u547D\u6570")
-            tianFu.name.contains("Top") -> return tianFu.name.replace("Top", "\u609F\u6027")
-            tianFu.name.contains("Fu") -> return tianFu.name.replace("Fu", "\u798F\u6E90")
+            tianFu.name.contains("Power") -> return "\u6839\u9AA8"
+            tianFu.name.contains("Clever") -> return "\u5929\u8D44"
+            tianFu.name.contains("Life") -> return "\u547D\u6570"
+            tianFu.name.contains("Top") -> return "\u609F\u6027"
+            tianFu.name.contains("Fu") -> return "\u798F\u6E90"
         }
         return ""
     }
@@ -338,6 +338,8 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         mDialogView.xiuweiAdd.text =  "${CultivationHelper.getXiuweiGrow(mPerson, mContext.mAlliance)}"
         mDialogView.success.text = "↑${CultivationHelper.getTotalSuccess(mPerson)}"
+        mDialogView.xiuweiAdd.setTextColor(Color.parseColor(CommonColors[1]))
+        mDialogView.success.setTextColor(Color.parseColor(CommonColors[1]))
         mDialogView.lingGen.text = CultivationHelper.showing(mPerson.lingGenName)
         mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenType.color]))
 

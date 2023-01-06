@@ -269,7 +269,10 @@ object CultivationSetting {
         7 - 50 xiuwei50 hp200
 
         label
-        1 20
+        2 20
+        3 30
+        4 40
+
 
         6 100, 50, -:-, 50
         7 500, 100, 50:50, 100

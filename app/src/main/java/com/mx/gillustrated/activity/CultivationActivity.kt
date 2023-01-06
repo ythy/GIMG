@@ -1843,10 +1843,10 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun killPersonShuffle(){
-        mPersons.filter { it.value.specIdentity == 0 || isDeadException(it.value) != 1   }
+        mPersons.filter { it.value.specIdentity == 0 && isDeadException(it.value) != 1   }
                 .map { it.value }.toMutableList()
                 .forEach {
-            if (isTrigger(10 + it.lifeTurn / CultivationSetting.TEMP_SP_JIE_TURN)){
+            if (isTrigger(10 + CultivationHelper.talentValue(it))){
                 deadHandler(it)
             }
         }

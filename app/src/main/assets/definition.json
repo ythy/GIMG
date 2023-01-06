@@ -2619,7 +2619,7 @@
     },
     {
       "id": "8006009",
-      "name": "\u4E07\u5251\u5F52\u5B97",
+      "name": "\u6D41\u661F\u5251\u9635",
       "description": "80%\u6982\u7387,\u9644\u52A0\u6CD5\u672F\u653B\u51FB",
       "type": 6,
       "chance": 80,
@@ -2843,21 +2843,21 @@
   "label": [
     {
       "id": "4100101",
-      "name": "\u5C0F\u80FD\u8F6C\u4E16",
+      "name": "\u5F02\u7980",
       "weight": 100,
       "rarity": 6,
       "property": [0,0,0,0,50,0,0,0]
     },
     {
       "id": "4100102",
-      "name": "\u4E2D\u80FD\u8F6C\u4E16",
+      "name": "\u5947\u624D",
       "weight": 500,
       "rarity": 7,
       "property": [0,0,0,0,100,0,0,0]
     },
     {
       "id": "4100103",
-      "name": "\u5927\u80FD\u8F6C\u4E16",
+      "name": "\u8F6E\u56DE\u8005",
       "weight": 2000,
       "rarity": 8,
       "property": [0,0,0,0,150,0,0,0]
@@ -2901,57 +2901,204 @@
       "id": "4100201",
       "name": "\u6728\u7075\u4F53",
       "weight": 1,
-      "rarity": 1,
+      "rarity": 2,
       "property": [100,0,0,0,0,0,0,0]
     },
     {
       "id": "4100202",
       "name": "\u706B\u7075\u4F53",
       "weight": 1,
-      "rarity": 1,
+      "rarity": 2,
       "property": [0,20,0,0,0,0,0,0]
     },
     {
       "id": "4100203",
       "name": "\u571F\u7075\u4F53",
       "weight": 1,
-      "rarity": 1,
+      "rarity": 2,
       "property": [0,0,20,0,0,0,0,0]
     },
     {
       "id": "4100204",
       "name": "\u6C34\u7075\u4F53",
       "weight": 1,
-      "rarity": 1,
+      "rarity": 2,
       "property": [0,0,0,20,0,0,0,0]
     },
     {
       "id": "4100205",
-      "name": "\u5929\u9009\u4E4B\u5B50",
+      "name": "\u91D1\u7075\u4F53",
       "weight": 1,
       "rarity": 2,
+      "property": [0,10,0,10,0,0,0,0]
+    },
+    {
+      "id": "4100206",
+      "name": "\u98CE\u7075\u4F53",
+      "weight": 1,
+      "rarity": 3,
+      "property": [0,0,0,30,0,0,0,0]
+    },
+    {
+      "id": "4100207",
+      "name": "\u96F7\u7075\u4F53",
+      "weight": 1,
+      "rarity": 3,
+      "property": [0,30,0,0,0,0,0,0]
+    },
+    {
+      "id": "4100208",
+      "name": "\u51B0\u7075\u4F53",
+      "weight": 1,
+      "rarity": 4,
       "property": [50,10,10,10,0,0,0,0]
     },
     {
+      "id": "4100211",
+      "name": "\u5251\u8109",
+      "weight": 2,
+      "rarity": 2,
+      "property": [0,20,0,0,0,0,0,0]
+    },
+    {
+      "id": "4100212",
+      "name": "\u4E39\u8109",
+      "weight": 2,
+      "rarity": 2,
+      "property": [100,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "4100213",
+      "name": "\u7B26\u5FC3",
+      "weight": 2,
+      "rarity": 2,
+      "property": [0,10,10,0,0,0,0,0]
+    },
+    {
+      "id": "4100214",
+      "name": "\u9635\u5FC3",
+      "weight": 2,
+      "rarity": 2,
+      "property": [0,10,0,10,0,0,0,0]
+    },
+    {
+      "id": "4100215",
+      "name": "\u836F\u5FC3",
+      "weight": 2,
+      "rarity": 2,
+      "property": [0,10,10,0,0,0,0,0]
+    },
+    {
+      "id": "4100216",
+      "name": "\u4F53\u8109",
+      "weight": 2,
+      "rarity": 3,
+      "property": [50,10,10,0,0,0,0,0]
+    },
+    {
+      "id": "4100217",
+      "name": "\u5F71\u8109",
+      "weight": 2,
+      "rarity": 3,
+      "property": [50,10,0,10,0,0,0,0]
+    },
+    {
+      "id": "4100218",
+      "name": "\u7075\u8109",
+      "weight": 2,
+      "rarity": 4,
+      "property": [50,10,10,10,0,0,0,0]
+    },
+    {
+      "id": "4100221",
+      "name": "\u8DEF\u75F4",
+      "weight": 3,
+      "rarity": 2,
+      "property": [0,10,0,10,0,0,0,0]
+    },
+    {
+      "id": "4100222",
+      "name": "\u95ED\u5173",
+      "weight": 3,
+      "rarity": 2,
+      "property": [0,20,0,0,0,0,0,0]
+    },
+    {
+      "id": "4100223",
+      "name": "\u4E91\u6E38",
+      "weight": 3,
+      "rarity": 2,
+      "property": [0,0,0,20,0,0,0,0]
+    },
+    {
+      "id": "4100224",
+      "name": "\u4F5C\u5996",
+      "weight": 3,
+      "rarity": 2,
+      "property": [0,0,0,20,0,0,0,0]
+    },
+    {
+      "id": "4100225",
+      "name": "\u5E72\u996D",
+      "weight": 3,
+      "rarity": 2,
+      "property": [0,20,0,0,0,0,0,0]
+    },
+    {
+      "id": "4100226",
+      "name": "\u4FCA\u4FCF",
+      "weight": 3,
+      "rarity": 3,
+      "property": [50,10,10,0,0,0,0,0]
+    },
+    {
+      "id": "4100227",
+      "name": "\u66B4\u5BCC",
+      "weight": 3,
+      "rarity": 3,
+      "property": [50,10,0,10,0,0,0,0]
+    },
+    {
+      "id": "4100228",
+      "name": "\u5E9F\u67F4",
+      "weight": 3,
+      "rarity": 4,
+      "property": [50,10,10,10,0,0,0,0]
+    },
+    {
+      "id": "4100231",
+      "name": "\u5730\u9009\u4E4B\u5B50",
+      "weight": 4,
+      "rarity": 6,
+      "property": [0,0,0,0,50,0,0,0]
+    },
+    {
+      "id": "4100232",
+      "name": "\u5929\u9009\u4E4B\u5B50",
+      "weight": 4,
+      "rarity": 7,
+      "property": [0,0,0,0,50,50,0,0]
+    },
+    {
       "id": "4100301",
-      "name": "\u957F\u751F\u4E0D\u8001",
+      "name": "\u65E5\u6708\u5723\u4F53",
       "weight": 2000000,
       "rarity": 13,
       "property": [0,0,0,0,500,500,0,0]
     },
     {
       "id": "4100302",
-      "name": "\u9006\u5929\u6539\u547D",
+      "name": "\u4E07\u9053\u5723\u4F53",
       "weight": 500000,
       "rarity": 12,
       "property": [0,0,0,0,300,300,200,600]
     },
     {
       "id": "4100401",
-      "name": "\u9738\u738B\u964D\u4E16",
-      "weight": 2000,
-      "rarity": 8,
-      "property": [0,150,0,0,0,0,0,0]
+      "name": "\u76D8\u53E4\u964D\u4E16",
+      "weight": 10000,
+      "rarity": 9,
+      "property": [0,200,0,0,0,0,0,0]
     },
     {
       "id": "4100402",
@@ -2962,21 +3109,21 @@
     },
     {
       "id": "4100403",
-      "name": "\u4E94\u96F7\u8D2F\u4F53",
+      "name": "\u65F1\u9B43\u964D\u4E16",
       "weight": 500,
       "rarity": 7,
       "property": [0,50,0,50,0,0,0,0]
     },
     {
       "id": "4100501",
-      "name": "\u9E92\u9E9F\u513F",
-      "weight": 50000,
-      "rarity": 10,
-      "property": [200,50,50,50,100,100,0,0]
+      "name": "\u4E94\u884C\u5723\u4F53",
+      "weight": 10000,
+      "rarity": 9,
+      "property": [0,50,50,50,50,50,0,0]
     },
     {
       "id": "4100502",
-      "name": "\u4ED9\u5251\u5947\u4FA0",
+      "name": "\u661F\u8FB0\u5251\u4FA0",
       "weight": 50000,
       "rarity": 10,
       "property": [0,150,0,50,100,100,0,0],
@@ -2984,7 +3131,7 @@
     },
     {
       "id": "4100503",
-      "name": "\u53F7\u4EE4\u5C71\u6D77",
+      "name": "\u539F\u59CB\u5723\u4F53",
       "weight": 100000,
       "rarity": 11,
       "property": [200,0,100,50,200,200,0,0],
@@ -2992,11 +3139,19 @@
     },
     {
       "id": "4100504",
-      "name": "\u51E4\u51F0\u8840\u88D4",
+      "name": "\u51E4\u51F0\u5723\u4F53",
       "weight": 50000,
       "rarity": 10,
       "property": [200,50,50,50,100,100,0,0],
       "teji": ["8001003"]
+    },
+    {
+      "id": "4100505",
+      "name": "\u592A\u6781\u5723\u4F53",
+      "weight": 50000,
+      "rarity": 10,
+      "property": [200,50,100,0,100,100,0,0],
+      "teji": ["8001008"]
     }
   ]
 }

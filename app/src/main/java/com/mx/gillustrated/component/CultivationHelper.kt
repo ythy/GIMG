@@ -53,7 +53,7 @@ object CultivationHelper {
                 person.allianceId = alliance.id
                 person.allianceName = alliance.name
                 person.allianceSuccess = alliance.success
-                person.allianceProperty = alliance.property
+                person.allianceProperty = alliance.property.toMutableList()
                 person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
                 person.lifetime = mCurrentXun + getLifetimeBonusInitial(person, alliance)
                 person.nationId = alliance.nation
@@ -67,7 +67,7 @@ object CultivationHelper {
         person.allianceId = alliance.id
         person.allianceName = alliance.name
         person.allianceSuccess = alliance.success
-        person.allianceProperty = alliance.property
+        person.allianceProperty = alliance.property.toMutableList()
         person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
         person.lifetime = mCurrentXun + getLifetimeBonusInitial(person, alliance, changed)
         if(alliance.type >= 3 && !changed){
@@ -228,9 +228,11 @@ object CultivationHelper {
             mutableMap.entries.removeIf { allPerson[it.value] == null }
         }
         allPerson.forEach { data->
+            var count = 0
             data.value.bossRound.forEachIndexed { index, total->
-                data.value.bossXiuwei += CultivationEnemyHelper.bossSettings[index].bonus * getValidBonus(total)
+                count += CultivationEnemyHelper.bossSettings[index].bonus * getValidBonus(total)
             }
+            data.value.bossXiuwei = count
         }
     }
 
@@ -378,20 +380,28 @@ object CultivationHelper {
 
     fun getLabel():MutableList<String>{
         val result = mutableListOf<String>()
+        val label1 = mConfig.label.filter { it.weight == 1 }.shuffled()[0].copy()
+        val label2 = mConfig.label.filter { it.weight == 2 }.shuffled()[0].copy()
+        val label3 = mConfig.label.filter { it.weight == 3 }.shuffled()[0].copy()
+        result.add(label1.id)
+        result.add(label2.id)
+        result.add(label3.id)
+        if(label1.rarity == 4 && label2.rarity == 4 && label3.rarity == 4){
+            result.add( mConfig.label.filter { it.weight == 4 }[1].id)
+        }else if(label1.rarity >= 3 && label2.rarity>=3 && label3.rarity >= 3){
+            result.add( mConfig.label.filter { it.weight == 4 }[0].id)
+        }
         mConfig.label.filter { it.weight > 5 } .sortedBy { it.weight }.forEach {
-            if(isTrigger(it.weight) && result.size < 4 ){
+            if(isTrigger(it.weight)){
                 result.add(it.id)
             }
-        }
-        if(result.size == 0){
-            result.add(mConfig.label.filter { it.weight == 1 }.shuffled()[0].id)
         }
         return result
     }
 
     fun gainLabel(person: Person){
         mConfig.label.filter { it.weight > 5 && !person.label.contains(it.id) }.sortedBy { it.weight }.forEach {
-            if(isTrigger( it.weight) && person.label.size < 4 ){
+            if(isTrigger( it.weight) && person.label.size < 6 ){
                 person.label.add(it.id)
             }
         }
@@ -522,15 +532,16 @@ object CultivationHelper {
         person.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
         person.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
         person.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
-        person.extraProperty = mConfig.lingGenTian.find { it.id == person.lingGenId }?.property ?: mutableListOf(0,0,0,0,0,0,0,0)
+        val extraProperty = mConfig.lingGenTian.find { it.id == person.lingGenId }?.property?.toMutableList() ?: mutableListOf(0,0,0,0,0,0,0,0)
         if(person.label.isNotEmpty()){
             person.label.mapNotNull { m-> mConfig.label.find { it.id == m } }.forEach { l->
                 val label = l.copy()
                 (0..3).forEach { count->
-                    person.extraProperty[count] = person.extraProperty[count] + label.property[count]
+                    extraProperty[count] += label.property[count]
                 }
             }
         }
+        person.extraProperty = Collections.synchronizedList(extraProperty.toMutableList())
         person.extraXuiweiMulti =  getExtraXuiweiMulti(person, alliance)
     }
 
@@ -567,21 +578,22 @@ object CultivationHelper {
         val exclusives =  mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity)}
         person.equipmentXiuwei = 0
         person.equipmentSuccess = 0
-        person.equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
+        val equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
         if(equipments.isNotEmpty()){
             equipments.filter { it.type > 3 }.groupBy { it.id }.forEach { (_, u) ->
                 for (index in 0 until u.size){
-                    summationEquipmentValues(person,  u[index])
+                    summationEquipmentValues(person,  u[index], equipmentProperty)
                 }
             }
             equipments.filter { it.type <= 3 }.groupBy { it.type }.forEach { (_, u) ->
                 val effectEquipment = u.maxBy { it.rarity }!!
-                summationEquipmentValues(person, effectEquipment)
+                summationEquipmentValues(person, effectEquipment, equipmentProperty)
             }
         }
         exclusives.forEach {
-            summationEquipmentValues(person, it)
+            summationEquipmentValues(person, it, equipmentProperty)
         }
+        person.equipmentProperty =  equipmentProperty.toMutableList()
     }
 
     private fun getMaxBonus(size:Int, min:Int = 1):Int{
@@ -592,11 +604,11 @@ object CultivationHelper {
         return Math.min(size, getMaxBonus(size, min))
     }
 
-    private fun summationEquipmentValues(person: Person, effectEquipment: Equipment){
+    private fun summationEquipmentValues(person: Person, effectEquipment: Equipment, equipmentProperty:MutableList<Int>){
         person.equipmentXiuwei += effectEquipment.xiuwei
         person.equipmentSuccess += effectEquipment.success
         effectEquipment.property.forEachIndexed { pi, pp ->
-            person.equipmentProperty[pi] += pp
+            equipmentProperty[pi] += pp
         }
     }
 
@@ -833,10 +845,14 @@ object CultivationHelper {
                 else -> 0
             }
         }
+        val label = person.label.mapNotNull { m-> mConfig.label.find { it.id == m } }
+                .filter { it.weight > 5 }
+                .sumBy { it.rarity }
+
         return if(person.lingGenType.type == 0 )
-            tianfu
+            tianfu + label
         else
-            tianfu + 2 * person.lingGenType.type
+            tianfu + + label + 2 * person.lingGenType.type
     }
 
 
