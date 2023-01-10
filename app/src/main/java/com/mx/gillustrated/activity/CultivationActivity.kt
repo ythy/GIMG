@@ -1308,6 +1308,11 @@ class CultivationActivity : BaseActivity() {
                         person.pointXiuWei -= it.upgradeBasicXiuwei
                         if(isTrigger(it.level)){
                             it.level ++
+                        }else{
+                            if(person.isFav){
+                                val commonText =  "${mConfig.career.find { f-> f.id == addonCareer?.id }?.name} LEVEL${it.level}\u5347\u7EA7\u5931\u8D25"
+                                writeHistory("${getPersonBasicString(person)} $commonText", person)
+                            }
                         }
                     }
                 }

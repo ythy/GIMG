@@ -125,7 +125,7 @@ class FragmentDialogClan : DialogFragment() {
         val clan = mContext.mClans[mId]
         if(clan != null){
             mDialogView.minXiuwei.setText("${clan.minXiuwei}")
-            mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
+            mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList, true, true)
             updateName()
             updateView()
             registerTimeLooper()

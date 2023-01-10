@@ -66,10 +66,6 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
     @BindView(R.id.sch_never_dead)
     lateinit var mSwitchNeverDead:Switch
 
-
-    @BindView(R.id.tv_xiuwei)
-    lateinit var tvXiuwei:TextView
-
     @OnClick(R.id.btn_revive)
     fun onReviveHandler(){
         if(mBtnRevive.text == "Kill"){
@@ -264,16 +260,6 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
         tvAge.text = CultivationHelper.showAge(mPerson)
         tvAncestor.text = "${mPerson.ancestorOrignId}/${mPerson.ancestorOrignLevel}-${mPerson.ancestorId}/${mPerson.ancestorLevel}"
-
-        val alliance = mContext.mAlliance[mPerson.allianceId]
-        if(alliance != null){
-            val tianValue = CultivationHelper.getPersonTianfu(mPerson.tianfus.find { it.type == 2 }?.id)?.bonus ?: 0
-            tvXiuwei.text = "(${mPerson.lingGenType.qiBasic}+P:${mPerson.extraXiuwei}+S:${mPerson.battlexiuwei}+A:${mPerson.allianceXiuwei}+C:${mPerson.clanXiuwei}" +
-                    "+N:${mPerson.nationXiuwei}+E:${mPerson.equipmentXiuwei}+N:${CultivationHelper.getNationXiuwei(mPerson)}+B:${mPerson.bossXiuwei})" +
-                    "${mPerson.lingGenType.qiBasic + mPerson.extraXiuwei + mPerson.battlexiuwei + mPerson.allianceXiuwei + mPerson.clanXiuwei + mPerson.nationXiuwei +
-                            mPerson.equipmentXiuwei + CultivationHelper.getNationXiuwei(mPerson) + mPerson.bossXiuwei}" +
-                    "*${1 + (tianValue.toDouble()/100.0) + alliance.xiuweiMulti.toDouble()/100.0}(C:${tianValue.toDouble()/100.0}+A:${alliance.xiuweiMulti.toDouble()/100.0})"
-        }
 
     }
 }

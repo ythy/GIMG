@@ -12,11 +12,12 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.component.CultivationSetting.PostColors
 import com.mx.gillustrated.vo.cultivation.Person
 
-class CultivationPersonListAdapter constructor(private val context: Context, private val list: MutableList<Person>, private val showStar:Boolean = true) : BaseAdapter() {
+class CultivationPersonListAdapter constructor(private val context: Context, private val list: MutableList<Person>, private val showStar:Boolean, private val showSpecEquipment:Boolean) : BaseAdapter() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
     private val nation = CultivationHelper.mConfig.nation
@@ -47,12 +48,13 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         }
         val person = list[arg0]
         val talentSymbol = if(CultivationHelper.isTalent(person) && showStar) "⭐" else ""
-        val zhuSymbol = if(person.equipmentListPair.find { it.first == "7009001" } != null && showStar) "\uD83D\uDC2F" else ""
-        val shaoSymbol = if(person.equipmentListPair.find { it.first == "7009002" } != null && showStar) "\uD83D\uDC3A" else ""
-        val gongSymbol = if(person.equipmentListPair.find { it.first == "7009003" } != null && showStar) "\uD83E\uDD84" else ""
-        val neiSymbol = if(person.equipmentListPair.find { it.first == "7009009" } != null && showStar) "\uD83D\uDC25" else ""
-
-        component.name.text = "${CultivationHelper.showing(person.name)}$talentSymbol$zhuSymbol$shaoSymbol$gongSymbol$neiSymbol${CultivationHelper.showLifeTurn(person)}"
+        val zhuSymbol = if(person.equipmentListPair.find { it.first == "7009001" } != null && showSpecEquipment) "\uD83D\uDC2F" else ""
+        val shaoSymbol = if(person.equipmentListPair.find { it.first == "7009002" } != null && showSpecEquipment) "\uD83D\uDC3A" else ""
+        val gongSymbol = if(person.equipmentListPair.find { it.first == "7009003" } != null && showSpecEquipment) "\uD83E\uDD84" else ""
+        val neiSymbol = if(person.equipmentListPair.find { it.first == "7009009" } != null && showSpecEquipment) "\uD83D\uDC25" else ""
+        val epithetSingleBattle = if(person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100 < 11)
+            "\uD83D\uDD25${CultivationSetting.Epithet.SingleBattle[person.battleRecord[CultivationHelper.mBattleRound.single]!! - 1]}" else ""
+        component.name.text = "${CultivationHelper.showing(person.name + epithetSingleBattle)}$talentSymbol$zhuSymbol$shaoSymbol$gongSymbol$neiSymbol${CultivationHelper.showLifeTurn(person)}"
         component.age.text = CultivationHelper.showAgeRemained(person)
         component.jingjie.text = CultivationHelper.showing(person.jinJieName)
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))

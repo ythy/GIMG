@@ -8,16 +8,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:id="@+id/tv_name"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:singleLine="true"
             android:id="@+id/tv_lingGen"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:singleLine="true"
             android:gravity="end"
             android:id="@+id/tv_age"/>
     </LinearLayout>
@@ -28,16 +31,19 @@
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="6"
+            android:singleLine="true"
             android:id="@+id/tv_jingjie"/>
         <TextView
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="6"
+            android:singleLine="true"
             android:id="@+id/tv_alliance"/>
         <TextView
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="8"
+            android:singleLine="true"
             android:gravity="right"
             android:id="@+id/tv_xiuwei"/>
     </LinearLayout>

@@ -113,7 +113,7 @@ class FragmentDialogAlliance : DialogFragment() {
         mDialogView.name.text = CultivationHelper.showing("${nation.find { it.id == mAlliance.nation }?.name}-${mAlliance.name}")
         mDialogView.lifetime.text = "life: ${mAlliance.lifetime}"
         mDialogView.xiuwei.text = "xiuwei: ${mAlliance.xiuwei}(${mAlliance.xiuweiMulti})  ↑${mAlliance.success}"
-        mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
+        mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList, true, true)
         updateView()
         registerTimeLooper()
     }

@@ -329,7 +329,7 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}${CultivationHelper.showLifeTurn(mPerson)}${CultivationHelper.showAncestorLevel(mPerson)}"
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
-        mDialogView.age.text = "${CultivationHelper.showing(mPerson.gender.props)}${CultivationHelper.talentValue(mPerson)}${if(CultivationHelper.isTalent(mPerson)) "⭐" else ""}/${CultivationHelper.showAgeRemained(mPerson)}"
+        mDialogView.age.text = "${getGender()}${CultivationHelper.talentValue(mPerson)}${if(CultivationHelper.isTalent(mPerson)) "⭐" else ""}/${CultivationHelper.showAgeRemained(mPerson)}"
         mDialogView.career.text = mPerson.careerDetailList.joinToString()
         mDialogView.props.text = getProperty()
         mDialogView.winner.text = "${mPerson.battleWinner}-${mPerson.battlexiuwei}↑"
@@ -344,6 +344,10 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenType.color]))
 
         updateViewPager()
+    }
+
+    private fun getGender():String{
+        return mPerson.gender.props
     }
 
     private fun getProperty():String{

@@ -635,8 +635,23 @@ object CultivationHelper {
         person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
             basic += it.property[4]
         }
+        basic += getLastSingleBattleXiuwei(person)
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
+    }
+
+    fun getLastSingleBattleXiuwei(person: Person):Int{
+        val singleBattle = person.battleRecord[CultivationHelper.mBattleRound.single]
+        return if(singleBattle != null && singleBattle < 11){
+            when(singleBattle){
+                1 -> 1000
+                2 -> 800
+                3 -> 500
+                else -> 200
+            }
+        }else{
+            0
+        }
     }
 
     fun getNationXiuwei(person: Person):Int{

@@ -11,7 +11,10 @@ object CultivationSetting {
     val CommonColors = arrayOf("#EAEFE8", "#539B35", "#3B86D4", "#AF85E3", "#FFA500", "#FC2CBB", "#EA5078", "#FFFF00", "#04B4BA","#CFB53B", "#8DFAB1", "#F7FFCC", "#FF0000", "#75ABA7", "#AB9BB7")
     val PostColors = arrayOf("#E2D223", "#BE0012", "#0272E4", "#12A703", "#EF7362")
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
-
+    object Epithet {
+        val SingleDefault = "\u8FDB\u58EB"
+        val SingleBattle = arrayOf("\u72B6\u5143", "\u699C\u773C", "\u63A2\u82B1", SingleDefault, SingleDefault, SingleDefault, SingleDefault, SingleDefault, SingleDefault, SingleDefault)
+    }
 
     object BattleSettings {
         const val AllianceMinSize = 16
@@ -60,15 +63,6 @@ object CultivationSetting {
 
     //13 00 001 0
     private val SpecPersonFirstName3: MutableList<PresetInfo> = mutableListOf(
-            PresetInfo(13000010, Triple("\u6b65", "\u60ca\u4e91", 1202), 0, 100, 200),
-            PresetInfo(13000020, Triple("\u8042", "\u98ce", 1203), 13000031, 200, 600),
-            PresetInfo(13000031, Pair("\u7b2c\u4e8c", "\u68a6"), 13000020),
-            PresetInfo(13000040, Triple("\u96c4", "\u9738", 1201), 0, 200, 600),
-            PresetInfo(13000050, Triple("\u79e6", "\u971c", 1204)),
-            PresetInfo(13000060, Triple("\u65ad", "\u6d6a", 1205), 0, 100, 100),
-            PresetInfo(13000070, Triple("\u72EC\u5B64", "\u5251", 1207), 0, 200, 600),
-            PresetInfo(13000080, Triple("\u65E0", "\u540D", 1212), 0, 200, 600),
-
             PresetInfo(13010031, Pair("\u82cf", "\u6a31"), 0, 100, 100),
             PresetInfo(13010041, Pair("\u674e", "\u7ea2\u8896"), 0, 100, 100),
             PresetInfo(13010070, Pair("\u674e", "\u5bfb\u6b22"), 0, 200, 600),

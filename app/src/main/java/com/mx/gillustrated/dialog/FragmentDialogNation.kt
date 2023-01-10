@@ -117,7 +117,7 @@ class FragmentDialogNation : DialogFragment() {
         mContext = activity as CultivationActivity
         mNation = mContext.mNations[nationId]!!
         mDialogView.name.text = CultivationHelper.showing(mNation.name)
-        mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList)
+        mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList, true, false)
         updateView()
         registerTimeLooper()
     }
