@@ -321,10 +321,10 @@ class CultivationActivity : BaseActivity() {
             }
         }
 
-         mPersons.forEach { (_: String, u: Person) ->
-             u.label = CultivationHelper.getLabel()
-             CultivationHelper.updatePersonExtraProperty(u)
-         }
+//         mPersons.forEach { (_: String, u: Person) ->
+//             u.label = CultivationHelper.getLabel()
+//             CultivationHelper.updatePersonExtraProperty(u)
+//         }
 
 //        mPersons.forEach { (_: String, u: Person) ->
 //            u.equipmentListPair.removeIf { it.second > 10000 }

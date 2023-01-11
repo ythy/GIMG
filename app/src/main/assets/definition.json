@@ -1467,6 +1467,17 @@
       "speedG1": 60
     },
     {
+      "id": "6000401",
+      "name": "\u7269\u8BED",
+      "type": 3,
+      "nation": "6200003",
+      "lifetime": 50,
+      "xiuwei": 100,
+      "xiuweiMulti": 100,
+      "property": [0,50,10,20,0,0,0,0],
+      "speedG1": 80
+    },
+    {
       "id": "6000402",
       "name": "古\u9F99\u754C",
       "type": 3,
@@ -1534,7 +1545,7 @@
     },
     {
       "id": "6000701",
-      "name": "梁\u5C71\u6CCA",
+      "name": "梁\u5C71",
       "type": 6,
       "nation": "6200006",
       "lifetime": 50,
@@ -1585,6 +1596,17 @@
       "xiuwei": 100,
       "xiuweiMulti": 100,
       "property": [0,60,0,10,0,0,0,0],
+      "speedG1": 70
+    },
+    {
+      "id": "6000706",
+      "name": "梁\u5C71二",
+      "type": 6,
+      "nation": "6200006",
+      "lifetime": 50,
+      "xiuwei": 100,
+      "xiuweiMulti": 100,
+      "property": [0,50,10,10,0,0,0,0],
       "speedG1": 70
     }
   ],

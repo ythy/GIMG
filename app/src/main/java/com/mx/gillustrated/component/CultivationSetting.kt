@@ -130,23 +130,29 @@ object CultivationSetting {
     )
 
     private val SpecPersonFirstName6:MutableList<PresetInfo> = mutableListOf(
-            PresetInfo(16000010, Pair("\u5b8b","\u6c5f"),0, 100, 200),
-            PresetInfo(16000020, Pair("\u6768","\u5fd7")), PresetInfo(16000030, Pair("\u5218","\u5510")),
-            PresetInfo(16000040, Pair("\u516c\u5b59","\u80dc"),0, 100, 100),
-            PresetInfo(16000051, Pair("\u6248","\u4e09\u5a18"),0, 200, 600),
-            PresetInfo(16000060, Pair("\u6797","\u51b2"),0, 100, 100),
-            PresetInfo(16000070, Pair("\u9c81","\u667a\u6df1")),
-            PresetInfo(16000080, Pair("\u6b66","\u677e"),0, 100, 100),
-            PresetInfo(16000090, Pair("\u5434","\u7528"),0, 100, 200),
-            PresetInfo(16000100, Pair("\u82b1","\u8363"),0, 100, 200),
-            PresetInfo(16000110, Pair("\u5173","\u80DC")), PresetInfo(16000120, Pair("\u67f4","\u8fdb")),
-            PresetInfo(16000130, Pair("\u674e","\u9035"),0, 100, 200),
-            PresetInfo(16000140, Pair("\u6234","\u5b97")),
-            PresetInfo(16000150, Pair("\u5f20","\u987a"),0,100,100),
-            PresetInfo(16000160, Pair("\u674E","\u5E94"),0,100,100),
-            PresetInfo(16000170, Pair("\u53F2","\u8FDB")),
-            PresetInfo(16000180, Pair("\u5362","\u4FCA\u4E49"),0, 200, 600),
-            PresetInfo(16000190, Pair("\u77F3","\u79C0")), PresetInfo(16000200, Pair("\u71D5","\u9752")),
+            PresetInfo(16000010, Triple("\u5b8b","\u6c5f", 4001),0, 100, 200),
+            PresetInfo(16000020, Triple("\u6768","\u5fd7",4017)),
+            PresetInfo(16000030, Triple("\u5218","\u5510", 4021)),
+            PresetInfo(16000040, Triple("\u516c\u5b59","\u80dc", 4004),0, 100, 100),
+            PresetInfo(16000051, Triple("\u6248","\u4e09\u5a18", 1501),0, 200, 600),
+            PresetInfo(16000060, Triple("\u6797","\u51b2", 4006),0, 100, 100),
+            PresetInfo(16000070, Triple("\u9c81","\u667a\u6df1", 4013)),
+            PresetInfo(16000080, Triple("\u6b66","\u677e", 4014),0, 100, 100),
+            PresetInfo(16000090, Triple("\u5434","\u7528", 4003),0, 100, 200),
+            PresetInfo(16000100, Triple("\u82b1","\u8363", 4009),0, 100, 200),
+            PresetInfo(16000110, Triple("\u5173","\u80DC", 4005)), PresetInfo(16000120, Triple("\u67f4","\u8fdb", 4010)),
+            PresetInfo(16000130, Triple("\u674e","\u9035", 4022),0, 100, 200),
+            PresetInfo(16000140, Triple("\u6234","\u5b97", 4020)),
+            PresetInfo(16000150, Triple("\u5F20","\u6E05", 4016),0,100,100),
+            PresetInfo(16000160, Triple("\u674E","\u5E94", 4011),0,100,100),
+            PresetInfo(16000170, Triple("\u53F2","\u8FDB", 4023)),
+            PresetInfo(16000180, Triple("\u5362","\u4FCA\u4E49", 4002),0, 200, 600),
+            PresetInfo(16000190, Triple("\u77F3","\u79C0", 4033)), PresetInfo(16000200, Triple("\u71D5","\u9752", 4036)),
+            PresetInfo(16000210, Triple("\u79E6","\u660E", 4007)), PresetInfo(16000220, Triple("\u547C\u5EF6","\u707C", 4008)),
+            PresetInfo(16000230, Triple("\u8463","\u5E73", 4015)),
+            PresetInfo(16000240, Triple("\u5F90","\u5B81", 4018),0,100,100),
+            PresetInfo(16000250, Triple("\u7D22","\u8D85", 4019)),
+
 
             PresetInfo(16010010, Pair("\u8521","\u4eac"),0, 100, 100),
             PresetInfo(16010020, Pair("\u9ad8","\u4fc5"),0, 100, 100),
@@ -189,8 +195,22 @@ object CultivationSetting {
             PresetInfo(16040010, Pair("\u5B59", "\u5927\u5723"), 0, 1000, 2000),
             PresetInfo(16040020, Pair("\u5510", "\u7384\u5958"), 0, 500, 1000),
             PresetInfo(16040030, Pair("\u732A", "\u516B\u6212"), 0, 100, 200),
-            PresetInfo(16040040, Pair("\u6C99", "\u609F\u51C0"))
-    )
+            PresetInfo(16040040, Pair("\u6C99", "\u609F\u51C0")),
+
+            PresetInfo(16050010, Triple("\u7A46","\u5F18", 4024)), PresetInfo(16050020, Triple("\u96F7","\u6A2A", 4025)),
+            PresetInfo(16050030, Triple("\u674E","\u4FCA", 4026)), PresetInfo(16050040, Triple("\u962E","\u5C0F\u4E8C", 4027)),
+            PresetInfo(16050050, Triple("\u5F20","\u6A2A", 4028)), PresetInfo(16050060, Triple("\u962E","\u5C0F\u4E94", 4029)),
+            PresetInfo(16050070, Triple("\u5f20","\u987a", 4030),0,100,100),
+            PresetInfo(16050080, Triple("\u962E","\u5C0F\u4E03", 4031)), PresetInfo(16050090, Triple("\u6768","\u96C4", 4032)),
+            PresetInfo(16050100, Triple("\u89E3","\u73CD", 4034)), PresetInfo(16050110, Triple("\u89E3","\u5B9D", 4035)),
+            PresetInfo(16050120, Triple("\u6731","\u4EDD", 4012)),PresetInfo(16050130, Triple("\u738B","\u5B9A\u516D", 4104)),
+            PresetInfo(16050141, Triple("\u987E","\u5927\u5AC2", 1502)),
+            PresetInfo(16050151, Triple("\u5B59","\u4E8C\u5A18", 1503), 0, 200, 600),
+            PresetInfo(16050160, Triple("\u6731","\u6B66", 4037)),
+            PresetInfo(16050170, Triple("\u5B89","\u9053\u5168", 4056), 0, 100, 100),
+            PresetInfo(16050180, Triple("\u65F6","\u8FC1", 4107)),PresetInfo(16050190, Triple("\u9879","\u5145", 4064)),
+            PresetInfo(16050200, Triple("\u674E","\u886E", 4065))
+        )
 
     // key = type
     fun getSpecPersonsByType():HashMap<Int, MutableList<PresetInfo>>{

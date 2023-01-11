@@ -145,9 +145,9 @@ object CultivationHelper {
             }
             data.value.xiuweiBattle = Math.min(xiuwei, BattleSettings.ClanMaxXiuwei)
             data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.ClanMinSize + 1 - it }
-            data.value.clanPersonList.forEach { (_: String, clanPerson: Person) ->
-                clanPerson.clanXiuwei = data.value.xiuweiBattle
-            }
+//            data.value.clanPersonList.forEach { (_: String, clanPerson: Person) ->
+//                clanPerson.clanXiuwei = data.value.xiuweiBattle
+//            }
         }
     }
 
@@ -248,9 +248,9 @@ object CultivationHelper {
             data.value.xiuweiBattle = xiuwei
             data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.NationMinSize + 1 - it }
 
-            allPersons.map { it.value }.filter { it.nationId == data.value.id }.forEach {
-                it.nationXiuwei = xiuwei
-            }
+//            allPersons.map { it.value }.filter { it.nationId == data.value.id }.forEach {
+//                it.nationXiuwei = xiuwei
+//            }
         }
     }
 
@@ -627,9 +627,10 @@ object CultivationHelper {
             if(person.id == alliance.zhuPerson?.id){
                 person.allianceXiuwei += 50
             }
-            person.allianceXiuwei += alliance.xiuweiBattle
+            //person.allianceXiuwei += alliance.xiuweiBattle
         }
-        val postXiuwei = getNationXiuwei(person)
+        val postXiuwei = getNationPostXiuwei(person)
+        //clanXiuwei nationXiuwei allianceBattleXiuwei removed 
         var basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
                             + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + postXiuwei
         person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
@@ -654,7 +655,7 @@ object CultivationHelper {
         }
     }
 
-    fun getNationXiuwei(person: Person):Int{
+    fun getNationPostXiuwei(person: Person):Int{
         return when {
             person.nationPost == 4 -> 100
             person.nationPost == 5 -> 50
