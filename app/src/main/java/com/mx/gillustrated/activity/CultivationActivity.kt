@@ -304,22 +304,35 @@ class CultivationActivity : BaseActivity() {
         isHidden = false
     }
 
-    private fun temp(){
-        val specConfig = getAllSpecPersons()
-        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
-            val config = specConfig.find { c-> c.identity == u.specIdentity }
-            if (config != null){
-                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
-                u.lastName = config.name.first
-                if (config.profile > 0)
-                    u.profile = config.profile
-                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
-                    mPersons[u.partner ?: ""]?.partnerName = u.name
-                }
-            }else if(getIdentityType(u.specIdentity) != 1) {
-                deadHandler(u, true)
-            }
+    private fun tempConvert(from:Int, to:Int, alliance:Alliance){
+        val person = mPersons.mapNotNull { it.value }.find { it.specIdentity == from }
+        if(person != null){
+            CultivationHelper.changedToFixedAlliance(person, mAlliance, alliance)
+            person.specIdentity = to
         }
+    }
+
+    private fun temp(){
+//        val specConfig = getAllSpecPersons()
+//        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
+//            val config = specConfig.find { c-> c.identity == u.specIdentity }
+//            if (config != null){
+//                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
+//                u.lastName = config.name.first
+//                if (config.profile > 0)
+//                    u.profile = config.profile
+//                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
+//                    mPersons[u.partner ?: ""]?.partnerName = u.name
+//                }
+//            }else if(getIdentityType(u.specIdentity) != 1) {
+//                deadHandler(u, true)
+//            }
+//        }
+            tempConvert(13010031, 13021011, mAlliance["6000403"]!!)
+            tempConvert(13010041, 13021021, mAlliance["6000403"]!!)
+            tempConvert(13010070, 13021030, mAlliance["6000403"]!!)
+
+
 
 //         mPersons.forEach { (_: String, u: Person) ->
 //             u.label = CultivationHelper.getLabel()
@@ -1379,9 +1392,9 @@ class CultivationActivity : BaseActivity() {
         }
 
         CultivationSetting.getSpecPersonsByType().forEach { (t, u) ->
-            val alliances = mAlliance.map { it.value }.filter { it.type == t }.sortedBy { it.id }
+            val alliances = mAlliance.map { it.value }.filter { it.type == t }
             u.forEach { spec->
-                addSingleSpecPerson(spec, alliances[getIdentityIndex(spec.identity)])
+                addSingleSpecPerson(spec, alliances.find { alliance -> alliance.id.toInt() % 10 == getIdentityIndex(spec.identity) + 1 })
             }
         }
 
@@ -1573,7 +1586,7 @@ class CultivationActivity : BaseActivity() {
             while (true){
                 writeHistory("Clan Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundClanHandler(clans, restClans,10, 5)
+                val result = roundClanHandler(clans, restClans,10, 10)
                 if(result)
                     break
             }
@@ -1618,7 +1631,7 @@ class CultivationActivity : BaseActivity() {
             while (true){
                 writeHistory("Bang Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundBangHandler(alliances, restAlliance, 20, 10)
+                val result = roundBangHandler(alliances, restAlliance, 20, 20)
                 if(result)
                     break
             }
@@ -1668,7 +1681,7 @@ class CultivationActivity : BaseActivity() {
             while (true){
                 writeHistory("Nation Battle ${roundNumber}轮 Start")
                 roundNumber++
-                val result = roundNationHandler(nations, restNation, 20, 20)
+                val result = roundNationHandler(nations, restNation, 20, 50)
                 if(result)
                     break
             }
@@ -1803,16 +1816,38 @@ class CultivationActivity : BaseActivity() {
         }
         var firstIndex = 0
         var secondIndex = 0
+        var firstWin = 0
+        var secondWin = 0
+        val maxWin = 5
         while (true) {
+            if(firstWin >= maxWin){
+                firstWin = 0
+                firstIndex++
+                if (firstIndex == firstPersons.size || firstIndex == count) {
+                    return false
+                }
+            }
+            if(secondWin >= maxWin){
+                secondWin = 0
+                secondIndex++
+                if (secondIndex == secondPersons.size || secondIndex == count) {
+                    return true
+                }
+            }
+
             val result = CultivationBattleHelper.battlePerson(null, firstPersons[firstIndex],
                     secondPersons[secondIndex], round)
             if (result) {
                 secondIndex++
+                firstWin++
+                secondWin = 0
                 if (secondIndex == secondPersons.size || secondIndex == count) {
                     return true
                 }
             } else {
                 firstIndex++
+                secondWin++
+                firstWin = 0
                 if (firstIndex == firstPersons.size || firstIndex == count) {
                    return false
                 }
