@@ -12,8 +12,6 @@ open class ClanBak() :Parcelable {
     var createDate:Long = 0//xun
     var persons: List<String> = Collections.synchronizedList(mutableListOf())
     var battleRecord:MutableMap<Int, Int> = mutableMapOf()
-    var xiuweiBattle:Int = 0
-    var battleWinner:Int = 0
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -21,8 +19,6 @@ open class ClanBak() :Parcelable {
         createDate = parcel.readLong()
         persons = parcel.createStringArrayList()
         parcel.readMap(battleRecord, Map::class.java.classLoader)
-        xiuweiBattle = parcel.readInt()
-        battleWinner = parcel.readInt()
         nickName =  parcel.readString()
     }
 
@@ -46,8 +42,6 @@ open class ClanBak() :Parcelable {
         parcel.writeLong(createDate)
         parcel.writeStringList(persons)
         parcel.writeMap(battleRecord)
-        parcel.writeInt(battleWinner)
-        parcel.writeInt(xiuweiBattle)
     }
 
     override fun describeContents(): Int {
@@ -66,13 +60,18 @@ open class ClanBak() :Parcelable {
 }
 
 class Clan() : ClanBak(), Parcelable{
-    var totalXiuwei:Long = 0// extra props
+
     var clanPersonList: ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var zhu:Person? = null
+    var xiuweiBattle:Int = 0// extra props
+    var battleWinner:Int = 0// extra props
+    var totalXiuwei:Long = 0// extra props
 
     constructor(parcel: Parcel) : this() {
         totalXiuwei = parcel.readLong()
         clanPersonList =  parcel.readValue(ConcurrentHashMap::class.java.classLoader) as ConcurrentHashMap<String, Person>
+        xiuweiBattle = parcel.readInt()
+        battleWinner = parcel.readInt()
     }
 
     fun toClanBak():ClanBak{
@@ -90,6 +89,8 @@ class Clan() : ClanBak(), Parcelable{
         super.writeToParcel(parcel, flags)
         parcel.writeLong(totalXiuwei)
         parcel.writeValue(clanPersonList)
+        parcel.writeInt(battleWinner)
+        parcel.writeInt(xiuweiBattle)
     }
 
     override fun describeContents(): Int {

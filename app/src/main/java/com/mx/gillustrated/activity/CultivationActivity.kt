@@ -68,8 +68,6 @@ import java.util.concurrent.*
 @TargetApi(Build.VERSION_CODES.N)
 class CultivationActivity : BaseActivity() {
 
-
-
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
     private var isHidden = false// Activity 是否不可见
@@ -133,7 +131,7 @@ class CultivationActivity : BaseActivity() {
             backupInfo.battleRound = mBattleRound
             backupInfo.xunDuration = mXunDuration.mapKeys { m-> "${m.key.first}-${m.key.second}" }
             backupInfo.bossRecord = mBossRecord
-            backupInfo.alliance = mAlliance.mapValues { it.value.toConfig() }
+            backupInfo.alliance = mAlliance.mapValues { it.value.toBak() }
             mPersons.forEach { p->
                 val it = p.value
                 it.profile = CultivationHelper.getRandomProfile(it.gender, it.profile)
@@ -314,24 +312,24 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun temp(){
-//        val specConfig = getAllSpecPersons()
-//        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
-//            val config = specConfig.find { c-> c.identity == u.specIdentity }
-//            if (config != null){
-//                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
-//                u.lastName = config.name.first
-//                if (config.profile > 0)
-//                    u.profile = config.profile
-//                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
-//                    mPersons[u.partner ?: ""]?.partnerName = u.name
-//                }
-//            }else if(getIdentityType(u.specIdentity) != 1) {
-//                deadHandler(u, true)
-//            }
-//        }
-            tempConvert(13010031, 13021011, mAlliance["6000403"]!!)
-            tempConvert(13010041, 13021021, mAlliance["6000403"]!!)
-            tempConvert(13010070, 13021030, mAlliance["6000403"]!!)
+        val specConfig = getAllSpecPersons()
+        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
+            val config = specConfig.find { c-> c.identity == u.specIdentity }
+            if (config != null){
+                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
+                u.lastName = config.name.first
+                if (config.profile > 0)
+                    u.profile = config.profile
+                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
+                    mPersons[u.partner ?: ""]?.partnerName = u.name
+                }
+            }else if(getIdentityType(u.specIdentity) != 1) {
+                deadHandler(u, true)
+            }
+        }
+//            tempConvert(13010031, 13021011, mAlliance["6000403"]!!)
+//            tempConvert(13010041, 13021021, mAlliance["6000403"]!!)
+//            tempConvert(13010070, 13021030, mAlliance["6000403"]!!)
 
 
 
@@ -415,38 +413,26 @@ class CultivationActivity : BaseActivity() {
         if(out != null && out.trim() != ""){
             val backup = Gson().fromJson(out, BakInfo::class.java)
             mCurrentXun = backup.xun
-            mPersons.putAll(backup.persons)
+            mPersons.putAll(backup.persons.filter { mConfig.alliance.find { a-> a.id == it.value.allianceId } != null })
             mPersons.forEach {
                 if(it.value.children.isNotEmpty())
                     it.value.children = Collections.synchronizedList(it.value.children)
-                if(it.value.ancestorOrignId == null) {
-                    it.value.ancestorOrignId = it.value.ancestorId
-                    it.value.ancestorOrignLevel = it.value.ancestorLevel
-                }
                 it.value.equipmentListPair = Collections.synchronizedList(it.value.equipmentListPair)
                 it.value.lingGenType = mConfig.lingGenType.find { g-> g.id == it.value.lingGenType.id }!!
                 it.value.lingGenName = if (it.value.lingGenId == "") it.value.lingGenName else CultivationHelper.getTianName(it.value.lingGenId)
                 CultivationHelper.updatePersonEquipment(it.value)
                 CultivationHelper.updatePersonExtraProperty(it.value)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
-                if(it.value.careerDetailList.isEmpty()){
-                    resetCustomBonusSingle(it.value)
-                }else{
-                    it.value.careerDetailList = Collections.synchronizedList(it.value.careerDetailList.map {
-                        val config = mConfig.career.find { c-> c.id == it.id }!!.copy()
-                        config.level = it.level
+                if(it.value.careerDetailList.isNotEmpty()){
+                    it.value.careerDetailList = Collections.synchronizedList(it.value.careerDetailList.map { career->
+                        val config = mConfig.career.find { c-> c.id == career.id }!!.copy()
+                        config.level = career.level
                         config
                     })
                 }
             }
-            mAlliance.putAll(backup.alliance.mapValues {
-                it.value.toAlliance(mPersons)
-            })
             mClans.putAll(backup.clans.mapValues {
                 it.value.toClan(mPersons)
-            })
-            mNations.putAll(backup.nation.mapValues {
-                it.value.toNation()
             })
             mBattleRound = backup.battleRound ?: BattleRound()
             mXunDuration = ConcurrentHashMap(backup.xunDuration.mapKeys { m->
@@ -458,14 +444,22 @@ class CultivationActivity : BaseActivity() {
                 repeat(CultivationEnemyHelper.bossSettings.size) {
                     mBossRecord.add(mutableMapOf())
                 }
-                mPersons.forEach { (_: String, person: Person) ->
-                    person.equipmentListPair.filter { p-> p.first == "7006501" || p.first == "7006502"
-                            || p.first == "7006503" || p.first == "7006504"}.forEach { pair->
-                        val index = pair.first.toInt() % 10 - 1
-                        mBossRecord[index][pair.second] = person.id
-                    }
-                    person.equipmentListPair.removeIf {  p-> p.first == "7006501" || p.first == "7006502"
-                            || p.first == "7006503" || p.first == "7006504" }
+            }
+
+            CultivationHelper.mConfig.nation.forEach { nationConfig ->
+                val nationBak = backup.nation[nationConfig.id]
+                if(nationBak == null){
+                    mNations[nationConfig.id] = NationBak().toNation(nationConfig)
+                }else{
+                    mNations[nationConfig.id] = nationBak.toNation(nationConfig)
+                }
+            }
+            CultivationHelper.mConfig.alliance.forEach { allianceConfig ->
+                val allianceBak = backup.alliance[allianceConfig.id]
+                if(allianceBak == null){
+                    mAlliance[allianceConfig.id] = AllianceBak().toAlliance(ConcurrentHashMap(), allianceConfig)
+                }else{
+                    mAlliance[allianceConfig.id] = allianceBak.toAlliance(mPersons, allianceConfig)
                 }
             }
         }else{
@@ -475,10 +469,10 @@ class CultivationActivity : BaseActivity() {
             repeat(CultivationEnemyHelper.bossSettings.size) {
                 mBossRecord.add(mutableMapOf())
             }
+            createAlliance()
+            createNation()
         }
-        createAlliance() //此处处理了删除alliance的情况
-        createNation()
-        //更新Alliance属性
+        //更新人物Alliance属性
         mPersons.forEach {
             it.value.allianceSuccess = mAlliance[it.value.allianceId]!!.success
             it.value.allianceProperty =  mAlliance[it.value.allianceId]!!.property
@@ -583,79 +577,15 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun createAlliance() {
-        if(mAlliance.isEmpty()){
-            mConfig.alliance.forEach {
-                mAlliance[it.id] = newAlliance(it)
-            }
-        }else{
-            mConfig.alliance.forEach { configAlliance->
-                val alliance = mAlliance[configAlliance.id]
-                if(alliance != null){
-                    alliance.name = configAlliance.name
-                    alliance.nation = configAlliance.nation
-                    alliance.type = configAlliance.type
-                    alliance.level = configAlliance.level
-                    alliance.lifetime = configAlliance.lifetime
-                    alliance.maxPerson = configAlliance.maxPerson
-                    alliance.xiuwei = configAlliance.xiuwei
-                    alliance.xiuweiMulti = configAlliance.xiuweiMulti
-                    alliance.success = configAlliance.success
-                    alliance.tianfu = configAlliance.tianfu
-                    alliance.property = configAlliance.property
-                }else{
-                    mAlliance[configAlliance.id] = newAlliance(configAlliance)
-                }
-            }
-            mAlliance.forEach { alliance->
-                if(mConfig.alliance.find { a-> a.id == alliance.value.id } == null){
-                    mAlliance.remove(alliance.value.id)
-                    mPersons.filter { it.value.allianceId == alliance.value.id}.forEach { (_, u) ->
-                        deadHandler(u)
-                    }
-                }
-            }
+        CultivationHelper.mConfig.alliance.forEach { allianceConfig ->
+            mAlliance[allianceConfig.id] = AllianceBak().toAlliance(ConcurrentHashMap(), allianceConfig)
         }
     }
 
     private fun createNation(){
-        if(mNations.isEmpty()){
-            mConfig.nation.forEach {
-                mNations[it.id] = it.copy()
-            }
-        }else{
-            mConfig.nation.forEach { configNation->
-                val nation = mNations[configNation.id]
-                if(nation != null){
-                    nation.name = configNation.name
-                }else{
-                    mNations[configNation.id] = configNation.copy()
-                }
-            }
-            mNations.forEach {
-                if(mConfig.nation.find { f-> f.id == it.key } == null ){ //不存在的nation
-                    mNations.remove(it.key)
-                }
-            }
+        CultivationHelper.mConfig.nation.forEach { nationConfig ->
+            mNations[nationConfig.id] = NationBak().toNation(nationConfig)
         }
-    }
-
-
-    private fun newAlliance(it:AllianceConfig):Alliance{
-        val alliance = Alliance()
-        alliance.name = it.name
-        alliance.id = it.id
-        alliance.type = it.type
-        alliance.nation = it.nation
-        alliance.level = it.level
-        alliance.lifetime = it.lifetime
-        alliance.xiuwei = it.xiuwei
-        alliance.maxPerson = it.maxPerson
-        alliance.tianfu = it.tianfu
-        alliance.success = it.success
-        alliance.xiuweiMulti = it.xiuweiMulti
-        alliance.lingGen = it.lingGen
-        alliance.property = it.property
-        return alliance
     }
 
     fun getPersonData(id: String?):Person?{

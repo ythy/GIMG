@@ -4,7 +4,58 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.concurrent.ConcurrentHashMap
 
-open class AllianceConfig() :Parcelable {
+open class AllianceBak():Parcelable{
+    var persons:List<String> = mutableListOf()
+    var battleRecord:MutableMap<Int, Int> = mutableMapOf()
+
+    constructor(parcel: Parcel) : this() {
+        persons = parcel.createStringArrayList()
+        parcel.readMap(battleRecord, Map::class.java.classLoader)
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeStringList(persons)
+        parcel.writeMap(battleRecord)
+    }
+
+    fun toAlliance(personMap: ConcurrentHashMap<String, Person>, allianceConfig: AllianceConfig):Alliance{
+        val alliance = Alliance()
+        alliance.id = allianceConfig.id
+        alliance.name = allianceConfig.name
+        alliance.type = allianceConfig.type
+        alliance.level = allianceConfig.level
+        alliance.maxPerson = allianceConfig.maxPerson
+        alliance.lifetime = allianceConfig.lifetime
+        alliance.xiuwei = allianceConfig.xiuwei
+        alliance.xiuweiMulti = allianceConfig.xiuweiMulti
+        alliance.lingGen = allianceConfig.lingGen
+        alliance.success = allianceConfig.success
+        alliance.tianfu = allianceConfig.tianfu
+        alliance.property = allianceConfig.property.toMutableList()
+        alliance.nation = allianceConfig.nation
+
+        alliance.battleRecord = ConcurrentHashMap(this.battleRecord)
+        alliance.personList.putAll(personMap.filterKeys { this.persons.contains(it) })
+        return alliance
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<AllianceBak> {
+        override fun createFromParcel(parcel: Parcel): AllianceBak {
+            return AllianceBak(parcel)
+        }
+
+        override fun newArray(size: Int): Array<AllianceBak?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+
+open class AllianceConfig() : AllianceBak(), Parcelable {
     lateinit var id:String
     lateinit var name:String
     var type:Int = 0//类型，0 all, 1 spec
@@ -17,11 +68,7 @@ open class AllianceConfig() :Parcelable {
     var tianfu:Int = 0 //要求的tianfu number
     var success:Int = 0//突破率
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
-    var persons:List<String> = mutableListOf()
     var nation:String = ""
-    var battleRecord:MutableMap<Int, Int> = mutableMapOf()
-    var xiuweiBattle:Int = 0
-    var battleWinner:Int = 0
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -36,21 +83,7 @@ open class AllianceConfig() :Parcelable {
         tianfu = parcel.readInt()
         success = parcel.readInt()
         property = parcel.createIntArray().toMutableList()
-        persons = parcel.createStringArrayList()
         nation = parcel.readString()
-        parcel.readMap(battleRecord, Map::class.java.classLoader)
-        xiuweiBattle = parcel.readInt()
-        battleWinner = parcel.readInt()
-    }
-
-    fun toAlliance(personMap: ConcurrentHashMap<String, Person>):Alliance{
-        val alliance = Alliance()
-        alliance.id = this.id
-        alliance.name = this.name
-        alliance.lingGen = this.lingGen
-        alliance.battleRecord = ConcurrentHashMap(this.battleRecord)
-        alliance.personList.putAll(personMap.filterKeys { this.persons.contains(it) })
-        return alliance
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -66,12 +99,7 @@ open class AllianceConfig() :Parcelable {
         parcel.writeInt(tianfu)
         parcel.writeInt(success)
         parcel.writeIntArray(property.toIntArray())
-        parcel.writeStringList(persons)
         parcel.writeString(nation)
-        parcel.writeMap(battleRecord)
-        parcel.writeInt(battleWinner)
-        parcel.writeInt(xiuweiBattle)
-
     }
 
     override fun describeContents(): Int {
@@ -93,22 +121,23 @@ class Alliance() : AllianceConfig(), Parcelable {
 
     var zhuPerson:Person? = null
     var personList:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
-    var totalXiuwei:Long = 0// extra props
+    var totalXiuwei:Long = 0 // extra props
+    var xiuweiBattle:Int = 0 // extra props
+    var battleWinner:Int = 0 // extra props
 
     constructor(parcel: Parcel) : this() {
         zhuPerson = parcel.readParcelable(Person::class.java.classLoader)
         personList = parcel.readValue(ConcurrentHashMap::class.java.classLoader) as ConcurrentHashMap<String, Person>
         totalXiuwei = parcel.readLong()
+        xiuweiBattle = parcel.readInt()
+        battleWinner = parcel.readInt()
     }
 
-    fun toConfig():AllianceConfig{
-        val config = AllianceConfig()
-        config.id = super.id
-        config.name = super.name
-        config.lingGen = super.lingGen
-        config.battleRecord = super.battleRecord
-        config.persons = this.personList.filter { it.value.allianceId == super.id && it.value.type == 0}.map { it.key }
-        return config
+    fun toBak():AllianceBak{
+        val bak = AllianceBak()
+        bak.battleRecord = super.battleRecord
+        bak.persons = this.personList.filter { it.value.allianceId == super.id && it.value.type == 0}.map { it.key }
+        return bak
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -116,6 +145,8 @@ class Alliance() : AllianceConfig(), Parcelable {
         parcel.writeParcelable(zhuPerson, flags)
         parcel.writeValue(personList)
         parcel.writeLong(totalXiuwei)
+        parcel.writeInt(battleWinner)
+        parcel.writeInt(xiuweiBattle)
     }
 
     override fun describeContents(): Int {

@@ -2,7 +2,7 @@ package com.mx.gillustrated.vo.cultivation
 
 class BakInfo {
     var xun: Long = 0
-    var alliance:Map<String, AllianceConfig> = HashMap()
+    var alliance:Map<String, AllianceBak> = HashMap()
     var persons:Map<String, Person> = HashMap()
     var clans:Map<String, ClanBak> = HashMap()
     var nation:Map<String, NationBak> = HashMap()
