@@ -14,7 +14,6 @@ open class ClanBak() :Parcelable {
     var battleRecord:MutableMap<Int, Int> = mutableMapOf()
     var xiuweiBattle:Int = 0
     var battleWinner:Int = 0
-    var minXiuwei:Int = 0 //最低线
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -24,7 +23,6 @@ open class ClanBak() :Parcelable {
         parcel.readMap(battleRecord, Map::class.java.classLoader)
         xiuweiBattle = parcel.readInt()
         battleWinner = parcel.readInt()
-        minXiuwei = parcel.readInt()
         nickName =  parcel.readString()
     }
 
@@ -38,7 +36,6 @@ open class ClanBak() :Parcelable {
         clan.createDate = this.createDate
         clan.clanPersonList.putAll(personMap.filterKeys { this.persons.contains(it) })
         clan.battleRecord = ConcurrentHashMap(this.battleRecord)
-        clan.minXiuwei = this.minXiuwei
         return clan
     }
 
@@ -51,7 +48,6 @@ open class ClanBak() :Parcelable {
         parcel.writeMap(battleRecord)
         parcel.writeInt(battleWinner)
         parcel.writeInt(xiuweiBattle)
-        parcel.writeInt(minXiuwei)
     }
 
     override fun describeContents(): Int {
@@ -87,7 +83,6 @@ class Clan() : ClanBak(), Parcelable{
         bak.createDate = super.createDate
         bak.persons = this.clanPersonList.filter { it.value.ancestorId == super.id }.map { it.key }
         bak.battleRecord = super.battleRecord
-        bak.minXiuwei = super.minXiuwei
         return bak
     }
 

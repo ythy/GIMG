@@ -1294,8 +1294,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "金",
-      "property": [0,20,0,0,0,0,0,0],
-      "speedG1": 20
+      "property": [0,20,0,0,0,0,0,0]
     },
     {
       "id": "6000102",
@@ -1304,8 +1303,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "水",
-      "property": [0,0,20,0,0,0,0,0],
-      "speedG1": 20
+      "property": [0,0,20,0,0,0,0,0]
     },
     {
       "id": "6000103",
@@ -1314,8 +1312,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "木",
-      "property": [50,0,0,10,0,0,0,0],
-      "speedG1": 20
+      "property": [50,0,0,10,0,0,0,0]
     },
     {
       "id": "6000104",
@@ -1324,8 +1321,7 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "火",
-      "property": [0,10,0,10,0,0,0,0],
-      "speedG1": 20
+      "property": [0,10,0,10,0,0,0,0]
     },
     {
       "id": "6000105",
@@ -1334,83 +1330,76 @@
       "lifetime": 0,
       "xiuwei": 0,
       "lingGen": "土",
-      "property": [0,10,10,0,0,0,0,0],
-      "speedG1": 20
+      "property": [0,10,10,0,0,0,0,0]
     },
     {
       "id": "6000106",
       "name": "隐\u95E8",
-      "nation": "6200001",
+      "nation": "6200008",
       "tianfu": 1,
       "level": 10,
       "lifetime": 0,
-      "maxPerson": 30,
+      "maxPerson": 100,
       "xiuwei": 30,
-      "property": [0,10,10,10,0,0,0,0],
-      "speedG1": 30
+      "property": [0,10,10,10,0,0,0,0]
     },
     {
       "id": "6000107",
       "name": "魔\u6559",
-      "nation": "6200001",
+      "nation": "6200008",
       "tianfu": 1,
       "level": 10,
       "lifetime": -20,
-      "maxPerson": 30,
+      "maxPerson": 100,
       "xiuwei": 50,
-      "property": [0,30,0,0,0,0,0,0],
-      "speedG1": 30
+      "property": [0,30,0,0,0,0,0,0]
     },
     {
       "id": "6000108",
       "name": "天\u5BAB",
-      "nation": "6200001",
+      "nation": "6200008",
       "tianfu": 2,
       "level": 20,
       "lifetime": 0,
-      "maxPerson": 20,
+      "maxPerson": 50,
       "xiuwei": 60,
-      "property": [0,30,10,0,0,0,0,0],
-      "speedG1": 40
+      "property": [0,30,10,0,0,0,0,0]
     },
     {
       "id": "6000109",
       "name": "地\u5E9C",
-      "nation": "6200001",
+      "nation": "6200008",
       "tianfu": 2,
       "level": 20,
       "lifetime": 50,
-      "maxPerson": 20,
+      "maxPerson": 50,
       "xiuwei": 30,
-      "property": [50,10,20,0,0,0,0,0],
-      "speedG1": 40
+      "property": [50,10,20,0,0,0,0,0]
     },
     {
       "id": "6000110",
       "name": "人\u754C",
-      "nation": "6200001",
+      "nation": "6200008",
       "tianfu": 2,
       "level": 20,
       "lifetime": 20,
-      "maxPerson": 20,
+      "maxPerson": 50,
       "xiuwei": 30,
       "xiuweiMulti": 50,
-      "property": [50,10,10,10,0,0,0,0],
-      "speedG1": 40
+      "property": [50,10,10,10,0,0,0,0]
     },
     {
       "id": "6000111",
       "name": "神\u6BBF",
-      "nation": "6200001",
+      "nation": "6200008",
       "tianfu": 3,
       "level": 50,
       "lifetime": 50,
       "success": 10,
-      "maxPerson": 10,
+      "maxPerson": 20,
       "xiuwei": 60,
       "xiuweiMulti": 50,
-      "property": [50,20,10,10,0,0,0,0],
-      "speedG1": 50
+      "property": [50,20,10,10,0,0,0,0]
     },
     {
       "id": "6000201",
@@ -1419,8 +1408,7 @@
       "nation": "6200002",
       "lifetime": 50,
       "xiuwei": 100,
-      "property": [0,30,20,10,0,0,0,0],
-      "speedG1": 60
+      "property": [0,30,20,10,0,0,0,0]
     },
     {
       "id": "6000202",
@@ -1429,8 +1417,7 @@
       "nation": "6200002",
       "lifetime": 50,
       "xiuweiMulti": 100,
-      "property": [0,20,30,10,0,0,0,0],
-      "speedG1": 60
+      "property": [0,20,30,10,0,0,0,0]
     },
     {
       "id": "6000203",
@@ -1440,8 +1427,7 @@
       "lifetime": 50,
       "xiuwei": 50,
       "xiuweiMulti": 50,
-      "property": [0,20,20,20,0,0,0,0],
-      "speedG1": 60
+      "property": [0,20,20,20,0,0,0,0]
     },
     {
       "id": "6000204",
@@ -1452,8 +1438,7 @@
       "success": 5,
       "xiuwei": 30,
       "xiuweiMulti": 50,
-      "property": [50,30,10,10,0,0,0,0],
-      "speedG1": 60
+      "property": [50,30,10,10,0,0,0,0]
     },
     {
       "id": "6000205",
@@ -1463,19 +1448,17 @@
       "lifetime": 50,
       "success": 0,
       "xiuwei": 100,
-      "property": [0,50,0,10,0,0,0,0],
-      "speedG1": 60
+      "property": [0,50,0,10,0,0,0,0]
     },
     {
       "id": "6000403",
-      "name": "金古",
+      "name": "\u6C5F\u6E56",
       "type": 3,
       "nation": "6200003",
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [50,70,0,20,0,0,0,0],
-      "speedG1": 100
+      "property": [50,70,0,20,0,0,0,0]
     },
     {
       "id": "6000501",
@@ -1485,8 +1468,7 @@
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [0,50,0,20,0,0,0,0],
-      "speedG1": 70
+      "property": [0,50,0,20,0,0,0,0]
     },
     {
       "id": "6000502",
@@ -1496,8 +1478,7 @@
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [50,40,10,10,0,0,0,0],
-      "speedG1": 70
+      "property": [50,40,10,10,0,0,0,0]
     },
     {
       "id": "6000503",
@@ -1507,8 +1488,7 @@
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [50,30,20,10,0,0,0,0],
-      "speedG1": 70
+      "property": [50,30,20,10,0,0,0,0]
     },
     {
       "id": "6000504",
@@ -1518,8 +1498,7 @@
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [0,60,0,10,0,0,0,0],
-      "speedG1": 70
+      "property": [0,60,0,10,0,0,0,0]
     },
     {
       "id": "6000701",
@@ -1529,8 +1508,7 @@
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [0,60,0,10,0,0,0,0],
-      "speedG1": 70
+      "property": [0,60,0,10,0,0,0,0]
     },
     {
       "id": "6000702",
@@ -1540,8 +1518,7 @@
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [0,50,10,10,0,0,0,0],
-      "speedG1": 70
+      "property": [0,50,10,10,0,0,0,0]
     },
     {
       "id": "6000704",
@@ -1551,8 +1528,7 @@
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [0,50,0,20,0,0,0,0],
-      "speedG1": 70
+      "property": [0,50,0,20,0,0,0,0]
     },
     {
       "id": "6000705",
@@ -1562,8 +1538,7 @@
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [0,60,0,10,0,0,0,0],
-      "speedG1": 70
+      "property": [0,60,0,10,0,0,0,0]
     },
     {
       "id": "6000706",
@@ -1573,8 +1548,7 @@
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
-      "property": [0,50,10,10,0,0,0,0],
-      "speedG1": 70
+      "property": [0,50,10,10,0,0,0,0]
     }
   ],
   "equipment": [
@@ -2810,7 +2784,7 @@
   "nation": [
     {
       "id": "6200001",
-      "name": "凡\u95f4"
+      "name": "\u4E94\u884C"
     },
     {
       "id": "6200002",
@@ -2826,11 +2800,15 @@
     },
     {
       "id": "6200006",
-      "name": "\u56db\u5927"
+      "name": "\u53E4\u5178"
     },
     {
       "id": "6200007",
-      "name": "\u6881\u5C71"
+      "name": "\u6881\u5C71S"
+    },
+    {
+      "id": "6200008",
+      "name": "\u5723\u5730"
     }
   ],
   "label": [

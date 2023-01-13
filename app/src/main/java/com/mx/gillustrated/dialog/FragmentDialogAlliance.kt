@@ -140,18 +140,18 @@ class FragmentDialogAlliance : DialogFragment() {
         }
         mDialogView.winner.text = "${mAlliance.battleWinner}-${mAlliance.xiuweiBattle}↑"
         mDialogView.speeds.removeAllViews()
-        val list = mAlliance.speedG1PersonList.mapNotNull { mContext.getOnlinePersonDetail(it.value.id) }
-        if(list.isNotEmpty()){
-            mDialogView.measures.measure(0,0)
-            mDialogView.speeds.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 20))
-
-            mDialogView.speeds.setCallback(object : TextViewBox.Callback {
-                override fun onClick(index: Int) {
-                    showPersonInfo(list[index].id)
-                }
-            })
-            mDialogView.speeds.setDataProvider(list.map { CultivationHelper.showing(it.name) }, null)
-        }
+//        val list = mAlliance.speedG1PersonList.mapNotNull { mContext.getOnlinePersonDetail(it.value.id) }
+//        if(list.isNotEmpty()){
+//            mDialogView.measures.measure(0,0)
+//            mDialogView.speeds.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 20))
+//
+//            mDialogView.speeds.setCallback(object : TextViewBox.Callback {
+//                override fun onClick(index: Int) {
+//                    showPersonInfo(list[index].id)
+//                }
+//            })
+//            mDialogView.speeds.setDataProvider(list.map { CultivationHelper.showing(it.name) }, null)
+//        }
 
         mPersonList.clear()
         mPersonList.addAll(mAlliance.personList.map { it.value }.toMutableList())

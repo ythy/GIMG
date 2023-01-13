@@ -17,8 +17,6 @@ open class AllianceConfig() :Parcelable {
     var tianfu:Int = 0 //要求的tianfu number
     var success:Int = 0//突破率
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
-    var speedG1:Int = 0
-    var speedG2:Int = 0
     var persons:List<String> = mutableListOf()
     var nation:String = ""
     var battleRecord:MutableMap<Int, Int> = mutableMapOf()
@@ -38,8 +36,6 @@ open class AllianceConfig() :Parcelable {
         tianfu = parcel.readInt()
         success = parcel.readInt()
         property = parcel.createIntArray().toMutableList()
-        speedG1 = parcel.readInt()
-        speedG2 = parcel.readInt()
         persons = parcel.createStringArrayList()
         nation = parcel.readString()
         parcel.readMap(battleRecord, Map::class.java.classLoader)
@@ -70,8 +66,6 @@ open class AllianceConfig() :Parcelable {
         parcel.writeInt(tianfu)
         parcel.writeInt(success)
         parcel.writeIntArray(property.toIntArray())
-        parcel.writeInt(speedG1)
-        parcel.writeInt(speedG2)
         parcel.writeStringList(persons)
         parcel.writeString(nation)
         parcel.writeMap(battleRecord)
@@ -99,16 +93,11 @@ class Alliance() : AllianceConfig(), Parcelable {
 
     var zhuPerson:Person? = null
     var personList:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
-    var speedG1PersonList:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
-    var speedG2PersonList:ConcurrentHashMap<String, Person> =ConcurrentHashMap()
-
     var totalXiuwei:Long = 0// extra props
 
     constructor(parcel: Parcel) : this() {
         zhuPerson = parcel.readParcelable(Person::class.java.classLoader)
         personList = parcel.readValue(ConcurrentHashMap::class.java.classLoader) as ConcurrentHashMap<String, Person>
-        speedG1PersonList = parcel.readValue(ConcurrentHashMap::class.java.classLoader) as ConcurrentHashMap<String, Person>
-        speedG2PersonList = parcel.readValue(ConcurrentHashMap::class.java.classLoader) as ConcurrentHashMap<String, Person>
         totalXiuwei = parcel.readLong()
     }
 
@@ -126,8 +115,6 @@ class Alliance() : AllianceConfig(), Parcelable {
         super.writeToParcel(parcel, flags)
         parcel.writeParcelable(zhuPerson, flags)
         parcel.writeValue(personList)
-        parcel.writeValue(speedG1PersonList)
-        parcel.writeValue(speedG2PersonList)
         parcel.writeLong(totalXiuwei)
     }
 

@@ -92,7 +92,6 @@ object CultivationHelper {
             if(alivePersons.isNotEmpty()){
                 if(updated) {
                     updateZhuInAlliance(alliance, alivePersons)
-                    updateG1InAlliance(alliance, alivePersons)
                 }
             }else{
                 alliance.zhuPerson = null
@@ -121,17 +120,6 @@ object CultivationHelper {
         }
         val personList = Collections.synchronizedList( persons.map { it.value })
         alliance.zhuPerson = personList.sortedBy { it.birthtime }.first()
-    }
-
-    private fun updateG1InAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
-        val total = Math.min(10, Math.max(1, persons.size / 4))
-        val personList =  Collections.synchronizedList( persons.map { it.value })
-        alliance.speedG1PersonList.clear()
-        personList.sortByDescending { it.extraSpeed }
-        for (i in 0 until total){
-            alliance.speedG1PersonList[personList[i].id] = personList[i]
-        }
-
     }
 
     // rank total 4
@@ -620,14 +608,11 @@ object CultivationHelper {
 
     private fun getXiuweiGrow(person:Person, alliance: Alliance):Int{
         synchronized(person){
-            person.allianceXiuwei = alliance.xiuwei
-            if(alliance.speedG1PersonList.contains(person.id)){
-                person.allianceXiuwei += alliance.speedG1
-            }
+            var allianceXiuwei = alliance.xiuwei
             if(person.id == alliance.zhuPerson?.id){
-                person.allianceXiuwei += 50
+                allianceXiuwei += 50
             }
-            //person.allianceXiuwei += alliance.xiuweiBattle
+            person.allianceXiuwei = allianceXiuwei
         }
         val postXiuwei = getNationPostXiuwei(person)
         //clanXiuwei nationXiuwei allianceBattleXiuwei removed 

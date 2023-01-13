@@ -41,6 +41,7 @@ import com.mx.gillustrated.component.CultivationHelper.mXunDuration
 import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
 import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
+import com.mx.gillustrated.component.CultivationHelper.talentValue
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.CultivationSetting.getIdentityGender
 import com.mx.gillustrated.component.CultivationSetting.getIdentityIndex
@@ -600,8 +601,6 @@ class CultivationActivity : BaseActivity() {
                     alliance.xiuweiMulti = configAlliance.xiuweiMulti
                     alliance.success = configAlliance.success
                     alliance.tianfu = configAlliance.tianfu
-                    alliance.speedG1 = configAlliance.speedG1
-                    alliance.speedG2 = configAlliance.speedG2
                     alliance.property = configAlliance.property
                 }else{
                     mAlliance[configAlliance.id] = newAlliance(configAlliance)
@@ -656,8 +655,6 @@ class CultivationActivity : BaseActivity() {
         alliance.xiuweiMulti = it.xiuweiMulti
         alliance.lingGen = it.lingGen
         alliance.property = it.property
-        alliance.speedG1 = it.speedG1
-        alliance.speedG2 = it.speedG2
         return alliance
     }
 
@@ -999,7 +996,7 @@ class CultivationActivity : BaseActivity() {
     fun combinedPersonRelationship(person: Person, log:Boolean = true){
         CultivationHelper.joinAlliance(person, mAlliance)
         mPersons[person.id] = person
-        if(mClans[person.ancestorId] != null && getXiuweiGrow(person, mAlliance) >= mClans[person.ancestorId]?.minXiuwei!!){
+        if(mClans[person.ancestorId] != null){
             mClans[person.ancestorId]!!.clanPersonList[person.id] = person
         }
         if(log){
@@ -1150,8 +1147,7 @@ class CultivationActivity : BaseActivity() {
         ps.forEach {
             it.nationPost = 0
         }
-        val emperor = ps.sortedWith(compareByDescending<Person>{ it.lingGenType.color }
-                .thenByDescending { it.tianfus.sumBy { s->s.weight } }
+        val emperor = ps.sortedWith(compareByDescending<Person>{ talentValue(it) }
                 .thenByDescending { it.jingJieId })[0]
         emperor.nationPost = 1
         mNation.emperor = emperor.id
@@ -1161,21 +1157,22 @@ class CultivationActivity : BaseActivity() {
         taiwei.nationPost = 2
         mNation.taiWei = taiwei.id
         ps.remove(taiwei)
-        val shangshu = ps.sortedWith(compareByDescending<Person>{ it.tianfus.sumBy { s->s.rarity } }
-                .thenByDescending { it.jingJieId })[0]
+        val shangshu = ps.sortedWith(compareByDescending<Person>{
+            val property = CultivationHelper.getProperty(it)
+            property[1]/5 + property[2] +  property[3] +  property[4]
+        }.thenByDescending { it.jingJieId })[0]
         shangshu.nationPost = 3
         mNation.shangShu = shangshu.id
         ps.remove(shangshu)
 
-        mNation.ciShi = ps.sortedWith(compareByDescending<Person>{ it.tianfus.find { t-> t.type == 2 }?.bonus ?: 0 }
+        mNation.ciShi = ps.sortedWith(compareByDescending<Person>{ talentValue(it) }
                 .thenByDescending { it.jingJieId }).subList(0, 4).map {
             it.nationPost = 4
             it.id
         }.toMutableList()
         ps.removeIf { mNation.ciShi.find { f-> f == it.id } != null }
 
-
-        val endIndex = Math.max(4, ps.size / 6)
+        val endIndex = Math.max(4, ps.size / 10)
         mNation.duWei = ps.shuffled().subList(0, endIndex).map {
             it.nationPost = 5
             it.id
@@ -1260,8 +1257,7 @@ class CultivationActivity : BaseActivity() {
             }
             mClans.forEach {
                 it.value.clanPersonList = ConcurrentHashMap(mPersons.filter { m ->
-                    m.value.ancestorId == it.key &&
-                            (getXiuweiGrow(m.value, mAlliance) >= it.value.minXiuwei || m.value.id == it.key || isTalent(m.value))
+                    m.value.ancestorId == it.key
                 })
             }
         }

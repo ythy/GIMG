@@ -44,7 +44,7 @@ class CultivationNationAdapter  constructor(mContext: Context, private val list:
         component.name.text =  CultivationHelper.showing(list[arg0].name)
         component.persons.text = "${ list[arg0].nationPersonList.size}-${ list[arg0].nationPersonList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
         component.winner.text = list[arg0].battleWinner.toString()
-        component.total.text  = list[arg0].totalTurn.toString()
+        component.total.text  = CultivationHelper.showLifeTurn(list[arg0].totalTurn.toLong())
         return convertView
     }
 
