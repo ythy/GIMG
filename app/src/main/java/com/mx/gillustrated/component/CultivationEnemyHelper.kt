@@ -38,13 +38,13 @@ object CultivationEnemyHelper {
         enemy.maxHit = 50 + random.nextInt(51)
         enemy.remainHit = enemy.maxHit
         for (index in 1 until basis * 4 + 1){
-            val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000101" }!!.copy()
+            val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000101" }!!.toFollower()
             follower.uniqueName = "${index}号"
             enemy.followerList.add(follower)
         }
         if (type >= 2){
             for (index in 1 until basis + 1){
-                val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000102" }!!.copy()
+                val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000102" }!!.toFollower()
                 follower.uniqueName = "${index}号"
                 enemy.followerList.add(follower)
             }

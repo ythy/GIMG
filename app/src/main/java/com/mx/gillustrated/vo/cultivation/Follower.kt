@@ -6,68 +6,100 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.util.NameUtil
 import java.util.*
 
-class Follower() : Parcelable {
+
+open class FollowerConfig() : Parcelable {
     lateinit var id: String
     lateinit var name: String
-    var nid:String =  UUID.randomUUID().toString()
     var rarity: Int = 0
-    var property =  mutableListOf(0,0,0,0,0,0,0,0)
-    var teji = mutableListOf<String>()
-    var gender = NameUtil.Gender.Male
-    var unique:Boolean = false
     var commission: Int = 0
     var type:Int = 0 // 0 normal, 1 spec can not add manually
     var max:Int = 1//max number can be auto added
-    //以下字段不在配置里
-    var uniqueName: String = "" //unique为true时为空
-    var isDead:Boolean = false
+    var property =  mutableListOf(0,0,0,0,0,0,0,0)
+    var teji = mutableListOf<String>()
+    var gender = NameUtil.Gender.Male
+
+    fun toFollower():Follower{
+        val follower = Follower()
+        follower.id = this.id
+        follower.name = this.name
+        follower.rarity = this.rarity
+        follower.property =  Collections.synchronizedList(this.property.toMutableList())
+        follower.teji = Collections.synchronizedList(this.teji.toMutableList())
+        follower.gender = this.gender
+        follower.commission = this.commission
+        follower.type = this.type
+        follower.max = this.max
+        return follower
+    }
+
+    fun copy():FollowerConfig{
+        return this.toFollower()
+    }
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
         name = parcel.readString()
-        nid = parcel.readString()
         rarity = parcel.readInt()
-        unique = parcel.readByte() != 0.toByte()
         commission = parcel.readInt()
         type = parcel.readInt()
+        max = parcel.readInt()
+        gender = NameUtil.Gender.valueOf(parcel.readString()!!)
+        property = Collections.synchronizedList(parcel.createIntArray().toMutableList())
+        teji = Collections.synchronizedList(parcel.createStringArrayList())
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(name)
+        parcel.writeInt(rarity)
+        parcel.writeInt(commission)
+        parcel.writeInt(type)
+        parcel.writeInt(max)
+        parcel.writeIntArray(property.toIntArray())
+        parcel.writeStringList(teji)
+        parcel.writeString(gender.props)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FollowerConfig> {
+        override fun createFromParcel(parcel: Parcel): FollowerConfig {
+            return FollowerConfig(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FollowerConfig?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+
+}
+
+class Follower() : FollowerConfig(), Parcelable {
+
+    var nid:String =  UUID.randomUUID().toString()
+    var uniqueName: String = "" //unique为true时为空
+    var isDead:Boolean = false
+    var unique:Boolean = false
+
+    constructor(parcel: Parcel) : this() {
+        nid = parcel.readString()
+        unique = parcel.readByte() != 0.toByte()
         uniqueName = parcel.readString()
         isDead = parcel.readByte() != 0.toByte()
-        max = parcel.readInt()
     }
 
     override fun toString(): String {
         return CultivationHelper.showing("$name(${property.take(4).joinToString()})")
     }
 
-    fun copy():Follower{
-        val follower = Follower()
-        follower.id = this.id
-        follower.name = this.name
-        follower.nid = this.nid
-        follower.rarity = this.rarity
-        follower.property = this.property
-        follower.teji = this.teji
-        follower.gender = this.gender
-        follower.unique = this.unique
-        follower.commission = this.commission
-        follower.type = this.type
-        follower.uniqueName = this.uniqueName
-        follower.isDead = this.isDead
-        follower.max = this.max
-        return follower
-    }
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(name)
         parcel.writeString(nid)
-        parcel.writeInt(rarity)
         parcel.writeByte(if (unique) 1 else 0)
-        parcel.writeInt(commission)
-        parcel.writeInt(type)
         parcel.writeString(uniqueName)
         parcel.writeByte(if (isDead) 1 else 0)
-        parcel.writeInt(max)
     }
 
     override fun describeContents(): Int {

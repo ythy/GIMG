@@ -425,7 +425,7 @@ class CultivationActivity : BaseActivity() {
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
                 if(it.value.careerDetailList.isNotEmpty()){
                     it.value.careerDetailList = Collections.synchronizedList(it.value.careerDetailList.map { career->
-                        val config = mConfig.career.find { c-> c.id == career.id }!!.copy()
+                        val config = mConfig.career.find { c-> c.id == career.id }!!.toCareer()
                         config.level = career.level
                         config
                     })

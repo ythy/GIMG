@@ -60,7 +60,7 @@ class FragmentDialogEquipment constructor(private val callback:EquipmentSelector
         mSpinner.adapter = adapter
         mSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val equipment = parent.selectedItem as Equipment
+                val equipment = parent.selectedItem as EquipmentConfig
                 mCurrentSelected = equipment
             }
             override fun onNothingSelected(parent: AdapterView<*>) {

@@ -399,7 +399,7 @@ object CultivationHelper {
         var result:Career? = null
         mConfig.career.sortedByDescending { it.rarity }.forEach {
             if(result == null && Random().nextInt( it.weight ) == 0){
-                result = it.copy()
+                result = it.toCareer()
             }
         }
         return result!!
@@ -423,7 +423,7 @@ object CultivationHelper {
 
     fun makeFollower(weight: Int):Follower?{
         val list = mConfig.follower.filter { it.type == 0 && weight > it.rarity * 10  }.map {
-            it.copy()
+            it.toFollower()
         }.shuffled()
         return if(list.isEmpty())
             null

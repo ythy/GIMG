@@ -38,20 +38,11 @@ open class EquipmentConfig(): Parcelable{
     }
 
     fun copy():EquipmentConfig{
-        val equipment = EquipmentConfig()
-        equipment.id = this.id
-        equipment.name = this.name
-        equipment.rarity = this.rarity
-        equipment.type = this.type
-        equipment.xiuwei = this.xiuwei
-        equipment.success = this.success
-        equipment.property = this.property
-        equipment.maxCount = this.maxCount
-        equipment.spec =  Collections.synchronizedList(this.spec.toMutableList())
-        equipment.teji = Collections.synchronizedList(this.teji.toMutableList())
-        equipment.follower = Collections.synchronizedList(this.follower.toMutableList())
-        equipment.specName = Collections.synchronizedList(this.specName.toMutableList())
-        return equipment
+        return this.toEquipment()
+    }
+
+    override fun toString(): String {
+        return CultivationHelper.showing("$name:($xiuwei/$success)(${property.take(4).joinToString()})")
     }
 
     constructor(parcel: Parcel) : this() {
@@ -124,11 +115,6 @@ class Equipment() : EquipmentConfig(), Parcelable {
 
     override fun describeContents(): Int {
         return 0
-    }
-
-
-    override fun toString(): String {
-        return CultivationHelper.showing("$name:($xiuwei/$success)(${property.take(4).joinToString()})")
     }
 
     companion object CREATOR : Parcelable.Creator<Equipment> {

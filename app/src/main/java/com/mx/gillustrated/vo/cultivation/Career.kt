@@ -4,15 +4,24 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.mx.gillustrated.component.CultivationHelper
 
-class Career() :Parcelable {
+open class CareerConfig():Parcelable {
     lateinit var id:String
     lateinit var name:String
     var rarity:Int = 0
     var weight:Int = 0
     var maxLevel:Int = 100
     var upgradeBasicXiuwei:Long = 0L
-    // 以下字段不在配置里
-    var level:Int = 0
+
+    fun toCareer():Career{
+        val career = Career()
+        career.id = this.id
+        career.name = this.name
+        career.rarity = this.rarity
+        career.weight = this.weight
+        career.maxLevel = this.maxLevel
+        career.upgradeBasicXiuwei = this.upgradeBasicXiuwei
+        return career
+    }
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
@@ -21,20 +30,39 @@ class Career() :Parcelable {
         weight = parcel.readInt()
         maxLevel = parcel.readInt()
         upgradeBasicXiuwei = parcel.readLong()
-        level = parcel.readInt()
     }
 
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(name)
+        parcel.writeInt(rarity)
+        parcel.writeInt(weight)
+        parcel.writeInt(maxLevel)
+        parcel.writeLong(upgradeBasicXiuwei)
+    }
 
-    fun copy():Career{
-        val career = Career()
-        career.id = this.id
-        career.name = this.name
-        career.rarity = this.rarity
-        career.weight = this.weight
-        career.maxLevel = this.maxLevel
-        career.upgradeBasicXiuwei = this.upgradeBasicXiuwei
-        career.level = this.level
-        return career
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CareerConfig> {
+        override fun createFromParcel(parcel: Parcel): CareerConfig {
+            return CareerConfig(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CareerConfig?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
+
+class Career() : CareerConfig(), Parcelable {
+
+    var level:Int = 0
+
+    constructor(parcel: Parcel) : this() {
+        level = parcel.readInt()
     }
 
     override fun toString(): String {
@@ -45,12 +73,6 @@ class Career() :Parcelable {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(name)
-        parcel.writeInt(rarity)
-        parcel.writeInt(weight)
-        parcel.writeInt(maxLevel)
-        parcel.writeLong(upgradeBasicXiuwei)
         parcel.writeInt(level)
     }
 

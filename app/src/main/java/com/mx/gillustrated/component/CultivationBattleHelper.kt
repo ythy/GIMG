@@ -476,7 +476,7 @@ object CultivationBattleHelper {
         person.equipmentListPair.forEach {
             val equipment = mConfig.equipment.find { f-> f.id == it.first }!!.toEquipment()
             equipment.follower.forEach { id->
-                val follower = mConfig.follower.find { f-> f.id == id }!!.copy()
+                val follower = mConfig.follower.find { f-> f.id == id }!!.toFollower()
                 val props = follower.property
                 val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji.map { f-> convertTejiObject(f) }.toMutableList())
                 result.name = "${person.name}-${follower.name}"
@@ -487,7 +487,7 @@ object CultivationBattleHelper {
         person.label.forEach {
             val label = mConfig.label.find { f-> f.id == it }!!.copy()
             label.follower.forEach { id->
-                val follower = mConfig.follower.find { f-> f.id == id }!!.copy()
+                val follower = mConfig.follower.find { f-> f.id == id }!!.toFollower()
                 val props = follower.property
                 val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji.map { f-> convertTejiObject(f) }.toMutableList())
                 result.name = "${person.name}-${follower.name}"
@@ -559,7 +559,7 @@ object CultivationBattleHelper {
     }
 
     fun tejiDetail(id:String):TeJi{
-        return CultivationHelper.mConfig.teji.find { it.id == id }!!.copy()
+        return CultivationHelper.mConfig.teji.find { it.id == id }!!.toTeji()
     }
 
     fun tejiDetail(id:String, person:BattleObject):TeJiObject{

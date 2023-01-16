@@ -72,7 +72,7 @@ class FragmentFollower: Fragment() {
     fun updateList(){
         mFollowers.clear()
         mFollowers.addAll(mPerson.followerList.map {
-            val follower =   mConfigFollower.find { f-> f.id == it.first }!!.copy()
+            val follower =   mConfigFollower.find { f-> f.id == it.first }!!.toFollower()
             follower.uniqueName = it.second
             follower
         }.sortedBy { it.rarity })
@@ -80,7 +80,7 @@ class FragmentFollower: Fragment() {
         mPerson.equipmentListPair.forEach {
             val equipment = mConfig.equipment.find { f-> f.id == it.first }!!.copy()
             equipment.follower.forEach { id->
-                val follower = mConfig.follower.find { f-> f.id == id }!!.copy()
+                val follower = mConfig.follower.find { f-> f.id == id }!!.toFollower()
                 follower.uniqueName = ""
                 mFollowers.add(follower)
             }
@@ -88,7 +88,7 @@ class FragmentFollower: Fragment() {
         mPerson.label.forEach {
             val label = mConfig.label.find { f-> f.id == it }!!.copy()
             label.follower.forEach { id->
-                val follower = mConfig.follower.find { f-> f.id == id }!!.copy()
+                val follower = mConfig.follower.find { f-> f.id == id }!!.toFollower()
                 follower.uniqueName = ""
                 mFollowers.add(follower)
             }
@@ -98,7 +98,7 @@ class FragmentFollower: Fragment() {
     }
 
     fun initSpinner(){
-        val list = mConfigFollower.filter { it.type == 0 }.sortedBy { it.rarity }
+        val list = mConfigFollower.filter { it.type == 0 }.sortedBy { it.rarity }.map { it.toFollower() }
         mCurrentSelected = list[0]
         val adapter = ArrayAdapter<Follower>(context!!,
                 android.R.layout.simple_spinner_item, list)

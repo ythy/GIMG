@@ -5,10 +5,10 @@ data class Config constructor(val lingGenType: List<LingGen>, val jingJieType:Li
                               val tianFuType: List<TianFu>,
                               val alliance: List<AllianceConfig>,
                               val equipment: List<EquipmentConfig>,
-                              val teji: List<TeJi>,
+                              val teji: List<TeJiConfig>,
                               val status: List<Status>,
-                              val follower:List<Follower>,
-                              val career:List<Career>,
-                              val nation:List<Nation>,
+                              val follower:List<FollowerConfig>,
+                              val career:List<CareerConfig>,
+                              val nation:List<NationConfig>,
                               val label:List<Label>
 )

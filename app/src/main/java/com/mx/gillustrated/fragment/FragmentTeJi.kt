@@ -79,13 +79,13 @@ class FragmentTeJi: Fragment() {
 
     fun updateList(){
         val tejis = mPerson.teji.map {
-            mConfigTeji.find { e-> e.id == it}!!.copy()
+            mConfigTeji.find { e-> e.id == it}!!.toTeji()
         }.toMutableList()
         CultivationHelper.mConfig.equipment.filter {
             it.type == 8 && it.spec.contains(mPerson.specIdentity) && it.teji.size > 0}
         .forEach {
             tejis.addAll(it.teji.map {
-                val teji = mConfigTeji.find { e-> e.id == it}!!.copy()
+                val teji = mConfigTeji.find { e-> e.id == it}!!.toTeji()
                 teji.form = 1
                 teji
             })
@@ -100,13 +100,13 @@ class FragmentTeJi: Fragment() {
         }.filter { it.teji.size > 0 }
          .forEach {
             tejis.addAll(it.teji.map {
-                val teji = mConfigTeji.find { e-> e.id == it}!!.copy()
+                val teji = mConfigTeji.find { e-> e.id == it}!!.toTeji()
                 teji.form = 2
                 teji
             })
         }
         tejis.addAll(mConfig.teji.filter { it.type == 6 && it.spec.contains(mPerson.specIdentity)}.map {
-            val teji = it.copy()
+            val teji = it.toTeji()
             teji.form = 3
             if(teji.specName.isNotEmpty()){
                 val index = teji.spec.indexOf(mPerson.specIdentity)
@@ -119,7 +119,7 @@ class FragmentTeJi: Fragment() {
         mPerson.label.forEach {
             val label = mConfig.label.find { f-> f.id == it }!!.copy()
             label.teji.forEach { id->
-                val teji = mConfig.teji.find { f-> f.id == id }!!.copy()
+                val teji = mConfig.teji.find { f-> f.id == id }!!.toTeji()
                 teji.form = 4
                 tejis.add(teji)
             }
