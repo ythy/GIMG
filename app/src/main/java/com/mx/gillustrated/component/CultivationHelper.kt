@@ -407,7 +407,7 @@ object CultivationHelper {
 
     fun makeEquipment(type: Int, weight: Int):Equipment?{
         val list = mConfig.equipment.filter { it.type == type && it.rarity * 10 < weight }.map {
-            it.copy()
+            it.toEquipment()
         }.shuffled()
         return if(list.isEmpty())
             null
@@ -557,7 +557,7 @@ object CultivationHelper {
 
     fun updatePersonEquipment(person:Person){
         val equipments = person.equipmentListPair.mapNotNull {
-            var e = mConfig.equipment.find { e-> e.id == it.first }?.copy()
+            var e = mConfig.equipment.find { e-> e.id == it.first }?.toEquipment()
             if (e?.type == 5){
                 e = CultivationSetting.getEquipmentCustom(it)
             }
@@ -579,7 +579,7 @@ object CultivationHelper {
             }
         }
         exclusives.forEach {
-            summationEquipmentValues(person, it, equipmentProperty)
+            summationEquipmentValues(person, it.toEquipment(), equipmentProperty)
         }
         person.equipmentProperty =  equipmentProperty.toMutableList()
     }

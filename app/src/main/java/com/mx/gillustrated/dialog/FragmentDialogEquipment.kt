@@ -17,6 +17,7 @@ import butterknife.OnClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.vo.cultivation.Equipment
+import com.mx.gillustrated.vo.cultivation.EquipmentConfig
 
 @RequiresApi(Build.VERSION_CODES.N)
 class FragmentDialogEquipment constructor(private val callback:EquipmentSelectorCallback, private val mType:MutableList<Int>): DialogFragment()  {
@@ -36,7 +37,7 @@ class FragmentDialogEquipment constructor(private val callback:EquipmentSelector
         this.dismiss()
     }
 
-   lateinit var mCurrentSelected: Equipment
+   lateinit var mCurrentSelected: EquipmentConfig
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -51,9 +52,9 @@ class FragmentDialogEquipment constructor(private val callback:EquipmentSelector
 
     fun init(){
         val list = CultivationHelper.mConfig.equipment.filter { mType.contains(it.type) }.toMutableList()
-        list.sortWith(compareBy<Equipment> {it.type}.thenBy { it.teji.size }.thenBy { it.rarity })
+        list.sortWith(compareBy<EquipmentConfig> {it.type}.thenBy { it.teji.size }.thenBy { it.rarity })
         mCurrentSelected = list[0]
-        val adapter = ArrayAdapter<Equipment>(context!!,
+        val adapter = ArrayAdapter<EquipmentConfig>(context!!,
                 android.R.layout.simple_spinner_item, list)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mSpinner.adapter = adapter
@@ -68,6 +69,6 @@ class FragmentDialogEquipment constructor(private val callback:EquipmentSelector
     }
 
     interface EquipmentSelectorCallback{
-        fun onItemSelected(equipment: Equipment)
+        fun onItemSelected(equipment: EquipmentConfig)
     }
 }

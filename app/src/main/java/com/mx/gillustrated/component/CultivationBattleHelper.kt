@@ -474,7 +474,7 @@ object CultivationBattleHelper {
             })
         }
         person.equipmentListPair.forEach {
-            val equipment = mConfig.equipment.find { f-> f.id == it.first }!!.copy()
+            val equipment = mConfig.equipment.find { f-> f.id == it.first }!!.toEquipment()
             equipment.follower.forEach { id->
                 val follower = mConfig.follower.find { f-> f.id == id }!!.copy()
                 val props = follower.property
@@ -514,7 +514,7 @@ object CultivationBattleHelper {
         val result = mutableListOf<String>()
         result.addAll(person.teji)
         person.equipmentListPair.map {
-            var equipment = mConfig.equipment.find { e-> e.id == it.first}!!.copy()
+            var equipment = mConfig.equipment.find { e-> e.id == it.first}!!.toEquipment()
             if(equipment.type == 5){
                 equipment = CultivationSetting.getEquipmentCustom(it)
             }

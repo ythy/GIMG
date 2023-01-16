@@ -22,6 +22,7 @@ import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.dialog.FragmentDialogEquipment
 import com.mx.gillustrated.dialog.FragmentDialogRank
 import com.mx.gillustrated.vo.cultivation.Equipment
+import com.mx.gillustrated.vo.cultivation.EquipmentConfig
 import com.mx.gillustrated.vo.cultivation.Person
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -38,7 +39,7 @@ class FragmentEquipment: Fragment() {
         // Create and show the dialog.
         val newFragment = FragmentDialogEquipment.
                 newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
-                    override fun onItemSelected(equipment: Equipment) {
+                    override fun onItemSelected(equipment: EquipmentConfig) {
                         updateEquipment(equipment)
                     }
                 }, mutableListOf(9))
@@ -70,7 +71,7 @@ class FragmentEquipment: Fragment() {
 
     fun updateList(){
         val exclusives =  CultivationHelper.mConfig.equipment.filter { it.type == 8 && it.spec.contains(mPerson.specIdentity)}.map {
-            val ex = it.copy()
+            val ex = it.toEquipment()
             ex.children.clear()
             ex.childrenAll.clear()
             if(ex.specName.isNotEmpty()){
@@ -82,7 +83,7 @@ class FragmentEquipment: Fragment() {
             ex
         }.sortedByDescending { it.rarity }
         val equipments = mPerson.equipmentListPair.map {
-            var equipment = mConfigEquipments.find { e-> e.id == it.first}!!.copy()
+            var equipment = mConfigEquipments.find { e-> e.id == it.first}!!.toEquipment()
             if(equipment.type == 5){
                 equipment = CultivationSetting.getEquipmentCustom(it)
             }else{
@@ -143,7 +144,7 @@ class FragmentEquipment: Fragment() {
         }))
     }
 
-    fun updateEquipment(equipment:Equipment){
+    fun updateEquipment(equipment:EquipmentConfig){
         if( mPerson.equipmentListPair.find { it.first == equipment.id } != null)
             return
         mPerson.equipmentListPair.add(Pair(equipment.id, 0))
