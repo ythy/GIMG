@@ -28,8 +28,6 @@ import com.mx.gillustrated.vo.cultivation.Person
 @RequiresApi(Build.VERSION_CODES.N)
 class FragmentEquipment: Fragment() {
 
-    private val mConfigEquipments = CultivationHelper.mConfig.equipment
-
     @BindView(R.id.lv_equipment)
     lateinit var mListView: ExpandableListView
 

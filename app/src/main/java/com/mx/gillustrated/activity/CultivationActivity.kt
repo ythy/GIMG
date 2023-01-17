@@ -804,12 +804,10 @@ class CultivationActivity : BaseActivity() {
             updatePartnerChildren()
             updateHP()
             updateCareer()
+            addPersion(null, null)
         }
         if(inDurationByXun("Xun240",240)) {
             CultivationHelper.updatePartner(mPersons)
-        }
-        if(inDurationByXun("Xun1200",1200)) {
-            addPersion(null, null)
         }
         //以下辅助操作
         when {
@@ -1269,7 +1267,7 @@ class CultivationActivity : BaseActivity() {
                         val equipmentType = if (career.id == "6100001") 0 else if (career.id == "6100002") 1 else if (career.id == "6100003") 2 else 3
                         val equipment = CultivationHelper.makeEquipment(equipmentType, career.level)
                         if(equipment != null && equipment.rarity > person.equipmentList.filter { it.type == equipmentType }.maxBy { it.rarity }?.rarity ?: 0){
-                            person.followerList.removeIf { it.type == equipment.type }
+                            person.equipmentList.removeIf { it.type == equipmentType }
                             person.equipmentList.add(equipment)
                             val commonText = "\u5236\u9020 : ${equipment.name}"
                             CultivationHelper.updatePersonEquipment(person)

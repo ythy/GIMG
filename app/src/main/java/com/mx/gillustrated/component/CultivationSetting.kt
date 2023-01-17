@@ -139,7 +139,7 @@ object CultivationSetting {
             PresetInfo(16000020, Triple("\u6768","\u5fd7",4017)),
             PresetInfo(16000030, Triple("\u5218","\u5510", 4021)),
             PresetInfo(16000040, Triple("\u516c\u5b59","\u80dc", 4004),0, 100, 100),
-            PresetInfo(16000051, Triple("\u6248","\u4e09\u5a18", 1501),0, 200, 600),
+            PresetInfo(16000051, Triple("\u6248","\u4e09\u5a18", 1501),16060080, 200, 600),
             PresetInfo(16000060, Triple("\u6797","\u51b2", 4006),0, 100, 100),
             PresetInfo(16000070, Triple("\u9c81","\u667a\u6df1", 4013)),
             PresetInfo(16000080, Triple("\u6b66","\u677e", 4014),0, 100, 100),
@@ -203,7 +203,6 @@ object CultivationSetting {
             PresetInfo(16040091, Pair("\u94C1\u6247", "\u516C\u4E3B"), 0, 100, 200),
             PresetInfo(16040100, Pair("\u5954\u6CE2\u513F\u705E", "")),
 
-
             PresetInfo(16050010, Triple("\u7A46","\u5F18", 4024)), PresetInfo(16050020, Triple("\u96F7","\u6A2A", 4025)),
             PresetInfo(16050030, Triple("\u674E","\u4FCA", 4026)), PresetInfo(16050040, Triple("\u962E","\u5C0F\u4E8C", 4027)),
             PresetInfo(16050050, Triple("\u5F20","\u6A2A", 4028)), PresetInfo(16050060, Triple("\u962E","\u5C0F\u4E94", 4029)),
@@ -211,13 +210,24 @@ object CultivationSetting {
             PresetInfo(16050080, Triple("\u962E","\u5C0F\u4E03", 4031)), PresetInfo(16050090, Triple("\u6768","\u96C4", 4032)),
             PresetInfo(16050100, Triple("\u89E3","\u73CD", 4034)), PresetInfo(16050110, Triple("\u89E3","\u5B9D", 4035)),
             PresetInfo(16050120, Triple("\u6731","\u4EDD", 4012)),PresetInfo(16050130, Triple("\u738B","\u5B9A\u516D", 4104)),
-            PresetInfo(16050141, Triple("\u987E","\u5927\u5AC2", 1502)),
-            PresetInfo(16050151, Triple("\u5B59","\u4E8C\u5A18", 1503), 0, 200, 600),
+            PresetInfo(16050141, Triple("\u987E","\u5927\u5AC2", 1502), 16060140),
+            PresetInfo(16050151, Triple("\u5B59","\u4E8C\u5A18", 1503), 16060150, 200, 600),
             PresetInfo(16050160, Triple("\u6731","\u6B66", 4037)),
             PresetInfo(16050170, Triple("\u5B89","\u9053\u5168", 4056), 0, 100, 100),
             PresetInfo(16050180, Triple("\u65F6","\u8FC1", 4107)),PresetInfo(16050190, Triple("\u9879","\u5145", 4064)),
-            PresetInfo(16050200, Triple("\u674E","\u886E", 4065))
-        )
+            PresetInfo(16050200, Triple("\u674E","\u886E", 4065)),PresetInfo(16050210, Triple("\u8427","\u8BA9", 4046)),
+            PresetInfo(16050220, Triple("\u91D1","\u5927\u575A", 4066)),PresetInfo(16050230, Triple("\u90DD","\u601D\u6587", 4041)),
+            PresetInfo(16050240, Triple("\u5355","\u5EF7\u572D", 4044)),PresetInfo(16050250, Triple("\u9B4F","\u5B9A\u56FD", 4045)),
+
+            PresetInfo(16060010, Triple("\u9EC4","\u4FE1", 4038)), PresetInfo(16060020, Triple("\u5B59","\u7ACB", 4039)),
+            PresetInfo(16060030, Triple("\u5BA3","\u8D5E", 4040)), PresetInfo(16060040, Triple("\u97E9","\u6ED4", 4042)),
+            PresetInfo(16060050, Triple("\u5F6D","\u7398", 4043)), PresetInfo(16060060, Triple("\u5415","\u65B9", 4054)),
+            PresetInfo(16060070, Triple("\u90ED","\u76DB", 4055)), PresetInfo(16060080, Triple("\u738B","\u82F1", 4058), 16000051),
+            PresetInfo(16060090, Triple("\u6A0A","\u745E", 4061)), PresetInfo(16060100, Triple("\u675C","\u5174", 4088)),
+            PresetInfo(16060110, Triple("\u6731","\u8D35", 4091)), PresetInfo(16060120, Triple("\u6731","\u5BCC", 4092)),
+            PresetInfo(16060130, Triple("\u8521","\u5E86", 4095)), PresetInfo(16060140, Triple("\u5B59","\u65B0", 4100), 16050141),
+            PresetInfo(16060150, Triple("\u5F20","\u9752", 4102), 16050151, 100, 100)
+    )
 
     // key = type
     fun getSpecPersonsByType():HashMap<Int, MutableList<PresetInfo>>{

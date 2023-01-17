@@ -1549,6 +1549,16 @@
       "xiuwei": 100,
       "xiuweiMulti": 100,
       "property": [0,50,10,10,0,0,0,0]
+    },
+    {
+      "id": "6000707",
+      "name": "\u524D\u5BE8",
+      "type": 6,
+      "nation": "6200007",
+      "lifetime": 50,
+      "xiuwei": 100,
+      "xiuweiMulti": 100,
+      "property": [0,40,10,20,0,0,0,0]
     }
   ],
   "equipment": [
@@ -2110,8 +2120,8 @@
       "xiuwei": 50,
       "success": 0,
       "property": [100,10,10,10,0,0,0,0],
-      "spec": [16000190, 16000170],
-      "specName": ["\u62FC\u547D\u4E09\u90CE", "\u4E5D\u7EB9\u9F99"]
+      "spec": [16000190, 16000170, 16060150],
+      "specName": ["\u62FC\u547D\u4E09\u90CE", "\u4E5D\u7EB9\u9F99", "\u83DC\u56ED\u5B50"]
     },
     {
       "id": "7008026",
