@@ -1268,8 +1268,9 @@ class CultivationActivity : BaseActivity() {
                     if(career.id == "6100001" || career.id == "6100002" || career.id == "6100003" || career.id == "6100006"){
                         val equipmentType = if (career.id == "6100001") 0 else if (career.id == "6100002") 1 else if (career.id == "6100003") 2 else 3
                         val equipment = CultivationHelper.makeEquipment(equipmentType, career.level)
-                        if(equipment != null && person.equipmentList.find { it.id == equipment.id } == null){
-                            person.equipmentList.add(Equipment.make(equipment.id))
+                        if(equipment != null && equipment.rarity > person.equipmentList.filter { it.type == equipmentType }.maxBy { it.rarity }?.rarity ?: 0){
+                            person.followerList.removeIf { it.type == equipment.type }
+                            person.equipmentList.add(equipment)
                             val commonText = "\u5236\u9020 : ${equipment.name}"
                             CultivationHelper.updatePersonEquipment(person)
                             addPersonEvent(person, commonText)
