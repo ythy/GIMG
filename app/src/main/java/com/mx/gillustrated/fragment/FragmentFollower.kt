@@ -34,7 +34,7 @@ class FragmentFollower: Fragment() {
     @OnClick(R.id.btn_save)
     fun onSaveClick(){
         val name = NameUtil.getChineseName(null, mCurrentSelected.gender)
-        mPerson.followerList.add(Triple(mCurrentSelected.id, name.first + name.second, ""))
+        mPerson.followerList.add(Follower.make(mCurrentSelected.id, name.first + name.second))
         updateList()
     }
 
@@ -61,7 +61,7 @@ class FragmentFollower: Fragment() {
         mListView.adapter = CultivationFollowerAdapter(this.context!!, mFollowers, object : CultivationFollowerAdapter.FollowerAdapterCallback {
             override fun onDeleteHandler(follower: Follower) {
                 mPerson.followerList.removeIf {
-                    it.first == follower.id && it.second == follower.uniqueName
+                    it.id == follower.id && it.uniqueName == follower.uniqueName
                 }
                 updateList()
             }
@@ -71,17 +71,12 @@ class FragmentFollower: Fragment() {
 
     fun updateList(){
         mFollowers.clear()
-        mFollowers.addAll(mPerson.followerList.map {
-            val follower =   mConfigFollower.find { f-> f.id == it.first }!!.toFollower()
-            follower.uniqueName = it.second
-            follower
-        }.sortedBy { it.rarity })
+        mFollowers.addAll(mPerson.followerList.sortedBy { it.rarity })
 
-        mPerson.equipmentListPair.forEach {
-            val equipment = mConfig.equipment.find { f-> f.id == it.first }!!.copy()
+        mPerson.equipmentList.forEach {
+            val equipment = mConfig.equipment.find { f-> f.id == it.id }!!.copy()
             equipment.follower.forEach { id->
                 val follower = mConfig.follower.find { f-> f.id == id }!!.toFollower()
-                follower.uniqueName = ""
                 mFollowers.add(follower)
             }
         }
@@ -89,7 +84,6 @@ class FragmentFollower: Fragment() {
             val label = mConfig.label.find { f-> f.id == it }!!.copy()
             label.follower.forEach { id->
                 val follower = mConfig.follower.find { f-> f.id == id }!!.toFollower()
-                follower.uniqueName = ""
                 mFollowers.add(follower)
             }
         }

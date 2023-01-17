@@ -138,7 +138,7 @@ class CultivationActivity : BaseActivity() {
                 it.HP = Math.min(it.HP, it.maxHP)
                 it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null && getOfflinePersonDetail(f) == null }.toMutableList()
             }
-            backupInfo.persons = mPersons
+            backupInfo.persons = mPersons.mapValues { it.value.toPersonBak() }
             mClans.map { it.key }.toMutableList().forEach { id ->
                 if(mPersons[id] == null){
                     mClans.remove(id)
@@ -413,18 +413,17 @@ class CultivationActivity : BaseActivity() {
         if(out != null && out.trim() != ""){
             val backup = Gson().fromJson(out, BakInfo::class.java)
             mCurrentXun = backup.xun
-            mPersons.putAll(backup.persons.filter { mConfig.alliance.find { a-> a.id == it.value.allianceId } != null })
+            mPersons.putAll(backup.persons.filter { mConfig.alliance.find { a-> a.id == it.value.allianceId } != null }.mapValues { it.value.toPerson()})
             mPersons.forEach {
                 if(it.value.children.isNotEmpty())
                     it.value.children = Collections.synchronizedList(it.value.children)
-                it.value.equipmentListPair = Collections.synchronizedList(it.value.equipmentListPair)
-                it.value.lingGenType = mConfig.lingGenType.find { g-> g.id == it.value.lingGenType.id }!!
-                it.value.lingGenName = if (it.value.lingGenId == "") it.value.lingGenName else CultivationHelper.getTianName(it.value.lingGenId)
+                it.value.equipmentList= Collections.synchronizedList(it.value.equipmentList)
+                it.value.lingGenName = if (it.value.lingGenSpecId == "") it.value.lingGenName else CultivationHelper.getTianName(it.value.lingGenSpecId)
                 CultivationHelper.updatePersonEquipment(it.value)
                 CultivationHelper.updatePersonExtraProperty(it.value)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
-                if(it.value.careerDetailList.isNotEmpty()){
-                    it.value.careerDetailList = Collections.synchronizedList(it.value.careerDetailList.map { career->
+                if(it.value.careerList.isNotEmpty()){
+                    it.value.careerList = Collections.synchronizedList(it.value.careerList.map { career->
                         val config = mConfig.career.find { c-> c.id == career.id }!!.toCareer()
                         config.level = career.level
                         config
@@ -682,7 +681,7 @@ class CultivationActivity : BaseActivity() {
 
     // 0 dead; 1 cost 1; 2 cost reduce turn
     private fun isDeadException(person:Person):Int{
-        if(person.isFav || person.neverDead || person.equipmentListPair.find { it.first == "7009004" } != null
+        if(person.isFav || person.neverDead || person.equipmentList.find { it.id == "7009004" } != null
                 || person.label.find { it == "4100301" } != null){
             return 1
         }else if(person.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN){
@@ -1048,10 +1047,10 @@ class CultivationActivity : BaseActivity() {
     private fun addSpecialEquipmentEvent(person:Person? = null, tag:String = ""){
         val lucky = person ?: mPersons.map { it.value }.shuffled().first()
         val spec = CultivationSetting.createEquipmentCustom()
-        if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
+        if(lucky.equipmentList.find { it.id == spec.first && it.seq == spec.second } != null){
             return
         }
-        lucky.equipmentListPair.add(spec)
+        lucky.equipmentList.add(Equipment.make(spec.first, spec.second))
         CultivationHelper.updatePersonEquipment(lucky)
         val equipment = CultivationSetting.getEquipmentCustom(spec)
         val commonText = "$tag \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
@@ -1082,7 +1081,7 @@ class CultivationActivity : BaseActivity() {
         emperor.nationPost = 1
         mNation.emperor = emperor.id
         ps.remove(emperor)
-        val taiwei = ps.sortedWith(compareByDescending<Person>{ it.tianfus.sumBy { s->s.weight } }
+        val taiwei = ps.sortedWith(compareByDescending<Person>{ it.tianfuList.sumBy { s->s.weight } }
                 .thenByDescending { it.jingJieId })[0]
         taiwei.nationPost = 2
         mNation.taiWei = taiwei.id
@@ -1209,7 +1208,7 @@ class CultivationActivity : BaseActivity() {
     // update every 10 years
     private fun updateHP(){
         for ((_: String, it: Person) in mPersons) {
-            it.HP += it.lingGenType.color + 1
+            it.HP += it.lingGenDetail.color + 1
             val currentHP = CultivationHelper.getProperty(it)[0]
             if(currentHP < -10){
                 val supplement = Math.abs(currentHP)
@@ -1225,7 +1224,7 @@ class CultivationActivity : BaseActivity() {
 
     private fun updateCareer(){
         for ((_: String, person: Person) in mPersons) {
-            val list = person.careerDetailList
+            val list = person.careerList
             var addonCareer:Career? = null
             if(list.size == 0 || list.all { it.level >= it.maxLevel }){
                 if(person.pointXiuWei > 50000000) {
@@ -1257,7 +1256,7 @@ class CultivationActivity : BaseActivity() {
                 }
             }
             if(addonCareer != null){
-                person.careerDetailList.add(addonCareer)
+                person.careerList.add(addonCareer)
             }
         }
     }
@@ -1265,12 +1264,12 @@ class CultivationActivity : BaseActivity() {
     private fun updateCareerEffect(xun:Long){
         if(inDurationByXun("CareerEffect", 120, xun)) {
             for ((_: String, person: Person) in mPersons) {
-                person.careerDetailList.forEach { career->
+                person.careerList.forEach { career->
                     if(career.id == "6100001" || career.id == "6100002" || career.id == "6100003" || career.id == "6100006"){
                         val equipmentType = if (career.id == "6100001") 0 else if (career.id == "6100002") 1 else if (career.id == "6100003") 2 else 3
                         val equipment = CultivationHelper.makeEquipment(equipmentType, career.level)
-                        if(equipment != null && person.equipmentListPair.find { it.first == equipment.id } == null){
-                            person.equipmentListPair.add(Pair(equipment.id, 0))
+                        if(equipment != null && person.equipmentList.find { it.id == equipment.id } == null){
+                            person.equipmentList.add(Equipment.make(equipment.id))
                             val commonText = "\u5236\u9020 : ${equipment.name}"
                             CultivationHelper.updatePersonEquipment(person)
                             addPersonEvent(person, commonText)
@@ -1279,9 +1278,9 @@ class CultivationActivity : BaseActivity() {
                     }
                     if(career.id == "6100004"){
                         val follower = CultivationHelper.makeFollower(career.level)
-                        if(follower != null && person.followerList.filter { it.first == follower.id }.size < follower.max){
+                        if(follower != null && person.followerList.filter { it.id == follower.id }.size < follower.max){
                             val name = NameUtil.getChineseName(null, follower.gender)
-                            person.followerList.add(Triple(follower.id, name.first + name.second, ""))
+                            person.followerList.add(Follower.make(follower.id, name.first + name.second))
                             val commonText = "\u53ec\u5524\u968f\u4ece : ${follower.name + name.first + name.second}"
                             addPersonEvent(person, commonText)
                             writeHistory("${getPersonBasicString(person)} $commonText", person)
@@ -1830,11 +1829,10 @@ class CultivationActivity : BaseActivity() {
     private fun resetCustomBonusSingle(person: Person){
         person.followerList.clear()
         person.teji.clear()
-        person.careerDetailList = Collections.synchronizedList(mutableListOf())
+        person.careerList = Collections.synchronizedList(mutableListOf())
         person.pointXiuWei = person.maxXiuWei
-        person.equipmentListPair.removeIf {
-            val equipment = mConfig.equipment.find { e-> it.first == e.id }
-            equipment?.type ?: 0 <= 3
+        person.equipmentList.removeIf {
+            it.type <= 3
         }
         person.events.removeIf {
             it.content.contains("\u5236\u9020") || it.content.contains("\u53ec\u5524") ||

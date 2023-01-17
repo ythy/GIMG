@@ -48,10 +48,10 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         }
         val person = list[arg0]
         val talentSymbol = if(CultivationHelper.isTalent(person) && showStar) "⭐" else ""
-        val zhuSymbol = if(person.equipmentListPair.find { it.first == "7009001" } != null && showSpecEquipment) "\uD83D\uDC2F" else ""
-        val shaoSymbol = if(person.equipmentListPair.find { it.first == "7009002" } != null && showSpecEquipment) "\uD83D\uDC3A" else ""
-        val gongSymbol = if(person.equipmentListPair.find { it.first == "7009003" } != null && showSpecEquipment) "\uD83E\uDD84" else ""
-        val neiSymbol = if(person.equipmentListPair.find { it.first == "7009009" } != null && showSpecEquipment) "\uD83D\uDC25" else ""
+        val zhuSymbol = if(person.equipmentList.find { it.id == "7009001" } != null && showSpecEquipment) "\uD83D\uDC2F" else ""
+        val shaoSymbol = if(person.equipmentList.find { it.id == "7009002" } != null && showSpecEquipment) "\uD83D\uDC3A" else ""
+        val gongSymbol = if(person.equipmentList.find { it.id == "7009003" } != null && showSpecEquipment) "\uD83E\uDD84" else ""
+        val neiSymbol = if(person.equipmentList.find { it.id == "7009009" } != null && showSpecEquipment) "\uD83D\uDC25" else ""
         val epithetSingleBattle = if(person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100 < 11)
             "\uD83D\uDD25${CultivationSetting.Epithet.SingleBattle[person.battleRecord[CultivationHelper.mBattleRound.single]!! - 1]}" else ""
         component.name.text = "${CultivationHelper.showing(person.name + epithetSingleBattle)}$talentSymbol$zhuSymbol$shaoSymbol$gongSymbol$neiSymbol${CultivationHelper.showLifeTurn(person)}"
@@ -60,7 +60,7 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))
         component.xiuwei.text = "${person.xiuXei}/${person.jinJieMax}"
         component.lingGen.text = CultivationHelper.showing(person.lingGenName)
-        component.lingGen.setTextColor(Color.parseColor(CommonColors[person.lingGenType.color]))
+        component.lingGen.setTextColor(Color.parseColor(CommonColors[person.lingGenDetail.color]))
         component.alliance.text = CultivationHelper.showing("${nation.find { it.id == person.nationId }?.name}-${person.allianceName}")
 
         if(person.nationPost > 0){

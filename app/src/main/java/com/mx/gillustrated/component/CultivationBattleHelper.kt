@@ -464,18 +464,16 @@ object CultivationBattleHelper {
         battlePerson.speedBasis -= person.equipmentProperty[3]
 
         if(person.followerList.isNotEmpty()){
-            battlePerson.follower.addAll(person.followerList.map {
-                val follower = mConfig.follower.find { f-> f.id == it.first }!!
+            battlePerson.follower.addAll(person.followerList.map { follower->
                 val props = follower.property
                 val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji.map { f-> convertTejiObject(f) }.toMutableList())
-                result.name = "${person.name}-${follower.name}${it.second}"
+                result.name = "${person.name}-${follower.name}${follower.uniqueName}"
                 result.battleId = battlePerson.battleId
                 result
             })
         }
-        person.equipmentListPair.forEach {
-            val equipment = mConfig.equipment.find { f-> f.id == it.first }!!.toEquipment()
-            equipment.follower.forEach { id->
+        person.equipmentList.forEach {
+            it.follower.forEach { id->
                 val follower = mConfig.follower.find { f-> f.id == id }!!.toFollower()
                 val props = follower.property
                 val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.teji.map { f-> convertTejiObject(f) }.toMutableList())
@@ -513,12 +511,12 @@ object CultivationBattleHelper {
     fun getAllTeji(person: Person):MutableList<TeJiObject>{
         val result = mutableListOf<String>()
         result.addAll(person.teji)
-        person.equipmentListPair.map {
-            var equipment = mConfig.equipment.find { e-> e.id == it.first}!!.toEquipment()
-            if(equipment.type == 5){
-                equipment = CultivationSetting.getEquipmentCustom(it)
+        person.equipmentList.map {
+            if(it.type == 5){
+                CultivationSetting.getEquipmentCustom(Pair(it.id, it.seq))
+            }else{
+                it
             }
-            equipment
         }.filter { it.teji.size > 0 }.forEach {
             result.addAll(it.teji)
         }

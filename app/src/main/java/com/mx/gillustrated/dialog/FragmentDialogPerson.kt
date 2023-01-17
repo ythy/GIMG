@@ -261,7 +261,7 @@ class FragmentDialogPerson : DialogFragment() {
 
     fun setTianfu(){
         //mDialogView.tianfu.removeAllViews()
-        val tianFus = mPerson.tianfus
+        val tianFus = mPerson.tianfuList
         if(tianFus.isNotEmpty()){
 
             mDialogView.measures.measure(0,0)
@@ -330,7 +330,7 @@ class FragmentDialogPerson : DialogFragment() {
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
         mDialogView.age.text = "${getGender()}${CultivationHelper.talentValue(mPerson)}${if(CultivationHelper.isTalent(mPerson)) "⭐" else ""}/${CultivationHelper.showAgeRemained(mPerson)}"
-        mDialogView.career.text = mPerson.careerDetailList.joinToString()
+        mDialogView.career.text = mPerson.careerList.joinToString()
         mDialogView.props.text = getProperty()
         mDialogView.winner.text = "${mPerson.battleWinner}-${mPerson.battlexiuwei}↑"
         mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.nickName ?: "")
@@ -341,7 +341,7 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.xiuweiAdd.setTextColor(Color.parseColor(CommonColors[1]))
         mDialogView.success.setTextColor(Color.parseColor(CommonColors[1]))
         mDialogView.lingGen.text = CultivationHelper.showing(mPerson.lingGenName)
-        mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenType.color]))
+        mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenDetail.color]))
 
         updateViewPager()
     }

@@ -72,8 +72,6 @@ class FragmentEquipment: Fragment() {
     fun updateList(){
         val exclusives =  CultivationHelper.mConfig.equipment.filter { it.type == 8 && it.spec.contains(mPerson.specIdentity)}.map {
             val ex = it.toEquipment()
-            ex.children.clear()
-            ex.childrenAll.clear()
             if(ex.specName.isNotEmpty()){
                 val index = ex.spec.indexOf(mPerson.specIdentity)
                 if(index < ex.specName.size) {
@@ -82,14 +80,13 @@ class FragmentEquipment: Fragment() {
             }
             ex
         }.sortedByDescending { it.rarity }
-        val equipments = mPerson.equipmentListPair.map {
-            var equipment = mConfigEquipments.find { e-> e.id == it.first}!!.toEquipment()
-            if(equipment.type == 5){
-                equipment = CultivationSetting.getEquipmentCustom(it)
+        val equipments = mPerson.equipmentList.map {
+            it.uniqueName = it.name
+            if(it.type == 5){
+                CultivationSetting.getEquipmentCustom(Pair(it.id, it.seq))
             }else{
-                equipment.uniqueName = equipment.name
+                it
             }
-            equipment
         }.sortedWith(compareBy<Equipment> {
             it.type
         }.thenByDescending { it.rarity }.thenByDescending { it.seq })
@@ -104,8 +101,6 @@ class FragmentEquipment: Fragment() {
                 equipment.type = CultivationEnemyHelper.bossSettings[index].type
                 equipment.seq = count
                 equipment.uniqueName = equipment.name
-                equipment.children.clear()
-                equipment.childrenAll.clear()
                 equipment
             }
         }
@@ -130,11 +125,11 @@ class FragmentEquipment: Fragment() {
             }
 
             override fun onDeleteHandler(equipment: Equipment, group:Boolean) {
-                mPerson.equipmentListPair.removeIf {
+                mPerson.equipmentList.removeIf {
                     if(group){
-                        it.first == equipment.id
+                        it.id == equipment.id
                     }else{
-                        it.first == equipment.id && it.second == equipment.seq
+                        it.id == equipment.id && it.seq == equipment.seq
                     }
                 }
                 CultivationHelper.updatePersonEquipment(mPerson)
@@ -145,9 +140,9 @@ class FragmentEquipment: Fragment() {
     }
 
     fun updateEquipment(equipment:EquipmentConfig){
-        if( mPerson.equipmentListPair.find { it.first == equipment.id } != null)
+        if( mPerson.equipmentList.find { it.id == equipment.id } != null)
             return
-        mPerson.equipmentListPair.add(Pair(equipment.id, 0))
+        mPerson.equipmentList.add(Equipment.make(equipment.id))
         CultivationHelper.updatePersonEquipment(mPerson)
         updateList()
     }

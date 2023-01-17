@@ -37,12 +37,12 @@ object CultivationHelper {
     }
 
     fun joinAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>){
-        val options = if(person.lingGenId == "") {
+        val options = if(person.lingGenSpecId == "") {
             allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.filter { person.lingGenName.indexOf(it.value.lingGen!!) >= 0 }.map { it.value }.toMutableList()
         }else{
             allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.map { it.value }.toMutableList()
         }
-        options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfus.filter { f->f.rarity >=3 }.size >= it.value.tianfu  && it.value.personList.size < it.value.maxPerson }.map { it.value })
+        options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfuList.filter { f->f.rarity >=3 }.size >= it.value.tianfu  && it.value.personList.size < it.value.maxPerson }.map { it.value })
         val random = Random().nextInt(options.map { 100 / it.level }.sum() )
         var count = 0
         for (i in 0 until options.size){
@@ -265,8 +265,8 @@ object CultivationHelper {
             }else if(parent != null){
                 for (i in 0 until sortU.size){
                     var addonWeight = 1
-                    val extraFirst = parent.first.tianfus.find { it.type == sortU[i].type }
-                    val extraSecond = parent.second.tianfus.find { it.type == sortU[i].type }
+                    val extraFirst = parent.first.tianfuList.find { it.type == sortU[i].type }
+                    val extraSecond = parent.second.tianfuList.find { it.type == sortU[i].type }
                     if(extraFirst != null && extraFirst.rarity >= 3 )
                         addonWeight += extraFirst.rarity
                     if(extraSecond != null && extraSecond.rarity >= 3)
@@ -318,19 +318,19 @@ object CultivationHelper {
         val lingGenName: String
         val lingGenId: String
         var lingGen: LingGen? = null
-        if(parent != null && isTrigger(parent.first.lingGenType.inherit + parent.second.lingGenType.inherit)){
-            val parentList = if(parent.first.lingGenType.inherit == parent.second.lingGenType.inherit){
+        if(parent != null && isTrigger(parent.first.lingGenDetail.inherit + parent.second.lingGenDetail.inherit)){
+            val parentList = if(parent.first.lingGenDetail.inherit == parent.second.lingGenDetail.inherit){
                 listOf(parent.first, parent.second).shuffled()
             }else{
-                mutableListOf(parent.first, parent.second).sortedByDescending { it.lingGenType.inherit }
+                mutableListOf(parent.first, parent.second).sortedByDescending { it.lingGenDetail.inherit }
             }
-            val maxPerson:Person = if (isTrigger(parentList[0].lingGenType.inherit / parentList[1].lingGenType.inherit)){
+            val maxPerson:Person = if (isTrigger(parentList[0].lingGenDetail.inherit / parentList[1].lingGenDetail.inherit)){
                 parentList[0]
             }else{
                 parentList[1]
             }
-            lingGen = maxPerson.lingGenType
-            lingGenId = maxPerson.lingGenId
+            lingGen = maxPerson.lingGenDetail
+            lingGenId = maxPerson.lingGenSpecId
             lingGenName = maxPerson.lingGenName
         }else{
             val lingGenList = mConfig.lingGenType.sortedByDescending { it.randomBasic }
@@ -452,15 +452,17 @@ object CultivationHelper {
         val result = Person()
         result.id =  UUID.randomUUID().toString()
         result.name = personName.first + personName.second
+        result.fullName = result.name
         result.lastName = personName.first
         result.gender = personGender
-        result.lingGenType = lingGen.first
+        result.lingGenDetail = lingGen.first
         result.lingGenName = lingGen.third
-        result.lingGenId = lingGen.second
+        result.lingGenSpecId = lingGen.second
+        result.lingGenTypeId = lingGen.first.id
         result.birthtime = mCurrentXun
         setPersonJingjie(result)
         result.profile = getRandomProfile(result.gender)
-        result.tianfus = tianFus
+        result.tianfuList = tianFus
         result.teji = Collections.synchronizedList(getTeji())
         result.label =  Collections.synchronizedList(getLabel())
         result.lifetime = result.birthtime + getLifetimeBonusInitial(result)
@@ -494,10 +496,10 @@ object CultivationHelper {
     fun updatePersonInborn(person: Person, tianFuWeight: Int = 1, lingGenWeight: Int = 1, alliance: Alliance? = null){
         val lingGen = getLingGen(null, null, lingGenWeight)
         val tianFus = getTianFu(null, null, tianFuWeight)
-        person.lingGenType = lingGen.first
+        person.lingGenDetail = lingGen.first
         person.lingGenName = lingGen.third
-        person.lingGenId = lingGen.second
-        person.tianfus = tianFus
+        person.lingGenSpecId = lingGen.second
+        person.tianfuList = tianFus
         updatePersonExtraProperty(person, alliance)
     }
 
@@ -515,12 +517,12 @@ object CultivationHelper {
     }
 
     fun updatePersonExtraProperty(person: Person, alliance: Alliance? = null){
-        val tianFus = person.tianfus.map { getPersonTianfu(it.id)!! }
-        person.tianfus = tianFus.toMutableList()
+        val tianFus = person.tianfuList.map { getPersonTianfu(it.id)!! }
+        person.tianfuList = tianFus.toMutableList()
         person.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
         person.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
         person.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
-        val extraProperty = mConfig.lingGenTian.find { it.id == person.lingGenId }?.property?.toMutableList() ?: mutableListOf(0,0,0,0,0,0,0,0)
+        val extraProperty = mConfig.lingGenTian.find { it.id == person.lingGenSpecId }?.property?.toMutableList() ?: mutableListOf(0,0,0,0,0,0,0,0)
         if(person.label.isNotEmpty()){
             person.label.mapNotNull { m-> mConfig.label.find { it.id == m } }.forEach { l->
                 val label = l.copy()
@@ -556,12 +558,12 @@ object CultivationHelper {
     }
 
     fun updatePersonEquipment(person:Person){
-        val equipments = person.equipmentListPair.mapNotNull {
-            var e = mConfig.equipment.find { e-> e.id == it.first }?.toEquipment()
-            if (e?.type == 5){
-                e = CultivationSetting.getEquipmentCustom(it)
+        val equipments = person.equipmentList.map{
+            if (it.type == 5){
+               CultivationSetting.getEquipmentCustom(Pair(it.id, it.seq))
+            }else{
+                it
             }
-            e
         }
         val exclusives =  mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity)}
         person.equipmentXiuwei = 0
@@ -616,7 +618,7 @@ object CultivationHelper {
         }
         val postXiuwei = getNationPostXiuwei(person)
         //clanXiuwei nationXiuwei allianceBattleXiuwei removed 
-        var basic = person.lingGenType.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
+        var basic = person.lingGenDetail.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
                             + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + postXiuwei
         person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
             basic += it.property[4]
@@ -657,7 +659,7 @@ object CultivationHelper {
     }
 
     fun getExtraXuiweiMulti(person:Person, alliance:Alliance? = null):Int{
-        val tianfu = person.tianfus.find { it.type == 2 }
+        val tianfu = person.tianfuList.find { it.type == 2 }
         val tianValue = getPersonTianfu(tianfu?.id)?.bonus ?: 0
         val allianceValue = alliance?.xiuweiMulti ?: 0
         var labelValue = 0
@@ -675,7 +677,6 @@ object CultivationHelper {
 
     fun addPersonEvent(person:Person, content:String){
         val personEvent = PersonEvent()
-        personEvent.nid = UUID.randomUUID().toString()
         personEvent.happenTime = mCurrentXun
         personEvent.content = content
         person.events.add(personEvent)
@@ -766,7 +767,7 @@ object CultivationHelper {
 
     fun getLifetimeBonusInitial(person:Person, alliance: Alliance? = null, changed:Boolean = false):Long{
         // basic : nian
-        val basic = if ( !changed )  CultivationSetting.LIFE_TIME_YEAR + (person.tianfus.find { it.type == 3 }?.bonus ?: 0)
+        val basic = if ( !changed )  CultivationSetting.LIFE_TIME_YEAR + (person.tianfuList.find { it.type == 3 }?.bonus ?: 0)
                              else getJingJieBonusYear(person.jingJieId)
         return if (alliance == null) basic * 12L else basic.toLong() * 12L * ( 100 + alliance.lifetime) / 100
     }
@@ -837,7 +838,7 @@ object CultivationHelper {
     }
 
     fun talentValue(person: Person):Int{
-        val tianfu = person.tianfus.sumBy {
+        val tianfu = person.tianfuList.sumBy {
             when(it.type){
                 1 ->  Math.round(it.rarity.toFloat() * 1f)
                 2 ->  Math.round(it.rarity.toFloat() * 1.5f)
@@ -850,10 +851,10 @@ object CultivationHelper {
                 .filter { it.weight > 5 }
                 .sumBy { it.rarity }
 
-        return if(person.lingGenType.type == 0 )
+        return if(person.lingGenDetail.type == 0 )
             tianfu + label
         else
-            tianfu + + label + 2 * person.lingGenType.type
+            tianfu + + label + 2 * person.lingGenDetail.type
     }
 
 

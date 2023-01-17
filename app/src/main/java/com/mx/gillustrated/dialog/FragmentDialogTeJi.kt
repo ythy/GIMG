@@ -51,8 +51,8 @@ class FragmentDialogTeJi constructor(private val callback:TeJiSelectorCallback, 
 
     fun init(){
         val predicate = when (mType) {
-            1 -> fun (teji:TeJiConfig):Boolean { return teji.type == 4 }
-            else -> fun (teji:TeJiConfig):Boolean { return teji.type == 4 }
+            1 -> fun (teji:TeJiConfig):Boolean { return teji.type < 4 }
+            else -> fun (teji:TeJiConfig):Boolean { return teji.type < 4 }
         }
         val list =  CultivationHelper.mConfig.teji.filter { predicate(it) }.sortedBy { it.rarity }
         mCurrentSelected = list[0].toTeji()

@@ -6,9 +6,37 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.util.NameUtil
 import java.util.*
 
-
-open class FollowerConfig() : Parcelable {
+open class FollowerBak() : Parcelable {
     lateinit var id: String
+    var uniqueName: String = "" //unique为true时为空
+
+    constructor(parcel: Parcel) : this() {
+        id = parcel.readString()
+        uniqueName = parcel.readString()
+    }
+
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(uniqueName)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FollowerBak> {
+        override fun createFromParcel(parcel: Parcel): FollowerBak {
+            return FollowerBak(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FollowerBak?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+open class FollowerConfig() : FollowerBak(), Parcelable {
     lateinit var name: String
     var rarity: Int = 0
     var commission: Int = 0
@@ -18,10 +46,11 @@ open class FollowerConfig() : Parcelable {
     var teji = mutableListOf<String>()
     var gender = NameUtil.Gender.Male
 
-    fun toFollower():Follower{
+    fun toFollower(uniqueNameParam:String = ""):Follower{
         val follower = Follower()
         follower.id = this.id
         follower.name = this.name
+        follower.uniqueName = uniqueNameParam
         follower.rarity = this.rarity
         follower.property =  Collections.synchronizedList(this.property.toMutableList())
         follower.teji = Collections.synchronizedList(this.teji.toMutableList())
@@ -78,17 +107,19 @@ open class FollowerConfig() : Parcelable {
 }
 
 class Follower() : FollowerConfig(), Parcelable {
-
-    var nid:String =  UUID.randomUUID().toString()
-    var uniqueName: String = "" //unique为true时为空
     var isDead:Boolean = false
     var unique:Boolean = false
 
     constructor(parcel: Parcel) : this() {
-        nid = parcel.readString()
         unique = parcel.readByte() != 0.toByte()
-        uniqueName = parcel.readString()
         isDead = parcel.readByte() != 0.toByte()
+    }
+
+    fun toBak():FollowerBak{
+        val bak = FollowerBak()
+        bak.id = this.id
+        bak.uniqueName = this.uniqueName
+        return  bak
     }
 
     override fun toString(): String {
@@ -96,9 +127,7 @@ class Follower() : FollowerConfig(), Parcelable {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(nid)
         parcel.writeByte(if (unique) 1 else 0)
-        parcel.writeString(uniqueName)
         parcel.writeByte(if (isDead) 1 else 0)
     }
 
@@ -113,6 +142,10 @@ class Follower() : FollowerConfig(), Parcelable {
 
         override fun newArray(size: Int): Array<Follower?> {
             return arrayOfNulls(size)
+        }
+
+        fun make(ids: String, uniqueNameParam: String = ""): Follower {
+            return CultivationHelper.mConfig.follower.find { it.id == ids }!!.toFollower(uniqueNameParam)
         }
     }
 

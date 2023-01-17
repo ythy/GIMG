@@ -62,10 +62,10 @@ class CultivationHistoryAdapter constructor(val mContext: CultivationActivity, p
         }
         if( person != null && person.jinJieName.indexOf("-") == -1 ){
             var lingGen = person.lingGenName
-            if(person.lingGenType.type > 0){
-                lingGen = CultivationHelper.getTianName(person.lingGenId)
+            if(person.lingGenDetail.type > 0){
+                lingGen = CultivationHelper.getTianName(person.lingGenSpecId)
             }
-            val lingGenColor = CommonColors[person.lingGenType.color]
+            val lingGenColor = CommonColors[person.lingGenDetail.color]
             val index = history.indexOf(" $lingGen ")
             if(index > -1){
                 spannable.setSpan(ForegroundColorSpan(Color.parseColor(lingGenColor)), index, index + lingGen.length + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

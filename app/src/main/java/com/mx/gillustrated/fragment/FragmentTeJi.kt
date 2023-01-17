@@ -90,10 +90,10 @@ class FragmentTeJi: Fragment() {
                 teji
             })
         }
-         mPerson.equipmentListPair.mapNotNull {
-             val equipment = mConfig.equipment.find { e-> e.id == it.first}!!.copy()
+         mPerson.equipmentList.mapNotNull {
+             val equipment = mConfig.equipment.find { e-> e.id == it.id}!!.copy()
              when {
-                 equipment.type == 5 -> CultivationSetting.getEquipmentCustom(it)
+                 equipment.type == 5 -> CultivationSetting.getEquipmentCustom(Pair(it.id, it.seq))
                  equipment.type == 9 -> equipment
                  else -> null
              }

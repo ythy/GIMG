@@ -2,9 +2,7 @@ package com.mx.gillustrated.component
 
 import android.annotation.SuppressLint
 import com.mx.gillustrated.util.NameUtil
-import com.mx.gillustrated.vo.cultivation.Alliance
-import com.mx.gillustrated.vo.cultivation.Enemy
-import com.mx.gillustrated.vo.cultivation.Person
+import com.mx.gillustrated.vo.cultivation.*
 import java.util.*
 
 @SuppressLint("SetTextI18n")
@@ -63,12 +61,12 @@ object CultivationEnemyHelper {
                 person.teji.add(it)
             }
         }
-        person.equipmentListPair.addAll(listOf(Pair("7002901", 0)))
+        person.equipmentList.addAll(listOf(Equipment.make("7002901")))
         repeat(followerQuantity.first) {
-            person.followerList.add(Triple("9000101", "${it + 1}号", ""))
+            person.followerList.add(Follower.make("9000101", "${it + 1}号"))
         }
         repeat(followerQuantity.second) {
-            person.followerList.add(Triple("9000102", "${it + 1}号", ""))
+            person.followerList.add(Follower.make("9000102", "${it + 1}号"))
         }
         CultivationHelper.updatePersonEquipment(person)
         CultivationHelper.setPersonJingjie(person, jingJieLevel)

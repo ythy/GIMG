@@ -199,13 +199,13 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     private fun setOnlineList(){
         mPersonData.clear()
         val persons = when (mType) {
-            1 -> mContext.mPersons.map { it.value }.filter { it.isFav || it.neverDead || it.equipmentListPair.find { e -> e.first.toInt() / 1000 == 7009 } != null }
-            2 -> mContext.mPersons.map { it.value }.filter { p-> p.careerDetailList.maxBy { m-> m.rarity }?.rarity ?: 0 >= 8 }
+            1 -> mContext.mPersons.map { it.value }.filter { it.isFav || it.neverDead || it.equipmentList.find { e -> e.id.toInt() / 1000 == 7009 } != null }
+            2 -> mContext.mPersons.map { it.value }.filter { p-> p.careerList.maxBy { m-> m.rarity }?.rarity ?: 0 >= 8 }
             3 -> mContext.mPersons.map { it.value }.filter { p->
-                p.lifeTurn == 0 && p.ancestorLevel == 0 && ( p.lingGenType.type >= 3 || (p.lingGenType.type > 0 && p.tianfus.sumBy { s-> s.rarity } > 5))
+                p.lifeTurn == 0 && p.ancestorLevel == 0 && ( p.lingGenDetail.type >= 3 || (p.lingGenDetail.type > 0 && p.tianfuList.sumBy { s-> s.rarity } > 5))
             }
             4 -> mContext.mPersons.map { it.value }.filter { p->
-               p.equipmentListPair.find { e-> e.second > 10000 } != null
+               p.equipmentList.find { e-> e.seq > 10000 } != null
             }
             5 -> mContext.mPersons.map { it.value }.filter { p -> p.label.mapNotNull{  m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumBy {
                 s-> s.weight
@@ -235,11 +235,11 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                     .thenByDescending { it.xiuXei } )
             "B" -> mPersonData.sortWith(compareByDescending<Person> {it.battleWinner}
                     .thenByDescending { it.lifeTurn })
-            "E" -> mPersonData.sortWith(compareByDescending<Person> { it.equipmentListPair.filter {
-                        e-> e.second > 10000
-                    }.sumBy { s-> CultivationSetting.getEquipmentCustom(s).rarity }})
+            "E" -> mPersonData.sortWith(compareByDescending<Person> { it.equipmentList.filter {
+                        e-> e.seq > 10000
+                    }.sumBy { s-> CultivationSetting.getEquipmentCustom(Pair(s.id, s.seq)).rarity }})
             "C" -> mPersonData.sortByDescending{
-                val max = it.careerDetailList.maxBy { m-> m.rarity }
+                val max = it.careerList.maxBy { m-> m.rarity }
                 (max?.rarity ?: 0) * 1000 + (max?.level ?: 0)
             }
             "L" -> mPersonData.sortByDescending{ p->

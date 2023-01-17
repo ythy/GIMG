@@ -5,9 +5,36 @@ import android.os.Parcelable
 import com.mx.gillustrated.component.CultivationHelper
 import java.util.*
 
-open class EquipmentConfig(): Parcelable{
-
+open class EquipmentBak(): Parcelable{
     lateinit var id:String
+    var seq:Int = 0
+
+    constructor(parcel: Parcel) : this() {
+        id = parcel.readString()!!
+        seq = parcel.readInt()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeInt(seq)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<EquipmentBak> {
+        override fun createFromParcel(parcel: Parcel): EquipmentBak {
+            return EquipmentBak(parcel)
+        }
+
+        override fun newArray(size: Int): Array<EquipmentBak?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+open class EquipmentConfig(): EquipmentBak(), Parcelable{
     lateinit var name:String
     var type:Int = 0 // 0 Bao; 1 Wu; 2 Jia, 3 Yao; 5 Amulet; 6 boss?; 8 exclusive?; 9 spec; ?: 不添加至equipment list
     var rarity:Int = 0//5 30, 6 40，7 50，8 ~
@@ -20,7 +47,7 @@ open class EquipmentConfig(): Parcelable{
     var teji:MutableList<String> = mutableListOf()
     var follower:MutableList<String> = mutableListOf()
 
-    fun toEquipment():Equipment{
+    fun toEquipment(seq:Int = 0):Equipment{
         val equipment = Equipment()
         equipment.id = this.id
         equipment.name = this.name
@@ -34,6 +61,7 @@ open class EquipmentConfig(): Parcelable{
         equipment.teji = Collections.synchronizedList(this.teji.toMutableList())
         equipment.follower = Collections.synchronizedList(this.follower.toMutableList())
         equipment.specName = Collections.synchronizedList(this.specName.toMutableList())
+        equipment.seq = seq
         return equipment
     }
 
@@ -46,7 +74,6 @@ open class EquipmentConfig(): Parcelable{
     }
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readString()!!
         name = parcel.readString()!!
         type = parcel.readInt()
         rarity = parcel.readInt()
@@ -61,7 +88,6 @@ open class EquipmentConfig(): Parcelable{
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeInt(type)
         parcel.writeInt(rarity)
@@ -93,11 +119,16 @@ open class EquipmentConfig(): Parcelable{
 
 
 class Equipment() : EquipmentConfig(), Parcelable {
-
-    var seq:Int = 0
     var uniqueName:String = ""
     var childrenAll:MutableList<Equipment> = mutableListOf() //计算用
     var children:MutableList<Equipment> = mutableListOf() // 显示用
+
+    fun toBak():EquipmentBak{
+        val bak = EquipmentBak()
+        bak.id = this.id
+        bak.seq = this.seq
+        return  bak
+    }
 
     constructor(parcel: Parcel) : this() {
         uniqueName = parcel.readString()!!
@@ -117,6 +148,7 @@ class Equipment() : EquipmentConfig(), Parcelable {
         return 0
     }
 
+
     companion object CREATOR : Parcelable.Creator<Equipment> {
         override fun createFromParcel(parcel: Parcel): Equipment {
             return Equipment(parcel)
@@ -124,6 +156,10 @@ class Equipment() : EquipmentConfig(), Parcelable {
 
         override fun newArray(size: Int): Array<Equipment?> {
             return arrayOfNulls(size)
+        }
+
+        fun make(ids: String, seqs:Int = 0): Equipment {
+           return CultivationHelper.mConfig.equipment.find { it.id == ids }!!.toEquipment(seqs)
         }
     }
 
