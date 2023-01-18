@@ -18,6 +18,7 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Follower
+import com.mx.gillustrated.vo.cultivation.FollowerConfig
 import com.mx.gillustrated.vo.cultivation.Person
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -34,14 +35,14 @@ class FragmentFollower: Fragment() {
     @OnClick(R.id.btn_save)
     fun onSaveClick(){
         val name = NameUtil.getChineseName(null, mCurrentSelected.gender)
-        mPerson.followerList.add(Follower.make(mCurrentSelected.id, name.first + name.second))
+        mPerson.followerList.add(Follower(mCurrentSelected.id, name.first + name.second))
         updateList()
     }
 
     lateinit var mContext: CultivationActivity
     lateinit var mPerson: Person
     private val mFollowers: MutableList<Follower> = mutableListOf()
-    lateinit var mCurrentSelected: Follower
+    lateinit var mCurrentSelected: FollowerConfig
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_vp_folower, container, false)
@@ -71,20 +72,17 @@ class FragmentFollower: Fragment() {
 
     fun updateList(){
         mFollowers.clear()
-        mFollowers.addAll(mPerson.followerList.sortedBy { it.rarity })
+        mFollowers.addAll(mPerson.followerList.sortedBy { it.detail.rarity })
 
         mPerson.equipmentList.forEach {
-            val equipment = mConfig.equipment.find { f-> f.id == it.id }!!.copy()
-            equipment.follower.forEach { id->
-                val follower = mConfig.follower.find { f-> f.id == id }!!.toFollower()
-                mFollowers.add(follower)
+            it.detail.follower.forEach { id->
+                mFollowers.add(Follower(id))
             }
         }
         mPerson.label.forEach {
             val label = mConfig.label.find { f-> f.id == it }!!.copy()
             label.follower.forEach { id->
-                val follower = mConfig.follower.find { f-> f.id == id }!!.toFollower()
-                mFollowers.add(follower)
+                mFollowers.add(Follower(id))
             }
         }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
@@ -92,15 +90,15 @@ class FragmentFollower: Fragment() {
     }
 
     fun initSpinner(){
-        val list = mConfigFollower.filter { it.type == 0 }.sortedBy { it.rarity }.map { it.toFollower() }
+        val list = mConfigFollower.filter { it.type == 0 }.sortedBy { it.rarity }
         mCurrentSelected = list[0]
-        val adapter = ArrayAdapter<Follower>(context!!,
+        val adapter = ArrayAdapter<FollowerConfig>(context!!,
                 android.R.layout.simple_spinner_item, list)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mSpinner.adapter = adapter
         mSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val follower = parent.selectedItem as Follower
+                val follower = parent.selectedItem as FollowerConfig
                 mCurrentSelected = follower
             }
             override fun onNothingSelected(parent: AdapterView<*>) {

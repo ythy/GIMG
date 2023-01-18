@@ -200,7 +200,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
         mPersonData.clear()
         val persons = when (mType) {
             1 -> mContext.mPersons.map { it.value }.filter { it.isFav || it.neverDead || it.equipmentList.find { e -> e.id.toInt() / 1000 == 7009 } != null }
-            2 -> mContext.mPersons.map { it.value }.filter { p-> p.careerList.maxBy { m-> m.rarity }?.rarity ?: 0 >= 8 }
+            2 -> mContext.mPersons.map { it.value }.filter { p-> p.careerList.maxBy { m-> m.detail.rarity }?.detail?.rarity ?: 0 >= 8 }
             3 -> mContext.mPersons.map { it.value }.filter { p->
                 p.lifeTurn == 0 && p.ancestorLevel == 0 && ( p.lingGenDetail.type >= 3 || (p.lingGenDetail.type > 0 && p.tianfuList.sumBy { s-> s.rarity } > 5))
             }
@@ -237,10 +237,10 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                     .thenByDescending { it.lifeTurn })
             "E" -> mPersonData.sortWith(compareByDescending<Person> { it.equipmentList.filter {
                         e-> e.seq > 10000
-                    }.sumBy { s-> CultivationSetting.getEquipmentCustom(Pair(s.id, s.seq)).rarity }})
+                    }.sumBy { s-> s.detail.rarity }})
             "C" -> mPersonData.sortByDescending{
-                val max = it.careerList.maxBy { m-> m.rarity }
-                (max?.rarity ?: 0) * 1000 + (max?.level ?: 0)
+                val max = it.careerList.maxBy { m-> m.detail.rarity }
+                (max?.detail?.rarity ?: 0) * 1000 + (max?.level ?: 0)
             }
             "L" -> mPersonData.sortByDescending{ p->
                 p.label.mapNotNull { m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumBy {

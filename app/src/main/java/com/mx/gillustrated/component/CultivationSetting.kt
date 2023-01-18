@@ -2,6 +2,7 @@ package com.mx.gillustrated.component
 
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Equipment
+import com.mx.gillustrated.vo.cultivation.EquipmentConfig
 import com.mx.gillustrated.vo.cultivation.Person
 import java.util.*
 import kotlin.collections.HashMap
@@ -350,13 +351,8 @@ object CultivationSetting {
         val propsMara = mutableListOf(AmuletProps(0,1,6,50, 100, ""))
 
         val types = mutableListOf(
-                AmuletType(101,  "\u6d3b\u529b", 10, 0, mutableListOf(true,false,false,false), false, propsNormal, configNormal),
-                AmuletType(102,  "\u6b8b\u66b4", 10, 0, mutableListOf(false,true,false,false), false, propsNormal, configNormal),
-                AmuletType(103,  "\u7a33\u56fa", 10, 0, mutableListOf(false,false,true,false), false, propsNormal, configNormal),
-                AmuletType(104,  "\u95ea\u7535", 10, 0, mutableListOf(false,false,false,true), false, propsNormal, configNormal),
-                AmuletType(105,  "\u7075\u529b", 10, 0, mutableListOf(false,false,false,false), true, propsNormal, configNormal),
                 AmuletType(111,  "\u602a\u5f02", 50, 1, mutableListOf(false,true,true,false), false, propsNormal, configNormal),
-                AmuletType(112,  "\u53cd\u4e09", 50, 1, mutableListOf(false,true,false,true), false, propsNormal, configNormal),
+                AmuletType(112,  "\u6B8B\u66B4", 50, 1, mutableListOf(false,true,false,true), false, propsNormal, configNormal),
                 AmuletType(113,  "\u6bc1\u706d", 100,2, mutableListOf(true,true,true,true), false, propsNormal, configNormal),
                 AmuletType(114,  "\u4e0d\u673d", 100,2, mutableListOf(true,true,false,false), true, propsNormal, configNormal),
 
@@ -367,28 +363,26 @@ object CultivationSetting {
                 AmuletType(205,  "\u5e03\u5c14\u51ef\u7d22\u4e4b\u6212", 5000,0, mutableListOf(false,true,false,false), false, propsBul, configRing),
                 AmuletType(206,  "\u62ff\u5404\u7684\u6212\u6307", 200,0, mutableListOf(false,false,false,false), true, propsNagel, configRing),
                 AmuletType(207,  "\u4e4c\u9e26\u4e4b\u971c", 200,0, mutableListOf(true,false,false,true), false, propsRaven, configRing),
-                AmuletType(208,  "\u4e4c\u9e26\u4e4b\u971c", 1000,0, mutableListOf(false,false,true,false), true, propsMara, configNecklace)
+                AmuletType(208,  "\u739B\u62C9\u7684\u4E07\u82B1\u7B52", 1000,0, mutableListOf(false,false,true,false), true, propsMara, configNecklace)
         )
 
     }
 
-    fun createEquipmentCustom(fixType:Int = 0):Pair<String, Int>{
+    // SEQ like 20101  5位
+    fun createEquipmentCustom(fixType:Int = 0):Pair<String, Int>?{
         //↓ 选取type
         var amuletType:AmuletType? = null
         if(fixType == 0){
-            val max = 10000
-            val randomNumber = Random().nextInt( Amulet.types.sumBy { max / it.weight })
-            Amulet.types.fold(0, { acc, type ->
-                val rangeRight = acc + max / type.weight
-                if (amuletType == null && randomNumber < rangeRight){
-                    amuletType = type
+            Amulet.types.toMutableList().sortedByDescending { it.weight }.forEach {
+                if(amuletType == null && CultivationHelper.isTrigger(it.weight) ){
+                    amuletType = it
                 }
-                rangeRight
-            })
+            }
         }else{
             amuletType = Amulet.types.find { it.id == fixType}
         }
-
+        if (amuletType == null)
+            return null
         //↓ 选取props
         var props:AmuletProps? = null
         if(amuletType!!.props.size == 1){
@@ -400,7 +394,6 @@ object CultivationSetting {
                 }
             }
         }
-
         //↓ 选取equipment
         var config:AmuletConfig? = null
         if(amuletType!!.config.size == 1){
@@ -415,31 +408,37 @@ object CultivationSetting {
         return Pair(config!!.equipmentId, "${amuletType!!.id}${createDecadeSeq(props!!.id)}".toInt())
     }
 
-    fun getEquipmentCustom(spec:Pair<String, Int>):Equipment{
-        val amuletType = Amulet.types.find { it.id ==  spec.second / 100 }!!
-        val props = amuletType.props.find { it.id == spec.second % 100 } ?: amuletType.props[0]
-        val config = amuletType.config.find { it.equipmentId == spec.first } ?: amuletType.config[0]
-        val equipmentConfig = CultivationHelper.mConfig.equipment.find { it.id == config.equipmentId}!!.copy()
+    fun getEquipmentCustom(id:String, seq:Int):Pair<EquipmentConfig, String>{
+        val amuletType = Amulet.types.find { it.id == seq / 100 }!!
+        val props = amuletType.props.find { it.id == seq % 100 } ?: amuletType.props[0]
+        val config = amuletType.config.find { it.equipmentId == id } ?: amuletType.config[0]
+        val equipmentConfig = CultivationHelper.mConfig.equipment.find { it.id == config.equipmentId}!!
         val configPropsMulti = if(amuletType.config.size == 1) 1 else config.propsMulti
         val configRarityBonus = if(amuletType.config.size == 1) 0 else config.rarityBonus
-        val equipment = Equipment()
-        equipment.id = equipmentConfig.id
-        equipment.name = equipmentConfig.name
-        equipment.type = equipmentConfig.type
-        equipment.seq = spec.second
-        equipment.rarity = props.rarityBase + amuletType.rarityBonus + configRarityBonus
-        equipment.uniqueName = if (amuletType.props.size == 1) amuletType.name else "${props.prefix}${amuletType.name}${equipment.name}"
-        equipment.xiuwei = if(amuletType.addXiuwei) props.xiuwei * configPropsMulti else 0
-        equipment.property.take(4).forEachIndexed { index, _ ->
+
+        val property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
+        property.take(4).forEachIndexed { index, _ ->
             if (amuletType.addProperty[index]){
-                equipment.property[index] =  props.bonus * configPropsMulti * (if (index == 0) 5 else 1)
+                property[index] =  props.bonus * configPropsMulti * (if (index == 0) 5 else 1)
             }else{
-                equipment.property[index] = 0
+                property[index] = 0
             }
         }
-        equipment.teji = props.teji
-        return equipment
+        return Pair(EquipmentConfig(
+                equipmentConfig.id,
+                equipmentConfig.name,
+                equipmentConfig.type,
+                props.rarityBase + amuletType.rarityBonus + configRarityBonus,
+                if(amuletType.addXiuwei) props.xiuwei * configPropsMulti else 0,
+                0,
+                property,
+                mutableListOf(),
+                mutableListOf(),
+                props.teji,
+                mutableListOf()
+        ),  if (amuletType.props.size == 1) amuletType.name else "${props.prefix}${amuletType.name}${equipmentConfig.name}")
     }
+
 
 
     data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?, var tianFuWeight: Int = 1, var lingGenWeight:Int = 1)
@@ -467,30 +466,5 @@ object CultivationSetting {
         }
     }
 
-//    private val SpecPersonFirstName5:MutableList<PresetInfo> = mutableListOf(
-//            PresetInfo(15000010, Pair("\u674e","\u767d"),0, 200, 600),
-//            PresetInfo(15000020, Pair("\u675c","\u752b"),0, 100, 100),
-//            PresetInfo(15000031, Pair("\u674e","\u6e05\u7167"),0, 100, 200),
-//            PresetInfo(15000040, Pair("\u8f9b","\u5f03\u75be"),0, 100, 100),
-//            PresetInfo(15000050, Pair("\u767d","\u5c45\u6613"),0, 100, 100),
-//            PresetInfo(15000060, Pair("\u82cf","\u8f7c"),0, 100, 100),
-//            PresetInfo(15000070, Pair("\u738b","\u7fb2\u4e4b"),0, 100, 200),
-//            PresetInfo(15000081, Pair("\u865e","\u59ec"),15010020, 100, 200),
-//            PresetInfo(15000091, Pair("\u6768","\u7389\u73af"),15020040,100,200),
-//            PresetInfo(15000101, Pair("\u897f","\u65bd"),0,100,200),
-//            PresetInfo(15000111, Pair("\u738b","\u662d\u541b"),0,100,100),
-//            PresetInfo(15000120, Pair("\u5b5f","\u6d69\u7136")),
-//
-//            PresetInfo(15010010, Pair("\u674e","\u5143\u9738"),0, 500, 1000),
-//            PresetInfo(15010020, Pair("\u9879","\u7fbd"),15000081, 500, 1000),
-//            PresetInfo(15010030, Pair("\u8346","\u8f72"),0, 100, 100),
-//            PresetInfo(15010040, Pair("\u674e","\u5e7f"),0, 100, 100),
-//
-//            PresetInfo(15020010, Pair("\u5b34","\u653f"),0, 500, 1000),
-//            PresetInfo(15020020, Pair("\u674e","\u4e16\u6c11"),0, 100, 200),
-//            PresetInfo(15020030, Pair("\u8d75","\u4f76"),0, 100, 100),
-//            PresetInfo(15020040, Pair("\u674e","\u9686\u57fa"),15000091),
-//            PresetInfo(15020050, Pair("\u5218","\u90a6"),0, 100, 100)
-//    )
 }
 

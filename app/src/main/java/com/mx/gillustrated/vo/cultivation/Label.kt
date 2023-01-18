@@ -1,11 +1,9 @@
 package com.mx.gillustrated.vo.cultivation
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.mx.gillustrated.component.CultivationHelper
 import java.util.*
 
-class Label() : Parcelable {
+class Label {
 
     lateinit var id:String
     lateinit var name:String
@@ -14,40 +12,6 @@ class Label() : Parcelable {
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
     var teji:MutableList<String> = mutableListOf()
     var follower:MutableList<String> = mutableListOf()
-
-    constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        name = parcel.readString()
-        weight = parcel.readInt()
-        rarity = parcel.readInt()
-        property = parcel.createIntArray().toMutableList()
-        teji = Collections.synchronizedList(parcel.createStringArrayList())
-        follower = Collections.synchronizedList(parcel.createStringArrayList())
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(name)
-        parcel.writeInt(weight)
-        parcel.writeInt(rarity)
-        parcel.writeIntArray(property.toIntArray())
-        parcel.writeStringList(teji)
-        parcel.writeStringList(follower)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Label> {
-        override fun createFromParcel(parcel: Parcel): Label {
-            return Label(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Label?> {
-            return arrayOfNulls(size)
-        }
-    }
 
     override fun toString(): String {
         val tejiName = if (teji.isNotEmpty()) CultivationHelper.mConfig.teji.find { it.id == teji[0] }?.name ?: "" else ""

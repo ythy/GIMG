@@ -16,9 +16,7 @@ import butterknife.OnClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationEquipmentAdapter
-import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.dialog.FragmentDialogEquipment
 import com.mx.gillustrated.dialog.FragmentDialogRank
 import com.mx.gillustrated.vo.cultivation.Equipment
@@ -69,42 +67,27 @@ class FragmentEquipment: Fragment() {
 
     fun updateList(){
         val exclusives =  CultivationHelper.mConfig.equipment.filter { it.type == 8 && it.spec.contains(mPerson.specIdentity)}.map {
-            val ex = it.toEquipment()
-            if(ex.specName.isNotEmpty()){
-                val index = ex.spec.indexOf(mPerson.specIdentity)
-                if(index < ex.specName.size) {
-                    ex.name = ex.specName[index]
+            val ex = Equipment(it.id)
+            if(ex.detail.specName.isNotEmpty()){
+                val index = ex.detail.spec.indexOf(mPerson.specIdentity)
+                if(index < ex.detail.specName.size) {
+                    ex.uniqueName = ex.detail.specName[index]
                 }
             }
             ex
-        }.sortedByDescending { it.rarity }
-        val equipments = mPerson.equipmentList.map {
-            it.uniqueName = it.name
-            if(it.type == 5){
-                CultivationSetting.getEquipmentCustom(Pair(it.id, it.seq))
-            }else{
-                it
-            }
-        }.sortedWith(compareBy<Equipment> {
-            it.type
-        }.thenByDescending { it.rarity }.thenByDescending { it.seq })
+        }.sortedByDescending { it.detail.rarity }
+        val equipments = mPerson.equipmentList.sortedWith(compareBy<Equipment> {
+            it.detail.type
+        }.thenByDescending { it.detail.rarity }.thenByDescending { it.seq }).toMutableList()
         val bossEquipment = mPerson.bossRound.mapIndexedNotNull{ index, count ->
             if (count == 0)
                 null
-            else{
-                val equipment = Equipment()
-                equipment.rarity = CultivationEnemyHelper.bossSettings[index].ratity
-                equipment.id = index.toString()
-                equipment.name = CultivationEnemyHelper.bossSettings[index].name
-                equipment.type = CultivationEnemyHelper.bossSettings[index].type
-                equipment.seq = count
-                equipment.uniqueName = equipment.name
-                equipment
-            }
+            else
+                Equipment(index.toString(), 0, Triple(index, count, ""))
         }
         mEquipmentGroups.clear()
         // 0 1 2 3 by type / 5 by id ; 9 by id / 6 and 8 不在equiplist
-        val groups = equipments.groupBy{ if(it.type <= 3) it.type  else it.type * 100 +  it.id.toInt() % 10 }
+        val groups = equipments.groupBy{ if(it.detail.type <= 3) it.detail.type  else it.detail.type * 100 +  it.id.toInt() % 10 }
         .map {
             it.value[0].children.clear()
             it.value[0].childrenAll.clear()
@@ -140,7 +123,7 @@ class FragmentEquipment: Fragment() {
     fun updateEquipment(equipment:EquipmentConfig){
         if( mPerson.equipmentList.find { it.id == equipment.id } != null)
             return
-        mPerson.equipmentList.add(Equipment.make(equipment.id))
+        mPerson.equipmentList.add(Equipment(equipment.id))
         CultivationHelper.updatePersonEquipment(mPerson)
         updateList()
     }

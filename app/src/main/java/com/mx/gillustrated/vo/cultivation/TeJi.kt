@@ -1,11 +1,9 @@
 package com.mx.gillustrated.vo.cultivation
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.mx.gillustrated.component.CultivationHelper
 import java.util.*
 
-open class TeJiConfig() : Parcelable {
+open class TeJiConfig {
     lateinit var id:String
     lateinit var name:String
     var description:String = ""
@@ -42,76 +40,11 @@ open class TeJiConfig() : Parcelable {
         return CultivationHelper.showing("$name-$rarity")
     }
 
-    constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        name = parcel.readString()
-        rarity = parcel.readInt()
-        weight = parcel.readInt()
-        type = parcel.readInt()
-        statusRound = parcel.readInt()
-        status = parcel.readString()
-        chance = parcel.readInt()
-        power = parcel.readInt()
-        spec = Collections.synchronizedList(parcel.createIntArray().toMutableList())
-        specName = Collections.synchronizedList(parcel.createStringArrayList())
-        extraPower = Collections.synchronizedList(parcel.createIntArray().toMutableList())
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(name)
-        parcel.writeInt(rarity)
-        parcel.writeInt(weight)
-        parcel.writeInt(type)
-        parcel.writeInt(statusRound)
-        parcel.writeInt(chance)
-        parcel.writeString(status)
-        parcel.writeInt(power)
-        parcel.writeIntArray(spec.toIntArray())
-        parcel.writeStringList(specName)
-        parcel.writeIntArray(extraPower.toIntArray())
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<TeJiConfig> {
-        override fun createFromParcel(parcel: Parcel): TeJiConfig {
-            return TeJiConfig(parcel)
-        }
-
-        override fun newArray(size: Int): Array<TeJiConfig?> {
-            return arrayOfNulls(size)
-        }
-    }
-
 }
 
 
-class TeJi() : TeJiConfig(), Parcelable {
+class TeJi: TeJiConfig() {
 
     var form:Int = 0 // 0 list 1 ex equipment 2 amulet 3 fixed spec person 4 label
 
-    constructor(parcel: Parcel) : this() {
-        form = parcel.readInt()
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(form)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<TeJi> {
-        override fun createFromParcel(parcel: Parcel): TeJi {
-            return TeJi(parcel)
-        }
-
-        override fun newArray(size: Int): Array<TeJi?> {
-            return arrayOfNulls(size)
-        }
-    }
 }

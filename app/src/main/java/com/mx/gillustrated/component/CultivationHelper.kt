@@ -395,25 +395,23 @@ object CultivationHelper {
         }
     }
 
-    fun getCareer():Career{
-        var result:Career? = null
+    fun getCareer():CareerConfig{
+        var result:CareerConfig? = null
         mConfig.career.sortedByDescending { it.rarity }.forEach {
             if(result == null && Random().nextInt( it.weight ) == 0){
-                result = it.toCareer()
+                result = it
             }
         }
         return result!!
     }
 
     fun makeEquipment(type: Int, weight: Int):Equipment?{
-        val list = mConfig.equipment.filter { it.type == type && it.rarity * 10 < weight }.map {
-            it.toEquipment()
-        }.shuffled()
+        val list = mConfig.equipment.filter { it.type == type && it.rarity * 10 < weight }.shuffled()
         return if(list.isEmpty())
             null
         else{
-            val equipment = list[0]
-            val success = Random().nextInt( (Math.pow(equipment.rarity.toDouble(), 5.0) / Math.log(weight.toDouble())).toInt() ) == 0
+            val equipment = Equipment(list[0].id)
+            val success = Random().nextInt( (Math.pow(equipment.detail.rarity.toDouble(), 5.0) / Math.log(weight.toDouble())).toInt() ) == 0
             if(success)
                 equipment
             else
@@ -421,10 +419,8 @@ object CultivationHelper {
         }
     }
 
-    fun makeFollower(weight: Int):Follower?{
-        val list = mConfig.follower.filter { it.type == 0 && weight > it.rarity * 10  }.map {
-            it.toFollower()
-        }.shuffled()
+    fun makeFollower(weight: Int):FollowerConfig?{
+        val list = mConfig.follower.filter { it.type == 0 && weight > it.rarity * 10  }.shuffled()
         return if(list.isEmpty())
             null
         else{
@@ -558,30 +554,24 @@ object CultivationHelper {
     }
 
     fun updatePersonEquipment(person:Person){
-        val equipments = person.equipmentList.map{
-            if (it.type == 5){
-               CultivationSetting.getEquipmentCustom(Pair(it.id, it.seq))
-            }else{
-                it
-            }
-        }
+        val equipments = person.equipmentList.toMutableList()
         val exclusives =  mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity)}
         person.equipmentXiuwei = 0
         person.equipmentSuccess = 0
         val equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
         if(equipments.isNotEmpty()){
-            equipments.filter { it.type > 3 }.groupBy { it.id }.forEach { (_, u) ->
+            equipments.filter { it.detail.type > 3 }.groupBy { it.id }.forEach { (_, u) ->
                 for (index in 0 until u.size){
                     summationEquipmentValues(person,  u[index], equipmentProperty)
                 }
             }
-            equipments.filter { it.type <= 3 }.groupBy { it.type }.forEach { (_, u) ->
-                val effectEquipment = u.maxBy { it.rarity }!!
+            equipments.filter { it.detail.type <= 3 }.groupBy { it.detail.type }.forEach { (_, u) ->
+                val effectEquipment = u.maxBy { it.detail.rarity }!!
                 summationEquipmentValues(person, effectEquipment, equipmentProperty)
             }
         }
         exclusives.forEach {
-            summationEquipmentValues(person, it.toEquipment(), equipmentProperty)
+            summationEquipmentValues(person, Equipment(it.id), equipmentProperty)
         }
         person.equipmentProperty =  equipmentProperty.toMutableList()
     }
@@ -595,9 +585,9 @@ object CultivationHelper {
     }
 
     private fun summationEquipmentValues(person: Person, effectEquipment: Equipment, equipmentProperty:MutableList<Int>){
-        person.equipmentXiuwei += effectEquipment.xiuwei
-        person.equipmentSuccess += effectEquipment.success
-        effectEquipment.property.forEachIndexed { pi, pp ->
+        person.equipmentXiuwei += effectEquipment.detail.xiuwei
+        person.equipmentSuccess += effectEquipment.detail.success
+        effectEquipment.detail.property.forEachIndexed { pi, pp ->
             equipmentProperty[pi] += pp
         }
     }

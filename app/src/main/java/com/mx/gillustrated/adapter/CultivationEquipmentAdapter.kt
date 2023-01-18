@@ -46,49 +46,50 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             component = convertView.tag as ViewHolderGroup
 
         val values = getGroup(groupPosition)
+        val detail = values.detail
         val child = values.childrenAll
-        if(values.type <= 3 || values.type == 9) {
-            component.name.text = CultivationHelper.showing(values.name)
-        }else if(values.type == 8){
-            val tejiString = if (values.teji.size > 0) "+" else  ""
-            component.name.text = CultivationHelper.showing("\uD83D\uDD05 " + values.name + tejiString)
+        if(detail.type <= 3 || detail.type == 9) {
+            component.name.text = CultivationHelper.showing(detail.name)
+        }else if(detail.type == 8){
+            val tejiString = if (detail.teji.size > 0) "+" else  ""
+            component.name.text = CultivationHelper.showing("\uD83D\uDD05 " + detail.name + tejiString)
             component.name.setOnClickListener{
                 if(tejiString == "+")
-                    Toast.makeText(mContext, values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(mContext, detail.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
             }
-        }else if(values.type == 5){
-            component.name.text = "${CultivationHelper.showing(values.name)}(${values.children.size})"
-        }else if(values.type == 6){
-            component.name.text = "${CultivationHelper.showing(values.name)}(${values.seq}/${CultivationHelper.getValidBonus(values.seq)})"
+        }else if(detail.type == 5){
+            component.name.text = "${CultivationHelper.showing(detail.name)}(${values.children.size})"
+        }else if(detail.type == 6){
+            component.name.text = CultivationHelper.showing(values.uniqueName)
             component.name.setOnClickListener{
                 callbacks.onOpenDetailList(values)
             }
         }
-        component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
+        component.name.setTextColor(Color.parseColor(CommonColors[detail.rarity]))
         val properties = mutableListOf(0,0,0,0)
-        if(values.type <= 3 ){
-            val maxEquipment = child.maxBy { it.rarity }!!
-            component.xiuwei.text = maxEquipment.xiuwei.toString()
-            component.success.text = maxEquipment.success.toString()
+        if(detail.type <= 3 ){
+            val maxEquipment = child.maxBy { it.detail.rarity }!!
+            component.xiuwei.text = maxEquipment.detail.xiuwei.toString()
+            component.success.text = maxEquipment.detail.success.toString()
             (0 until 4).forEach { index ->
-                properties[index] += maxEquipment.property[index]
+                properties[index] += maxEquipment.detail.property[index]
             }
-        }else if(values.type == 8){
-            component.xiuwei.text = values.xiuwei.toString()
-            component.success.text = values.success.toString()
+        }else if(detail.type == 8){
+            component.xiuwei.text = detail.xiuwei.toString()
+            component.success.text = detail.success.toString()
             (0 until 4).forEach { index ->
-                properties[index] += values.property[index]
+                properties[index] += detail.property[index]
             }
-        }else if(values.type == 9 || values.type == 5){
-            component.xiuwei.text = child.sumBy { it.xiuwei }.toString()
-            component.success.text = child.sumBy { it.success }.toString()
+        }else if(detail.type == 9 || detail.type == 5){
+            component.xiuwei.text = child.sumBy { it.detail.xiuwei }.toString()
+            component.success.text = child.sumBy { it.detail.success }.toString()
             child.forEach { equipment->
                 (0 until 4).forEach { index ->
-                    properties[index] += equipment.property[index]
+                    properties[index] += equipment.detail.property[index]
                 }
             }
-        }else if(values.type == 6){
-            component.xiuwei.text = (CultivationEnemyHelper.bossSettings[values.id.toInt()].bonus * CultivationHelper.getValidBonus(values.seq)).toString()
+        }else if(detail.type == 6){
+            component.xiuwei.text = detail.xiuwei.toString()
         }
         component.props.text = properties.joinToString()
         return convertView
@@ -119,15 +120,16 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             component = convertView.tag as ViewHolderChild
 
         val values = getChild(groupPosition, childPosition)
-        val tejiString = if (values.teji.size > 0) "+" else  ""
-        val followerString = if (values.follower.size > 0) "#" else  ""
+        val detail = values.detail
+        val tejiString = if (detail.teji.size > 0) "+" else  ""
+        val followerString = if (detail.follower.size > 0) "#" else  ""
         component.name.text = CultivationHelper.showing(values.uniqueName+tejiString+followerString)
-        component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
-        component.xiuwei.text = "${values.xiuwei}"
-        component.success.text = "${values.success}"
-        component.props.text = values.property.take(4).joinToString()
+        component.name.setTextColor(Color.parseColor(CommonColors[detail.rarity]))
+        component.xiuwei.text = "${detail.xiuwei}"
+        component.success.text = "${detail.success}"
+        component.props.text = detail.property.take(4).joinToString()
 
-        if(values.type == 9 || values.type == 5){//bao and amulet can delete
+        if(detail.type == 9 || detail.type == 5){//bao and amulet can delete
             component.del.visibility = View.VISIBLE
         }else{
             component.del.visibility = View.GONE
@@ -139,10 +141,10 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
         component.name.setOnClickListener{
             var toastString = ""
             if(tejiString == "+"){
-                toastString += values.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }
+                toastString += detail.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }
             }
             if(followerString == "#"){
-                toastString += values.follower.joinToString {  CultivationHelper.mConfig.follower.find { f-> f.id == it }?.name ?: "" }
+                toastString += detail.follower.joinToString {  CultivationHelper.mConfig.follower.find { f-> f.id == it }?.name ?: "" }
             }
             Toast.makeText(mContext, toastString, Toast.LENGTH_SHORT).show()
         }

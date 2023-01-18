@@ -422,13 +422,7 @@ class CultivationActivity : BaseActivity() {
                 CultivationHelper.updatePersonEquipment(it.value)
                 CultivationHelper.updatePersonExtraProperty(it.value)
                 it.value.followerList = Collections.synchronizedList(it.value.followerList)
-                if(it.value.careerList.isNotEmpty()){
-                    it.value.careerList = Collections.synchronizedList(it.value.careerList.map { career->
-                        val config = mConfig.career.find { c-> c.id == career.id }!!.toCareer()
-                        config.level = career.level
-                        config
-                    })
-                }
+                it.value.careerList = Collections.synchronizedList(it.value.careerList)
             }
             mClans.putAll(backup.clans.mapValues {
                 it.value.toClan(mPersons)
@@ -1045,13 +1039,13 @@ class CultivationActivity : BaseActivity() {
     private fun addSpecialEquipmentEvent(person:Person? = null, tag:String = ""){
         val lucky = person ?: mPersons.map { it.value }.shuffled().first()
         val spec = CultivationSetting.createEquipmentCustom()
-        if(lucky.equipmentList.find { it.id == spec.first && it.seq == spec.second } != null){
+        if(spec == null || lucky.equipmentList.find { it.id == spec.first && it.seq == spec.second } != null){
             return
         }
-        lucky.equipmentList.add(Equipment.make(spec.first, spec.second))
+        lucky.equipmentList.add(Equipment(spec.first, spec.second))
         CultivationHelper.updatePersonEquipment(lucky)
-        val equipment = CultivationSetting.getEquipmentCustom(spec)
-        val commonText = "$tag \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
+        val equipment = CultivationSetting.getEquipmentCustom(spec.first, spec.second)
+        val commonText = "$tag \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.second}"
         addPersonEvent(lucky, commonText)
         writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
     }
@@ -1223,14 +1217,14 @@ class CultivationActivity : BaseActivity() {
     private fun updateCareer(){
         for ((_: String, person: Person) in mPersons) {
             val list = person.careerList
-            var addonCareer:Career? = null
-            if(list.size == 0 || list.all { it.level >= it.maxLevel }){
+            var addonCareer:CareerConfig? = null
+            if(list.size == 0 || list.all { it.level >= it.detail.maxLevel }){
                 if(person.pointXiuWei > 50000000) {
                     person.pointXiuWei -= 50000000
                     if(isTrigger(Math.pow(5.0, list.size.toDouble()).toInt())){
                         addonCareer = CultivationHelper.getCareer()
                         if(list.find { f-> f.id == addonCareer?.id } == null){
-                            val commonText = "\u83b7\u5f97\u804c\u4e1a : ${mConfig.career.find { f-> f.id == addonCareer?.id }?.name}"
+                            val commonText = "\u83b7\u5f97\u804c\u4e1a : ${addonCareer.name}"
                             addPersonEvent(person, commonText)
                             writeHistory("${getPersonBasicString(person)} $commonText", person)
                         }else{
@@ -1240,13 +1234,13 @@ class CultivationActivity : BaseActivity() {
                 }
             }else{
                 list.forEach {
-                    if(it.level < it.maxLevel && person.pointXiuWei > it.upgradeBasicXiuwei){
-                        person.pointXiuWei -= it.upgradeBasicXiuwei
+                    if(it.level < it.detail.maxLevel && person.pointXiuWei > it.detail.upgradeBasicXiuwei){
+                        person.pointXiuWei -= it.detail.upgradeBasicXiuwei
                         if(isTrigger(it.level)){
                             it.level ++
                         }else{
                             if(person.isFav){
-                                val commonText =  "${mConfig.career.find { f-> f.id == addonCareer?.id }?.name} LEVEL${it.level}\u5347\u7EA7\u5931\u8D25"
+                                val commonText =  "${it.detail.name} LEVEL${it.level}\u5347\u7EA7\u5931\u8D25"
                                 writeHistory("${getPersonBasicString(person)} $commonText", person)
                             }
                         }
@@ -1254,7 +1248,7 @@ class CultivationActivity : BaseActivity() {
                 }
             }
             if(addonCareer != null){
-                person.careerList.add(addonCareer)
+                person.careerList.add(Career(addonCareer.id, 1))
             }
         }
     }
@@ -1266,10 +1260,10 @@ class CultivationActivity : BaseActivity() {
                     if(career.id == "6100001" || career.id == "6100002" || career.id == "6100003" || career.id == "6100006"){
                         val equipmentType = if (career.id == "6100001") 0 else if (career.id == "6100002") 1 else if (career.id == "6100003") 2 else 3
                         val equipment = CultivationHelper.makeEquipment(equipmentType, career.level)
-                        if(equipment != null && equipment.rarity > person.equipmentList.filter { it.type == equipmentType }.maxBy { it.rarity }?.rarity ?: 0){
-                            person.equipmentList.removeIf { it.type == equipmentType }
+                        if(equipment != null && equipment.detail.rarity > person.equipmentList.filter { it.detail.type == equipmentType }.maxBy { it.detail.rarity }?.detail?.rarity ?: 0){
+                            person.equipmentList.removeIf { it.detail.type == equipmentType }
                             person.equipmentList.add(equipment)
-                            val commonText = "\u5236\u9020 : ${equipment.name}"
+                            val commonText = "\u5236\u9020 : ${equipment.detail.name}"
                             CultivationHelper.updatePersonEquipment(person)
                             addPersonEvent(person, commonText)
                             writeHistory("${getPersonBasicString(person)} $commonText", person)
@@ -1279,7 +1273,7 @@ class CultivationActivity : BaseActivity() {
                         val follower = CultivationHelper.makeFollower(career.level)
                         if(follower != null && person.followerList.filter { it.id == follower.id }.size < follower.max){
                             val name = NameUtil.getChineseName(null, follower.gender)
-                            person.followerList.add(Follower.make(follower.id, name.first + name.second))
+                            person.followerList.add(Follower(follower.id, name.first + name.second))
                             val commonText = "\u53ec\u5524\u968f\u4ece : ${follower.name + name.first + name.second}"
                             addPersonEvent(person, commonText)
                             writeHistory("${getPersonBasicString(person)} $commonText", person)
@@ -1831,7 +1825,7 @@ class CultivationActivity : BaseActivity() {
         person.careerList = Collections.synchronizedList(mutableListOf())
         person.pointXiuWei = person.maxXiuWei
         person.equipmentList.removeIf {
-            it.type <= 3
+            it.detail.type <= 3
         }
         person.events.removeIf {
             it.content.contains("\u5236\u9020") || it.content.contains("\u53ec\u5524") ||

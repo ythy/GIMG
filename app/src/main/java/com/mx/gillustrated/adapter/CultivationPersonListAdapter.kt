@@ -54,7 +54,8 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         val neiSymbol = if(person.equipmentList.find { it.id == "7009009" } != null && showSpecEquipment) "\uD83D\uDC25" else ""
         val epithetSingleBattle = if(person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100 < 11)
             "\uD83D\uDD25${CultivationSetting.Epithet.SingleBattle[person.battleRecord[CultivationHelper.mBattleRound.single]!! - 1]}" else ""
-        component.name.text = "${CultivationHelper.showing(person.name + epithetSingleBattle)}$talentSymbol$zhuSymbol$shaoSymbol$gongSymbol$neiSymbol${CultivationHelper.showLifeTurn(person)}"
+        component.name.text = "${CultivationHelper.showing(person.name)}${CultivationHelper.showLifeTurn(person)}"
+        component.nameExtra.text = "${CultivationHelper.showing(epithetSingleBattle)}$talentSymbol$zhuSymbol$shaoSymbol$gongSymbol$neiSymbol"
         component.age.text = CultivationHelper.showAgeRemained(person)
         component.jingjie.text = CultivationHelper.showing(person.jinJieName)
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))
@@ -79,6 +80,9 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
 
         @BindView(R.id.tv_name)
         lateinit var name: TextView
+
+        @BindView(R.id.tv_nameExtra)
+        lateinit var nameExtra: TextView
 
         @BindView(R.id.tv_age)
         lateinit var age: TextView

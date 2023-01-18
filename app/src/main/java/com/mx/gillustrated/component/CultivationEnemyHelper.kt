@@ -17,38 +17,22 @@ object CultivationEnemyHelper {
             BossSetting("\u989C\u4e4b\u9b42", 6,50, 9)
     )
 
-    //暂时弃用
-    fun generateEnemy(type:Int): Enemy {
-        val basis = type + 1
-        val random = Random()
-        val enemy = Enemy()
-        enemy.id = UUID.randomUUID().toString()
-        enemy.seq = CultivationHelper.mBattleRound.enemy[type]
-        enemy.name = "${CultivationSetting.EnemyNames[type]}${enemy.seq}号"
-        enemy.type = type
-        enemy.birthDay = CultivationHelper.mCurrentXun
-        enemy.HP = 10 + 10 * random.nextInt(50 * basis)
-        enemy.maxHP = enemy.HP
-        enemy.attack = 100 * basis + 10 * random.nextInt(20 * basis)
-        enemy.defence = 10 + 1 * random.nextInt(20 * basis)
-        enemy.speed = 10 + 1 * random.nextInt(40 * basis)
-        enemy.attackFrequency = 10 + 10 * random.nextInt(10) // max 100
-        enemy.maxHit = 50 + random.nextInt(51)
-        enemy.remainHit = enemy.maxHit
-        for (index in 1 until basis * 4 + 1){
-            val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000101" }!!.toFollower()
-            follower.uniqueName = "${index}号"
-            enemy.followerList.add(follower)
-        }
-        if (type >= 2){
-            for (index in 1 until basis + 1){
-                val follower = CultivationHelper.mConfig.follower.find { f-> f.id == "9000102" }!!.toFollower()
-                follower.uniqueName = "${index}号"
-                enemy.followerList.add(follower)
-            }
-        }
-        return enemy
+    fun getEquipmentOfBoss(index:Int, count:Int):Pair<EquipmentConfig, String>{
+        return Pair(EquipmentConfig(
+                "",
+                bossSettings[index].name,
+                bossSettings[index].type,
+                bossSettings[index].ratity,
+                bossSettings[index].bonus * CultivationHelper.getValidBonus(count),
+                0,
+                mutableListOf(),
+                mutableListOf(),
+                mutableListOf(),
+                mutableListOf(),
+                mutableListOf()
+        ), "${CultivationHelper.showing(bossSettings[index].name)}($count/${CultivationHelper.getValidBonus(count)})")
     }
+
 
     private fun updateBossProps(person: Person, tejiQuantity:Int, followerQuantity:Pair<Int, Int>, jingJieLevel:Int, hp:Int, hit:Int, specTeji:List<String> = listOf()){
         val tejiList = CultivationHelper.mConfig.teji.filter { it.type != 4 && it.type != 6 }.shuffled()
@@ -61,12 +45,12 @@ object CultivationEnemyHelper {
                 person.teji.add(it)
             }
         }
-        person.equipmentList.addAll(listOf(Equipment.make("7002901")))
+        person.equipmentList.addAll(listOf(Equipment("7002901")))
         repeat(followerQuantity.first) {
-            person.followerList.add(Follower.make("9000101", "${it + 1}号"))
+            person.followerList.add(Follower("9000101", "${it + 1}号"))
         }
         repeat(followerQuantity.second) {
-            person.followerList.add(Follower.make("9000102", "${it + 1}号"))
+            person.followerList.add(Follower("9000102", "${it + 1}号"))
         }
         CultivationHelper.updatePersonEquipment(person)
         CultivationHelper.setPersonJingjie(person, jingJieLevel)

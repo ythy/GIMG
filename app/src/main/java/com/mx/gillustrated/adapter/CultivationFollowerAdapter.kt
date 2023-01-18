@@ -46,8 +46,8 @@ class CultivationFollowerAdapter constructor(mContext: Context, private val list
         } else
             component = convertView.tag as ViewHolder
 
-        val values = list[arg0]
-        component.name.text = CultivationHelper.showing(values.name + values.uniqueName)
+        val values = list[arg0].detail
+        component.name.text = CultivationHelper.showing(values.name + list[arg0].uniqueName)
         component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         if(values.teji.isEmpty())
             component.teji.text = ""
@@ -57,7 +57,7 @@ class CultivationFollowerAdapter constructor(mContext: Context, private val list
         component.props.text = values.property.take(4).joinToString()
 
         component.del.setOnClickListener{
-            callbacks.onDeleteHandler(values)
+            callbacks.onDeleteHandler(list[arg0])
         }
         return convertView
     }
