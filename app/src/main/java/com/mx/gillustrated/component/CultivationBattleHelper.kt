@@ -368,6 +368,13 @@ object CultivationBattleHelper {
             defender.defence = Math.max(1, defender.defence)
             printBattleInfo(battleId, attacker, 1, "${showName(defender)} SPEED-${extraPower[3]} DEF-${extraPower[2]}, HP-", "8006007")
         }
+        if(hasTeji("8006010", attacker) && isTrigger(tejiDetail("8006010").chance, attacker) ){
+            defender.hp -= tejiDetail("8006010").power
+            val extraPower = tejiDetail("8006010").extraPower
+            attacker.speed += extraPower[3]
+            attacker.attack += extraPower[1]
+            printBattleInfo(battleId, attacker, 1, "${showName(attacker)} SPEED+${extraPower[3]} ATTACK+${extraPower[1]}, ${showName(defender)}HP-", "8006010")
+        }
     }
 
     private fun getSpeed(propsList:MutableList<BattleObject>, randomBasis:Int):Int{
