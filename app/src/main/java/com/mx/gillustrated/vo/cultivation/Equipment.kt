@@ -25,10 +25,15 @@ data class EquipmentConfig(
         val teji:MutableList<String> = mutableListOf(),
         val follower:MutableList<String> = mutableListOf()
 ){
+    //Gson 序列化使用
     constructor():this(
             "", "", 0, 0, 0, 0,  mutableListOf(0,0,0,0,0,0,0,0), mutableListOf(),
             mutableListOf(), mutableListOf(), mutableListOf()
     )
+
+    override fun toString(): String {
+        return CultivationHelper.showing("$name:($xiuwei/$success)(${property.take(4).joinToString()})")
+    }
 }
 
 class Equipment(pId: String, pSeq: Int = 0, option:Triple<Int, Int, String>? = null) : EquipmentBak(pId, pSeq) {

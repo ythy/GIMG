@@ -65,7 +65,6 @@ object CultivationSetting {
             PresetInfo(12000200, Triple("\u674e", "\u900d\u9065", 1001), 12000211, 500, 1000),
             PresetInfo(12000211, Triple("\u963f", "\u5974", 1001), 12000200, 200, 600)
 
-
     )
 
     //13 00 001 0
@@ -79,6 +78,7 @@ object CultivationSetting {
             PresetInfo(13020070, Pair("\u65e0", "\u5d16\u5b50"), 13020061, 100, 200),
             PresetInfo(13020081, Triple("\u6728", "\u5a49\u6e05", 1307), 0, 100, 100),
             PresetInfo(13020091, Triple("\u4efb", "\u76c8\u76c8", 1308), 0, 200, 600),
+            PresetInfo(13020101, Triple("\u9EC4\u886B\u5973\u5B50", "", 1310), 0, 500, 1000),
             PresetInfo(13021011, Triple("\u82cf", "\u6a31", 1309), 0, 100, 100),
             PresetInfo(13021021, Triple("\u674e", "\u7ea2\u8896", 1310), 0, 100, 100),
             PresetInfo(13021030, Pair("\u674e", "\u5bfb\u6b22"), 0, 200, 600)
@@ -203,6 +203,7 @@ object CultivationSetting {
             PresetInfo(16040080, Pair("\u725B", "\u9B54\u738B"), 0, 100, 200),
             PresetInfo(16040091, Pair("\u94C1\u6247", "\u516C\u4E3B"), 0, 100, 200),
             PresetInfo(16040100, Pair("\u5954\u6CE2\u513F\u705E", "")),
+            PresetInfo(16040110, Pair("\u516D\u8033\u7315\u7334", ""), 0, 1000, 2000),
 
             PresetInfo(16050010, Triple("\u7A46","\u5F18", 4024)), PresetInfo(16050020, Triple("\u96F7","\u6A2A", 4025)),
             PresetInfo(16050030, Triple("\u674E","\u4FCA", 4026)), PresetInfo(16050040, Triple("\u962E","\u5C0F\u4E8C", 4027)),

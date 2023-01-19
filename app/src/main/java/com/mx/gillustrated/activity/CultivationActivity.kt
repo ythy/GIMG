@@ -1402,6 +1402,7 @@ class CultivationActivity : BaseActivity() {
             }
             addPersonEvent(person,"加入")
             writeHistory("${getPersonBasicString(person)} 加入", person)
+            CultivationHelper.updatePersonEquipment(person)
             return person
         }
         return null
