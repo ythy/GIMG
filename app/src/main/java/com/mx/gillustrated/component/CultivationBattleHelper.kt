@@ -9,7 +9,7 @@ import com.mx.gillustrated.component.CultivationHelper.mConfig
 object CultivationBattleHelper {
 
     var mBattles:ConcurrentHashMap<String, BattleInfo> = ConcurrentHashMap()
-
+    var BaGua = listOf("\u4E7E","\u574E","\u826E", "\u9707", "\u5DFD", "\u79BB", "\u5764", "\u5151")
     // allPersons pass null if partner don`t join battle
     fun battlePerson(allPersons:ConcurrentHashMap<String, Person>?, person1: Person, person2: Person, round:Int):Boolean{
 
@@ -89,6 +89,9 @@ object CultivationBattleHelper {
         battlePersons.forEachIndexed { index, currentList ->
             val allOpponent = battlePersons[Math.abs(index - 1)]
             currentList.forEach { current ->
+                if (hasTeji("8001009", current)) {
+                    printBattleInfo(battleId, current, 4, "${tejiDetail("8001009").name}开启", "8001009")
+                }
                 if (hasTeji("8003003", current)) {
                     current.minDamage = tejiDetail("8003003").power
                 }
@@ -303,7 +306,19 @@ object CultivationBattleHelper {
             attackResult = Math.round( attackResult * multi)
             triggerBaseList.add(tejiDetail("8003002").name)
         }
-        val hpReduced = Math.min(defender.maxInjure, Math.max(attacker.minDamage, attackResult))
+        var hpReduced = Math.min(defender.maxInjure, Math.max(attacker.minDamage, attackResult))
+        //八Gua
+        if (hasTeji("8001009", defender)) {
+            val door = Random().nextInt(BaGua.size)
+            if (door == BaGua.size - 1){
+                hpReduced *= tejiDetail("8001009").power
+                triggerBaseList.add("\u8FDB\u5165${BaGua[door]}\u95E8, ${tejiDetail("8001009").power}\u500D\u4F24\u5BB3")
+            }else{
+                printBattleInfo(battleId, defender, 4, "${tejiDetail("8001009").name}，${showName(attacker)}\u8FDB\u5165${BaGua[door]}\u95E8, \u675F\u7F1A", "8001009")
+                return
+            }
+        }
+
         defender.hp -= hpReduced + attacker.extraDamage
         printBattleInfo(battleId, attacker, 5, "${triggerBaseList.joinToString()} $attackerValue - $defenderValue ${showName(defender)}HP-${hpReduced + attacker.extraDamage}")
 

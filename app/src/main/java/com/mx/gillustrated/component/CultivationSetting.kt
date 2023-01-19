@@ -291,7 +291,7 @@ object CultivationSetting {
     }
 
     /*
-        custom type 8
+        ## custom type 8
         rarity:
         12 - 400 teji2 xiuwei300
         11 - 300 teji 1/2 xiuwei200
@@ -300,11 +300,10 @@ object CultivationSetting {
         8 - 100 xiuwei50 hp300
         7 - 50 xiuwei50 hp200
 
-        label
+        ## label
         2 20
         3 30
         4 40
-
 
         6 100, 50, -:-, 50
         7 500, 100, 50:50, 100

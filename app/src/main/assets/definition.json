@@ -1890,11 +1890,11 @@
       "id": "7008004",
       "name": "\u4E09\u4E2A\uD83C\uDF4E\uD83C\uDF4F",
       "type": 8,
-      "rarity": 12,
+      "rarity": 13,
       "xiuwei": 300,
       "success": 0,
       "property": [0,300,50,50,0,0,0,0],
-      "teji": ["8004001", "8001001"],
+      "teji": ["8004001", "8001001", "8001009"],
       "spec": [12000041]
     },
     {
@@ -2295,10 +2295,19 @@
       "id": "8001008",
       "name": "\u91D1\u949F\u7F69",
       "description": "200,\u6700\u5927\u53D7\u5355\u6B21\u7269\u7406",
-      "type": 3,
+      "type": 1,
       "rarity": 7,
       "power": 200,
       "weight": 3000000
+    },
+    {
+      "id": "8001009",
+      "name": "\u516B\u5366\u9635",
+      "description": "\u968F\u673A\u751F\u6210\u4E00\u95E8\u4E3A\u6B7B\u95E8, \u627F\u53D72\u500D\u91CD\u51FB",
+      "type": 1,
+      "rarity": 14,
+      "power": 2,
+      "weight": 90000000
     },
     {
       "id": "8002001",
