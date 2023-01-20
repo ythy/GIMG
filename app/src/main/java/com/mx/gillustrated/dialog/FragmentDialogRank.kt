@@ -188,7 +188,9 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                 list.addAll(
                     exclusives.map{ equipment ->
                         val persons = mContext.mPersons.map { it.value }.filter { equipment.spec.contains(it.specIdentity) }
-                        SimpleData(if (persons.size == 1) persons[0].id else "", persons.joinToString { it.name }, equipment.name, mType, mutableListOf(), -1)
+                        SimpleData(if (persons.size == 1) persons[0].id else "",
+                                if (persons.size == 1) persons[0].name else  persons.joinToString { "${it.name}(${equipment.specName[equipment.spec.indexOf(it.specIdentity)]})" },
+                                equipment.name, mType, mutableListOf(), -1)
                     }
                 )
             }

@@ -89,8 +89,8 @@ object CultivationBattleHelper {
         battlePersons.forEachIndexed { index, currentList ->
             val allOpponent = battlePersons[Math.abs(index - 1)]
             currentList.forEach { current ->
-                if (hasTeji("8001009", current)) {
-                    printBattleInfo(battleId, current, 4, "${tejiDetail("8001009").name}开启", "8001009")
+                if (hasTeji("8005001", current)) {
+                    printBattleInfo(battleId, current, 4, "${tejiDetail("8005001").name}开启", "8005001")
                 }
                 if (hasTeji("8003003", current)) {
                     current.minDamage = tejiDetail("8003003").power
@@ -308,13 +308,13 @@ object CultivationBattleHelper {
         }
         var hpReduced = Math.min(defender.maxInjure, Math.max(attacker.minDamage, attackResult))
         //八Gua
-        if (hasTeji("8001009", defender)) {
+        if (hasTeji("8005001", defender)) {
             val door = Random().nextInt(BaGua.size)
             if (door == BaGua.size - 1){
-                hpReduced *= tejiDetail("8001009").power
-                triggerBaseList.add("\u8FDB\u5165${BaGua[door]}\u95E8, ${tejiDetail("8001009").power}\u500D\u4F24\u5BB3")
+                hpReduced *= tejiDetail("8005001").power
+                triggerBaseList.add("\u8FDB\u5165${BaGua[door]}\u95E8, ${tejiDetail("8005001").power}\u500D\u4F24\u5BB3")
             }else{
-                printBattleInfo(battleId, defender, 4, "${tejiDetail("8001009").name}，${showName(attacker)}\u8FDB\u5165${BaGua[door]}\u95E8, \u675F\u7F1A", "8001009")
+                printBattleInfo(battleId, attacker, 4, "\u8FDB\u5165${tejiDetail("8005001").name}${BaGua[door]}\u95E8, \u65E0\u6CD5\u884C\u52A8", "8005001")
                 return
             }
         }

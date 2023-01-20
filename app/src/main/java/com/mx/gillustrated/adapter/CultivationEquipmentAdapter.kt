@@ -52,7 +52,7 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             component.name.text = CultivationHelper.showing(detail.name)
         }else if(detail.type == 8){
             val tejiString = if (detail.teji.size > 0) "+" else  ""
-            component.name.text = CultivationHelper.showing("\uD83D\uDD05 " + detail.name + tejiString)
+            component.name.text = CultivationHelper.showing("\uD83D\uDD05 " + values.uniqueName + tejiString)
             component.name.setOnClickListener{
                 if(tejiString == "+")
                     Toast.makeText(mContext, detail.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
