@@ -536,10 +536,6 @@ object CultivationBattleHelper {
         person.equipmentList.filter { it.detail.teji.size > 0 }.forEach {
             result.addAll(it.detail.teji)
         }
-        val exclusives =  mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity) && it.teji.size > 0}
-        exclusives.forEach {
-            result.addAll(it.teji)
-        }
         result.addAll(mConfig.teji.filter { it.type == 6 && it.spec.contains(person.specIdentity)}.map { it.id })
         person.label.map {
             mConfig.label.find { e-> e.id == it}!!.copy()

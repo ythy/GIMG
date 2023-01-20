@@ -101,6 +101,9 @@ open class PersonBak {
         person.equipmentList = this.equipment.map {
            it.toEquipment()
         }.toMutableList()
+        if (person.specIdentity > 0){
+            person.equipmentList.addAll(CultivationHelper.getSpecPersonEquipment(person))
+        }
         person.followerList = this.follower.map {
            it.toFollower()
         }.toMutableList()
@@ -161,7 +164,7 @@ class Person: PersonBak() {
     fun toPersonBak(): PersonBak {
         val bak = this as PersonBak
         bak.tianfu = this.tianfuList.map { it.id }.toMutableList()
-        bak.equipment = this.equipmentList.map { it.toBak() }.toMutableList()
+        bak.equipment = this.equipmentList.filter { it.detail.type != 8 }.map { it.toBak() }.toMutableList()
         bak.follower = this.followerList.map { it.toBak() }.toMutableList()
         bak.career = this.careerList.map { it.toBak() }.toMutableList()
         return bak

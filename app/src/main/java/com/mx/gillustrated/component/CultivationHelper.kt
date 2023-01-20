@@ -555,7 +555,6 @@ object CultivationHelper {
 
     fun updatePersonEquipment(person:Person){
         val equipments = person.equipmentList.toMutableList()
-        val exclusives =  mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity)}
         person.equipmentXiuwei = 0
         person.equipmentSuccess = 0
         val equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
@@ -569,9 +568,6 @@ object CultivationHelper {
                 val effectEquipment = u.maxBy { it.detail.rarity }!!
                 summationEquipmentValues(person, effectEquipment, equipmentProperty)
             }
-        }
-        exclusives.forEach {
-            summationEquipmentValues(person, Equipment(it.id), equipmentProperty)
         }
         person.equipmentProperty =  equipmentProperty.toMutableList()
     }
@@ -793,6 +789,18 @@ object CultivationHelper {
         }
     }
 
+    fun getSpecPersonEquipment(person: Person):MutableList<Equipment>{
+        return CultivationHelper.mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity)}.map {
+            val ex = Equipment(it.id)
+            if(ex.detail.specName.isNotEmpty()){
+                val index = ex.detail.spec.indexOf(person.specIdentity)
+                if(index < ex.detail.specName.size) {
+                    ex.uniqueName = ex.detail.specName[index]
+                }
+            }
+            ex
+        }.toMutableList()
+    }
 
     fun getJinJieName(input:String):String{
         if(pinyinMode)

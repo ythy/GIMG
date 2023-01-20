@@ -81,20 +81,11 @@ class FragmentTeJi: Fragment() {
         val tejis = mPerson.teji.map {
             mConfigTeji.find { e-> e.id == it}!!.toTeji()
         }.toMutableList()
-        CultivationHelper.mConfig.equipment.filter {
-            it.type == 8 && it.spec.contains(mPerson.specIdentity) && it.teji.size > 0}
-        .forEach {
-            tejis.addAll(it.teji.map {
-                val teji = mConfigTeji.find { e-> e.id == it}!!.toTeji()
-                teji.form = 1
-                teji
-            })
-        }
          mPerson.equipmentList.filter { it.detail.teji.size > 0 }
-         .forEach {
-            tejis.addAll(it.detail.teji.map {
-                val teji = mConfigTeji.find { e-> e.id == it}!!.toTeji()
-                teji.form = 2
+         .forEach { equipment ->
+            tejis.addAll(equipment.detail.teji.map { tejiString ->
+                val teji = mConfigTeji.find { e-> e.id == tejiString}!!.toTeji()
+                teji.form = if (equipment.detail.type == 8) 1 else 2
                 teji
             })
         }

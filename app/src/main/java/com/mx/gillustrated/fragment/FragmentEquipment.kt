@@ -66,19 +66,9 @@ class FragmentEquipment: Fragment() {
     }
 
     fun updateList(){
-        val exclusives =  CultivationHelper.mConfig.equipment.filter { it.type == 8 && it.spec.contains(mPerson.specIdentity)}.map {
-            val ex = Equipment(it.id)
-            if(ex.detail.specName.isNotEmpty()){
-                val index = ex.detail.spec.indexOf(mPerson.specIdentity)
-                if(index < ex.detail.specName.size) {
-                    ex.uniqueName = ex.detail.specName[index]
-                }
-            }
-            ex
-        }.sortedByDescending { it.detail.rarity }
-        val equipments = mPerson.equipmentList.sortedWith(compareBy<Equipment> {
-            it.detail.type
-        }.thenByDescending { it.detail.rarity }.thenByDescending { it.seq }).toMutableList()
+        val equipments = mPerson.equipmentList.sortedWith(compareByDescending<Equipment> {
+            it.sortedWeight
+        }.thenByDescending { it.seq }).toMutableList()
         val bossEquipment = mPerson.bossRound.mapIndexedNotNull{ index, count ->
             if (count == 0)
                 null
@@ -87,7 +77,7 @@ class FragmentEquipment: Fragment() {
         }
         mEquipmentGroups.clear()
         // 0 1 2 3 by type / 5 by id ; 9 by id / 6 and 8 不在equiplist
-        val groups = equipments.groupBy{ if(it.detail.type <= 3) it.detail.type  else it.detail.type * 100 +  it.id.toInt() % 10 }
+        val groups = equipments.groupBy{ if(it.detail.type <= 3) it.detail.type  else it.id.toInt() }
         .map {
             it.value[0].children.clear()
             it.value[0].childrenAll.clear()
@@ -95,7 +85,6 @@ class FragmentEquipment: Fragment() {
             it.value[0].childrenAll.addAll(it.value)
             it.value[0]
         }
-        mEquipmentGroups.addAll(exclusives)
         mEquipmentGroups.addAll(groups)
         mEquipmentGroups.addAll(bossEquipment)
 

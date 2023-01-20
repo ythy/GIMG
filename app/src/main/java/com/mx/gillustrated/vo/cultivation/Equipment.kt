@@ -39,6 +39,7 @@ data class EquipmentConfig(
 class Equipment(pId: String, pSeq: Int = 0, option:Triple<Int, Int, String>? = null) : EquipmentBak(pId, pSeq) {
     val detail:EquipmentConfig
     var uniqueName:String = ""
+    var sortedWeight:Int = 0
     var childrenAll:MutableList<Equipment> = mutableListOf() //计算用
     var children:MutableList<Equipment> = mutableListOf() // 显示用
 
@@ -47,14 +48,22 @@ class Equipment(pId: String, pSeq: Int = 0, option:Triple<Int, Int, String>? = n
             val setting = CultivationEnemyHelper.getEquipmentOfBoss(option.first, option.second)
             this.detail = setting.first
             this.uniqueName = setting.second
+            this.sortedWeight = setting.first.rarity
         }else{
             if(pSeq > 0){ // equipment type == 5
                 val setting = CultivationSetting.getEquipmentCustom(pId, pSeq)
                 this.detail = setting.first
                 this.uniqueName = setting.second
+                this.sortedWeight = 10 + setting.first.rarity
             }else {
                 this.detail = CultivationHelper.mConfig.equipment.find { it.id == this.id }!!
                 this.uniqueName = this.detail.name
+                this.sortedWeight = when(this.detail.type){
+                    in 0..3 -> 100 + this.detail.rarity // career
+                    8 -> 10000 +  this.detail.rarity // exclude
+                    9 -> 1000 +  this.detail.rarity // custom
+                    else -> this.detail.rarity
+                }
             }
         }
     }
