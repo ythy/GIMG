@@ -32,6 +32,7 @@ open class PersonBak {
     var events: MutableList<PersonEvent> = Collections.synchronizedList(mutableListOf())
     var tianfu: MutableList<String> = mutableListOf()
     var label: MutableList<String> = Collections.synchronizedList(mutableListOf())
+    var skin:String = ""
     var ancestorLevel: Int = 0//加入其他clan 会变更
     var ancestorId: String? = null// 可能多次，独立后变更为ID
     var ancestorOrignId: String? = ancestorId// 一次
@@ -66,6 +67,7 @@ open class PersonBak {
         person.lifetime = this.lifetime
         person.events = this.events
         person.label = this.label
+        person.skin = this.skin
         person.ancestorLevel = this.ancestorLevel
         person.ancestorId = this.ancestorId
         person.ancestorOrignId = this.ancestorOrignId

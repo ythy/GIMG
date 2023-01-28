@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
@@ -33,6 +34,8 @@ import com.mx.gillustrated.vo.cultivation.Person
 import com.mx.gillustrated.vo.cultivation.TianFu
 import java.io.File
 import java.lang.ref.WeakReference
+
+
 
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
@@ -151,6 +154,13 @@ class FragmentDialogPerson : DialogFragment() {
         if(person == null){
             onCloseHandler()
             return
+        }
+        if (person.skin != ""){
+            mDialogView.measures.background = ColorDrawable(Color.TRANSPARENT)
+            when(person.skin){
+                "4200101" -> dialog?.window?.setBackgroundDrawableResource(R.drawable.skin_bg_star)
+                else -> dialog?.window?.setBackgroundDrawableResource(R.drawable.skin_bg_star)
+            }
         }
         mPerson = person
         setViewPager()

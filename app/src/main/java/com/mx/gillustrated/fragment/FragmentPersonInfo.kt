@@ -19,6 +19,7 @@ import com.mx.gillustrated.dialog.FragmentDialogPerson
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
+import com.mx.gillustrated.vo.cultivation.Skin
 
 class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCallback)  : Fragment(){
 
@@ -65,6 +66,16 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
     @BindView(R.id.sch_never_dead)
     lateinit var mSwitchNeverDead:Switch
+
+    @BindView(R.id.spinner_skin)
+    lateinit var mSkin:Spinner
+
+    @OnClick(R.id.btn_save_skin)
+    fun onSkinSaveHandler(){
+        val index = mSkin.selectedItemPosition
+        mPerson.skin = mSkinList[index].id
+        Toast.makeText(context, "设置成功", Toast.LENGTH_SHORT).show()
+    }
 
     @OnClick(R.id.btn_revive)
     fun onReviveHandler(){
@@ -199,6 +210,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
     }
 
     lateinit var mPerson: Person
+    val mSkinList:MutableList<Skin> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_vp_person, container, false)
@@ -216,6 +228,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
        // mHome.addView(draw)
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getPersonData(id)!!
+        initSkinSpinner()
         if(mContext.getOnlinePersonDetail(mPerson.id) == null){
             mBtnRevive.text = "Revive"
         }else{
@@ -261,5 +274,28 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         tvAge.text = CultivationHelper.showAge(mPerson)
         tvAncestor.text = "${mPerson.ancestorOrignId}/${mPerson.ancestorOrignLevel}-${mPerson.ancestorId}/${mPerson.ancestorLevel}"
 
+    }
+
+    fun initSkinSpinner(){
+        mSkinList.addAll(CultivationHelper.mConfig.skin.filter {
+            if(it.spec.isNotEmpty())
+                it.spec.contains(mPerson.specIdentity)
+            else
+                true
+        })
+        mSkinList.add(0, Skin("", "默认"))
+        val adapter = ArrayAdapter<Skin>(context!!,
+                android.R.layout.simple_spinner_item, mSkinList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        var index = 0
+        if (mSkinList.size > 1 && mPerson.skin != ""){
+            mSkinList.forEachIndexed { i, skin ->
+                if (skin.id == mPerson.skin) {
+                    index = i
+                }
+            }
+        }
+        mSkin.adapter = adapter
+        mSkin.setSelection(index)
     }
 }

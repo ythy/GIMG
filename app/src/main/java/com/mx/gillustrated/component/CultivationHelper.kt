@@ -609,6 +609,9 @@ object CultivationHelper {
         person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
             basic += it.property[4]
         }
+        if(person.skin != ""){
+            basic += mConfig.skin.find{ f-> f.id == person.skin }?.xiuwei ?: 0
+        }
         basic += getLastSingleBattleXiuwei(person)
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()

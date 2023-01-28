@@ -10,5 +10,6 @@ data class Config constructor(val lingGenType: List<LingGen>, val jingJieType:Li
                               val follower:List<FollowerConfig>,
                               val career:List<CareerConfig>,
                               val nation:List<NationConfig>,
-                              val label:List<Label>
+                              val label:List<Label>,
+                              val skin:List<Skin>
 )
