@@ -3244,8 +3244,16 @@
     {
       "id": "4200101",
       "name": "\u661F\u6708\u591C",
+      "resource": "skin_bg_star",
       "xiuwei": 500,
       "property": [0,0,0,0,0,0,0,0]
+    },
+    {
+      "id": "4200102",
+      "name": "\u53E4\u5251\u5947\u8C2D",
+      "resource": "skin_bg_sword",
+      "xiuwei": 500,
+      "property": [0,200,0,100,0,0,0,0]
     }
   ]
 }

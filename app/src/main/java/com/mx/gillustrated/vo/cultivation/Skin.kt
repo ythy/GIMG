@@ -7,6 +7,8 @@ class Skin() {
 
     lateinit var id:String
     lateinit var name:String
+    lateinit var resource:String
+    var animated:Boolean = false
     var xiuwei:Int = 0
     var spec:MutableList<Int> = mutableListOf()//专属
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
@@ -16,6 +18,7 @@ class Skin() {
     constructor(ids:String, names:String):this(){
         this.id = ids
         this.name = names
+        this.resource = ""
     }
 
     override fun toString(): String {
@@ -26,6 +29,8 @@ class Skin() {
         val skin = Skin()
         skin.id = this.id
         skin.name = this.name
+        skin.resource = this.resource
+        skin.animated = this.animated
         skin.xiuwei = this.xiuwei
         skin.property = this.property.toMutableList()
         skin.spec = Collections.synchronizedList(this.spec.toMutableList())

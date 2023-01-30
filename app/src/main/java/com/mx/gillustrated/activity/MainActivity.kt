@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
@@ -136,6 +137,9 @@ class MainActivity : BaseActivity() {
         mGameType = intent.getIntExtra("game", CommonUtil.getGameType(this))
         ButterKnife.bind(this)
 
+//        val dm  =  DisplayMetrics()
+//        window.windowManager.defaultDisplay.getMetrics(dm)
+//        Log.d("dpi ---------", "${dm.density} : ${dm.xdpi} - ${dm.ydpi} : ${dm.scaledDensity} : ${dm.widthPixels} - ${dm.heightPixels}")
         requestPermission()
     }
 

@@ -24,11 +24,11 @@
     </item>
 
 
-    <item  android:width="150dp" android:height="150dp" android:left="250dp">
+    <item  android:width="200dp" android:height="300dp" android:left="100dp" android:top="150dp">
         <bitmap android:gravity="fill"
-            android:tint="#CCFF66"
+            android:tint="#184741"
             android:antialias="true"
-            android:src="@drawable/skin_star" />
+            android:src="@drawable/skin_sword" />
     </item>
 
 </layer-list>

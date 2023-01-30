@@ -17,9 +17,9 @@ class CultivationHome constructor(context:Context) : View(context){
     private val mSceneSize:Point = Point(CommonUtil.dip2px(context, 280f),
             CommonUtil.dip2px(context, 280f))
 
-    private val mBitmap1 = BitmapFactory.decodeResource(context.resources, R.drawable.scene1)
-    private val mBitmap2 = BitmapFactory.decodeResource(context.resources, R.drawable.scene2)
-    private val mBitmapCharOrigin = BitmapFactory.decodeResource(context.resources, R.drawable.char2)
+    private val mBitmap1 = BitmapFactory.decodeResource(context.resources, R.drawable.btn_back)
+    private val mBitmap2 = BitmapFactory.decodeResource(context.resources, R.drawable.btn_back)
+    private val mBitmapCharOrigin = BitmapFactory.decodeResource(context.resources, R.drawable.btn_back)
     private val mBitmapChar:Bitmap
 
     private var mBitmap:Bitmap

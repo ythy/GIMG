@@ -3,6 +3,7 @@ package com.mx.gillustrated.component
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.content.res.Resources
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
 import com.mx.gillustrated.component.CultivationSetting.BattleSettings
 import com.mx.gillustrated.util.NameUtil
@@ -10,6 +11,7 @@ import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import javax.annotation.Resource
 
 @SuppressLint("SetTextI18n")
 object CultivationHelper {
@@ -527,6 +529,12 @@ object CultivationHelper {
                 }
             }
         }
+        if(person.skin != ""){
+            val skin = mConfig.skin.find { it.id == person.skin }
+            (0..3).forEach { count->
+                extraProperty[count] += skin?.property?.get(count) ?: 0
+            }
+        }
         person.extraProperty = Collections.synchronizedList(extraProperty.toMutableList())
         person.extraXuiweiMulti =  getExtraXuiweiMulti(person, alliance)
     }
@@ -858,6 +866,9 @@ object CultivationHelper {
             tianfu + + label + 2 * person.lingGenDetail.type
     }
 
+    fun getResouresId(resources:Resources, name:String):Int{
+        return resources.getIdentifier(name, "drawable", "com.mx.gillustrated")
+    }
 
     fun isServiceRunning(context: Context,  serviceClass: Class<*>): Boolean {
         val manager =  context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?

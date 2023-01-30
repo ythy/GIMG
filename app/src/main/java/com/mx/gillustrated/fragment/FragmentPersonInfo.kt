@@ -74,6 +74,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
     fun onSkinSaveHandler(){
         val index = mSkin.selectedItemPosition
         mPerson.skin = mSkinList[index].id
+        CultivationHelper.updatePersonExtraProperty(mPerson)
         Toast.makeText(context, "设置成功", Toast.LENGTH_SHORT).show()
     }
 
@@ -280,8 +281,13 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         mSkinList.addAll(CultivationHelper.mConfig.skin.filter {
             if(it.spec.isNotEmpty())
                 it.spec.contains(mPerson.specIdentity)
-            else
-                true
+            else {
+                when(it.id.toInt() % 10000 ){
+                    101 -> mPerson.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN
+                    102 -> CultivationHelper.isTalent(mPerson)
+                    else -> false
+                }
+            }
         })
         mSkinList.add(0, Skin("", "默认"))
         val adapter = ArrayAdapter<Skin>(context!!,

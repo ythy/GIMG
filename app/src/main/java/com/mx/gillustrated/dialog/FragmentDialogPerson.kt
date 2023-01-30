@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -156,11 +158,14 @@ class FragmentDialogPerson : DialogFragment() {
             return
         }
         if (person.skin != ""){
-            mDialogView.measures.background = ColorDrawable(Color.TRANSPARENT)
-            when(person.skin){
-                "4200101" -> dialog?.window?.setBackgroundDrawableResource(R.drawable.skin_bg_star)
-                else -> dialog?.window?.setBackgroundDrawableResource(R.drawable.skin_bg_star)
+            val skin = CultivationHelper.mConfig.skin.find { it.id == person.skin }
+            if (skin != null){
+                mDialogView.measures.background = ColorDrawable(Color.TRANSPARENT)
+                dialog?.window?.setBackgroundDrawableResource(CultivationHelper.getResouresId(resources, skin.resource))
             }
+//            val animate = resources.getDrawable(R.drawable.skin_bg_animate, null) as AnimatedVectorDrawable
+//            dialog?.window?.setBackgroundDrawable(animate)
+//            animate.start()
         }
         mPerson = person
         setViewPager()
