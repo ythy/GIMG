@@ -22,7 +22,7 @@ class Skin() {
     }
 
     override fun toString(): String {
-        return CultivationHelper.showing("$name($xiuwei)")
+        return CultivationHelper.showing("$name($xiuwei-${property.take(4).joinToString()})")
     }
 
     fun copy():Skin{

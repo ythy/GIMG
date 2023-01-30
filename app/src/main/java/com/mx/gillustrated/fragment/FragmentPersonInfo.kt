@@ -285,6 +285,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
                 when(it.id.toInt() % 10000 ){
                     101 -> mPerson.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN
                     102 -> CultivationHelper.isTalent(mPerson)
+                    103 -> mPerson.battleWinner > 0
                     else -> false
                 }
             }

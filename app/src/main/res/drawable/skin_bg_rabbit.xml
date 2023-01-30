@@ -23,17 +23,12 @@
         </shape>
     </item>
 
-    <item  android:width="400dp" android:height="500dp"  android:top="250dp">
-        <bitmap android:gravity="fill"
-            android:antialias="true"
-            android:src="@drawable/skin_landscape" />
-    </item>
 
-    <item  android:width="200dp" android:height="350dp" android:left="100dp" android:top="200dp">
+    <item  android:width="400dp" android:height="500dp" android:top="250dp">
         <bitmap android:gravity="fill"
-            android:alpha="0.4"
+            android:alpha="0.2"
             android:antialias="true"
-            android:src="@drawable/skin_sword" />
+            android:src="@drawable/skin_rabbit" />
     </item>
 
 </layer-list>
