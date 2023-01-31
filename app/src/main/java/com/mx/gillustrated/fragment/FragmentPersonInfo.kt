@@ -12,12 +12,14 @@ import butterknife.OnCheckedChanged
 import butterknife.OnClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.adapter.SpinnerCommonAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstNameWeight
 import com.mx.gillustrated.dialog.FragmentDialogPerson
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.util.PinyinUtil
+import com.mx.gillustrated.vo.SpinnerInfo
 import com.mx.gillustrated.vo.cultivation.Person
 import com.mx.gillustrated.vo.cultivation.Skin
 
@@ -73,7 +75,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
     @OnClick(R.id.btn_save_skin)
     fun onSkinSaveHandler(){
         val index = mSkin.selectedItemPosition
-        mPerson.skin = mSkinList[index].id
+        mPerson.skin = "M${mSkinList[index].id}"
         CultivationHelper.updatePersonExtraProperty(mPerson)
         Toast.makeText(context, "设置成功", Toast.LENGTH_SHORT).show()
     }
@@ -274,34 +276,25 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
         tvAge.text = CultivationHelper.showAge(mPerson)
         tvAncestor.text = "${mPerson.ancestorOrignId}/${mPerson.ancestorOrignLevel}-${mPerson.ancestorId}/${mPerson.ancestorLevel}"
-
     }
 
-    fun initSkinSpinner(){
-        mSkinList.addAll(CultivationHelper.mConfig.skin.filter {
-            if(it.spec.isNotEmpty())
-                it.spec.contains(mPerson.specIdentity)
-            else {
-                when(it.id.toInt() % 10000 ){
-                    101 -> mPerson.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN
-                    102 -> CultivationHelper.isTalent(mPerson)
-                    103 -> mPerson.battleWinner > 0
-                    else -> false
-                }
-            }
-        })
+    private fun initSkinSpinner(){
+        mSkinList.addAll(CultivationHelper.getSkinList(mPerson))
         mSkinList.add(0, Skin("", "默认"))
-        val adapter = ArrayAdapter<Skin>(context!!,
-                android.R.layout.simple_spinner_item, mSkinList)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mSkinList.sortBy { it.rarity }
         var index = 0
         if (mSkinList.size > 1 && mPerson.skin != ""){
             mSkinList.forEachIndexed { i, skin ->
-                if (skin.id == mPerson.skin) {
+                if (skin.id == CultivationHelper.getSkinObject(mPerson.skin)?.id ) {
                     index = i
                 }
             }
         }
+        val adapter = SpinnerCommonAdapter(mContext, mSkinList.map {
+            val info = SpinnerInfo()
+            info.name =  "<font color=\"${CultivationSetting.CommonColors[it.rarity]}\">${it.name}</font>(${it.description})-(${it.property.take(6).joinToString()})"
+            info
+        }, false, 12)
         mSkin.adapter = adapter
         mSkin.setSelection(index)
     }

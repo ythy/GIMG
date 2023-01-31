@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.*
@@ -157,15 +159,17 @@ class FragmentDialogPerson : DialogFragment() {
             onCloseHandler()
             return
         }
-        if (person.skin != ""){
-            val skin = CultivationHelper.mConfig.skin.find { it.id == person.skin }
-            if (skin != null){
+        val skin = CultivationHelper.getSkinObject(person.skin)
+        if (skin != null){
+            if (!skin.animated){
                 mDialogView.measures.background = ColorDrawable(Color.TRANSPARENT)
                 dialog?.window?.setBackgroundDrawableResource(CultivationHelper.getResouresId(resources, skin.resource))
+            }else{
+                val animate = mContext.getDrawable(CultivationHelper.getResouresId(resources, skin.resource)) as AnimationDrawable
+                dialog?.window?.setBackgroundDrawable(animate)
+                mDialogView.measures.background = ColorDrawable(Color.TRANSPARENT)
+                animate.start()
             }
-//            val animate = resources.getDrawable(R.drawable.skin_bg_animate, null) as AnimatedVectorDrawable
-//            dialog?.window?.setBackgroundDrawable(animate)
-//            animate.start()
         }
         mPerson = person
         setViewPager()

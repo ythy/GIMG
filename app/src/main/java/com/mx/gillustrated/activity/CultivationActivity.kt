@@ -484,6 +484,10 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.updateNationBattleBonus(mNations, mPersons)
         CultivationHelper.updateSingleBattleBonus(mPersons)
         CultivationHelper.updateBossBattleBonus(mPersons)
+        mPersons.forEach {
+           it.value.skin = CultivationHelper.generateSkinValue(it.value)
+           CultivationHelper.updatePersonExtraProperty(it.value)
+        }
         if(out == null || out.trim() == ""){
             startWorld()
         }else{

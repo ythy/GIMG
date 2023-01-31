@@ -8,17 +8,10 @@
         android:top="20dp" android:bottom="10dp" android:left="20dp" android:right="20dp">
     </item>
 
-    <item  android:width="400dp" android:height="500dp"  android:top="250dp">
+    <item  android:width="200dp" android:height="200dp" android:left="220dp" android:top="0dp" >
         <bitmap android:gravity="fill"
+            android:tint="#3C8068"
             android:antialias="true"
-            android:src="@drawable/skin_landscape" />
+            android:src="@drawable/skin_star" />
     </item>
-
-    <item  android:width="200dp" android:height="350dp" android:left="100dp" android:top="200dp">
-        <bitmap android:gravity="fill"
-            android:alpha="0.4"
-            android:antialias="true"
-            android:src="@drawable/skin_sword" />
-    </item>
-
 </layer-list>

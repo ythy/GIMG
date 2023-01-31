@@ -3245,22 +3245,27 @@
       "id": "4200101",
       "name": "\u661F\u6708\u591C",
       "resource": "skin_bg_star",
-      "xiuwei": 200,
-      "property": [0,0,0,0,0,0,0,0]
+      "rarity": 2,
+      "description": "\u98DE\u5347",
+      "animated": true,
+      "property": [0,0,0,0,100,0,0,0]
     },
     {
       "id": "4200102",
       "name": "\u53E4\u5251\u5947\u8C2D",
       "resource": "skin_bg_sword",
-      "xiuwei": 500,
-      "property": [0,200,0,100,0,0,0,0]
+      "rarity": 8,
+      "description": "\u5929\u8D44>=40",
+      "property": [0,200,0,100,500,100,0,0]
     },
     {
       "id": "4200103",
       "name": "\u5927\u5C55\u5B8F\u5154",
       "resource": "skin_bg_rabbit",
-      "xiuwei": 200,
-      "property": [0,0,0,100,0,0,0,0]
+      "rarity": 5,
+      "description": "\u9650\u5B9A",
+      "property": [0,0,0,100,200,100,0,0],
+      "spec": [12000041, 12000051]
     }
   ]
 }

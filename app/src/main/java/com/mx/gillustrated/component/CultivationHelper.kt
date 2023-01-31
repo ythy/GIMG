@@ -463,6 +463,7 @@ object CultivationHelper {
         result.tianfuList = tianFus
         result.teji = Collections.synchronizedList(getTeji())
         result.label =  Collections.synchronizedList(getLabel())
+        result.skin = generateSkinValue(result)
         result.lifetime = result.birthtime + getLifetimeBonusInitial(result)
         updatePersonExtraProperty(result)
 
@@ -529,10 +530,10 @@ object CultivationHelper {
                 }
             }
         }
-        if(person.skin != ""){
-            val skin = mConfig.skin.find { it.id == person.skin }
+        val skin = getSkinObject(person.skin)
+        if (skin != null){
             (0..3).forEach { count->
-                extraProperty[count] += skin?.property?.get(count) ?: 0
+                extraProperty[count] += skin.property[count]
             }
         }
         person.extraProperty = Collections.synchronizedList(extraProperty.toMutableList())
@@ -617,8 +618,9 @@ object CultivationHelper {
         person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
             basic += it.property[4]
         }
-        if(person.skin != ""){
-            basic += mConfig.skin.find{ f-> f.id == person.skin }?.xiuwei ?: 0
+        val skin = getSkinObject(person.skin)
+        if(skin != null){
+            basic += skin.property[4]
         }
         basic += getLastSingleBattleXiuwei(person)
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
@@ -663,7 +665,12 @@ object CultivationHelper {
         person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
             labelValue += it.property[5]
         }
-        return tianValue + allianceValue + labelValue
+        var skinValue = 0
+        val skin = getSkinObject(person.skin)
+        if(skin != null){
+            skinValue = skin.property[5]
+        }
+        return tianValue + allianceValue + labelValue + skinValue
     }
 
     fun getPersonTianfu(id:String?):TianFu?{
@@ -812,6 +819,38 @@ object CultivationHelper {
             ex
         }.toMutableList()
     }
+
+    fun getSkinList(person: Person):List<Skin>{
+        return CultivationHelper.mConfig.skin.filter {
+            if(it.spec.isNotEmpty())
+                it.spec.contains(person.specIdentity)
+            else {
+                when(it.id.toInt() % 10000 ){
+                    101 -> person.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN
+                    102 -> talentValue(person) >= 40
+                    103 -> person.battleRecord.filterValues { m-> m <= 3 }.isNotEmpty()
+                    else -> false
+                }
+            }
+        }
+    }
+
+    fun generateSkinValue(person: Person):String{
+        val candidate = getSkinList(person)
+        if (candidate.isEmpty())
+            return ""
+        if (person.skin.length > 7)
+            return person.skin
+        return candidate.maxBy { it.rarity }?.id ?: ""
+    }
+
+    fun getSkinObject(skin:String):Skin?{
+       if(skin == "")
+           return null
+       val realSkin = if (skin.length == 7) skin else skin.substring(skin.length - 7)
+       return mConfig.skin.find { it.id == realSkin }
+    }
+
 
     fun getJinJieName(input:String):String{
         if(pinyinMode)
