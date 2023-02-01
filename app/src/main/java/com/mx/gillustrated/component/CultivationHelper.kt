@@ -498,6 +498,7 @@ object CultivationHelper {
         person.lingGenDetail = lingGen.first
         person.lingGenName = lingGen.third
         person.lingGenSpecId = lingGen.second
+        person.lingGenTypeId = lingGen.first.id
         person.tianfuList = tianFus
         updatePersonExtraProperty(person, alliance)
     }
@@ -826,9 +827,8 @@ object CultivationHelper {
                 it.spec.contains(person.specIdentity)
             else {
                 when(it.id.toInt() % 10000 ){
-                    101 -> person.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN
+                    101 -> person.battleRecord.filterValues { m-> m <= 3 }.isNotEmpty()
                     102 -> talentValue(person) >= 40
-                    103 -> person.battleRecord.filterValues { m-> m <= 3 }.isNotEmpty()
                     else -> false
                 }
             }

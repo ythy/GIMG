@@ -9,7 +9,7 @@
     </item>
     <item  android:width="400dp" android:height="500dp" android:top="250dp">
         <bitmap android:gravity="fill"
-            android:alpha="0.1"
+            android:alpha="0.2"
             android:antialias="true"
             android:src="@drawable/skin_rabbit" />
     </item>

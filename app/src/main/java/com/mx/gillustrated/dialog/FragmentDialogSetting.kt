@@ -176,6 +176,16 @@ class FragmentDialogSetting : DialogFragment() {
         newFragment.show(ft, "dialog_person_list")
     }
 
+    @OnClick(R.id.btn_skin)
+    fun onSkinClick(){
+        val ft = childFragmentManager.beginTransaction()
+        // Create and show the dialog.
+        val newFragment = FragmentDialogPersonList.newInstance(6)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_person_list")
+    }
+
+
 
     @OnClick(R.id.btn_exclusive)
     fun onExclusiveClick(){

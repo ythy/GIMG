@@ -3243,12 +3243,12 @@
   "skin": [
     {
       "id": "4200101",
-      "name": "\u661F\u6708\u591C",
+      "name": "\u843D\u661F\u5760\u6708",
       "resource": "skin_bg_star",
-      "rarity": 2,
-      "description": "\u98DE\u5347",
+      "rarity": 5,
+      "description": "\u6B66\u9053\u4F1A\u524D3",
       "animated": true,
-      "property": [0,0,0,0,100,0,0,0]
+      "property": [0,100,0,0,200,100,0,0]
     },
     {
       "id": "4200102",
@@ -3259,7 +3259,7 @@
       "property": [0,200,0,100,500,100,0,0]
     },
     {
-      "id": "4200103",
+      "id": "4200201",
       "name": "\u5927\u5C55\u5B8F\u5154",
       "resource": "skin_bg_rabbit",
       "rarity": 5,

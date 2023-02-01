@@ -335,9 +335,9 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     fun getLabelName(label:Label):String{
-        val tejiString = if (label.teji.size > 0) "+" else  ""
-        val followerString = if (label.follower.size > 0) "#" else  ""
-        return CultivationHelper.showing(label.name + tejiString + followerString)
+//        val tejiString = if (label.teji.size > 0) "+" else  ""
+//        val followerString = if (label.follower.size > 0) "#" else  ""
+        return CultivationHelper.showing(label.name)
     }
 
     fun updateView(){

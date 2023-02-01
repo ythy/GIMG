@@ -27,6 +27,7 @@ import java.util.*
 //type 0 all; 1 fav; 2 carrer rarity>=8 ; 3 lifeturn == 0 & lingGen type > 1 & tianFu rarity sum > 10;
 //type 4 persons has amulet
 //type 5 persons has label
+//type 6 persons set skin
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFragment() {
@@ -210,6 +211,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             5 -> mContext.mPersons.map { it.value }.filter { p -> p.label.mapNotNull{  m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumBy {
                 s-> s.weight
             } >= 500 }
+            6 -> mContext.mPersons.map { it.value }.filter { p -> p.skin != ""}
             else -> mContext.mPersons.map { it.value }
         }
         val filterString = etName.text.toString()

@@ -10,4 +10,7 @@
     <item
         android:drawable="@drawable/skin_bg_star3"
         android:duration="1000" />
+    <item
+        android:drawable="@drawable/skin_bg_star2"
+        android:duration="1000" />
 </animation-list>

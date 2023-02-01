@@ -133,7 +133,7 @@ class Person: PersonBak() {
     var nationPost: Int = 0
     var nationId = ""
 
-    var extraProperty: MutableList<Int> = mutableListOf(0, 0, 0, 0, 0, 0, 0, 0)//update once deps tian linggen
+    var extraProperty: MutableList<Int> = mutableListOf(0, 0, 0, 0, 0, 0, 0, 0)//update once deps tian linggen, label, skin
     var extraXiuwei: Int = 0 //tianfu 初始和读取更新
     var extraTupo: Int = 0 //tianfu 初始和读取更新
     var extraSpeed: Int = 0 //tianfu 初始和读取更新
