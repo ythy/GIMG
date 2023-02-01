@@ -66,7 +66,6 @@ open class PersonBak {
         person.birthtime = this.birthtime
         person.lifetime = this.lifetime
         person.events = this.events
-        person.label = this.label
         person.skin = this.skin
         person.ancestorLevel = this.ancestorLevel
         person.ancestorId = this.ancestorId
@@ -112,6 +111,7 @@ open class PersonBak {
         person.careerList = this.career.map {
            it.toCareer()
         }.toMutableList()
+        person.label = this.label.mapNotNull { CultivationHelper.mConfig.label.find { f-> f.id == it} }.map { it.id }.toMutableList()
         return person
     }
 
