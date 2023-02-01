@@ -11,7 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/BaseActivityStyle"
+        android:id="@+id/ll_skin"
+        android:background="@drawable/skin_bg_spring"
         android:padding="5dp"
         android:orientation="vertical">
         <LinearLayout

@@ -114,6 +114,10 @@ class CultivationActivity : BaseActivity() {
     @BindView(R.id.drawer_layout)
     lateinit var mDrawer:DrawerLayout
 
+    @BindView(R.id.ll_skin)
+    lateinit var mSkinContainer:LinearLayout
+
+
     @OnClick(R.id.btn_save)
     fun onSaveClickHandler(){
         saveAllData()
@@ -567,6 +571,13 @@ class CultivationActivity : BaseActivity() {
         }
         mHistory.adapter = CultivationHistoryAdapter(this, mHistoryData)
         mSpeedText.text = mSpeed.toString()
+
+        val skin =  mSP.getString("cultivation_skin", "spring")
+        mSkinContainer.background = when(skin){
+            "spring" -> getDrawable(R.drawable.skin_bg_spring)
+            "equinox" -> getDrawable(R.drawable.skin_bg_spring_equinox)
+             else -> getDrawable(R.drawable.skin_bg_spring)
+        }
     }
 
     private fun loadConfig(){
@@ -1873,6 +1884,12 @@ class CultivationActivity : BaseActivity() {
                 val newFragment = FragmentDialogSetting.newInstance()
                 newFragment.isCancelable = false
                 newFragment.show(ft, "dialog_setting")
+            }
+            R.id.menu_skin->{
+                val ft = supportFragmentManager.beginTransaction()
+                val newFragment = FragmentDialogSkin.newInstance()
+                newFragment.isCancelable = true
+                newFragment.show(ft, "dialog_skin")
             }
         }
         return true

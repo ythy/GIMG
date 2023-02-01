@@ -80,4 +80,8 @@
         <item>橙</item>
     </string-array>
 
+    <string-array name="cultivation_skin">
+        <item>春分山野</item>
+        <item>春分雨来</item>
+    </string-array>
 </resources>
