@@ -5,11 +5,11 @@
         android:orderInCategory="600"
         android:title="customPerson"/>
     <item
-        android:id="@+id/menu_setting"
-        android:orderInCategory="610"
-        android:title="setting"/>
-    <item
         android:id="@+id/menu_skin"
-        android:orderInCategory="620"
+        android:orderInCategory="610"
         android:title="skin"/>
+    <item
+        android:id="@+id/menu_setting"
+        android:orderInCategory="620"
+        android:title="setting"/>
 </menu>

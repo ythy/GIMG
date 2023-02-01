@@ -572,11 +572,15 @@ class CultivationActivity : BaseActivity() {
         mHistory.adapter = CultivationHistoryAdapter(this, mHistoryData)
         mSpeedText.text = mSpeed.toString()
 
+        loadSkin()
+    }
+
+    fun loadSkin(){
         val skin =  mSP.getString("cultivation_skin", "spring")
         mSkinContainer.background = when(skin){
             "spring" -> getDrawable(R.drawable.skin_bg_spring)
             "equinox" -> getDrawable(R.drawable.skin_bg_spring_equinox)
-             else -> getDrawable(R.drawable.skin_bg_spring)
+            else -> getDrawable(R.drawable.skin_bg_spring)
         }
     }
 

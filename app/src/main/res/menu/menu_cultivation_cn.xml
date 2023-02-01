@@ -5,11 +5,11 @@
         android:orderInCategory="600"
         android:title="定制人物"/>
     <item
-        android:id="@+id/menu_setting"
-        android:orderInCategory="610"
-        android:title="设置"/>
-    <item
         android:id="@+id/menu_skin"
-        android:orderInCategory="620"
+        android:orderInCategory="610"
         android:title="主题"/>
+    <item
+        android:id="@+id/menu_setting"
+        android:orderInCategory="620"
+        android:title="设置"/>
 </menu>

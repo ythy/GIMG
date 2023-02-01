@@ -40,6 +40,7 @@ class FragmentDialogSkin : DialogFragment() {
             0-> context.mSP.edit().putString("cultivation_skin", "spring").apply()
             1-> context.mSP.edit().putString("cultivation_skin", "equinox").apply()
         }
+        context.loadSkin()
         this.dismiss()
     }
 
