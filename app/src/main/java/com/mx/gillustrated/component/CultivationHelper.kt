@@ -905,7 +905,7 @@ object CultivationHelper {
         }
         val label = person.label.mapNotNull { m-> mConfig.label.find { it.id == m } }
                 .filter { it.weight > 5 }
-                .sumBy { it.rarity }
+                .sumBy {  Math.round(it.rarity.toFloat() * 2f)}
 
         return if(person.lingGenDetail.type == 0 )
             tianfu + label

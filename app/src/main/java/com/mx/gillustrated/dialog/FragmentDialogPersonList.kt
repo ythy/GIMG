@@ -208,9 +208,10 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             4 -> mContext.mPersons.map { it.value }.filter { p->
                p.equipmentList.find { e-> e.detail.type == 5 } != null
             }
-            5 -> mContext.mPersons.map { it.value }.filter { p -> p.label.mapNotNull{  m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumBy {
-                s-> s.weight
-            } >= 500 }// rarity 7
+            5 -> mContext.mPersons.map { it.value }.filter { p ->
+                p.label.mapNotNull { m -> CultivationHelper.mConfig.label.find { f -> f.id == m } }
+                        .any { it.rarity >= 9 }
+            }
             6 -> mContext.mPersons.map { it.value }.filter { p -> p.skin != ""}
             else -> mContext.mPersons.map { it.value }
         }
