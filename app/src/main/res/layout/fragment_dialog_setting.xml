@@ -38,15 +38,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 style="@style/ButtonSmall"
-                android:id="@+id/btn_fav"
-                android:text="FAV"/>
+                android:id="@+id/btn_ever"
+                android:text="EVER"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 style="@style/ButtonSmall"
-                android:id="@+id/btn_spec"
-                android:text="SPEC"/>
+                android:id="@+id/btn_spec_career"
+                android:text="CAREER"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

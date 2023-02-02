@@ -881,6 +881,14 @@ object CultivationHelper {
             null
     }
 
+    fun isNeverDead(person: Person):Boolean{
+        if(person.isFav || person.neverDead || person.equipmentList.find { it.id == "7009004" } != null
+                || person.label.find { it == "4100301" } != null){
+            return true
+        }
+        return false
+    }
+
     fun isTalent(person: Person):Boolean{
         return person.deadExceptTimes <= CultivationSetting.TEMP_TALENT_EXP && talentValue(person) > CultivationSetting.TEMP_TALENT_PROTECT
     }

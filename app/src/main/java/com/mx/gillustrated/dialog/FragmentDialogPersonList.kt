@@ -24,7 +24,7 @@ import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 import java.util.*
 
-//type 0 all; 1 fav; 2 carrer rarity>=8 ; 3 lifeturn == 0 & lingGen type > 1 & tianFu rarity sum > 10;
+//type 0 all; 1 never dead; 2 talent >= 10;
 //type 4 persons has amulet
 //type 5 persons has label
 //type 6 persons set skin
@@ -200,17 +200,17 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     private fun setOnlineList(){
         mPersonData.clear()
         val persons = when (mType) {
-            1 -> mContext.mPersons.map { it.value }.filter { it.isFav || it.neverDead || it.equipmentList.find { e -> e.id.toInt() / 1000 == 7009 } != null }
+            1 -> mContext.mPersons.map { it.value }.filter { CultivationHelper.isNeverDead(it) }
             2 -> mContext.mPersons.map { it.value }.filter { p-> p.careerList.maxBy { m-> m.detail.rarity }?.detail?.rarity ?: 0 >= 8 }
             3 -> mContext.mPersons.map { it.value }.filter { p->
-                p.lifeTurn == 0 && p.ancestorLevel == 0 && ( p.lingGenDetail.type >= 3 || (p.lingGenDetail.type > 0 && p.tianfuList.sumBy { s-> s.rarity } > 5))
+                p.lifeTurn == 0 && p.ancestorLevel == 0 && CultivationHelper.talentValue(p) >= 10
             }
             4 -> mContext.mPersons.map { it.value }.filter { p->
-               p.equipmentList.find { e-> e.seq > 10000 } != null
+               p.equipmentList.find { e-> e.detail.type == 5 } != null
             }
             5 -> mContext.mPersons.map { it.value }.filter { p -> p.label.mapNotNull{  m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumBy {
                 s-> s.weight
-            } >= 500 }
+            } >= 500 }// rarity 7
             6 -> mContext.mPersons.map { it.value }.filter { p -> p.skin != ""}
             else -> mContext.mPersons.map { it.value }
         }

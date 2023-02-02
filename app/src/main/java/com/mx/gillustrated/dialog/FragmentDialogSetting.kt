@@ -131,8 +131,8 @@ class FragmentDialogSetting : DialogFragment() {
         this.dismiss()
     }
 
-    @OnClick(R.id.btn_fav)
-    fun onFavClick(){
+    @OnClick(R.id.btn_ever)
+    fun onEverClick(){
         val ft = childFragmentManager.beginTransaction()
         // Create and show the dialog.
         val newFragment = FragmentDialogPersonList.newInstance(1)
@@ -140,7 +140,7 @@ class FragmentDialogSetting : DialogFragment() {
         newFragment.show(ft, "dialog_person_list")
     }
 
-    @OnClick(R.id.btn_spec)
+    @OnClick(R.id.btn_spec_career)
     fun onSpecClick(){
         val ft = childFragmentManager.beginTransaction()
         // Create and show the dialog.
