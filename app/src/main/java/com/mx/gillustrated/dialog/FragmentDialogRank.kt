@@ -191,7 +191,7 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                         SimpleData(if (persons.size == 1) persons[0].id else "",
                                 if (persons.size == 1 && equipment.specName.isEmpty()) persons[0].name else  persons.joinToString { it.name +
                                         if (equipment.specName.isNotEmpty()) "(${equipment.specName[equipment.spec.indexOf(it.specIdentity)]})" else "" },
-                                equipment.name, mType, mutableListOf(), -1)
+                                equipment.name, mType, mutableListOf(), equipment.id.toInt())
                     }
                 )
             }
@@ -211,7 +211,7 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
 
     private fun updateList(list:MutableList<SimpleData>){
         mListData.clear()
-        mListData.addAll(list.sortedByDescending { it.seq })
+        mListData.addAll(if(mType == 8) list.sortedBy { it.seq } else list.sortedByDescending { it.seq })
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
         mTotalText.text = list.size.toString()

@@ -45,7 +45,7 @@ class CultivationRankAdapter constructor(mContext: Context, private val list: Li
 
         val values = list[arg0]
         component.name.text = CultivationHelper.showing(values.name)
-        component.seq.text =  if(values.seq >= 0 )  values.seq.toString() else CultivationHelper.showing(values.remark ?: "")
+        component.seq.text =  if(values.remark == "" )  values.seq.toString() else CultivationHelper.showing(values.remark ?: "")
 
         return convertView
     }
