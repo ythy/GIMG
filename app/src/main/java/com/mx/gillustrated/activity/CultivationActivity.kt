@@ -579,6 +579,7 @@ class CultivationActivity : BaseActivity() {
         val skin =  mSP.getString("cultivation_skin", "spring")
         mSkinContainer.background = when(skin){
             "spring" -> getDrawable(R.drawable.skin_bg_spring)
+            "rain" -> getDrawable(R.drawable.skin_bg_rain)
             "equinox" -> getDrawable(R.drawable.skin_bg_spring_equinox)
             else -> getDrawable(R.drawable.skin_bg_spring)
         }
