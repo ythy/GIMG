@@ -89,17 +89,15 @@ class FragmentTeJi: Fragment() {
                 teji
             })
         }
-        tejis.addAll(mConfig.teji.filter { it.type == 6 && it.spec.contains(mPerson.specIdentity)}.map {
-            val teji = it.toTeji()
-            teji.form = 3
-            if(teji.specName.isNotEmpty()){
-                val index = teji.spec.indexOf(mPerson.specIdentity)
-                if(index < teji.specName.size) {
-                    teji.name = teji.specName[index]
+        mPerson.equipmentList.filter { it.detail.specTeji.size > 0 }
+                .forEach { equipment ->
+                    val index = equipment.detail.spec.indexOf(mPerson.specIdentity)
+                    val teji = mConfigTeji.find { e-> e.id == equipment.detail.specTeji[index]}!!.toTeji()
+                    teji.form = 3
+                    teji.name = equipment.detail.specTejiName[index]
+                    tejis.add(teji)
                 }
-            }
-            teji
-        })
+
         mPerson.label.forEach {
             val label = mConfig.label.find { f-> f.id == it }!!.copy()
             label.teji.forEach { id->

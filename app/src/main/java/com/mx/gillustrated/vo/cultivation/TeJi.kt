@@ -15,8 +15,6 @@ open class TeJiConfig {
     var statusRound:Int = 0 // combining with status
     var power:Int = 0
     var extraPower:MutableList<Int> = mutableListOf(0,0,0,0)
-    var spec:MutableList<Int> = mutableListOf()//专属
-    var specName:MutableList<String> = mutableListOf()//专属
 
     fun toTeji():TeJi{
         val teJi = TeJi()
@@ -30,8 +28,6 @@ open class TeJiConfig {
         teJi.status = this.status
         teJi.statusRound = this.statusRound
         teJi.power = this.power
-        teJi.spec =  Collections.synchronizedList(this.spec.toMutableList())
-        teJi.specName =  Collections.synchronizedList(this.specName.toMutableList())
         teJi.extraPower =  Collections.synchronizedList(this.extraPower.toMutableList())
         return teJi
     }
@@ -45,6 +41,6 @@ open class TeJiConfig {
 
 class TeJi: TeJiConfig() {
 
-    var form:Int = 0 // 0 list 1 ex equipment 2 amulet 3 fixed spec person 4 label
+    var form:Int = 0 // 0 list 1 equipment 2 amulet 3 equipment magic  4 label
 
 }

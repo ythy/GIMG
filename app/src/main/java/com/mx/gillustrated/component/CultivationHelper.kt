@@ -816,6 +816,9 @@ object CultivationHelper {
                 if(index < ex.detail.specName.size) {
                     ex.uniqueName = ex.detail.specName[index]
                 }
+            }else if(ex.detail.specTeji.isNotEmpty()){
+                val index = ex.detail.spec.indexOf(person.specIdentity)
+                ex.uniqueName = "${ex.detail.name}-${ex.detail.specTejiName[index]}"
             }
             ex
         }.toMutableList()

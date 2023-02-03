@@ -23,12 +23,14 @@ data class EquipmentConfig(
         val spec:MutableList<Int> = mutableListOf(),//专属
         val specName:MutableList<String> = mutableListOf(),//专属
         val teji:MutableList<String> = mutableListOf(),
-        val follower:MutableList<String> = mutableListOf()
+        val follower:MutableList<String> = mutableListOf(),
+        val specTeji:MutableList<String> = mutableListOf(),
+        val specTejiName:MutableList<String> = mutableListOf()
 ){
     //Gson 序列化使用
     constructor():this(
             "", "", 0, 0, 0, 0,  mutableListOf(0,0,0,0,0,0,0,0), mutableListOf(),
-            mutableListOf(), mutableListOf(), mutableListOf()
+            mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf()
     )
 
     override fun toString(): String {

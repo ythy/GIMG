@@ -513,7 +513,7 @@ object CultivationBattleHelper {
         if(person.followerList.isNotEmpty()){
             battlePerson.follower.addAll(person.followerList.map { follower->
                 val props = follower.detail.property
-                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(f) }.toMutableList())
+                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(Pair(f, "")) }.toMutableList())
                 result.name = "${person.name}-${follower.detail.name}${follower.uniqueName}"
                 result.battleId = battlePerson.battleId
                 result
@@ -523,7 +523,7 @@ object CultivationBattleHelper {
             it.detail.follower.forEach { id->
                 val follower = Follower(id)
                 val props = follower.detail.property
-                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(f) }.toMutableList())
+                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(Pair(f, "")) }.toMutableList())
                 result.name = "${person.name}-${follower.detail.name}"
                 result.battleId = battlePerson.battleId
                 battlePerson.follower.add(result)
@@ -534,7 +534,7 @@ object CultivationBattleHelper {
             label.follower.forEach { id->
                 val follower = Follower(id)
                 val props = follower.detail.property
-                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(f) }.toMutableList())
+                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(Pair(f, "")) }.toMutableList())
                 result.name = "${person.name}-${follower.detail.name}"
                 result.battleId = battlePerson.battleId
                 battlePerson.follower.add(result)
@@ -556,16 +556,19 @@ object CultivationBattleHelper {
 
 
     fun getAllTeji(person: Person):MutableList<TeJiObject>{
-        val result = mutableListOf<String>()
-        result.addAll(person.teji)
+        val result = mutableListOf<Pair<String,String>>()
+        result.addAll(person.teji.map { Pair(it, "") })
         person.equipmentList.filter { it.detail.teji.size > 0 }.forEach {
-            result.addAll(it.detail.teji)
+            result.addAll(it.detail.teji.map { m-> Pair(m, "") })
         }
-        result.addAll(mConfig.teji.filter { it.type == 6 && it.spec.contains(person.specIdentity)}.map { it.id })
+        person.equipmentList.filter { it.detail.specTeji.size > 0 }.forEach {
+            val index = it.detail.spec.indexOf(person.specIdentity)
+            result.add(Pair(it.detail.specTeji[index], it.detail.specTejiName[index]) )
+        }
         person.label.map {
             mConfig.label.find { e-> e.id == it}!!.copy()
         }.filter { it.teji.isNotEmpty() }.forEach {
-            result.addAll(it.teji)
+            result.addAll(it.teji.map { m-> Pair(m, "") })
         }
 
         return result.map {
@@ -574,16 +577,10 @@ object CultivationBattleHelper {
     }
 
     //特技有可能包含多个名称
-    fun convertTejiObject(id:String, person: Person? = null):TeJiObject{
-        val tejiObject = TeJiObject(id)
-        val tejiDetail = tejiDetail(id)
-        tejiObject.name = tejiDetail.name
-        if(person != null && tejiDetail.specName.isNotEmpty()){
-            val index = tejiDetail.spec.indexOf(person.specIdentity)
-            if(index < tejiDetail.specName.size){
-                tejiObject.name = tejiDetail.specName[index]
-            }
-        }
+    fun convertTejiObject(id:Pair<String, String>, person: Person? = null):TeJiObject{
+        val tejiObject = TeJiObject(id.first)
+        val tejiDetail = tejiDetail(id.first)
+        tejiObject.name = tejiDetail.name + if (id.second == "" || id.second == tejiDetail.name) "" else "-${id.second}"
         tejiObject.type = tejiDetail.type
         tejiObject.power = tejiDetail.power
         tejiObject.extraPower = tejiDetail.extraPower
