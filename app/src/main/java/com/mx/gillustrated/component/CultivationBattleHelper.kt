@@ -9,7 +9,10 @@ import com.mx.gillustrated.component.CultivationHelper.mConfig
 object CultivationBattleHelper {
 
     var mBattles:ConcurrentHashMap<String, BattleInfo> = ConcurrentHashMap()
-    var BaGua = listOf("\u4E7E","\u574E","\u826E", "\u9707", "\u5DFD", "\u79BB", "\u5764", "\u5151")
+    val BaGua = listOf("\u4E7E","\u574E","\u826E", "\u9707", "\u5DFD", "\u79BB", "\u5764", "\u5151")
+    val SpecPositiveWords = listOf("\u6076\u62A5", "\u591C\u821E\u503E\u57CE")
+    val SpecNegativeWords = listOf("\u5584\u62A5")
+
     // allPersons pass null if partner don`t join battle
     fun battlePerson(allPersons:ConcurrentHashMap<String, Person>?, person1: Person, person2: Person, round:Int):Boolean{
 
@@ -180,18 +183,18 @@ object CultivationBattleHelper {
         battlePersons.forEachIndexed { index, currentList ->
             val allOpponent = battlePersons[Math.abs(index - 1)]
             currentList.forEach { current ->
-                if(hasTeji("8002002", current)){
+                if(hasTeji("8002002", current) && isTrigger(current)){
                     allOpponent.forEach { opponent ->
                         opponent.hp -= tejiDetail("8002002").power
                     }
                     printBattleInfo(battleId, current, 1, "\u654C\u65B9\u5168\u4F53HP-", "8002002")
-                }else if(hasTeji("8002001", current)){
+                }else if(hasTeji("8002001", current) && isTrigger(current)){
                     allOpponent.forEach { opponent ->
                         opponent.hp -= tejiDetail("8002001").power
                     }
                     printBattleInfo(battleId, current, 1, "\u654C\u65B9\u5168\u4F53HP-", "8002001")
                 }
-                if(hasTeji("8002005", current)){
+                if(hasTeji("8002005", current) && isTrigger(current)){
                     current.hp += tejiDetail("8002005").power
                     current.hp = Math.min(current.hp, current.maxhp)
                     printBattleInfo(battleId, current, 1, "HP+", "8002005")
@@ -275,7 +278,7 @@ object CultivationBattleHelper {
             printBattleInfo(attacker.battleId, attacker, 4, "${statusDetail("8100001").name}\u53d1\u52a8")
             inBattles(attacker, defender)
         }
-        if(hasTeji("8003008", defender) && defender.hp > 0 && attacker.hp > 0 && isTrigger(tejiDetail("8003008").chance, defender) ){//anti-attack
+        if(hasTeji("8003008", defender) && defender.hp > 0 && attacker.hp > 0 && isTrigger(tejiDetail("8003008").chance, defender, attacker) ){//anti-attack
             printBattleInfo(defender.battleId, defender, 3, "", "8003008")
             inBattles(defender, attacker)
         }
@@ -293,12 +296,17 @@ object CultivationBattleHelper {
             printBattleInfo(battleId, defender, 3, "${showName(attacker)}\u653b\u51fb\u88ab\u56de\u907f", "8003001")
             return
         }
-        val attackerValue = getBattleValue(attacker.attack, attacker)
+        var attackerValue = getBattleValue(attacker.attack, attacker)
         var defenderValue = getBattleValue(defender.defence, defender)
         val triggerBaseList:MutableList<String> = mutableListOf()
         if(hasTeji("8003005", attacker) && isTrigger(tejiDetail("8003005").chance, attacker)){
             defenderValue = 0
             triggerBaseList.add(tejiDetail("8003005").name)
+        }
+        if(hasTeji("8003011", attacker) && isTrigger(attacker)){
+            val multi = tejiDetail("8003011").power.toFloat() / 100
+            attackerValue = Math.round( attackerValue * multi)
+            triggerBaseList.add(tejiDetail("8003011").name)
         }
         var attackResult = attackerValue - defenderValue
         if(hasTeji("8003002", attacker) && attackResult > 0 && isTrigger(tejiDetail("8003002").chance, attacker) ){
@@ -318,9 +326,26 @@ object CultivationBattleHelper {
                 return
             }
         }
-
-        defender.hp -= hpReduced + attacker.extraDamage
-        printBattleInfo(battleId, attacker, 5, "${triggerBaseList.joinToString()} $attackerValue - $defenderValue ${showName(defender)}HP-${hpReduced + attacker.extraDamage}")
+        //Shan E You Bao
+        if(hasTeji("8001009", attacker) && isTrigger(tejiDetail("8001009").chance, attacker) ){
+            if(isTrigger(80)){
+                hpReduced *= 2
+                triggerBaseList.add(SpecPositiveWords[0])
+            }else{
+                hpReduced = -Math.round(hpReduced * 0.2f)
+                triggerBaseList.add("${SpecNegativeWords[0]}${-hpReduced}")
+            }
+        }
+        //Ye Wu Qing Cheng
+        if(hasTeji("8001010", attacker) && isTrigger(tejiDetail("8001010").chance, attacker) ){
+            val multi = tejiDetail("8001010").power.toFloat() / 100
+            val extraDamage = Math.round((attacker.attack + attacker.speed) * multi)
+            hpReduced += extraDamage
+            triggerBaseList.add("${SpecPositiveWords[1]}$extraDamage")
+        }
+        val fianlReduced = attacker.extraDamage + hpReduced
+        defender.hp -= fianlReduced
+        printBattleInfo(battleId, attacker, 5, "${triggerBaseList.joinToString()} ${showName(defender)}HP${if(fianlReduced > 0) "-" else "+"}${Math.abs(fianlReduced)},  ${attacker.hp} vs ${defender.hp}  ")
 
         magicInBattle(battleId, attacker, defender)
 
@@ -391,7 +416,7 @@ object CultivationBattleHelper {
     }
 
     private fun getBattleValue(origin:Int, person:BattleObject):Int{
-        return if(hasTeji("8003010", person)){
+        return if(hasTeji("8003010", person) && isTrigger(person)){
             origin
         }else{
             val calculatorValue =  origin.toFloat() * (100 - Random().nextInt(50)) / 100
@@ -584,10 +609,17 @@ object CultivationBattleHelper {
         return person.kills.find { it.id == id } != null
     }
 
-    private fun isTrigger(chance:Int = 50, current: BattleObject? = null, opponent:BattleObject? = null):Boolean{
+    private fun isTrigger(chance:Int = 50, current: BattleObject, opponent:BattleObject? = null):Boolean{
         val exception = if(opponent != null) opponent.type == 1 || hasTeji("8001006", opponent) else false
-        val guiyi = if(current != null ) !isStatusExpire(current, "8100005") else false
-        return !guiyi && !exception && ( Random().nextInt(100) < chance )
+        return !exception && isTrigger(current) && isTrigger(chance)
+    }
+
+    private fun isTrigger(current: BattleObject):Boolean{
+        return isStatusExpire(current, "8100005")
+    }
+
+    private fun isTrigger(chance:Int = 50):Boolean{
+        return Random().nextInt(100) < chance
     }
 
     private fun showName(person:BattleObject, showStatus:Boolean = true):String{

@@ -16,6 +16,7 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
+import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.component.CultivationHelper.showing
@@ -73,6 +74,16 @@ class CultivationBattleAdapter constructor(mContext: Context, private val list: 
         if (matchResultTeji != null) {
             inColor = true
             spannable.setSpan(ForegroundColorSpan(Color.parseColor(CommonColors[CultivationHelper.mConfig.teji.find { it.id == battle.teji }!!.rarity])), matchResultTeji.range.start, matchResultTeji.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        val positiveMatchResults = showing(CultivationBattleHelper.SpecPositiveWords.joinToString("|")).toRegex().findAll(history)
+        positiveMatchResults.forEach {
+            inColor = true
+            spannable.setSpan(ForegroundColorSpan(Color.parseColor("#FF0000")), it.range.start, it.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        val negativeMatchResults = showing(CultivationBattleHelper.SpecNegativeWords.joinToString("|")).toRegex().findAll(history)
+        negativeMatchResults.forEach {
+            inColor = true
+            spannable.setSpan(ForegroundColorSpan(Color.parseColor("#0000FF")), it.range.start, it.range.endInclusive + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         if (inColor) {
             component.tvRow.setText(spannable, TextView.BufferType.SPANNABLE)

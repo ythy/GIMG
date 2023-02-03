@@ -638,22 +638,6 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    fun optimizeClanPersons(){
-        mClans.forEach { (_: String, u: Clan) ->
-            killClanPersons(u)
-        }
-        showToast("Clan Person 优化完成")
-    }
-
-    private fun killClanPersons(clan:Clan?){
-        clan?.clanPersonList?.map { it.value }?.sortedBy { it.ancestorLevel }?.forEach {
-            if(it.ancestorId != it.id && getOnlinePersonDetail(it.parent?.first) == null && isDeadException(it) == 0 ){
-                deadHandler(it)
-            }
-        }
-    }
-
-
     private fun deadHandler(it:Person, force:Boolean = false){
         mPersons.remove(it.id)
         mDeadPersons[it.id] = it
@@ -829,7 +813,6 @@ class CultivationActivity : BaseActivity() {
                 saveAllData(false)
             }
             inDurationByXun("Xun12000", 12000) -> {
-                optimizeClanPersons()
                 bePerson()
             }
             else -> randomBattle(currentXun)
