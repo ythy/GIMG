@@ -320,10 +320,25 @@ class CultivationActivity : BaseActivity() {
         mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
             val config = specConfig.find { c-> c.identity == u.specIdentity }
             if (config != null){
-                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
-                u.lastName = config.name.first
                 if (config.profile > 0)
                     u.profile = config.profile
+                else if(config.profile == 0 && u.profile > 0)
+                    u.profile = 0
+                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
+                u.lastName = config.name.first
+
+                if(config.partner == 0 && u.partner != null){
+                    if(getOnlinePersonDetail(u.partner)?.partner == u.id){
+                        getOnlinePersonDetail(u.partner)?.partner = null
+                    }
+                    u.partner = null
+                }
+                if(config.parent == null && u.parent != null){
+                    getOnlinePersonDetail(u.parent?.first)?.children?.removeIf { it == u.id }
+                    getOnlinePersonDetail(u.parent?.second)?.children?.removeIf { it == u.id }
+                    u.parent = null
+                }
+
                 if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
                     mPersons[u.partner ?: ""]?.partnerName = u.name
                 }
