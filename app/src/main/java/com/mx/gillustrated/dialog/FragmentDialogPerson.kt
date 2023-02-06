@@ -105,6 +105,18 @@ class FragmentDialogPerson : DialogFragment() {
         newFragment.show(ft, "dialog_rank_info")
     }
 
+    @OnClick(R.id.iv_profile)
+    fun onProfileClickHandler(){
+        if (mPerson.profile == 0)
+            return
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogImage.newInstance(mPerson.profile.toString(), mPerson.gender)
+        newFragment.isCancelable = true
+        newFragment.show(ft, "dialog_image")
+    }
+
+
+
     @BindView(R.id.sch_fav)
     lateinit var mSwitchFav:Switch
 
