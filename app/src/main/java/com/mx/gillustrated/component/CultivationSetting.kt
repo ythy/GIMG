@@ -153,7 +153,8 @@ object CultivationSetting {
             PresetInfo(16040080, Pair("\u725B", "\u9B54\u738B"), 0, 100, 200),
             PresetInfo(16040091, Pair("\u94C1\u6247", "\u516C\u4E3B"), 0, 100, 200),
             PresetInfo(16040100, Pair("\u5954\u6CE2\u513F\u705E", "")),
-            PresetInfo(16040110, Pair("\u516D\u8033\u7315\u7334", ""), 0, 1000, 2000)
+            PresetInfo(16040110, Pair("\u516D\u8033\u7315\u7334", ""), 0, 1000, 2000),
+            PresetInfo(16040120, Pair("\u7389\u7687\u5927\u5E1D", ""), 0, 2000, 5000)
     )
 
     //achieved immutable

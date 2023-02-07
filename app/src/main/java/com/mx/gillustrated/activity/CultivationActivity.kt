@@ -327,16 +327,20 @@ class CultivationActivity : BaseActivity() {
                 u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
                 u.lastName = config.name.first
 
-                if(config.partner == 0 && u.partner != null){
-                    if(getOnlinePersonDetail(u.partner)?.partner == u.id){
+                if(config.partner == 0){
+                    if( u.partner != null && getOnlinePersonDetail(u.partner)?.partner == u.id){
                         getOnlinePersonDetail(u.partner)?.partner = null
                     }
                     u.partner = null
+                    u.partnerName = null
                 }
-                if(config.parent == null && u.parent != null){
-                    getOnlinePersonDetail(u.parent?.first)?.children?.removeIf { it == u.id }
-                    getOnlinePersonDetail(u.parent?.second)?.children?.removeIf { it == u.id }
+                if(config.parent == null){
+                    if(u.parent != null){
+                        getOnlinePersonDetail(u.parent?.first)?.children?.removeIf { it == u.id }
+                        getOnlinePersonDetail(u.parent?.second)?.children?.removeIf { it == u.id }
+                    }
                     u.parent = null
+                    u.parentName = null
                 }
 
                 if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
