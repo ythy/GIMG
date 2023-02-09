@@ -8,21 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.ImageView
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.DialogFragment
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
-import com.mx.gillustrated.activity.MainActivity
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.component.JingLongData
-import com.mx.gillustrated.component.JingLongData.Talk
+import com.mx.gillustrated.component.JinLongData.FeiLevel
+import com.mx.gillustrated.component.JinLongData.FeiziStep
+import com.mx.gillustrated.component.JinLongData.Talk
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
@@ -45,12 +42,16 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     @BindView(R.id.tv_content)
     lateinit var mContent:TextView
 
+    @BindView(R.id.spinner_level)
+    lateinit var mSpinner: Spinner
+
     @OnClick(R.id.btn_close)
     fun onCloseHandler(){
         this.dismiss()
     }
 
     var count = 0
+    var mLevelList = mutableListOf<String>()
     private val mStart = Talk.filterIndexed { index, _ -> listOf(3,4,6,9,16,17,18,28,29,56,57,60,62,63.150,152,153).contains(index) || index in 30..36
             || index in 42..50 || index in 85..90 || index in 98..107 || index in 113..119 || index in 130..147 }
     private val mData = mutableListOf(
@@ -60,20 +61,23 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
             Talk.filterIndexed { index, _ -> listOf(5,7,8).contains(index) ||  index in 37..41 || index in 51..55 || index in 66..70
                     ||  index in 93..97 || index in 108..112 || index in 122..127  }
     )
-    private val mEnding = mutableListOf("\u610F\u72B9\u672A\u5C3D...", "\u547B\u541F...", "\u762B\u8F6F...")
+    private val mEnding = mutableListOf("\u610F\u72B9\u672A\u5C3D...", "\u5A07\u541F...", "\u762B\u8F6F...")
+    private lateinit var mPerson: Person
 
     @OnClick(R.id.btn_reward)
     fun onRewardHandler(){
-        mPerson.feiziXiuwei += 10
-        mName.text = CultivationHelper.showing("${mPerson.name}-${mPerson.feiziXiuwei}")
+        mPerson.feiziFavor += 100
+        showName()
         mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(convertTalk(Talk[2]))
+        setLevelSpinner()
     }
 
     @OnClick(R.id.btn_punish)
     fun onPunishHandler(){
-        mPerson.feiziXiuwei = Math.max(0, mPerson.feiziXiuwei - 10)
-        mName.text = CultivationHelper.showing("${mPerson.name}-${mPerson.feiziXiuwei}")
+        mPerson.feiziFavor = Math.max(0, mPerson.feiziFavor - 100)
+        showName()
         mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(convertTalk(Talk.filterIndexed { index, _ -> index in 12..14 }.shuffled()[0]))
+        setLevelSpinner()
     }
 
 
@@ -82,7 +86,7 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
         if (count == 3)
             return
         if (count == 0){
-            val mlText = "\u4E0E${mPerson.name}\u82B1\u524D\u6708\u4E0B..."
+            val mlText = "\u4E0E${getName()}\u82B1\u524D\u6708\u4E0B..."
             mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(mlText)
             count++
             return
@@ -93,10 +97,11 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
         //结束奖励
         if (count == 3){
             val random = Random().nextInt(3)
-            mPerson.feiziXiuwei += 10 * (random + 1)
-            mName.text = CultivationHelper.showing("${mPerson.name}-${mPerson.feiziXiuwei}")
-            val bonusText = "${mPerson.name}${mEnding[random]}, \u6B22\u6109+${10 * (random + 1)}"
+            mPerson.feiziFavor += 10 * (random + 1)
+            showName()
+            val bonusText = "${getName()}${mEnding[random]}, \u6B22\u6109+${10 * (random + 1)}"
             mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(bonusText)
+            setLevelSpinner()
         }
     }
 
@@ -107,7 +112,41 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
                 .replace("BIXIA", "\u965B\u4E0B")
     }
 
-    lateinit var mPerson: Person
+    fun showName(){
+        mName.text = CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}${mPerson.name}(${mPerson.feiziFavor})")
+    }
+
+    fun getName():String{
+        return CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}${mPerson.fullName}")
+    }
+
+    fun initLevelSpinner(){
+        mLevelList.addAll(FeiLevel.filterIndexed { index, _ -> FeiziStep[index] <= mPerson.feiziFavor  }
+                .map { CultivationHelper.showing(it) })
+        val adapter = ArrayAdapter<String>(context!!,
+                android.R.layout.simple_spinner_item, mLevelList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mSpinner.adapter = adapter
+        mSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selected = parent.selectedItem.toString()
+                mPerson.feiziLevel = FeiLevel.map { CultivationHelper.showing(it)  }.indexOf(selected)
+                showName()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+        mSpinner.setSelection(mLevelList.indexOf(CultivationHelper.showing(FeiLevel[mPerson.feiziLevel])))
+    }
+
+    fun setLevelSpinner(){
+        mLevelList.clear()
+        mLevelList.addAll(FeiLevel.filterIndexed { index, _ -> FeiziStep[index] <= mPerson.feiziFavor  }
+                .map { CultivationHelper.showing(it) })
+        (mSpinner.adapter as BaseAdapter).notifyDataSetChanged()
+        mSpinner.setSelection(mLevelList.indexOf(CultivationHelper.showing(FeiLevel[mPerson.feiziLevel])))
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -121,7 +160,8 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     fun init(){
         val context = activity as CultivationActivity
         mPerson = context.getPersonData(mId)!!
-        mName.text = CultivationHelper.showing("${mPerson.name}-${mPerson.feiziXiuwei}")
+        showName()
+        initLevelSpinner()
         val content = mStart.shuffled()[0]
         mContent.text = CultivationHelper.showing(convertTalk(content))
         try {

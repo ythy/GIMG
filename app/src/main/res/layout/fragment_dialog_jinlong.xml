@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent" style="@style/BaseActivityStyle"
-    android:minWidth="320dp" android:minHeight="600dp">
+    android:minWidth="340dp" android:minHeight="600dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="600dp"
@@ -49,9 +49,15 @@
                 android:gravity="end"
                 android:layout_weight="1"
                 android:layout_marginEnd="5dp">
+                <Spinner
+                    android:id="@+id/spinner_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="60dp" />
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     style="@style/ButtonMiddle"
                     android:id="@+id/btn_reward"
                     android:text="赏"/>

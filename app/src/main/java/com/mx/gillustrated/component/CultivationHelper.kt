@@ -615,7 +615,7 @@ object CultivationHelper {
         val postXiuwei = getNationPostXiuwei(person)
         //clanXiuwei nationXiuwei allianceBattleXiuwei removed 
         var basic = person.lingGenDetail.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
-                            + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + postXiuwei + person.feiziXiuwei
+                            + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + postXiuwei
         person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
             basic += it.property[4]
         }
@@ -624,6 +624,9 @@ object CultivationHelper {
             basic += skin.property[4]
         }
         basic += getLastSingleBattleXiuwei(person)
+        if (person.feiziFavor > 0){
+            basic += JinLongData.FeiziBonos[person.feiziLevel]
+        }
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
     }

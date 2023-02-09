@@ -30,6 +30,7 @@ import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
+import com.mx.gillustrated.component.JinLongData
 import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.fragment.*
 import com.mx.gillustrated.util.NameUtil
@@ -352,12 +353,20 @@ class FragmentDialogPerson : DialogFragment() {
         return CultivationHelper.showing(label.name)
     }
 
+    private fun getName():String{
+        return if (mPerson.feiziFavor > 0){
+            "${JinLongData.FeiLevel[mPerson.feiziLevel]}${mPerson.name}"
+        }else{
+            mPerson.name
+        }
+    }
+
     fun updateView(){
         if(mContext.getOnlinePersonDetail(mPerson.id) == null){
             mThreadRunnable = false
         }
         mSwitchFav.isChecked = mPerson.isFav
-        mDialogView.name.text ="${CultivationHelper.showing(mPerson.name)}${CultivationHelper.showLifeTurn(mPerson)}${CultivationHelper.showAncestorLevel(mPerson)}"
+        mDialogView.name.text ="${CultivationHelper.showing(getName())}${CultivationHelper.showLifeTurn(mPerson)}${CultivationHelper.showAncestorLevel(mPerson)}"
         setFamily()
         mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
         mDialogView.age.text = "${getGender()}${CultivationHelper.talentValue(mPerson)}${if(CultivationHelper.isTalent(mPerson)) "⭐" else ""}/${CultivationHelper.showAgeRemained(mPerson)}"

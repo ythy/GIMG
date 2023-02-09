@@ -52,6 +52,8 @@ open class PersonBak {
     var allianceId: String = ""
     var specIdentity: Int = 0 //spec person nid
     var specIdentityTurn: Int = 0 //spec person turn added while dead
+    var feiziLevel:Int = 0 // 1-12
+    var feiziFavor:Int = 0
 
     fun toPerson(): Person {
         val person = Person()
@@ -96,6 +98,8 @@ open class PersonBak {
         person.allianceId = this.allianceId
         person.specIdentity = this.specIdentity
         person.specIdentityTurn = this.specIdentityTurn
+        person.feiziLevel = this.feiziLevel
+        person.feiziFavor = this.feiziFavor
 
         person.lingGenDetail = CultivationHelper.mConfig.lingGenType.find { it.id == person.lingGenTypeId }!!
         person.tianfuList = this.tianfu.mapNotNull { CultivationHelper.mConfig.tianFuType.find { t -> t.id == it } }.toMutableList()
@@ -156,7 +160,6 @@ class Person: PersonBak() {
     var type = 0// 标注boss用 boss > 0
     var remainHit = 0// 标注boss attack round
     var battleMaxWin = 0//最大连胜次数
-    var feiziXiuwei = 0//奖惩获得
     var bossXiuwei: Int = 0// 每次读取 && update depend boss battle
     var bossRound: MutableList<Int> = mutableListOf()
     var clanXiuwei: Int = 0// 每次读取 && update depend clan battle

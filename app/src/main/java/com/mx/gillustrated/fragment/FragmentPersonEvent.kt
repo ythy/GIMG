@@ -15,6 +15,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationEventAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.dialog.FragmentDialogJinlong
 import com.mx.gillustrated.dialog.FragmentDialogPerson
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Person
@@ -33,6 +34,13 @@ class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageC
     @BindView(R.id.tv_deadCount)
     lateinit var mDead: TextView
 
+    @OnClick(R.id.tv_seq)
+    fun onSpecClickHandler(){
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogJinlong.newInstance(mPerson.id)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_jinglong")
+    }
 
     @OnCheckedChanged(R.id.sch_del)
     fun onDelHandler(checked:Boolean){
