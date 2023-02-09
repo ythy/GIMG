@@ -355,7 +355,7 @@ class FragmentDialogPerson : DialogFragment() {
 
     private fun getName():String{
         return if (mPerson.feiziFavor > 0){
-            "${JinLongData.FeiLevel[mPerson.feiziLevel]}${mPerson.name}"
+            "${JinLongData.FeiLevel[mPerson.feiziLevel]}·${mPerson.name}"
         }else{
             mPerson.name
         }

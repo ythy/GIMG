@@ -53,7 +53,7 @@ class FragmentDialogAlliance : DialogFragment() {
 
     @OnClick(R.id.tv_name)
     fun onNameClickHandler(){
-        if (mAlliance.id != "6000601")
+        if (mAlliance.type != 5)
             return
         val ft = mContext.supportFragmentManager.beginTransaction()
         val newFragment = FragmentDialogJinlong.newInstance(mAlliance.personList.map { it.value }.shuffled()[0].id)

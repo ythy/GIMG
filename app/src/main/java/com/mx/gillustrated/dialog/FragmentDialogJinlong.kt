@@ -61,7 +61,7 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
             Talk.filterIndexed { index, _ -> listOf(5,7,8).contains(index) ||  index in 37..41 || index in 51..55 || index in 66..70
                     ||  index in 93..97 || index in 108..112 || index in 122..127  }
     )
-    private val mEnding = mutableListOf("\u610F\u72B9\u672A\u5C3D...", "\u5A07\u541F...", "\u762B\u8F6F...")
+    private val mEnding = mutableListOf("\u5A07\u5598...", "\u547B\u541F...", "\u762B\u8F6F...", "\u62BD\u6410...", "\u6F6E\u55B7...")
     private lateinit var mPerson: Person
 
     @OnClick(R.id.btn_reward)
@@ -96,10 +96,10 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
         count++
         //结束奖励
         if (count == 3){
-            val random = Random().nextInt(3)
+            val random = Random().nextInt(5)
             mPerson.feiziFavor += 10 * (random + 1)
             showName()
-            val bonusText = "${getName()}${mEnding[random]}, \u6B22\u6109+${10 * (random + 1)}"
+            val bonusText = "${getName()}${mEnding[random]}, \u5BA0\u7231+${10 * (random + 1)}"
             mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(bonusText)
             setLevelSpinner()
         }
@@ -113,11 +113,11 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     }
 
     fun showName(){
-        mName.text = CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}${mPerson.name}(${mPerson.feiziFavor})")
+        mName.text = CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}·${mPerson.name}(${mPerson.feiziFavor})")
     }
 
     fun getName():String{
-        return CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}${mPerson.fullName}")
+        return CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}·${mPerson.fullName}")
     }
 
     fun initLevelSpinner(){
