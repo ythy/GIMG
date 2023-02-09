@@ -51,6 +51,16 @@ class FragmentDialogAlliance : DialogFragment() {
         this.dismiss()
     }
 
+    @OnClick(R.id.tv_name)
+    fun onNameClickHandler(){
+        if (mAlliance.id != "6000601")
+            return
+        val ft = mContext.supportFragmentManager.beginTransaction()
+        val newFragment = FragmentDialogJinlong.newInstance(mAlliance.personList.map { it.value }.shuffled()[0].id)
+        newFragment.isCancelable = false
+        newFragment.show(ft, "dialog_jinglong")
+    }
+
     @OnClick(R.id.btn_insert)
     fun onInsertPersonHandler(){
         val name = mDialogView.insertPerson.text.toString()

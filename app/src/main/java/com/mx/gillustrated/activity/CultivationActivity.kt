@@ -1745,10 +1745,18 @@ class CultivationActivity : BaseActivity() {
 
     //true: fiest win
     private fun roundMultiBattle(firstPersonList:ConcurrentHashMap<String, Person>, secondPersonList:ConcurrentHashMap<String, Person>, round:Int, count:Int):Boolean{
-        val firstPersons = firstPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
-                .sortedByDescending { it.battleWinner }.take(count).shuffled()
-        val secondPersons = secondPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
-                .sortedByDescending { it.battleWinner }.take(count).shuffled()
+        val firstPersonsBase = firstPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
+                .sortedByDescending { it.battleWinner }.take(count)
+        val secondPersonsBase = secondPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
+                .sortedByDescending { it.battleWinner }.take(count)
+        firstPersonsBase.forEachIndexed { index, person ->
+            person.battleMaxWin = if (index < 2 ) 10 else 5
+        }
+        secondPersonsBase.forEachIndexed { index, person ->
+            person.battleMaxWin = if (index < 2 ) 10 else 5
+        }
+        val firstPersons = firstPersonsBase.shuffled()
+        val secondPersons = secondPersonsBase.shuffled()
 
         if(firstPersons.isEmpty()){
             return false
@@ -1759,21 +1767,24 @@ class CultivationActivity : BaseActivity() {
         var secondIndex = 0
         var firstWin = 0
         var secondWin = 0
-        val maxWin = 5
+        var firstMaxWin = firstPersons[firstIndex].battleMaxWin
+        var secondMaxWin = secondPersons[secondIndex].battleMaxWin
         while (true) {
-            if(firstWin >= maxWin){
+            if(firstWin >= firstMaxWin){
                 firstWin = 0
                 firstIndex++
                 if (firstIndex == firstPersons.size || firstIndex == count) {
                     return false
                 }
+                firstMaxWin = firstPersons[firstIndex].battleMaxWin
             }
-            if(secondWin >= maxWin){
+            if(secondWin >= secondMaxWin){
                 secondWin = 0
                 secondIndex++
                 if (secondIndex == secondPersons.size || secondIndex == count) {
                     return true
                 }
+                secondMaxWin = secondPersons[secondIndex].battleMaxWin
             }
 
             val result = CultivationBattleHelper.battlePerson(null, firstPersons[firstIndex],
@@ -1785,6 +1796,7 @@ class CultivationActivity : BaseActivity() {
                 if (secondIndex == secondPersons.size || secondIndex == count) {
                     return true
                 }
+                secondMaxWin = secondPersons[secondIndex].battleMaxWin
             } else {
                 firstIndex++
                 secondWin++
@@ -1792,6 +1804,7 @@ class CultivationActivity : BaseActivity() {
                 if (firstIndex == firstPersons.size || firstIndex == count) {
                    return false
                 }
+                firstMaxWin = firstPersons[firstIndex].battleMaxWin
             }
         }
     }

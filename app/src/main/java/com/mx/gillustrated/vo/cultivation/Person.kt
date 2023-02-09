@@ -155,6 +155,8 @@ class Person: PersonBak() {
     //不需要保存
     var type = 0// 标注boss用 boss > 0
     var remainHit = 0// 标注boss attack round
+    var battleMaxWin = 0//最大连胜次数
+    var feiziXiuwei = 0//奖惩获得
     var bossXiuwei: Int = 0// 每次读取 && update depend boss battle
     var bossRound: MutableList<Int> = mutableListOf()
     var clanXiuwei: Int = 0// 每次读取 && update depend clan battle

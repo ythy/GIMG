@@ -56,6 +56,12 @@ class CultivationFollowerAdapter constructor(mContext: Context, private val list
 
         component.props.text = values.property.take(4).joinToString()
 
+        if (values.type == 0){
+            component.del.visibility = View.VISIBLE
+        }else{
+            component.del.visibility = View.GONE
+        }
+
         component.del.setOnClickListener{
             callbacks.onDeleteHandler(list[arg0])
         }

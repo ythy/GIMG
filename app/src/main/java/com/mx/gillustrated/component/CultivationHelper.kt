@@ -615,7 +615,7 @@ object CultivationHelper {
         val postXiuwei = getNationPostXiuwei(person)
         //clanXiuwei nationXiuwei allianceBattleXiuwei removed 
         var basic = person.lingGenDetail.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
-                            + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + postXiuwei
+                            + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + postXiuwei + person.feiziXiuwei
         person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
             basic += it.property[4]
         }

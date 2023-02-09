@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" style="@style/BaseActivityStyle"
+    android:minWidth="320dp" android:minHeight="600dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_name"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="fill"
+                android:id="@+id/iv_profile"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ButtonMiddle"
+                android:id="@+id/btn_ml"
+                android:text="@string/jinlong_linxing"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_weight="1"
+                android:layout_marginEnd="5dp">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/ButtonMiddle"
+                    android:id="@+id/btn_reward"
+                    android:text="赏"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    style="@style/ButtonMiddle"
+                    android:id="@+id/btn_punish"
+                    android:text="罚"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_content"
+                    android:minLines="5"/>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:id="@+id/btn_close"
+            style="@style/ButtonMiddle"
+            android:text="OK"/>
+    </LinearLayout>
+
+</LinearLayout>
