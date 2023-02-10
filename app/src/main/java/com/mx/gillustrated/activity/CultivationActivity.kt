@@ -325,6 +325,7 @@ class CultivationActivity : BaseActivity() {
                 else if(config.profile == 0 && u.profile > 0)
                     u.profile = 0
                 u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
+                u.fullName = config.name.first + config.name.second
                 u.lastName = config.name.first
 
                 if(config.partner == 0){

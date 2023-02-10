@@ -51,7 +51,7 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     }
 
     var count = 0
-    var mLevelList = mutableListOf<String>()
+    private var mLevelList = mutableListOf<String>()
     private val mStart = Talk.filterIndexed { index, _ -> listOf(3,4,6,9,16,17,18,28,29,56,57,60,62,63.150,152,153).contains(index) || index in 30..36
             || index in 42..50 || index in 85..90 || index in 98..107 || index in 113..119 || index in 130..147 }
     private val mData = mutableListOf(
@@ -61,48 +61,49 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
             Talk.filterIndexed { index, _ -> listOf(5,7,8).contains(index) ||  index in 37..41 || index in 51..55 || index in 66..70
                     ||  index in 93..97 || index in 108..112 || index in 122..127  }
     )
-    private val mEnding = mutableListOf("\u5A07\u5598...", "\u547B\u541F...", "\u762B\u8F6F...", "\u62BD\u6410...", "\u6F6E\u55B7...")
+    private val mEnding = (0..9).map { "\u62BD\u6410\u4E86\u51E0\u4E0B, \u762B\u8F6F\u5728\u6000\u91CC..." }
     private lateinit var mPerson: Person
 
     @OnClick(R.id.btn_reward)
     fun onRewardHandler(){
-        mPerson.feiziFavor += 100
+        mPerson.feiziFavor += 1000
         showName()
-        mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(convertTalk(Talk[2]))
+        makeContent(convertTalk(Talk[2]))
         setLevelSpinner()
     }
 
     @OnClick(R.id.btn_punish)
     fun onPunishHandler(){
-        mPerson.feiziFavor = Math.max(0, mPerson.feiziFavor - 100)
+        mPerson.feiziFavor = Math.max(0, mPerson.feiziFavor - 1000)
+        makeContent(convertTalk(Talk.filterIndexed { index, _ -> index in 12..14 }.shuffled()[0]))
         showName()
-        mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(convertTalk(Talk.filterIndexed { index, _ -> index in 12..14 }.shuffled()[0]))
         setLevelSpinner()
+    }
+
+    @OnClick(R.id.btn_bye)
+    fun onByeHandler(){
+        makeContent(convertTalk(mData[2].shuffled()[0]))
+        mContent.postDelayed({
+            this.dismiss()
+        }, 2000)
     }
 
 
     @OnClick(R.id.btn_ml)
     fun onMLHandler(){
-        if (count == 3)
-            return
         if (count == 0){
-            val mlText = "\u4E0E${getName()}\u82B1\u524D\u6708\u4E0B..."
-            mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(mlText)
-            count++
-            return
-        }
-        val content = mData[count].shuffled()[0]
-        mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(convertTalk(content))
-        count++
-        //结束奖励
-        if (count == 3){
+            makeContent(convertTalk(mData[1].shuffled()[0]))
             val random = Random().nextInt(5)
             mPerson.feiziFavor += 10 * (random + 1)
+            makeContent("\u4E0E${getName()}\u82B1\u524D\u6708\u4E0B, \"\u554A.\u554A.\u554A\u554A\u554A...\" ${getName()}${mEnding[random]} \u5BA0\u7231+${10 * (random + 1)}")
             showName()
-            val bonusText = "${getName()}${mEnding[random]}, \u5BA0\u7231+${10 * (random + 1)}"
-            mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(bonusText)
             setLevelSpinner()
+            count = 0
         }
+    }
+
+    fun makeContent(text:String){
+        mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(text)
     }
 
     fun convertTalk(input:String):String{
@@ -162,8 +163,7 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
         mPerson = context.getPersonData(mId)!!
         showName()
         initLevelSpinner()
-        val content = mStart.shuffled()[0]
-        mContent.text = CultivationHelper.showing(convertTalk(content))
+        makeContent(convertTalk(mStart.shuffled()[0]))
         try {
             val imageDir = File(Environment.getExternalStorageDirectory(),
                     MConfig.SD_CULTIVATION_HEADER_PATH + "/" + NameUtil.Gender.Female)

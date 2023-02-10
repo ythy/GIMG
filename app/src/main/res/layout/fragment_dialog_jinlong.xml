@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent" style="@style/BaseActivityStyle"
-    android:minWidth="340dp" android:minHeight="600dp">
+    android:minWidth="380dp" android:minHeight="600dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="600dp"
@@ -37,16 +37,10 @@
             android:gravity="start"
             android:layout_marginTop="5dp"
             android:orientation="horizontal">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/ButtonMiddle"
-                android:id="@+id/btn_ml"
-                android:text="@string/jinlong_linxing"/>
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="end"
+                android:gravity="start"
                 android:layout_weight="1"
                 android:layout_marginEnd="5dp">
                 <Spinner
@@ -69,7 +63,12 @@
                     android:id="@+id/btn_punish"
                     android:text="罚"/>
             </LinearLayout>
-
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ButtonMiddle"
+                android:id="@+id/btn_ml"
+                android:text="@string/jinlong_linxing"/>
         </LinearLayout>
         <ScrollView
             android:layout_width="match_parent"
@@ -94,6 +93,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:id="@+id/btn_bye"
+            style="@style/ButtonMiddle"
+            android:text="Bye"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
