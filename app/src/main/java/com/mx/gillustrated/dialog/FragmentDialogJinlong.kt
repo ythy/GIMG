@@ -52,7 +52,7 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
 
     var count = 0
     private var mLevelList = mutableListOf<String>()
-    private val mStart = Talk.filterIndexed { index, _ -> listOf(3,4,6,9,16,17,18,28,29,56,57,60,62,63.150,152,153).contains(index) || index in 30..36
+    private val mStart = Talk.filterIndexed { index, _ -> listOf(3,4,6,9,10,16,17,18,28,29,56,57,60,62,63.150,152,153).contains(index) || index in 30..36
             || index in 42..50 || index in 85..90 || index in 98..107 || index in 113..119 || index in 130..147 }
     private val mData = mutableListOf(
             mutableListOf(),
@@ -61,7 +61,22 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
             Talk.filterIndexed { index, _ -> listOf(5,7,8).contains(index) ||  index in 37..41 || index in 51..55 || index in 66..70
                     ||  index in 93..97 || index in 108..112 || index in 122..127  }
     )
-    private val mEnding = (0..9).map { "\u62BD\u6410\u4E86\u51E0\u4E0B, \u762B\u8F6F\u5728\u6000\u91CC..." }
+    private val mEnding1 = (0..9).mapIndexed {  index, _ ->
+        when(index){
+            in 0..1 -> "\u7F9E......"
+            in 2..3 -> "\u4F9D\u504E......"
+            in 4..5 -> "\u695A\u695A\u53EF\u601C......"
+            else -> ""
+        }
+    }
+    private val mEnding2 = (0..9).mapIndexed { index, _ ->
+        when(index){
+            in 0..1 -> "……………… \u4E00\u70B7\u9999\u8FC7\u53BB\u4E86"
+            in 2..3 -> "……………… \u4E00\u4E2A\u65F6\u8FB0\u8FC7\u53BB\u4E86"
+            in 4..5 -> "\u7687\u4E0A\u8EAB\u4F53\u771F\u597D ……(\u8138\u7EA2)"
+            else -> ""
+        }
+    }
     private lateinit var mPerson: Person
 
     @OnClick(R.id.btn_reward)
@@ -91,14 +106,17 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
 
     @OnClick(R.id.btn_ml)
     fun onMLHandler(){
-        if (count == 0){
+        if (count < 2){
             makeContent(convertTalk(mData[1].shuffled()[0]))
             val random = Random().nextInt(5)
             mPerson.feiziFavor += 10 * (random + 1)
-            makeContent("\u4E0E${getName()}\u82B1\u524D\u6708\u4E0B, \"\u554A.\u554A.\u554A\u554A\u554A...\" ${getName()}${mEnding[random]} \u5BA0\u7231+${10 * (random + 1)}")
+            val ending = if (count == 0) mEnding1[random] else mEnding2[random]
+            makeContent("\u4E34\u5E78\u4E86${getName()}, $ending \u5BA0\u7231+${10 * (random + 1)}")
             showName()
             setLevelSpinner()
-            count = 0
+            count++
+        }else{
+            makeContent("${getNameSimple()}\u762B\u8F6F\u5728\u5730...")
         }
     }
 
@@ -119,6 +137,10 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
 
     fun getName():String{
         return CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}·${mPerson.fullName}")
+    }
+
+    fun getNameSimple():String{
+        return CultivationHelper.showing("${mPerson.lastName}${FeiLevel[mPerson.feiziLevel]}")
     }
 
     fun initLevelSpinner(){
