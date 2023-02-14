@@ -1502,13 +1502,13 @@
     },
     {
       "id": "6000601",
-      "name": "\u540D\u5983",
+      "name": "十二",
       "type": 5,
       "nation": "6200006",
       "lifetime": 100,
-      "xiuwei": 100,
-      "xiuweiMulti": 100,
-      "property": [0,50,0,50,0,0,0,0]
+      "xiuwei": 200,
+      "xiuweiMulti": 200,
+      "property": [0,100,0,100,0,0,0,0]
     },
     {
       "id": "6000705",

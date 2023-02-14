@@ -61,14 +61,11 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
             Talk.filterIndexed { index, _ -> listOf(5,7,8).contains(index) ||  index in 37..41 || index in 51..55 || index in 66..70
                     ||  index in 93..97 || index in 108..112 || index in 122..127  }
     )
-    private val mEnding1 = (0..9).mapIndexed {  index, _ ->
-        when(index){
-            in 0..1 -> "\u7F9E......"
-            in 2..3 -> "\u4F9D\u504E......"
-            in 4..5 -> "\u695A\u695A\u53EF\u601C......"
-            else -> ""
-        }
-    }
+    private val mEnding1 = mutableListOf("\u7F9E......", "\u4F9D\u504E......", "\u7687\u4E0A~",
+            "\u7687\u4E0A\u8BA8\u538C~",
+            "\u965B\u4E0B\u597D\u574F~\u7F9E\u7F9E\u7B54\u7B54......")
+
+
     private val mEnding2 = (0..9).mapIndexed { index, _ ->
         when(index){
             in 0..1 -> "……………… \u4E00\u70B7\u9999\u8FC7\u53BB\u4E86"
@@ -100,7 +97,7 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
         makeContent(convertTalk(mData[2].shuffled()[0]))
         mContent.postDelayed({
             this.dismiss()
-        }, 2000)
+        }, 1000)
     }
 
 
@@ -111,12 +108,12 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
             val random = Random().nextInt(5)
             mPerson.feiziFavor += 10 * (random + 1)
             val ending = if (count == 0) mEnding1[random] else mEnding2[random]
-            makeContent("\u4E34\u5E78\u4E86${getName()}, $ending \u5BA0\u7231+${10 * (random + 1)}")
+            makeContent("\u4E0E${getName()}\u82B1\u524D\u6708\u4E0B, $ending \u5BA0\u7231+${10 * (random + 1)}")
             showName()
             setLevelSpinner()
             count++
         }else{
-            makeContent("${getNameSimple()}\u762B\u8F6F\u5728\u5730...")
+            makeContent("${getNameSimple()}\u762B\u8F6F\u5728\u4E86\u5730\u4E0A...")
         }
     }
 
@@ -192,6 +189,9 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
             var file = File(imageDir.path, "${mPerson.profile}.png")
             if (!file.exists()) {
                 file = File(imageDir.path, "${mPerson.profile}.jpg")
+            }
+            if (!file.exists()) {
+                file = File(imageDir.path, "1002.jpg")
             }
             if (file.exists()) {
                 val bmp = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, Uri.fromFile(file))
