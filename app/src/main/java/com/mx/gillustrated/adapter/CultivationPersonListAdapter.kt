@@ -48,14 +48,19 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         }
         val person = list[arg0]
         val talentSymbol = if(CultivationHelper.isTalent(person) && showStar) "⭐" else ""
-        val zhuSymbol = if(person.equipmentList.find { it.id == "7009001" } != null && showSpecEquipment) "\uD83D\uDC2F" else ""
-        val shaoSymbol = if(person.equipmentList.find { it.id == "7009002" } != null && showSpecEquipment) "\uD83D\uDC3A" else ""
-        val gongSymbol = if(person.equipmentList.find { it.id == "7009003" } != null && showSpecEquipment) "\uD83E\uDD84" else ""
-        val neiSymbol = if(person.equipmentList.find { it.id == "7009009" } != null && showSpecEquipment) "\uD83D\uDC25" else ""
+        val zhuSymbol = if(person.equipmentList.find { it.id == "7009001" } != null && showSpecEquipment) "\u4E3B" else ""
+        val shaoSymbol = if(person.equipmentList.find { it.id == "7009002" } != null && showSpecEquipment) "\u5C11" else ""
+        val gongSymbol = if(person.equipmentList.find { it.id == "7009003" } != null && showSpecEquipment) "\u90E1" else ""
+        val neiSymbol = if(person.equipmentList.find { it.id == "7009009" } != null && showSpecEquipment) "\u5185" else ""
         val epithetSingleBattle = if(person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100 < 11)
             "\uD83D\uDD25${CultivationSetting.Epithet.SingleBattle[person.battleRecord[CultivationHelper.mBattleRound.single]!! - 1]}" else ""
-        component.name.text = "${CultivationHelper.showing(person.name)}${CultivationHelper.showLifeTurn(person)}"
-        component.nameExtra.text = "${CultivationHelper.showing(epithetSingleBattle)}$talentSymbol$zhuSymbol$shaoSymbol$gongSymbol$neiSymbol"
+        component.name.text = "${CultivationHelper.showing(person.name)}${CultivationHelper.showLifeTurn(person)}${CultivationHelper.showing(epithetSingleBattle)}$talentSymbol"
+        component.nameExtra.text = "$zhuSymbol$shaoSymbol$gongSymbol$neiSymbol"
+        if(component.nameExtra.text != ""){
+            component.nameExtra.setPadding(2,2,2,2)
+        }else{
+            component.nameExtra.setPadding(0,0,0,0)
+        }
         component.age.text = CultivationHelper.showAgeRemained(person)
         component.jingjie.text = CultivationHelper.showing(person.jinJieName)
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))

@@ -1,16 +1,7 @@
 package com.mx.gillustrated.util
 
-import com.mx.gillustrated.common.name.FirstNameCorpus1
-import com.mx.gillustrated.common.name.FirstNameCorpus2
-import com.mx.gillustrated.common.name.FirstNameCorpus3
-import com.mx.gillustrated.common.name.FirstNameCorpus4
-import com.mx.gillustrated.common.name.FirstNameCorpus5
-import com.mx.gillustrated.common.name.FirstNameCorpus6
-import com.mx.gillustrated.common.name.FirstNameCorpus7
-import com.mx.gillustrated.common.name.FirstNameCorpus8
-import com.mx.gillustrated.common.name.FirstNameCorpus9
-import com.mx.gillustrated.common.name.FirstNameCorpus10
-import com.mx.gillustrated.common.name.NameCorpus
+import com.mx.gillustrated.common.name.*
+import com.mx.gillustrated.component.CultivationHelper
 import java.util.*
 
 
@@ -23,6 +14,9 @@ object NameUtil {
     }
 
     fun getChineseName(lastName:String?, gender:Gender = Gender.Default):Pair<String, String>{
+        if (gender == NameUtil.Gender.Female && CultivationHelper.isTrigger()){
+            return getFemaleName(lastName)
+        }
         val random = Random().nextInt(20)
         return when {
             random < 9 -> randomTwoName(lastName, gender)
@@ -31,6 +25,11 @@ object NameUtil {
             else -> randomFourName(lastName, gender)
         }
     }
+
+    private fun getFemaleName(lastName:String?):Pair<String, String>{
+        return Pair(lastName ?: FemaleLastName.Names.shuffled()[0], FemaleFirstName.Names.shuffled()[0])
+    }
+
 
     private fun getFirstName2(gender:Gender):String{
         var array:List<String> = listOf()
