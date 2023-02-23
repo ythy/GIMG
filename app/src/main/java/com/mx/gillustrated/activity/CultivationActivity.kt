@@ -1247,7 +1247,6 @@ class CultivationActivity : BaseActivity() {
     }
 
 
-
     private fun updateCareer(){
         for ((_: String, person: Person) in mPersons) {
             val list = person.careerList

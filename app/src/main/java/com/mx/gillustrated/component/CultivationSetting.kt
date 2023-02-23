@@ -136,14 +136,14 @@ object CultivationSetting {
     )
 
     private val SpecPersonFirstName5: MutableList<PresetInfo> = mutableListOf(
-            PresetInfo(15000011, Triple("\u5927\u4E54", "(\u5983)", 1201), 0, 200, 600),
+            PresetInfo(15000011, Triple("\u5927\u4E54", "(\u5BAB)", 1201), 0, 200, 600),
             PresetInfo(15000021, Triple("\u675C", "\u91C7\u79CB", 1202), 0, 200, 600),
-            PresetInfo(15000031, Triple("\u674E", "\u7EA2\u8896(\u5983)", 1203), 0, 200, 600),
+            PresetInfo(15000031, Triple("\u674E", "\u7EA2\u8896(\u5BAB)", 1203), 0, 200, 600),
             PresetInfo(15000041, Triple("\u5B59", "\u5C1A\u9999", 1204), 0, 100, 200),
             PresetInfo(15000051, Triple("\u674E", "\u4E91\u671F", 1205), 0, 200, 400),
             PresetInfo(15000061, Triple("\u613F\u671B\u5929", "", 1206), 0, 100, 200),
             PresetInfo(15000071, Triple("\u963F\u5B9D", "", 1207), 0, 100, 200),
-            PresetInfo(15000081, Triple("\u5c0f\u4E54", "(\u5983)", 1208), 0, 100, 200),
+            PresetInfo(15000081, Triple("\u5c0f\u4E54", "(\u5BAB)", 1208), 0, 100, 200),
             PresetInfo(15000091, Triple("\u5C1A\u5BAB\u5C40", "\u79C0\u5973", 1209), 0, 100, 200),
             PresetInfo(15000101, Triple("\u5C1A\u4EEA\u5C40", "\u79C0\u5973", 1210), 0, 100, 200),
             PresetInfo(15000111, Triple("\u5C1A\u98DF\u5C40", "\u79C0\u5973", 1211), 0, 100, 200),

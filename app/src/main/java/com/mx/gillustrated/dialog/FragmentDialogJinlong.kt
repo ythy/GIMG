@@ -44,6 +44,10 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     @BindView(R.id.spinner_level)
     lateinit var mSpinner: Spinner
 
+    @BindView(R.id.sv_content)
+    lateinit var mScroll: ScrollView
+
+
     @OnClick(R.id.btn_close)
     fun onCloseHandler(){
         this.dismiss()
@@ -52,8 +56,8 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     var count = 0
     private var mLevelList = mutableListOf<String>()
 
-    private val mStart =  mutableListOf("\u89C1\u8FC7\u965B\u4E0B")
-    private val mEnd =  mutableListOf("\u965B\u4E0B\u6162\u8D70")
+    private val mStart =  mutableListOf("\u89C1\u8FC7\u965B\u4E0B.")
+    private val mEnd =  mutableListOf("\u965B\u4E0B\u6162\u8D70.")
     private val mDetail =  mutableListOf("\u82B1\u524D\u6708\u4E0B\u5F71\u6210\u53CC", "\u60C5\u6EE1\u4E09\u6C5F\u610F\u76CE\u7136",
             "\u6708\u6EE1\u897F\u697C\u68A6\u6B63\u957F", "\u82B1\u5F71\u5A46\u5A11\u4EBA\u6B32\u9189",
             "\u69B4\u82B1\u5982\u706B\u6620\u7A97\u53F0", "\u79CB\u98CE\u4E0D\u89E3\u79BB\u4EBA\u8272",
@@ -65,14 +69,14 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     fun onRewardHandler(){
         mPerson.feiziFavor += 1000
         showName()
-        makeContent("\u8C22\u965B\u4E0B")
+        makeContent("\u8C22\u965B\u4E0B.")
         setLevelSpinner()
     }
 
     @OnClick(R.id.btn_punish)
     fun onPunishHandler(){
         mPerson.feiziFavor = Math.max(0, mPerson.feiziFavor - 1000)
-        makeContent("\u81E3\u77E5\u9519")
+        makeContent("\u81E3\u77E5\u9519.")
         showName()
         setLevelSpinner()
     }
@@ -88,10 +92,12 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
 
     @OnClick(R.id.btn_ml)
     fun onMLHandler(){
-        if (count < 2){
+        if (count < 5){
             val random = Random().nextInt(5)
             mPerson.feiziFavor += 10 * (random + 1)
-            makeContent("${mDetail.shuffled()[0]}, ${getNameSimple()}\u5BA0\u7231+${10 * (random + 1)}")
+            val showing = mDetail.shuffled()[0]
+            makeContent("$showing, ${getNameSimple()}\u5BA0\u7231+${10 * (random + 1)}")
+            mDetail.removeIf { it == showing }
             showName()
             setLevelSpinner()
             count++
@@ -100,8 +106,15 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
         }
     }
 
-    fun makeContent(text:String){
-        mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(text)
+    private fun makeContent(text:String){
+        if(mContent.text.toString() == "")
+            mContent.text = CultivationHelper.showing(text)
+        else
+            mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(text)
+        mScroll.post {
+            mScroll.smoothScrollTo(0, 1000)
+        }
+
     }
 
     fun showName(){
