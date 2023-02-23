@@ -1236,6 +1236,18 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
+    private fun fillingHP(){
+        for ((_: String, it: Person) in mPersons) {
+            val currentHP = CultivationHelper.getProperty(it)[0]
+            if(currentHP < 0){
+                val supplement = Math.abs(currentHP - 10)
+                it.HP += supplement
+            }
+        }
+    }
+
+
+
     private fun updateCareer(){
         for ((_: String, person: Person) in mPersons) {
             val list = person.careerList
@@ -1456,11 +1468,11 @@ class CultivationActivity : BaseActivity() {
         }).start()
     }
 
+
+
     private fun battleSingleHandler(block:Boolean = true){
         val minSize = CultivationSetting.BattleSettings.SingleMinSize
-        val personsAll = mPersons.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
-        personsAll.shuffle()
-        if(personsAll.size < minSize){
+        if(mPersons.size < minSize){
             showToast("persons less than $minSize")
             return
         }
@@ -1473,6 +1485,9 @@ class CultivationActivity : BaseActivity() {
         }
         Thread(Runnable {
             Thread.sleep(500)
+            fillingHP()
+            val personsAll = mPersons.filter { CultivationHelper.getProperty(it.value)[0] > 0 }.map { it.value }.toMutableList()
+            personsAll.shuffle()
             mBattleRound.single++
             writeHistory("第${mBattleRound.single}届  Single Battle Start")
             val restPersons = mutableListOf<Person>()
@@ -1521,6 +1536,7 @@ class CultivationActivity : BaseActivity() {
         }
         Thread(Runnable {
             Thread.sleep(500)
+            fillingHP()
             mBattleRound.clan++
             writeHistory("第${mBattleRound.clan}届 Clan Battle Start")
             val restClans = mutableListOf<Clan>()

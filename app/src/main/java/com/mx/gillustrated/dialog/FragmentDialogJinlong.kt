@@ -19,7 +19,6 @@ import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.JinLongData.FeiLevel
 import com.mx.gillustrated.component.JinLongData.FeiziStep
-import com.mx.gillustrated.component.JinLongData.Talk
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
@@ -52,49 +51,35 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
 
     var count = 0
     private var mLevelList = mutableListOf<String>()
-    private val mStart = Talk.filterIndexed { index, _ -> listOf(3,4,6,9,10,16,17,18,28,29,56,57,60,62,63.150,152,153).contains(index) || index in 30..36
-            || index in 42..50 || index in 85..90 || index in 98..107 || index in 113..119 || index in 130..147 }
-    private val mData = mutableListOf(
-            mutableListOf(),
-            Talk.filterIndexed { index, _ -> listOf(58,59,64,65,91,92,120,121,148,149,151,154,155).contains(index) || index in 21..27  || index in 72..80 ||
-                    index in 82..84 },
-            Talk.filterIndexed { index, _ -> listOf(5,7,8).contains(index) ||  index in 37..41 || index in 51..55 || index in 66..70
-                    ||  index in 93..97 || index in 108..112 || index in 122..127  }
-    )
-    private val mEnding1 = mutableListOf("\u7F9E......", "\u4F9D\u504E......", "\u7687\u4E0A~",
-            "\u7687\u4E0A\u8BA8\u538C~",
-            "\u965B\u4E0B\u597D\u574F~\u7F9E\u7F9E\u7B54\u7B54......")
 
+    private val mStart =  mutableListOf("\u89C1\u8FC7\u965B\u4E0B")
+    private val mEnd =  mutableListOf("\u965B\u4E0B\u6162\u8D70")
+    private val mDetail =  mutableListOf("\u82B1\u524D\u6708\u4E0B\u5F71\u6210\u53CC", "\u60C5\u6EE1\u4E09\u6C5F\u610F\u76CE\u7136",
+            "\u6708\u6EE1\u897F\u697C\u68A6\u6B63\u957F", "\u82B1\u5F71\u5A46\u5A11\u4EBA\u6B32\u9189",
+            "\u69B4\u82B1\u5982\u706B\u6620\u7A97\u53F0", "\u79CB\u98CE\u4E0D\u89E3\u79BB\u4EBA\u8272",
+            "\u5C71\u8272\u6E56\u5149\u5206\u5916\u5A07", "\u7EFF\u53F6\u7EA2\u82B1\u76F8\u6620\u886C")
 
-    private val mEnding2 = (0..9).mapIndexed { index, _ ->
-        when(index){
-            in 0..1 -> "……………… \u4E00\u70B7\u9999\u8FC7\u53BB\u4E86"
-            in 2..3 -> "……………… \u4E00\u4E2A\u65F6\u8FB0\u8FC7\u53BB\u4E86"
-            in 4..5 -> "\u7687\u4E0A\u8EAB\u4F53\u771F\u597D ……(\u8138\u7EA2)"
-            else -> ""
-        }
-    }
     private lateinit var mPerson: Person
 
     @OnClick(R.id.btn_reward)
     fun onRewardHandler(){
         mPerson.feiziFavor += 1000
         showName()
-        makeContent(convertTalk(Talk[2]))
+        makeContent("\u8C22\u965B\u4E0B")
         setLevelSpinner()
     }
 
     @OnClick(R.id.btn_punish)
     fun onPunishHandler(){
         mPerson.feiziFavor = Math.max(0, mPerson.feiziFavor - 1000)
-        makeContent(convertTalk(Talk.filterIndexed { index, _ -> index in 12..14 }.shuffled()[0]))
+        makeContent("\u81E3\u77E5\u9519")
         showName()
         setLevelSpinner()
     }
 
     @OnClick(R.id.btn_bye)
     fun onByeHandler(){
-        makeContent(convertTalk(mData[2].shuffled()[0]))
+        makeContent(mEnd.shuffled()[0])
         mContent.postDelayed({
             this.dismiss()
         }, 1000)
@@ -104,28 +89,19 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     @OnClick(R.id.btn_ml)
     fun onMLHandler(){
         if (count < 2){
-            makeContent(convertTalk(mData[1].shuffled()[0]))
             val random = Random().nextInt(5)
             mPerson.feiziFavor += 10 * (random + 1)
-            val ending = if (count == 0) mEnding1[random] else mEnding2[random]
-            makeContent("\u4E0E${getName()}\u82B1\u524D\u6708\u4E0B, $ending \u5BA0\u7231+${10 * (random + 1)}")
+            makeContent("${mDetail.shuffled()[0]}, ${getNameSimple()}\u5BA0\u7231+${10 * (random + 1)}")
             showName()
             setLevelSpinner()
             count++
         }else{
-            makeContent("${getNameSimple()}\u762B\u8F6F\u5728\u4E86\u5730\u4E0A...")
+            makeContent("\u965B\u4E0B\u8FD8\u6709\u4E8B\u5417?")
         }
     }
 
     fun makeContent(text:String){
         mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(text)
-    }
-
-    fun convertTalk(input:String):String{
-        return  input.replace("QIE", "\u81E3\u59BE")
-                .replace("CHEN", "\u81E3")
-                .replace("HUANG", "\u7687\u4E0A")
-                .replace("BIXIA", "\u965B\u4E0B")
     }
 
     fun showName(){
@@ -182,7 +158,7 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
         mPerson = context.getPersonData(mId)!!
         showName()
         initLevelSpinner()
-        makeContent(convertTalk(mStart.shuffled()[0]))
+        makeContent(mStart.shuffled()[0])
         try {
             val imageDir = File(Environment.getExternalStorageDirectory(),
                     MConfig.SD_CULTIVATION_HEADER_PATH + "/" + NameUtil.Gender.Female)

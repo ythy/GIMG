@@ -3,10 +3,12 @@ package com.mx.gillustrated.adapter
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -52,9 +54,21 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         val shaoSymbol = if(person.equipmentList.find { it.id == "7009002" } != null && showSpecEquipment) "\u5C11" else ""
         val gongSymbol = if(person.equipmentList.find { it.id == "7009003" } != null && showSpecEquipment) "\u90E1" else ""
         val neiSymbol = if(person.equipmentList.find { it.id == "7009009" } != null && showSpecEquipment) "\u5185" else ""
-        val epithetSingleBattle = if(person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100 < 11)
-            "\uD83D\uDD25${CultivationSetting.Epithet.SingleBattle[person.battleRecord[CultivationHelper.mBattleRound.single]!! - 1]}" else ""
-        component.name.text = "${CultivationHelper.showing(person.name)}${CultivationHelper.showLifeTurn(person)}${CultivationHelper.showing(epithetSingleBattle)}$talentSymbol"
+
+        component.name.text = "${CultivationHelper.showing(person.name)}${CultivationHelper.showLifeTurn(person)}$talentSymbol"
+        val lastRanking = person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100
+        if (lastRanking < 11){
+            component.ranking.visibility = View.VISIBLE
+            when(lastRanking){
+                1 -> component.ranking.setImageDrawable(context.getDrawable(R.drawable.rank1))
+                2 -> component.ranking.setImageDrawable(context.getDrawable(R.drawable.rank2))
+                3 -> component.ranking.setImageDrawable(context.getDrawable(R.drawable.rank3))
+                else -> component.ranking.setImageDrawable(context.getDrawable(R.drawable.rank10))
+            }
+        }else{
+            component.ranking.visibility = View.GONE
+        }
+
         component.nameExtra.text = "$zhuSymbol$shaoSymbol$gongSymbol$neiSymbol"
         if(component.nameExtra.text != ""){
             component.nameExtra.setPadding(2,2,2,2)
@@ -103,6 +117,9 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
 
         @BindView(R.id.tv_alliance)
         lateinit var alliance: TextView
+
+        @BindView(R.id.iv_ranking)
+        lateinit var ranking: ImageView
 
 
         init {
