@@ -12,10 +12,7 @@ object CultivationSetting {
     val CommonColors = arrayOf("#EAEFE8", "#539B35", "#3B86D4", "#AF85E3", "#FFA500", "#FC2CBB", "#EA5078", "#FFFF00", "#04B4BA","#CFB53B", "#8DFAB1", "#F7FFCC", "#FF0000", "#75ABA7", "#AB9BB7")
     val PostColors = arrayOf("#E2D223", "#BE0012", "#0272E4", "#12A703", "#EF7362")
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
-    object Epithet {
-        val SingleDefault = "\u8FDB\u58EB"
-        val SingleBattle = arrayOf("\u72B6\u5143", "\u699C\u773C", "\u63A2\u82B1", SingleDefault, SingleDefault, SingleDefault, SingleDefault, SingleDefault, SingleDefault, SingleDefault)
-    }
+
 
     object BattleSettings {
         const val AllianceMinSize = 16
@@ -79,6 +76,7 @@ object CultivationSetting {
             PresetInfo(13020081, Triple("\u6728", "\u5a49\u6e05", 1307), 0, 100, 100),
             PresetInfo(13020091, Triple("\u4efb", "\u76c8\u76c8", 1308), 0, 200, 600),
             PresetInfo(13020101, Triple("\u9EC4\u886B\u5973\u5B50", "", 1310), 0, 500, 1000),
+            PresetInfo(13020111, Triple("\u7A46", "\u5FF5\u6148", 1313), 0, 100, 200),
             PresetInfo(13021011, Triple("\u82cf", "\u6a31", 1309), 0, 100, 100),
             PresetInfo(13021021, Triple("\u674e", "\u7ea2\u8896", 1310), 0, 100, 100),
             PresetInfo(13021030, Pair("\u674e", "\u5bfb\u6b22"), 0, 200, 600)
@@ -162,7 +160,9 @@ object CultivationSetting {
             PresetInfo(16040091, Pair("\u94C1\u6247", "\u516C\u4E3B"), 0, 100, 200),
             PresetInfo(16040100, Pair("\u5954\u6CE2\u513F\u705E", "")),
             PresetInfo(16040110, Pair("\u516D\u8033\u7315\u7334", ""), 0, 1000, 2000),
-            PresetInfo(16040120, Pair("\u7389\u7687\u5927\u5E1D", ""), 0, 2000, 5000)
+            PresetInfo(16040120, Pair("\u7389\u7687\u5927\u5E1D", ""), 0, 2000, 5000),
+            PresetInfo(16040131, Pair("\u89C2\u97F3", ""), 0, 2000, 5000),
+            PresetInfo(16040140, Pair("\u5982\u6765", ""), 0, 2000, 5000)
     )
 
     //achieved immutable
