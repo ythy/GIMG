@@ -155,14 +155,16 @@ object CultivationSetting {
             PresetInfo(16040040, Pair("\u6C99", "\u609F\u51C0")),
             PresetInfo(16040051, Pair("\u7D2B\u971E", "\u4ED9\u5B50"), 0, 200, 600),
             PresetInfo(16040061, Pair("\u767D", "\u6676\u6676"), 0, 100, 100),
-            PresetInfo(16040071, Pair("\u6625", "\u4E09\u5341\u5A18"), 0, 100, 100),
+            PresetInfo(16040071, Pair("\u9752\u971E", "\u4ED9\u5B50"), 0, 100, 100),
             PresetInfo(16040080, Pair("\u725B", "\u9B54\u738B"), 0, 100, 200),
             PresetInfo(16040091, Pair("\u94C1\u6247", "\u516C\u4E3B"), 0, 100, 200),
             PresetInfo(16040100, Pair("\u5954\u6CE2\u513F\u705E", "")),
             PresetInfo(16040110, Pair("\u516D\u8033\u7315\u7334", ""), 0, 1000, 2000),
             PresetInfo(16040120, Pair("\u7389\u7687\u5927\u5E1D", ""), 0, 2000, 5000),
             PresetInfo(16040131, Pair("\u89C2\u97F3", ""), 0, 2000, 5000),
-            PresetInfo(16040140, Pair("\u5982\u6765", ""), 0, 2000, 5000)
+            PresetInfo(16040140, Pair("\u5982\u6765", ""), 0, 2000, 5000),
+            PresetInfo(16040150, Pair("\u5730\u85CF\u738B", ""), 0, 100, 200),
+            PresetInfo(16040161, Pair("\u5B5F\u5A46", ""), 0, 1000, 2000)
     )
 
     //achieved immutable
