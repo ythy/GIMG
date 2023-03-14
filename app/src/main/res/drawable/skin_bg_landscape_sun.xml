@@ -7,11 +7,11 @@
     <item android:drawable="@drawable/skin_bg_base_mid"
         android:top="20dp" android:bottom="10dp" android:left="20dp" android:right="20dp">
     </item>
-    <item  android:width="400dp" android:height="500dp" android:top="180dp">
+    <item  android:width="550dp" android:height="550dp" android:top="200dp" >
         <bitmap android:gravity="fill"
-            android:alpha="0.2"
+            android:alpha="0.3"
             android:antialias="true"
-            android:src="@drawable/skin_rabbit" />
+            android:src="@drawable/skin_landscape_sun" />
     </item>
 
 </layer-list>

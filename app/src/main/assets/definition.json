@@ -3170,6 +3170,15 @@
       "description": "\u9650\u5B9A",
       "property": [0,0,0,100,200,100,0,0],
       "spec": [12000041, 12000051]
+    },
+    {
+      "id": "4200202",
+      "name": "\u65ED\u65E5\u4E1C\u5347",
+      "resource": "skin_bg_landscape_sun",
+      "rarity": 5,
+      "description": "\u9650\u5B9A",
+      "property": [0,50,50,0,200,100,0,0],
+      "spec": [13021041]
     }
   ]
 }

@@ -79,7 +79,8 @@ object CultivationSetting {
             PresetInfo(13020111, Triple("\u7A46", "\u5FF5\u6148", 1313), 0, 100, 200),
             PresetInfo(13021011, Triple("\u82cf", "\u6a31", 1309), 0, 100, 100),
             PresetInfo(13021021, Triple("\u674e", "\u7ea2\u8896", 1310), 0, 100, 100),
-            PresetInfo(13021030, Pair("\u674e", "\u5bfb\u6b22"), 0, 200, 600)
+            PresetInfo(13021030, Pair("\u674e", "\u5bfb\u6b22"), 0, 200, 600),
+            PresetInfo(13021041, Triple("\u6731", "\u6CEA\u513F", 1314), 0, 100, 200)
     )
 
     //achieved immutable
