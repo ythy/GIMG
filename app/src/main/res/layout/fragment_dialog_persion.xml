@@ -132,6 +132,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:id="@+id/tv_symbol1"
+                android:text="[" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/tv_parent_dad"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -141,8 +146,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/tv_symbol2"
+                android:text="]" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:id="@+id/tv_symbol3"
+                android:text="&lt;" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/tv_partner"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_symbol4"
+                android:text="&gt;" />
         </LinearLayout>
         <HorizontalScrollView
             android:layout_width="match_parent"

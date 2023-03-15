@@ -79,23 +79,37 @@ class FragmentDialogPerson : DialogFragment() {
 
     @OnClick(R.id.tv_partner)
     fun onPartnerClickHandler(){
-        val partner = mContext.getOnlinePersonDetail(mPerson.partner) ?: return
-        openPersonDetail(partner.id)
-        onCloseHandler()
+        val partner = mContext.getOnlinePersonDetail(mPerson.partner)
+        if(partner != null){
+            openPersonDetail(partner.id)
+            onCloseHandler()
+        }else{
+            Toast.makeText(mContext, mPerson.partnerName ?: "", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     @OnClick(R.id.tv_parent_dad)
     fun onDadClickHandler(){
-        val person = mContext.getOnlinePersonDetail(mPerson.parent?.first) ?: return
-        openPersonDetail(person.id)
-        onCloseHandler()
+        val person = mContext.getOnlinePersonDetail(mPerson.parent?.first)
+        if(person != null){
+            openPersonDetail(person.id)
+            onCloseHandler()
+        }else{
+            Toast.makeText(mContext, mPerson.parentName?.first ?: "", Toast.LENGTH_SHORT).show()
+        }
     }
 
     @OnClick(R.id.tv_parent_mum)
     fun onMumClickHandler(){
-        val person = mContext.getOnlinePersonDetail(mPerson.parent?.second) ?: return
-        openPersonDetail(person.id)
-        onCloseHandler()
+        val person = mContext.getOnlinePersonDetail(mPerson.parent?.second)
+        if(person != null){
+            openPersonDetail(person.id)
+            onCloseHandler()
+        }else{
+            Toast.makeText(mContext, mPerson.parentName?.second ?: "", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     @OnClick(R.id.tv_winner)
@@ -396,9 +410,9 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun setFamily(){
-        setRelationName(mDialogView.partner, mPerson.partnerName, mContext.getOnlinePersonDetail(mPerson.partner), "<", ">")
-        setRelationName(mDialogView.parentDad, mPerson.parentName?.first, mContext.getOnlinePersonDetail(mPerson.parent?.first), "[", "")
-        setRelationName(mDialogView.parentMum, mPerson.parentName?.second, mContext.getOnlinePersonDetail(mPerson.parent?.second), "", "]")
+        setRelationName(mDialogView.partner, mPerson.partnerName, mContext.getOnlinePersonDetail(mPerson.partner), mDialogView.symbol3, mDialogView.symbol4)
+        setRelationName(mDialogView.parentDad, mPerson.parentName?.first, mContext.getOnlinePersonDetail(mPerson.parent?.first),  mDialogView.symbol1, null)
+        setRelationName(mDialogView.parentMum, mPerson.parentName?.second, mContext.getOnlinePersonDetail(mPerson.parent?.second), mDialogView.symbol2, null)
 
         val children = mPerson.children.mapNotNull { mContext.getOnlinePersonDetail(it) }
         mDialogView.children.removeAllViews()
@@ -420,16 +434,21 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.children.visibility = if(children.isNotEmpty()) View.VISIBLE else View.GONE
     }
 
-    private fun setRelationName(text:TextView, name:String?, person: Person?, prefix:String = "", suffix:String = ""){
+    private fun setRelationName(text:TextView, name:String?, person: Person?, symbol1:TextView?, symbol2:TextView?){
         if(name != null){
             text.visibility = View.VISIBLE
-            text.text = "$prefix${getContent(name)}$suffix"
+            symbol1?.visibility = View.VISIBLE
+            symbol2?.visibility = View.VISIBLE
             if(person == null){
-                text.paint.flags = Paint.STRIKE_THRU_TEXT_FLAG
-                text.paint.isAntiAlias = true
+                text.text = "……"
+            }else{
+                text.text = getContent(name)
+                text.setTextColor(Color.parseColor(CommonColors[person.lingGenDetail.color]))
             }
         }else{
             text.visibility = View.GONE
+            symbol1?.visibility = View.GONE
+            symbol2?.visibility = View.GONE
             text.text = ""
         }
     }
@@ -507,6 +526,18 @@ class FragmentDialogPerson : DialogFragment() {
 
         @BindView(R.id.tv_props)
         lateinit var props:TextView
+
+        @BindView(R.id.tv_symbol1)
+        lateinit var symbol1:TextView
+
+        @BindView(R.id.tv_symbol2)
+        lateinit var symbol2:TextView
+
+        @BindView(R.id.tv_symbol3)
+        lateinit var symbol3:TextView
+
+        @BindView(R.id.tv_symbol4)
+        lateinit var symbol4:TextView
 
         @BindView(R.id.ll_parent_measure)
         lateinit var measures:LinearLayout
