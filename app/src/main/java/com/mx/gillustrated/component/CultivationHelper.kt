@@ -896,7 +896,7 @@ object CultivationHelper {
     }
 
     fun isTalent(person: Person):Boolean{
-        return person.deadExceptTimes <= CultivationSetting.TEMP_TALENT_EXP && talentValue(person) > CultivationSetting.TEMP_TALENT_PROTECT
+        return talentValue(person) > CultivationSetting.TEMP_TALENT_PROTECT
     }
 
     fun talentValue(person: Person):Int{

@@ -432,7 +432,7 @@ class CultivationActivity : BaseActivity() {
         CultivationSetting.TEMP_SP_JIE_TURN = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
         CultivationSetting.TEMP_REDUCE_TURN = mSP.getInt("cultivation_dead_reduce", CultivationSetting.SP_REDUCE_TURN)
         CultivationSetting.TEMP_TALENT_PROTECT = mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT)
-        CultivationSetting.TEMP_TALENT_EXP = mSP.getInt("cultivation_talent_exception", CultivationSetting.SP_TALENT_EXP)
+        CultivationSetting.TEMP_DEAD_SYMBOL = mSP.getString("cultivation_dead_symbol", CultivationSetting.SP_DEAD_SYMBOL)
         val out:String? = if(readRecord) json else null
         if(out != null && out.trim() != ""){
             val backup = Gson().fromJson(out, BakInfo::class.java)
@@ -598,10 +598,11 @@ class CultivationActivity : BaseActivity() {
     fun loadSkin(){
         val skin =  mSP.getString("cultivation_skin", "spring")
         mSkinContainer.background = when(skin){
-            "spring" -> getDrawable(R.drawable.skin_bg_spring)
-            "rain" -> getDrawable(R.drawable.skin_bg_rain)
-            "equinox" -> getDrawable(R.drawable.skin_bg_spring_equinox)
-            else -> getDrawable(R.drawable.skin_bg_spring)
+            "spring" -> getDrawable(R.drawable.skin_theme_spring)
+            "rain" -> getDrawable(R.drawable.skin_theme_rain)
+            "equinox" -> getDrawable(R.drawable.skin_theme_spring_equinox)
+            "grain_rain" -> getDrawable(R.drawable.skin_theme_grain_rain)
+            else -> getDrawable(R.drawable.skin_theme_spring)
         }
     }
 

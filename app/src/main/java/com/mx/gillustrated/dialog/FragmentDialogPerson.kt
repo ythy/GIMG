@@ -441,7 +441,7 @@ class FragmentDialogPerson : DialogFragment() {
             symbol1?.visibility = View.VISIBLE
             symbol2?.visibility = View.VISIBLE
             if(person == null){
-                text.text = "……"
+                text.text = CultivationSetting.TEMP_DEAD_SYMBOL
             }else{
                 text.text = getContent(name)
                 text.setTextColor(Color.parseColor(CommonColors[person.lingGenDetail.color]))

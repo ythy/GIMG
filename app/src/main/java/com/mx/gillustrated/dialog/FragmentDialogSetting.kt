@@ -44,8 +44,8 @@ class FragmentDialogSetting : DialogFragment() {
     @BindView(R.id.et_talent)
     lateinit var mTalent:EditText
 
-    @BindView(R.id.et_talent_exp)
-    lateinit var mTalentExp:EditText
+    @BindView(R.id.et_dead_symbol)
+    lateinit var mDeadSymbol:EditText
 
 
     @BindView(R.id.et_nan9)
@@ -86,12 +86,12 @@ class FragmentDialogSetting : DialogFragment() {
         }
     }
 
-    @OnTextChanged(R.id.et_talent_exp)
-    fun onTalentExpTextChangedHandler(text:CharSequence){
+    @OnTextChanged(R.id.et_dead_symbol)
+    fun onDeadSymbolTextChangedHandler(text:CharSequence){
         val current = text.toString()
-        if(current.toIntOrNull() != null && current.toInt() > 0){
-            mActivity.mSP.edit().putInt("cultivation_talent_exception", current.toInt()).apply()
-            CultivationSetting.TEMP_TALENT_EXP = current.toInt()
+        if(current != ""){
+            mActivity.mSP.edit().putString("cultivation_dead_symbol", current).apply()
+            CultivationSetting.TEMP_DEAD_SYMBOL = current
         }
     }
 
@@ -234,7 +234,7 @@ class FragmentDialogSetting : DialogFragment() {
         mEtNan9.setText(mActivity.mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9).toString())
         mEtNan81.setText(mActivity.mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81).toString())
         mTalent.setText(mActivity.mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT).toString())
-        mTalentExp.setText(mActivity.mSP.getInt("cultivation_talent_exception", CultivationSetting.SP_TALENT_EXP).toString())
+        mDeadSymbol.setText(mActivity.mSP.getString("cultivation_dead_symbol", CultivationSetting.SP_DEAD_SYMBOL))
 
         val punishWeight = mActivity.mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)
         mBossPunish.setText(punishWeight.toString())
