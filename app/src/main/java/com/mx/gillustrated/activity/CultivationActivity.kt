@@ -432,7 +432,9 @@ class CultivationActivity : BaseActivity() {
         CultivationSetting.TEMP_SP_JIE_TURN = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
         CultivationSetting.TEMP_REDUCE_TURN = mSP.getInt("cultivation_dead_reduce", CultivationSetting.SP_REDUCE_TURN)
         CultivationSetting.TEMP_TALENT_PROTECT = mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT)
-        CultivationSetting.TEMP_DEAD_SYMBOL = mSP.getString("cultivation_dead_symbol", CultivationSetting.SP_DEAD_SYMBOL)
+        CultivationSetting.TEMP_DEAD_SYMBOL = mSP.getString("cultivation_dead_symbol", CultivationSetting.SP_DEAD_SYMBOL)!!
+        CultivationSetting.TEMP_SKIN_BATTLE_MIN = mSP.getInt("cultivation_skin_battle_min", CultivationSetting.SP_SKIN_BATTLE_MIN)
+
         val out:String? = if(readRecord) json else null
         if(out != null && out.trim() != ""){
             val backup = Gson().fromJson(out, BakInfo::class.java)

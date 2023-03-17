@@ -292,7 +292,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         }
         val adapter = SpinnerCommonAdapter(mContext, mSkinList.map {
             val info = SpinnerInfo()
-            info.name =  "<font color=\"${CultivationSetting.CommonColors[it.rarity]}\">${it.name}</font>(${it.description})-(${it.property.take(6).joinToString()})"
+            info.name =  "<font color=\"${CultivationSetting.CommonColors[it.rarity]}\">${it.name}</font>(${it.description.replace("?", CultivationSetting.TEMP_SKIN_BATTLE_MIN.toString(), false)})-(${it.property.take(6).joinToString()})"
             info
         }, false, 12)
         mSkin.adapter = adapter

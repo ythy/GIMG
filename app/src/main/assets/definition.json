@@ -3149,18 +3149,26 @@
       "id": "4200101",
       "name": "\u843D\u661F\u5760\u6708",
       "resource": "skin_bg_star",
-      "rarity": 5,
-      "description": "\u6B66\u9053\u4F1A\u524D3",
+      "rarity": 6,
+      "description": "\u6B66\u9053\u4F1A\u524D\u4E8C至少?次",
       "animated": true,
-      "property": [0,100,0,0,200,100,0,0]
+      "property": [0,100,0,50,300,100,0,0]
     },
     {
       "id": "4200102",
       "name": "\u53E4\u5251\u5947\u8C2D",
       "resource": "skin_bg_sword",
       "rarity": 8,
-      "description": "\u5929\u8D44>=40",
+      "description": "\u6B66\u9053\u4F1A\u593A\u9B41至少?次",
       "property": [0,200,0,100,500,100,0,0]
+    },
+    {
+      "id": "4200103",
+      "name": "\u938F\u82B1\u63A0\u5F71",
+      "resource": "skin_bg_flower_texture",
+      "rarity": 4,
+      "description": "\u4E2A\u4EBA\u6218\u672B\u4F4D至少?次",
+      "property": [0,50,0,0,100,50,0,0]
     },
     {
       "id": "4200201",

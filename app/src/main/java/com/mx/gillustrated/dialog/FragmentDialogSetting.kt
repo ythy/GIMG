@@ -47,6 +47,9 @@ class FragmentDialogSetting : DialogFragment() {
     @BindView(R.id.et_dead_symbol)
     lateinit var mDeadSymbol:EditText
 
+    @BindView(R.id.et_skin_battle)
+    lateinit var mSkinBattle:EditText
+
 
     @BindView(R.id.et_nan9)
     lateinit var mEtNan9:EditText
@@ -112,6 +115,17 @@ class FragmentDialogSetting : DialogFragment() {
             mActivity.mSP.edit().putInt("cultivation_nan_81", current.toInt()).apply()
         }
     }
+
+    @OnTextChanged(R.id.et_skin_battle)
+    fun onSkinBattleMinTextChangedHandler(text:CharSequence){
+        val current = text.toString()
+        if(current.toIntOrNull() != null && current.toInt() > 0){
+            mActivity.mSP.edit().putInt("cultivation_skin_battle_min", current.toInt()).apply()
+        }
+    }
+
+
+
 
     @OnClick(R.id.btn_save)
     fun onSaveClickHandler(){
@@ -235,6 +249,7 @@ class FragmentDialogSetting : DialogFragment() {
         mEtNan81.setText(mActivity.mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81).toString())
         mTalent.setText(mActivity.mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT).toString())
         mDeadSymbol.setText(mActivity.mSP.getString("cultivation_dead_symbol", CultivationSetting.SP_DEAD_SYMBOL))
+        mSkinBattle.setText(mActivity.mSP.getInt("cultivation_skin_battle_min", CultivationSetting.SP_SKIN_BATTLE_MIN).toString())
 
         val punishWeight = mActivity.mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)
         mBossPunish.setText(punishWeight.toString())

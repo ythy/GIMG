@@ -833,8 +833,9 @@ object CultivationHelper {
                 it.spec.contains(person.specIdentity)
             else {
                 when(it.id.toInt() % 10000 ){
-                    101 -> person.battleRecord.filterValues { m-> m <= 3 }.isNotEmpty()
-                    102 -> talentValue(person) >= 40
+                    101 -> person.battleRecord.filterValues { m-> m <= 2 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
+                    102 -> person.battleRecord.filterValues { m-> m == 1 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
+                    103 -> person.battleRecord.filterValues { m-> m == 32 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
                     else -> false
                 }
             }
