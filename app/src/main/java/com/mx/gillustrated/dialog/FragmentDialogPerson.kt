@@ -421,6 +421,7 @@ class FragmentDialogPerson : DialogFragment() {
                 val person = it
                 val textView = TextView(this.context)
                 textView.text =  CultivationHelper.showing(person.name)
+                textView.setTextColor(Color.parseColor(CommonColors[person.lingGenDetail.color]))
                 textView.setOnClickListener { _->
                     openPersonDetail(it.id)
                     onCloseHandler()
