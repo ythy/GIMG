@@ -889,8 +889,7 @@ object CultivationHelper {
     }
 
     fun isNeverDead(person: Person):Boolean{
-        if(person.isFav || person.neverDead || person.equipmentList.find { it.id == "7009004" } != null
-                || person.label.find { it == "4100301" } != null){
+        if(person.isFav || person.neverDead ){
             return true
         }
         return false
