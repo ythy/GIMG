@@ -10,7 +10,7 @@ object CultivationBattleHelper {
 
     var mBattles:ConcurrentHashMap<String, BattleInfo> = ConcurrentHashMap()
     val BaGua = listOf("\u4E7E","\u574E","\u826E", "\u9707", "\u5DFD", "\u79BB", "\u5764", "\u5151")
-    val SpecPositiveWords = listOf("\u6076\u62A5", "\u591C\u821E\u503E\u57CE")
+    val SpecPositiveWords = listOf("\u6076\u62A5", "\u591C\u821E\u503E\u57CE", "\u820D\u8EAB\u4E00\u640F")
     val SpecNegativeWords = listOf("\u5584\u62A5")
 
     // allPersons pass null if partner don`t join battle
@@ -343,6 +343,16 @@ object CultivationBattleHelper {
             hpReduced += extraDamage
             triggerBaseList.add("${SpecPositiveWords[1]}$extraDamage")
         }
+        //she shen yi bo
+        if(hasTeji("8001011", attacker) && isTrigger(tejiDetail("8001011").chance, attacker) ){
+            val multi = tejiDetail("8001011").power.toFloat() / 100
+            val extraDamage = Math.round(attacker.attack  * multi)
+            hpReduced += extraDamage
+            val self = Math.round(attacker.maxhp * 0.2f)
+            attacker.hp -= self
+            triggerBaseList.add("${SpecPositiveWords[2]}$extraDamage HP-$self")
+        }
+
         val fianlReduced = attacker.extraDamage + hpReduced
         defender.hp -= fianlReduced
         printBattleInfo(battleId, attacker, 5, "${triggerBaseList.joinToString()} ${showName(defender)}HP${if(fianlReduced > 0) "-" else "+"}${Math.abs(fianlReduced)},  ${attacker.hp} vs ${defender.hp}  ")
