@@ -56,8 +56,8 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     var count = 0
     private var mLevelList = mutableListOf<String>()
 
-    private val mStart =  mutableListOf("\u89C1\u8FC7\u965B\u4E0B.")
-    private val mEnd =  mutableListOf("\u965B\u4E0B\u6162\u8D70.")
+    private val mStart =  mutableListOf("\u89C1\u8FC7\u4E3B\u516C.")
+    private val mEnd =  mutableListOf("\u4E3B\u516C\u6162\u8D70.")
     private val mDetail =  mutableListOf("\u82B1\u524D\u6708\u4E0B\u5F71\u6210\u53CC", "\u60C5\u6EE1\u4E09\u6C5F\u610F\u76CE\u7136",
             "\u6708\u6EE1\u897F\u697C\u68A6\u6B63\u957F", "\u82B1\u5F71\u5A46\u5A11\u4EBA\u6B32\u9189",
             "\u69B4\u82B1\u5982\u706B\u6620\u7A97\u53F0", "\u79CB\u98CE\u4E0D\u89E3\u79BB\u4EBA\u8272",
@@ -70,14 +70,14 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     fun onRewardHandler(){
         mPerson.feiziFavor += 1000
         showName()
-        makeContent("\u8C22\u965B\u4E0B.")
+        makeContent("\u8C22\u4E3B\u516C.")
         setLevelSpinner()
     }
 
     @OnClick(R.id.btn_punish)
     fun onPunishHandler(){
         mPerson.feiziFavor = Math.max(0, mPerson.feiziFavor - 1000)
-        makeContent("\u81E3\u77E5\u9519.")
+        makeContent("\u59BE\u77E5\u9519.")
         showName()
         setLevelSpinner()
     }
@@ -103,7 +103,7 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
             setLevelSpinner()
             count++
         }else{
-            makeContent("\u965B\u4E0B\u8FD8\u6709\u4E8B\u5417?")
+            makeContent("\u4E3B\u516C\u8FD8\u6709\u4E8B\u5417?")
         }
     }
 

@@ -36,6 +36,8 @@ class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageC
 
     @OnClick(R.id.tv_seq)
     fun onSpecClickHandler(){
+        if(mPerson.allianceId != "6000601")
+            return
         val ft = mContext.supportFragmentManager.beginTransaction()
         val newFragment = FragmentDialogJinlong.newInstance(mPerson.id)
         newFragment.isCancelable = false
