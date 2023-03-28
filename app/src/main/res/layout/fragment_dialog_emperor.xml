@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 style="@style/ButtonMiddle"
                 android:id="@+id/btn_ml"
-                android:text="@string/jinlong_linxing"/>
+                android:text="@string/emperor_interact"/>
         </LinearLayout>
         <ScrollView
             android:id="@+id/sv_content"

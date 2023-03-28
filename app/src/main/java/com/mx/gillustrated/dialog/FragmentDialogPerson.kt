@@ -25,7 +25,7 @@ import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
-import com.mx.gillustrated.component.JinLongData
+import com.mx.gillustrated.component.EmperorData
 import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.fragment.*
 import com.mx.gillustrated.util.NameUtil
@@ -364,7 +364,7 @@ class FragmentDialogPerson : DialogFragment() {
 
     private fun getName():String{
         return if (mPerson.feiziFavor > 0){
-            "${JinLongData.FeiLevel[mPerson.feiziLevel]}·${mPerson.name}"
+            "${EmperorData.FeiLevel[mPerson.feiziLevel]}·${mPerson.name}"
         }else{
             mPerson.name
         }

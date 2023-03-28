@@ -15,7 +15,7 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationEventAdapter
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.dialog.FragmentDialogJinlong
+import com.mx.gillustrated.dialog.FragmentDialogEmperor
 import com.mx.gillustrated.dialog.FragmentDialogPerson
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Person
@@ -39,9 +39,9 @@ class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageC
         if(mPerson.allianceId != "6000601")
             return
         val ft = mContext.supportFragmentManager.beginTransaction()
-        val newFragment = FragmentDialogJinlong.newInstance(mPerson.id)
+        val newFragment = FragmentDialogEmperor.newInstance(mPerson.id)
         newFragment.isCancelable = false
-        newFragment.show(ft, "dialog_jinglong")
+        newFragment.show(ft, "dialog_emperor")
     }
 
     @OnCheckedChanged(R.id.sch_del)

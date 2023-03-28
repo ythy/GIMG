@@ -56,9 +56,9 @@ class FragmentDialogAlliance : DialogFragment() {
         if (mAlliance.type != 5)
             return
         val ft = mContext.supportFragmentManager.beginTransaction()
-        val newFragment = FragmentDialogJinlong.newInstance(mAlliance.personList.map { it.value }.shuffled()[0].id)
+        val newFragment = FragmentDialogEmperor.newInstance(mAlliance.personList.map { it.value }.shuffled()[0].id)
         newFragment.isCancelable = false
-        newFragment.show(ft, "dialog_jinglong")
+        newFragment.show(ft, "dialog_emperor")
     }
 
     @OnClick(R.id.btn_insert)

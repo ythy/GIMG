@@ -17,18 +17,18 @@ import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.component.JinLongData.FeiLevel
-import com.mx.gillustrated.component.JinLongData.FeiziStep
+import com.mx.gillustrated.component.EmperorData.FeiLevel
+import com.mx.gillustrated.component.EmperorData.FeiziStep
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
 import java.util.*
 
-class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragment() {
+class FragmentDialogEmperor constructor(private val mId:String)  : DialogFragment() {
 
     companion object{
-        fun newInstance(id:String): FragmentDialogJinlong {
-            return FragmentDialogJinlong(id)
+        fun newInstance(id:String): FragmentDialogEmperor {
+            return FragmentDialogEmperor(id)
         }
     }
 
@@ -161,7 +161,7 @@ class FragmentDialogJinlong constructor(private val mId:String)  : DialogFragmen
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        val v = inflater.inflate(R.layout.fragment_dialog_jinlong, container, false)
+        val v = inflater.inflate(R.layout.fragment_dialog_emperor, container, false)
         ButterKnife.bind(this, v)
         init()
         return v

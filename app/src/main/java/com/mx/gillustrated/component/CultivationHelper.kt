@@ -11,7 +11,6 @@ import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import javax.annotation.Resource
 
 @SuppressLint("SetTextI18n")
 object CultivationHelper {
@@ -625,7 +624,7 @@ object CultivationHelper {
         }
         basic += getLastSingleBattleXiuwei(person)
         if (person.feiziFavor > 0){
-            basic += JinLongData.FeiziBonos[person.feiziLevel]
+            basic += EmperorData.FeiziBonos[person.feiziLevel]
         }
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
