@@ -279,6 +279,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
     }
 
     private fun initSkinSpinner(){
+        mSkinList.clear()
         mSkinList.addAll(CultivationHelper.getSkinList(mPerson))
         mSkinList.add(0, Skin("", "默认"))
         mSkinList.sortBy { it.rarity }

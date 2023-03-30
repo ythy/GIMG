@@ -363,8 +363,7 @@ class CultivationActivity : BaseActivity() {
 //         }
 
 //        mPersons.forEach { (_: String, u: Person) ->
-//            u.equipmentListPair.removeIf { it.second > 10000 }
-//            u.events.removeIf { it.content.indexOf("\u5929\u5b98\u8d50\u798f") > -1 }
+//            u.lifeTurn = 0
 //        }
 
 //        mutableListOf(205, 206, 207, 208).forEach { type->
@@ -430,7 +429,6 @@ class CultivationActivity : BaseActivity() {
 
     private fun init(json:String?){
         CultivationSetting.TEMP_SP_JIE_TURN = mSP.getInt("cultivation_jie", CultivationSetting.SP_JIE_TURN)
-        CultivationSetting.TEMP_REDUCE_TURN = mSP.getInt("cultivation_dead_reduce", CultivationSetting.SP_REDUCE_TURN)
         CultivationSetting.TEMP_TALENT_PROTECT = mSP.getInt("cultivation_talent_protect", CultivationSetting.SP_TALENT_PROTECT)
         CultivationSetting.TEMP_DEAD_SYMBOL = mSP.getString("cultivation_dead_symbol", CultivationSetting.SP_DEAD_SYMBOL)!!
         CultivationSetting.TEMP_SKIN_BATTLE_MIN = mSP.getInt("cultivation_skin_battle_min", CultivationSetting.SP_SKIN_BATTLE_MIN)
@@ -747,9 +745,9 @@ class CultivationActivity : BaseActivity() {
                 }
                 2 -> {
                     it.lifetime += 5000
-                    it.lifeTurn -= CultivationSetting.TEMP_REDUCE_TURN
+                    it.lifeTurn -= 1
                     it.deadExceptTimes++
-                    addPersonEvent(it,"转转-${CultivationSetting.TEMP_REDUCE_TURN},残:${it.lifeTurn}")
+                    addPersonEvent(it,"转转-1,残:${it.lifeTurn}")
                 }
             }
         }
@@ -767,15 +765,7 @@ class CultivationActivity : BaseActivity() {
             val next = CultivationHelper.getNextJingJie(it.jingJieId)
             it.xiuXei = 0
             val totalSuccess = CultivationHelper.getTotalSuccess(it)
-            // 9zhuan↑  81zhuan↑↑ ← decrease  random
-            var difficulty = 1
-            if(next == null && it.lifeTurn > 0){
-                when {
-                    it.lifeTurn % 81 == 0 -> difficulty = mSP.getInt("cultivation_nan_81", CultivationSetting.SP_NAN_81)
-                    it.lifeTurn % 9 == 0 -> difficulty = mSP.getInt("cultivation_nan_9", CultivationSetting.SP_NAN_9)
-                }
-            }
-            val random = Random().nextInt(100 * difficulty)
+            val random = Random().nextInt(100)
             if (random <= totalSuccess) {//成功
                 val allianceNow = mAlliance[it.allianceId]
                 if (next != null) {
@@ -791,8 +781,8 @@ class CultivationActivity : BaseActivity() {
                     it.jinJieMax = next.max
                     it.lifetime +=  CultivationHelper.getLifetimeBonusRealm(it, allianceNow)
                 } else {
-                    val commonText = "转转成功$difficulty，${personDataString[2]} $random/$totalSuccess"
-                    if(difficulty > 1 || it.isFav){
+                    val commonText = "转转成功，${personDataString[2]} $random/$totalSuccess"
+                    if(it.isFav){
                         writeHistory("${getPersonBasicString(it)} $commonText", it)
                     }
                     it.jingJieId = mConfig.jingJieType[0].id

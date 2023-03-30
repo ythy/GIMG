@@ -31,17 +31,13 @@ object CultivationSetting {
         val SingleBonus = arrayOf(5, 30, 20, 15, 10, 6, 4, 2, 1, 0, 0)
     }
 
-    const val SP_JIE_TURN = 999
-    const val SP_REDUCE_TURN = 10 //life turn --
+    const val SP_JIE_TURN = 1
     const val SP_TALENT_PROTECT = 30 //天赋
     const val SP_DEAD_SYMBOL = "……"
-    const val SP_NAN_9 = 5
-    const val SP_NAN_81 = 10
     const val SP_SKIN_BATTLE_MIN = 9
     var TEMP_SP_JIE_TURN = SP_JIE_TURN
     var TEMP_TALENT_PROTECT = SP_TALENT_PROTECT
     var TEMP_DEAD_SYMBOL = SP_DEAD_SYMBOL
-    var TEMP_REDUCE_TURN = SP_REDUCE_TURN
     var TEMP_SKIN_BATTLE_MIN = SP_SKIN_BATTLE_MIN
     const val LIFE_TIME_YEAR = 100
     val EVENT_WEIGHT = listOf("1200-50", "7200-40", "8400-40", "9600-100")

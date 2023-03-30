@@ -65,7 +65,7 @@ object CultivationEnemyHelper {
                 CultivationSetting.PersonFixedInfoMix(null, null, 1000, 1000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 1
-        updateBossProps(person, 4, Pair(4, 1), 50,1200, 60, listOf("8001004", "8002001"))
+        updateBossProps(person, 4, Pair(4, 1), 60,1200, 60, listOf("8001004", "8002001"))
         return person
     }
 
@@ -74,7 +74,7 @@ object CultivationEnemyHelper {
                 CultivationSetting.PersonFixedInfoMix(null, null, 4000, 4000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 2
-        updateBossProps(person, 6, Pair(4, 1), 55,1400, 80, listOf("8001005", "8002002"))
+        updateBossProps(person, 6, Pair(4, 1), 65,1400, 80, listOf("8001005", "8002002"))
         return person
     }
 
@@ -83,7 +83,7 @@ object CultivationEnemyHelper {
                 CultivationSetting.PersonFixedInfoMix(null, null, 6000, 6000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 3
-        updateBossProps(person, 8, Pair(4, 1), 60,1600, 100, listOf("8004001", "8002002"))
+        updateBossProps(person, 8, Pair(4, 1), 70,1600, 100, listOf("8004001", "8002002"))
         return person
     }
 
@@ -92,7 +92,7 @@ object CultivationEnemyHelper {
                 CultivationSetting.PersonFixedInfoMix(null, null, 8000, 80000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 4
-        updateBossProps(person, 10, Pair(6, 2), 60,2000, 120, listOf("8004002", "8002002"))
+        updateBossProps(person, 10, Pair(6, 2), 75,2000, 120, listOf("8004002", "8002002"))
         return person
     }
 

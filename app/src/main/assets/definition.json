@@ -5,7 +5,7 @@
       "name": "单",
       "type": 0,
       "randomBasic": 20,
-      "qiBasic": 60,
+      "qiBasic": 80,
       "color": 4,
       "inherit": 1
     },
@@ -14,7 +14,7 @@
       "name": "双",
       "type": 0,
       "randomBasic": 10,
-      "qiBasic": 50,
+      "qiBasic": 60,
       "color": 3,
       "inherit": 1
     },
@@ -50,7 +50,7 @@
       "name": "卦",
       "type": 1,
       "randomBasic": 50,
-      "qiBasic": 80,
+      "qiBasic": 100,
       "color": 5,
       "inherit": 2
     },
@@ -59,7 +59,7 @@
       "name": "变",
       "type": 2,
       "randomBasic": 1000,
-      "qiBasic": 150,
+      "qiBasic": 200,
       "color": 6,
       "inherit": 20
     },
@@ -68,7 +68,7 @@
       "name": "相",
       "type": 3,
       "randomBasic": 2000,
-      "qiBasic": 200,
+      "qiBasic": 300,
       "color": 7,
       "inherit": 50
     },
@@ -77,7 +77,7 @@
       "name": "斗",
       "type": 4,
       "randomBasic": 5000,
-      "qiBasic": 300,
+      "qiBasic": 500,
       "color": 8,
       "inherit": 100
     },
@@ -697,37 +697,190 @@
       "lifetime": 0
     },
     {
-      "id": "2000411",
-      "name": "DiJing-1",
-      "max": 500000,
+      "id": "2000405",
+      "name": "ShengJing-5",
+      "max": 400000,
       "color": 8,
       "success": 1,
       "fault": 1,
-      "lifetime": 2000
+      "lifetime": 0
+    },
+    {
+      "id": "2000411",
+      "name": "HuaJing-1",
+      "max": 500000,
+      "color": 9,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 3000
     },
     {
       "id": "2000412",
-      "name": "DiJing-2",
+      "name": "HuaJing-2",
       "max": 600000,
-      "color": 8,
+      "color": 9,
       "success": 1,
       "fault": 1,
       "lifetime": 0
     },
     {
       "id": "2000413",
-      "name": "DiJing-3",
+      "name": "HuaJing-3",
       "max": 700000,
-      "color": 8,
+      "color": 9,
       "success": 1,
       "fault": 1,
       "lifetime": 0
     },
     {
       "id": "2000414",
-      "name": "DiJing-4",
+      "name": "HuaJing-4",
       "max": 800000,
-      "color": 8,
+      "color": 9,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000415",
+      "name": "HuaJing-5",
+      "max": 900000,
+      "color": 9,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000501",
+      "name": "XuJing-1",
+      "max": 2000000,
+      "color": 10,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 5000
+    },
+    {
+      "id": "2000502",
+      "name": "XuJing-2",
+      "max": 2000000,
+      "color": 10,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000503",
+      "name": "XuJing-3",
+      "max": 2000000,
+      "color": 10,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000504",
+      "name": "XuJing-4",
+      "max": 2000000,
+      "color": 10,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000505",
+      "name": "XuJing-5",
+      "max": 2000000,
+      "color": 10,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000601",
+      "name": "KongJing-1",
+      "max": 5000000,
+      "color": 11,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 10000
+    },
+    {
+      "id": "2000602",
+      "name": "KongJing-2",
+      "max": 5000000,
+      "color": 11,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000603",
+      "name": "KongJing-3",
+      "max": 5000000,
+      "color": 11,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000604",
+      "name": "KongJing-4",
+      "max": 5000000,
+      "color": 11,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000605",
+      "name": "KongJing-5",
+      "max": 5000000,
+      "color": 11,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000701",
+      "name": "WuJing-1",
+      "max": 20000000,
+      "color": 12,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 20000
+    },
+    {
+      "id": "2000702",
+      "name": "WuJing-2",
+      "max": 20000000,
+      "color": 12,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000703",
+      "name": "WuJing-3",
+      "max": 20000000,
+      "color": 12,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000704",
+      "name": "WuJing-4",
+      "max": 20000000,
+      "color": 12,
+      "success": 1,
+      "fault": 1,
+      "lifetime": 0
+    },
+    {
+      "id": "2000705",
+      "name": "WuJing-5",
+      "max": 20000000,
+      "color": 12,
       "success": 1,
       "fault": 1,
       "lifetime": 0
@@ -1340,7 +1493,7 @@
       "level": 10,
       "lifetime": 0,
       "maxPerson": 100,
-      "xiuwei": 30,
+      "xiuweiMulti": 50,
       "property": [0,10,10,10,0,0,0,0]
     },
     {
@@ -1349,7 +1502,7 @@
       "nation": "6200008",
       "tianfu": 1,
       "level": 10,
-      "lifetime": -20,
+      "lifetime": 0,
       "maxPerson": 100,
       "xiuwei": 50,
       "property": [0,30,0,0,0,0,0,0]
@@ -1362,7 +1515,7 @@
       "level": 20,
       "lifetime": 0,
       "maxPerson": 50,
-      "xiuwei": 60,
+      "xiuwei": 100,
       "property": [0,30,10,0,0,0,0,0]
     },
     {
@@ -1371,9 +1524,8 @@
       "nation": "6200008",
       "tianfu": 2,
       "level": 20,
-      "lifetime": 50,
+      "lifetime": 100,
       "maxPerson": 50,
-      "xiuwei": 30,
       "property": [50,10,20,0,0,0,0,0]
     },
     {
@@ -1382,10 +1534,9 @@
       "nation": "6200008",
       "tianfu": 2,
       "level": 20,
-      "lifetime": 20,
+      "lifetime": 0,
       "maxPerson": 50,
-      "xiuwei": 30,
-      "xiuweiMulti": 50,
+      "xiuweiMulti": 100,
       "property": [50,10,10,10,0,0,0,0]
     },
     {
@@ -1397,7 +1548,7 @@
       "lifetime": 50,
       "success": 10,
       "maxPerson": 20,
-      "xiuwei": 60,
+      "xiuwei": 100,
       "xiuweiMulti": 50,
       "property": [50,20,10,10,0,0,0,0]
     },
@@ -1914,7 +2065,7 @@
       "name": "\u8D85\u7145\u795E\u5175(\u58C1\u901F)",
       "type": 8,
       "rarity": 11,
-      "xiuwei": 200,
+      "xiuwei": 150,
       "success": 0,
       "property": [0,150,50,100,0,0,0,0],
       "teji": ["8003005", "8003004"],
@@ -1962,7 +2113,7 @@
       "name": "\u4E09\u4E2A\uD83C\uDF4E\uD83C\uDF4F",
       "type": 8,
       "rarity": 13,
-      "xiuwei": 500,
+      "xiuwei": 300,
       "success": 10,
       "property": [200,300,50,100,0,0,0,0],
       "teji": ["8004001", "8001001", "8005001"],
@@ -1973,7 +2124,7 @@
       "name": "\u6708\u5149\u5B9D\u76D2",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [0,200,50,150,0,0,0,0],
       "teji": ["8003010", "8002009"],
@@ -1984,7 +2135,7 @@
       "name": "\u5B9A\u6D77\u795E\u9488",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [0,250,0,150,0,0,0,0],
       "teji": ["8001008", "8002009"],
@@ -1996,7 +2147,7 @@
       "name": "\u4E09\u85CF\u771F\u7ECF",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [300,0,300,0,0,0,0,0],
       "teji": ["8001008", "8002007"],
@@ -2007,7 +2158,7 @@
       "name": "\u4E5D\u9634\u771F\u7ECF",
       "type": 8,
       "rarity": 13,
-      "xiuwei": 500,
+      "xiuwei": 300,
       "success": 10,
       "property": [300,250,50,100,0,0,0,0],
       "teji": ["8001006", "8002007", "8002002"],
@@ -2018,7 +2169,7 @@
       "name": "\u4E5D\u9633\u771F\u7ECF",
       "type": 8,
       "rarity": 13,
-      "xiuwei": 500,
+      "xiuwei": 300,
       "success": 10,
       "property": [300,300,0,100,0,0,0,0],
       "teji": ["8001006", "8002009", "8002005"],
@@ -2029,7 +2180,7 @@
       "name": "\u5DEB\u6708\u795E\u5200",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [0,300,0,100,0,0,0,0],
       "teji": ["8003006", "8002009"],
@@ -2040,7 +2191,7 @@
       "name": "\u9152\u846B\u82A6",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [300,100,100,100,0,0,0,0],
       "teji": ["8003007", "8006010"],
@@ -2051,7 +2202,7 @@
       "name": "\u501A\u5929\u5251",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [0,300,0,100,0,0,0,0],
       "teji": ["8003006", "8002009"],
@@ -2062,7 +2213,7 @@
       "name": "\u5C60\u9F99\u5200",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [300,300,0,0,0,0,0,0],
       "teji": ["8001006", "8002009"],
@@ -2073,7 +2224,7 @@
       "name": "\u5973\u5A32\u77F3",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [500,100,100,50,0,0,0,0],
       "teji": ["8001003", "8003009", "8001009"],
@@ -2084,7 +2235,7 @@
       "name": "\u51CC\u9704\u5B9D\u6BBF",
       "type": 8,
       "rarity": 13,
-      "xiuwei": 500,
+      "xiuwei": 300,
       "success": 10,
       "property": [200,250,50,150,0,0,0,0],
       "teji": ["8001006", "8001001", "8001010"],
@@ -2096,7 +2247,7 @@
       "name": "\u7389\u51C0\u74F6",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [0,200,100,100,0,0,0,0],
       "teji": ["8001003", "8002007"],
@@ -2107,7 +2258,7 @@
       "name": "\u5948\u4F55\u6865",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [0,200,50,150,0,0,0,0],
       "teji": ["8004003", "8002007"],
@@ -2118,7 +2269,7 @@
       "name": "\u4E94\u9B3C\u7B26",
       "type": 8,
       "rarity": 12,
-      "xiuwei": 300,
+      "xiuwei": 200,
       "success": 10,
       "property": [300,200,0,100,0,0,0,0],
       "teji": ["8001001", "8001011"],
@@ -2129,7 +2280,7 @@
       "name": "\u9752\u56CA\u4E66",
       "type": 8,
       "rarity": 10,
-      "xiuwei": 200,
+      "xiuwei": 100,
       "success": 0,
       "property": [300,0,100,0,0,0,0,0],
       "teji": ["8002005"],
@@ -2140,7 +2291,7 @@
       "name": "\u7126\u5C3E",
       "type": 8,
       "rarity": 10,
-      "xiuwei": 200,
+      "xiuwei": 100,
       "success": 0,
       "property": [200,100,0,50,0,0,0,0],
       "teji": ["8002006"],
@@ -2151,7 +2302,7 @@
       "name": "\u5170\u4EAD\u5E8F",
       "type": 8,
       "rarity": 10,
-      "xiuwei": 200,
+      "xiuwei": 100,
       "success": 0,
       "property": [0,150,0,50,0,0,0,0],
       "teji": ["8002008"],
@@ -2162,7 +2313,7 @@
       "name": "\u5BCC\u6625\u5C71\u5C45\u56FE",
       "type": 8,
       "rarity": 10,
-      "xiuwei": 200,
+      "xiuwei": 100,
       "success": 0,
       "property": [200,50,50,50,0,0,0,0],
       "teji": ["8001003"],
@@ -2173,7 +2324,7 @@
       "name": "\u65CF\u957F\u5370\u4FE1",
       "type": 9,
       "rarity": 11,
-      "xiuwei": 500,
+      "xiuwei": 150,
       "success": 10,
       "property": [200,0,50,0,0,0,0,0]
     },
@@ -2182,7 +2333,7 @@
       "name": "\u5C11\u4E3B\u5370\u4FE1",
       "type": 9,
       "rarity": 11,
-      "xiuwei": 500,
+      "xiuwei": 150,
       "success": 0,
       "property": [0,100,0,50,0,0,0,0],
       "follower": ["9000202"]
@@ -2192,7 +2343,7 @@
       "name": "\u90E1\u4E3B\u5370\u4FE1",
       "type": 9,
       "rarity": 11,
-      "xiuwei": 500,
+      "xiuwei": 150,
       "success": 0,
       "property": [200,50,0,50,0,0,0,0],
       "follower": ["9000201"]
@@ -2202,7 +2353,7 @@
       "name": "\u4E71\u4E16\u7EA2\u989C",
       "type": 9,
       "rarity": 14,
-      "xiuwei": 500,
+      "xiuwei": 400,
       "success": 30,
       "property": [300,200,100,200,0,0,0,0],
       "teji": ["8004002", "8006008", "8003001", "8001001"],
@@ -2213,7 +2364,7 @@
       "name": "\u6731\u96C0\u6C34\u6676",
       "type": 9,
       "rarity": 11,
-      "xiuwei": 200,
+      "xiuwei": 150,
       "success": 0,
       "property": [0,100,0,0,0,0,0,0],
       "teji": ["8006003"]
@@ -2233,7 +2384,7 @@
       "name": "\u5185\u95E8\u4EE4\u724C",
       "type": 9,
       "rarity": 10,
-      "xiuwei": 300,
+      "xiuwei": 100,
       "success": 0,
       "property": [0,0,50,50,0,0,0,0]
     }
@@ -2903,21 +3054,21 @@
       "name": "\u4E09\u82B1\u805A\u9876",
       "weight": 10000,
       "rarity": 9,
-      "property": [0,0,0,0,100,100,0,0]
+      "property": [0,0,0,0,100,50,0,0]
     },
     {
       "id": "4100106",
       "name": "\u4E94\u6C14\u671D\u5143",
       "weight": 50000,
       "rarity": 10,
-      "property": [0,0,0,0,150,150,0,0]
+      "property": [0,0,0,0,150,75,0,0]
     },
     {
       "id": "4100107",
       "name": "\u7FBD\u5316\u767B\u4ED9",
       "weight": 250000,
       "rarity": 11,
-      "property": [0,0,0,0,200,200,0,0]
+      "property": [0,0,0,0,200,100,0,0]
     },
     {
       "id": "4100201",
@@ -3106,14 +3257,14 @@
       "name": "\u4E07\u754C\u5723\u4F53",
       "weight": 2000000,
       "rarity": 13,
-      "property": [0,0,0,0,300,300,500,1000]
+      "property": [0,0,0,0,300,150,500,1000]
     },
     {
       "id": "4100502",
       "name": "\u661F\u8FB0\u5251\u4F53",
       "weight": 50000,
       "rarity": 10,
-      "property": [0,150,0,50,100,100,0,0],
+      "property": [0,150,0,50,100,50,0,0],
       "teji": ["8006009"]
     },
     {
@@ -3121,7 +3272,7 @@
       "name": "\u8352\u53E4\u5996\u4F53",
       "weight": 1000000,
       "rarity": 12,
-      "property": [200,0,100,50,200,200,0,0],
+      "property": [200,0,100,50,200,100,0,0],
       "follower": ["9000301", "9000302"]
     },
     {
@@ -3129,7 +3280,7 @@
       "name": "\u51E4\u51F0\u6218\u4F53",
       "weight": 50000,
       "rarity": 10,
-      "property": [200,50,50,50,100,100,0,0],
+      "property": [200,50,50,50,100,50,0,0],
       "teji": ["8001003"]
     },
     {
@@ -3137,7 +3288,7 @@
       "name": "\u9E92\u9E9F\u6218\u4F53",
       "weight": 50000,
       "rarity": 10,
-      "property": [100,100,100,0,100,100,0,0],
+      "property": [100,100,100,0,100,50,0,0],
       "teji": ["8003009"]
     },
     {
@@ -3145,7 +3296,7 @@
       "name": "\u9EC4\u6CC9\u706D\u4F53",
       "weight": 5000000,
       "rarity": 14,
-      "property": [500,200,100,200,500,500,0,0],
+      "property": [500,200,100,200,400,200,0,0],
       "teji": ["8001006", "8004003"]
     }
   ],
