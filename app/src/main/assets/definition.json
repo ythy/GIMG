@@ -1653,7 +1653,7 @@
     },
     {
       "id": "6000601",
-      "name": "十二",
+      "name": "\u7EA2\u697C",
       "type": 5,
       "nation": "6200006",
       "lifetime": 100,
@@ -1673,7 +1673,7 @@
     },
     {
       "id": "6000801",
-      "name": "\u5929\u7F61U",
+      "name": "天罡",
       "type": 7,
       "nation": "6200007",
       "lifetime": 50,
@@ -1682,44 +1682,14 @@
       "property": [0,60,0,10,0,0,0,0]
     },
     {
-      "id": "6000802",
-      "name": "\u5929\u7F61D",
-      "type": 7,
-      "nation": "6200007",
-      "lifetime": 50,
-      "xiuwei": 100,
-      "xiuweiMulti": 100,
-      "property": [0,50,10,10,0,0,0,0]
-    },
-    {
       "id": "6000803",
-      "name": "\u5730\u715EU",
+      "name": "\u5730\u715E",
       "type": 7,
       "nation": "6200007",
       "lifetime": 50,
       "xiuwei": 100,
       "xiuweiMulti": 100,
       "property": [0,40,10,20,0,0,0,0]
-    },
-    {
-      "id": "6000804",
-      "name": "\u5730\u715EM",
-      "type": 7,
-      "nation": "6200007",
-      "lifetime": 50,
-      "xiuwei": 100,
-      "xiuweiMulti": 100,
-      "property": [0,20,20,30,0,0,0,0]
-    },
-    {
-      "id": "6000805",
-      "name": "\u5730\u715ED",
-      "type": 7,
-      "nation": "6200007",
-      "lifetime": 50,
-      "xiuwei": 100,
-      "xiuweiMulti": 100,
-      "property": [0,30,20,20,0,0,0,0]
     }
   ],
   "equipment": [

@@ -31,9 +31,9 @@ object CultivationSetting {
         val SingleBonus = arrayOf(5, 30, 20, 15, 10, 6, 4, 2, 1, 0, 0)
     }
 
-    const val SP_JIE_TURN = 1
-    const val SP_TALENT_PROTECT = 30 //天赋
-    const val SP_DEAD_SYMBOL = "……"
+    const val SP_JIE_TURN = 9
+    const val SP_TALENT_PROTECT = 40 //天赋
+    const val SP_DEAD_SYMBOL = "🔪"
     const val SP_SKIN_BATTLE_MIN = 9
     var TEMP_SP_JIE_TURN = SP_JIE_TURN
     var TEMP_TALENT_PROTECT = SP_TALENT_PROTECT
@@ -133,18 +133,18 @@ object CultivationSetting {
     )
     //6
     private val SpecPersonFirstName5: MutableList<PresetInfo> = mutableListOf(
-            PresetInfo(15000011, Triple("\u5BAB\u4EE4", "", 1201), 0, 200, 600),
-            PresetInfo(15000021, Triple("\u51E4\u4EEA", "", 1202), 0, 200, 600),
-            PresetInfo(15000031, Triple("\u5FA1\u4F8D", "", 1203), 0, 200, 600),
-            PresetInfo(15000041, Triple("\u5C1A\u5E2D", "", 1204), 0, 100, 200),
-            PresetInfo(15000051, Triple("\u5C1A\u4E58", "", 1205), 0, 200, 400),
-            PresetInfo(15000061, Triple("\u5C1A\u529F", "", 1206), 0, 100, 200),
-            PresetInfo(15000071, Triple("\u5C1A\u5BAB", "", 1207), 0, 100, 200),
-            PresetInfo(15000081, Triple("\u5C1A\u4EEA", "", 1208), 0, 100, 200),
-            PresetInfo(15000091, Triple("\u5C1A\u670D", "", 1209), 0, 100, 200),
-            PresetInfo(15000101, Triple("\u5C1A\u98DF", "", 1210), 0, 100, 200),
-            PresetInfo(15000111, Triple("\u5C1A\u5BDD", "", 1211), 0, 100, 200),
-            PresetInfo(15000121, Triple("\u5C1A\u8863", "", 1212), 0, 100, 200)
+            PresetInfo(15000011, Triple("\u6674\u96EF", "", 1201), 0, 200, 600),
+            PresetInfo(15000021, Triple("\u6797", "\u9EDB\u7389", 1202), 0, 200, 600),
+            PresetInfo(15000031, Triple("\u859B", "\u5B9D\u9497", 1203), 0, 200, 600),
+            PresetInfo(15000041, Triple("\u674E", "\u7EA8", 1204), 0, 100, 200),
+            PresetInfo(15000051, Triple("\u79E6", "\u53EF\u537F", 1205), 0, 200, 400),
+            PresetInfo(15000061, Triple("\u53F2", "\u6E58\u4E91", 1206), 0, 100, 200),
+            PresetInfo(15000071, Triple("\u8D3E", "\u5143\u6625", 1207), 0, 100, 200),
+            PresetInfo(15000081, Triple("\u90A2", "\u5CAB\u70DF", 1208), 0, 100, 200),
+            PresetInfo(15000091, Triple("\u5E73\u513F", "", 1209), 0, 100, 200),
+            PresetInfo(15000101, Triple("\u9999\u83F1", "", 1210), 0, 100, 200),
+            PresetInfo(15000111, Triple("\u5999\u7389", "", 1211), 0, 100, 200),
+            PresetInfo(15000121, Triple("\u88AD\u4EBA", "", 1212), 0, 100, 200)
     )
 
     private val SpecPersonFirstName6:MutableList<PresetInfo> = mutableListOf(
@@ -187,18 +187,18 @@ object CultivationSetting {
             PresetInfo(17000150, Triple("\u8463","\u5E73", 4015)),
             PresetInfo(17000160, Triple("\u5F20","\u6E05", 4016),0,100,200),
             PresetInfo(17000170, Triple("\u6768","\u5fd7",4017)), PresetInfo(17000180, Triple("\u5F90","\u5B81", 4018)),
+            PresetInfo(17000190, Triple("\u7D22","\u8D85", 4019)), PresetInfo(17000200, Triple("\u6234","\u5b97", 4020)),
+            PresetInfo(17000210, Triple("\u5218","\u5510", 4021)),
+            PresetInfo(17000220, Triple("\u674e","\u9035", 4022),0, 100, 200),
+            PresetInfo(17000230, Triple("\u53F2","\u8FDB", 4023)), PresetInfo(17000240, Triple("\u7A46","\u5F18", 4024)),
+            PresetInfo(17000250, Triple("\u96F7","\u6A2A", 4025)), PresetInfo(17000260, Triple("\u674E","\u4FCA", 4026)),
+            PresetInfo(17000270, Triple("\u962E","\u5C0F\u4E8C", 4027)), PresetInfo(17000280, Triple("\u5F20","\u6A2A", 4028)),
+            PresetInfo(17000290, Triple("\u962E","\u5C0F\u4E94", 4029)),
+            PresetInfo(17000300, Triple("\u5f20","\u987a", 4030),0,100,100),
+            PresetInfo(17000310, Triple("\u962E","\u5C0F\u4E03", 4031)), PresetInfo(17000320, Triple("\u6768","\u96C4", 4032)),
+            PresetInfo(17000330, Triple("\u77F3","\u79C0", 4033)), PresetInfo(17000340, Triple("\u89E3","\u73CD", 4034)),
+            PresetInfo(17000350, Triple("\u89E3","\u5B9D", 4035)), PresetInfo(17000360, Triple("\u71D5","\u9752", 4036)),
 
-            PresetInfo(17010190, Triple("\u7D22","\u8D85", 4019)), PresetInfo(17010200, Triple("\u6234","\u5b97", 4020)),
-            PresetInfo(17010210, Triple("\u5218","\u5510", 4021)),
-            PresetInfo(17010220, Triple("\u674e","\u9035", 4022),0, 100, 200),
-            PresetInfo(17010230, Triple("\u53F2","\u8FDB", 4023)), PresetInfo(17010240, Triple("\u7A46","\u5F18", 4024)),
-            PresetInfo(17010250, Triple("\u96F7","\u6A2A", 4025)), PresetInfo(17010260, Triple("\u674E","\u4FCA", 4026)),
-            PresetInfo(17010270, Triple("\u962E","\u5C0F\u4E8C", 4027)), PresetInfo(17010280, Triple("\u5F20","\u6A2A", 4028)),
-            PresetInfo(17010290, Triple("\u962E","\u5C0F\u4E94", 4029)),
-            PresetInfo(17010300, Triple("\u5f20","\u987a", 4030),0,100,100),
-            PresetInfo(17010310, Triple("\u962E","\u5C0F\u4E03", 4031)), PresetInfo(17010320, Triple("\u6768","\u96C4", 4032)),
-            PresetInfo(17010330, Triple("\u77F3","\u79C0", 4033)), PresetInfo(17010340, Triple("\u89E3","\u73CD", 4034)),
-            PresetInfo(17010350, Triple("\u89E3","\u5B9D", 4035)), PresetInfo(17010360, Triple("\u71D5","\u9752", 4036)),
 
             PresetInfo(17020370, Triple("\u6731","\u6B66", 4037)), PresetInfo(17020380, Triple("\u9EC4","\u4FE1", 4038)),
             PresetInfo(17020390, Triple("\u5B59","\u7ACB", 4039)), PresetInfo(17020400, Triple("\u5BA3","\u8D5E", 4040)),
@@ -215,34 +215,32 @@ object CultivationSetting {
             PresetInfo(17020580, Triple("\u738B","\u82F1", 4058), 17020591),
             PresetInfo(17020591, Triple("\u6248","\u4e09\u5a18", 1501),17020580, 200, 600),
             PresetInfo(17020600, Triple("\u90ED","\u76DB", 4060)),
-
-            PresetInfo(17030610, Triple("\u6A0A","\u745E", 4061)), PresetInfo(17030620, Triple("\u5B54","\u660E", 4062)),
-            PresetInfo(17030630, Triple("\u5B54","\u4EAE", 4063)), PresetInfo(17030640, Triple("\u9879","\u5145", 4064)),
-            PresetInfo(17030650, Triple("\u674E","\u886E", 4065)), PresetInfo(17030660, Triple("\u91D1","\u5927\u575A", 4066)),
-            PresetInfo(17030670, Triple("\u9A6C","\u9E9F", 4067)), PresetInfo(17030680, Triple("\u7AE5","\u5A01", 4068)),
-            PresetInfo(17030690, Triple("\u7AE5","\u731B", 4069)), PresetInfo(17030700, Triple("\u5B5F","\u5EB7", 4070)),
-            PresetInfo(17030710, Triple("\u4FAF","\u5EFA", 4071)), PresetInfo(17030720, Triple("\u9648","\u8FBE", 4072)),
-            PresetInfo(17030730, Triple("\u6768","\u6625", 4073)), PresetInfo(17030740, Triple("\u90D1","\u5929\u5BFF", 4074)),
-            PresetInfo(17030750, Triple("\u9676","\u5B97\u65FA", 4075)), PresetInfo(17030760, Triple("\u5B8B","\u6E05", 4076)),
-            PresetInfo(17030770, Triple("\u4E50","\u548C", 4077)), PresetInfo(17030780, Triple("\u9F9A","\u65FA", 4078)),
-            PresetInfo(17030790, Triple("\u4E01","\u5F97\u5B59", 4079)), PresetInfo(17030800, Triple("\u7A46","\u6625", 4080)),
-            PresetInfo(17030810, Triple("\u66F9","\u6B63", 4081)), PresetInfo(17030820, Triple("\u5B8B","\u4E07", 4082)),
-            PresetInfo(17030830, Triple("\u675C","\u8FC1", 4083)), PresetInfo(17030840, Triple("\u859B","\u6C38", 4084)),
-
-            PresetInfo(17040850, Triple("\u674E","\u5FE0", 4085)), PresetInfo(17040860, Triple("\u5468","\u901A", 4086)),
-            PresetInfo(17040870, Triple("\u6C64","\u9686", 4087)), PresetInfo(17040880, Triple("\u675C","\u5174", 4088)),
-            PresetInfo(17040890, Triple("\u90B9","\u6E0A", 4089)), PresetInfo(17040900, Triple("\u90B9","\u6DA6", 4090)),
-            PresetInfo(17040910, Triple("\u6731","\u8D35", 4091)), PresetInfo(17040920, Triple("\u6731","\u5BCC", 4092)),
-            PresetInfo(17040930, Triple("\u65BD","\u6069", 4093)), PresetInfo(17040940, Triple("\u8521","\u798F", 4094)),
-            PresetInfo(17040950, Triple("\u8521","\u5E86", 4095)), PresetInfo(17040960, Triple("\u674E","\u7ACB", 4096)), PresetInfo(17040970, Triple("\u674E","\u4E91", 4097)),
-            PresetInfo(17040980, Triple("\u7126","\u633A", 4098)), PresetInfo(17040990, Triple("\u77F3","\u52C7", 4099)),
-            PresetInfo(17041000, Triple("\u5B59","\u65B0", 4100), 17041011),
-            PresetInfo(17041011, Triple("\u987E","\u5927\u5AC2", 1502), 17041000),
-            PresetInfo(17041020, Triple("\u5F20","\u9752", 4102), 17041031, 100, 100),
-            PresetInfo(17041031, Triple("\u5B59","\u4E8C\u5A18", 1503), 17041020, 200, 600),
-            PresetInfo(17041040, Triple("\u738B","\u5B9A\u516D", 4104)), PresetInfo(17041050, Triple("\u90C1","\u4FDD\u56DB", 4105)),
-            PresetInfo(17041060, Triple("\u767D","\u80DC", 4106)), PresetInfo(17041070, Triple("\u65F6","\u8FC1", 4107)),
-            PresetInfo(17041080, Triple("\u6BB5","\u666F\u67F1", 4108))
+            PresetInfo(17020610, Triple("\u6A0A","\u745E", 4061)), PresetInfo(17020620, Triple("\u5B54","\u660E", 4062)),
+            PresetInfo(17020630, Triple("\u5B54","\u4EAE", 4063)), PresetInfo(17020640, Triple("\u9879","\u5145", 4064)),
+            PresetInfo(17020650, Triple("\u674E","\u886E", 4065)), PresetInfo(17020660, Triple("\u91D1","\u5927\u575A", 4066)),
+            PresetInfo(17020670, Triple("\u9A6C","\u9E9F", 4067)), PresetInfo(17020680, Triple("\u7AE5","\u5A01", 4068)),
+            PresetInfo(17020690, Triple("\u7AE5","\u731B", 4069)), PresetInfo(17020700, Triple("\u5B5F","\u5EB7", 4070)),
+            PresetInfo(17020710, Triple("\u4FAF","\u5EFA", 4071)), PresetInfo(17020720, Triple("\u9648","\u8FBE", 4072)),
+            PresetInfo(17020730, Triple("\u6768","\u6625", 4073)), PresetInfo(17020740, Triple("\u90D1","\u5929\u5BFF", 4074)),
+            PresetInfo(17020750, Triple("\u9676","\u5B97\u65FA", 4075)), PresetInfo(17020760, Triple("\u5B8B","\u6E05", 4076)),
+            PresetInfo(17020770, Triple("\u4E50","\u548C", 4077)), PresetInfo(17020780, Triple("\u9F9A","\u65FA", 4078)),
+            PresetInfo(17020790, Triple("\u4E01","\u5F97\u5B59", 4079)), PresetInfo(17020800, Triple("\u7A46","\u6625", 4080)),
+            PresetInfo(17020810, Triple("\u66F9","\u6B63", 4081)), PresetInfo(17020820, Triple("\u5B8B","\u4E07", 4082)),
+            PresetInfo(17020830, Triple("\u675C","\u8FC1", 4083)), PresetInfo(17020840, Triple("\u859B","\u6C38", 4084)),
+            PresetInfo(17020850, Triple("\u674E","\u5FE0", 4085)), PresetInfo(17020860, Triple("\u5468","\u901A", 4086)),
+            PresetInfo(17020870, Triple("\u6C64","\u9686", 4087)), PresetInfo(17020880, Triple("\u675C","\u5174", 4088)),
+            PresetInfo(17020890, Triple("\u90B9","\u6E0A", 4089)), PresetInfo(17020900, Triple("\u90B9","\u6DA6", 4090)),
+            PresetInfo(17020910, Triple("\u6731","\u8D35", 4091)), PresetInfo(17020920, Triple("\u6731","\u5BCC", 4092)),
+            PresetInfo(17020930, Triple("\u65BD","\u6069", 4093)), PresetInfo(17020940, Triple("\u8521","\u798F", 4094)),
+            PresetInfo(17020950, Triple("\u8521","\u5E86", 4095)), PresetInfo(17020960, Triple("\u674E","\u7ACB", 4096)), PresetInfo(17020970, Triple("\u674E","\u4E91", 4097)),
+            PresetInfo(17020980, Triple("\u7126","\u633A", 4098)), PresetInfo(17020990, Triple("\u77F3","\u52C7", 4099)),
+            PresetInfo(17021000, Triple("\u5B59","\u65B0", 4100), 17021011),
+            PresetInfo(17021011, Triple("\u987E","\u5927\u5AC2", 1502), 17021000),
+            PresetInfo(17021020, Triple("\u5F20","\u9752", 4102), 17021031, 100, 100),
+            PresetInfo(17021031, Triple("\u5B59","\u4E8C\u5A18", 1503), 17021020, 200, 600),
+            PresetInfo(17021040, Triple("\u738B","\u5B9A\u516D", 4104)), PresetInfo(17021050, Triple("\u90C1","\u4FDD\u56DB", 4105)),
+            PresetInfo(17021060, Triple("\u767D","\u80DC", 4106)), PresetInfo(17021070, Triple("\u65F6","\u8FC1", 4107)),
+            PresetInfo(17021080, Triple("\u6BB5","\u666F\u67F1", 4108))
     )
 
 
