@@ -24,6 +24,7 @@ open class PersonBak {
     var children: MutableList<String> = Collections.synchronizedList(mutableListOf())
     var lifeTurn: Int = 0
     var deadExceptTimes: Int = 0
+    var chongFailTimes: Int = 0
     var isFav: Boolean = false
     var singled: Boolean = false
     var dink: Boolean = false
@@ -83,6 +84,7 @@ open class PersonBak {
         person.children = this.children
         person.lifeTurn = this.lifeTurn
         person.deadExceptTimes = this.deadExceptTimes
+        person.chongFailTimes = this.chongFailTimes
         person.singled = this.singled
         person.dink = this.dink
         person.neverDead = this.neverDead
@@ -91,6 +93,7 @@ open class PersonBak {
         person.battleRecord = this.battleRecord
         person.jingJieId = this.jingJieId
         person.jinJieName = CultivationHelper.getJinJieName(CultivationHelper.mConfig.jingJieType.find { it.id == this.jingJieId }!!.name)
+        person.jinJieColor = CultivationHelper.mConfig.jingJieType.find { it.id == this.jingJieId }!!.color
         person.jingJieSuccess = this.jingJieSuccess
         person.xiuXei = this.xiuXei
         person.maxXiuWei = this.maxXiuWei

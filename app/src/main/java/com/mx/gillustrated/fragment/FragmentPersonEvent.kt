@@ -80,7 +80,7 @@ class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageC
     fun init(){
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getPersonData(id)!!
-        mDead.text = mPerson.deadExceptTimes.toString()
+        mDead.text = "${mPerson.deadExceptTimes}-${mPerson.chongFailTimes}"
         if(mPerson.specIdentity > 0)
             mSeq.text = mPerson.specIdentity.toString()
         if(mPerson.profile in 1701..1799 && mPerson.gender == NameUtil.Gender.Female){

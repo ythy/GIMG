@@ -938,7 +938,7 @@ object CultivationHelper {
     private val NameMapper = mapOf(
             "LianQi" to "炼气", "ZhuJi" to "筑基","JinDan" to "金丹","YuanYing" to "元婴","HuaShen" to "化神","LianXu" to "炼虚","HeTi" to "合体",
             "DaCheng" to "大乘","DiXian" to "地仙","TianXian" to "天仙","JinXian" to "金仙","TaiYi" to "太乙金仙","DaLuo" to "大罗金仙","HunYuan" to "混元金仙",
-            "ShengJing" to "圣境", "HuaJing" to "化境", "XuJing" to "虚境", "KongJing" to "空境", "WuJing" to "无境"
+            "ShengJing" to "圣境", "HuaJing" to "化境", "XuJing" to "虚境", "KongJing" to "空境", "WuJing" to "无境", "ChongJing" to "冲境"
     )
 
 

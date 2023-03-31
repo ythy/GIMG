@@ -884,6 +884,51 @@
       "success": 1,
       "fault": 1,
       "lifetime": 0
+    },
+    {
+      "id": "2000801",
+      "name": "ChongJing-1",
+      "max": 100000000,
+      "color": 13,
+      "success": 5,
+      "fault": 0,
+      "lifetime": 0
+    },
+    {
+      "id": "2000802",
+      "name": "ChongJing-2",
+      "max": 200000000,
+      "color": 13,
+      "success": 4,
+      "fault": 0,
+      "lifetime": 0
+    },
+    {
+      "id": "2000803",
+      "name": "ChongJing-3",
+      "max": 300000000,
+      "color": 13,
+      "success": 3,
+      "fault": 0,
+      "lifetime": 0
+    },
+    {
+      "id": "2000804",
+      "name": "ChongJing-4",
+      "max": 400000000,
+      "color": 13,
+      "success": 2,
+      "fault": 0,
+      "lifetime": 0
+    },
+    {
+      "id": "2000805",
+      "name": "ChongJing-5",
+      "max": 500000000,
+      "color": 13,
+      "success": 1,
+      "fault": 0,
+      "lifetime": 0
     }
   ],
 
@@ -1322,7 +1367,7 @@
       "id": "4000402",
       "name": "Top4",
       "type": 4,
-      "bonus": 5,
+      "bonus": 4,
       "rarity": 3,
       "weight": 200
     },
@@ -1330,7 +1375,7 @@
       "id": "4000403",
       "name": "Top5",
       "type": 4,
-      "bonus": 10,
+      "bonus": 6,
       "rarity": 4,
       "weight": 500
     },
@@ -1338,7 +1383,7 @@
       "id": "4000404",
       "name": "Top6",
       "type": 4,
-      "bonus": 15,
+      "bonus": 8,
       "rarity": 5,
       "weight": 1000
     },
@@ -1346,7 +1391,7 @@
       "id": "4000405",
       "name": "Top7",
       "type": 4,
-      "bonus": 20,
+      "bonus": 10,
       "rarity": 6,
       "weight": 4000
     },
@@ -1354,7 +1399,7 @@
       "id": "4000406",
       "name": "Top8",
       "type": 4,
-      "bonus": 25,
+      "bonus": 12,
       "rarity": 7,
       "weight": 6000
     },
@@ -1362,7 +1407,7 @@
       "id": "4000407",
       "name": "Top9",
       "type": 4,
-      "bonus": 30,
+      "bonus": 15,
       "rarity": 8,
       "weight": 8000
     },
@@ -1546,7 +1591,7 @@
       "tianfu": 3,
       "level": 50,
       "lifetime": 50,
-      "success": 10,
+      "success": 5,
       "maxPerson": 20,
       "xiuwei": 100,
       "xiuweiMulti": 50,
@@ -1586,8 +1631,8 @@
       "type": 1,
       "nation": "6200002",
       "lifetime": 50,
-      "success": 5,
-      "xiuwei": 30,
+      "success": 0,
+      "xiuwei": 50,
       "xiuweiMulti": 50,
       "property": [50,30,10,10,0,0,0,0]
     },
@@ -2082,10 +2127,10 @@
       "id": "7008001",
       "name": "\u4E09\u4E2A\uD83C\uDF4E\uD83C\uDF4F",
       "type": 8,
-      "rarity": 13,
+      "rarity": 14,
       "xiuwei": 300,
-      "success": 10,
-      "property": [200,300,50,100,0,0,0,0],
+      "success": 20,
+      "property": [200,300,100,150,0,0,0,0],
       "teji": ["8004001", "8001001", "8005001"],
       "spec": [12000041]
     },
@@ -2095,7 +2140,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [0,200,50,150,0,0,0,0],
       "teji": ["8003010", "8002009"],
       "spec": [16040051, 16040071]
@@ -2106,7 +2151,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [0,250,0,150,0,0,0,0],
       "teji": ["8001008", "8002009"],
       "spec": [16040010, 16040110],
@@ -2118,7 +2163,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [300,0,300,0,0,0,0,0],
       "teji": ["8001008", "8002007"],
       "spec": [16040020]
@@ -2129,7 +2174,7 @@
       "type": 8,
       "rarity": 13,
       "xiuwei": 300,
-      "success": 10,
+      "success": 5,
       "property": [300,250,50,100,0,0,0,0],
       "teji": ["8001006", "8002007", "8002002"],
       "spec": [13020101]
@@ -2140,7 +2185,7 @@
       "type": 8,
       "rarity": 13,
       "xiuwei": 300,
-      "success": 10,
+      "success": 5,
       "property": [300,300,0,100,0,0,0,0],
       "teji": ["8001006", "8002009", "8002005"],
       "spec": [12000010]
@@ -2151,7 +2196,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [0,300,0,100,0,0,0,0],
       "teji": ["8003006", "8002009"],
       "spec": [12000211]
@@ -2162,7 +2207,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [300,100,100,100,0,0,0,0],
       "teji": ["8003007", "8006010"],
       "spec": [12000200]
@@ -2173,7 +2218,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [0,300,0,100,0,0,0,0],
       "teji": ["8003006", "8002009"],
       "spec": [13020021]
@@ -2184,7 +2229,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [300,300,0,0,0,0,0,0],
       "teji": ["8001006", "8002009"],
       "spec": [13020031]
@@ -2195,7 +2240,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [500,100,100,50,0,0,0,0],
       "teji": ["8001003", "8003009", "8001009"],
       "spec": [12000021, 12000031]
@@ -2206,7 +2251,7 @@
       "type": 8,
       "rarity": 13,
       "xiuwei": 300,
-      "success": 10,
+      "success": 5,
       "property": [200,250,50,150,0,0,0,0],
       "teji": ["8001006", "8001001", "8001010"],
       "follower": ["9000203", "9000204"],
@@ -2218,7 +2263,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [0,200,100,100,0,0,0,0],
       "teji": ["8001003", "8002007"],
       "spec": [16040131]
@@ -2229,7 +2274,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [0,200,50,150,0,0,0,0],
       "teji": ["8004003", "8002007"],
       "spec": [16040161]
@@ -2240,7 +2285,7 @@
       "type": 8,
       "rarity": 12,
       "xiuwei": 200,
-      "success": 10,
+      "success": 0,
       "property": [300,200,0,100,0,0,0,0],
       "teji": ["8001001", "8001011"],
       "spec": [16040170]
@@ -2295,7 +2340,7 @@
       "type": 9,
       "rarity": 11,
       "xiuwei": 150,
-      "success": 10,
+      "success": 0,
       "property": [200,0,50,0,0,0,0,0]
     },
     {
@@ -2324,7 +2369,7 @@
       "type": 9,
       "rarity": 14,
       "xiuwei": 400,
-      "success": 30,
+      "success": 20,
       "property": [300,200,100,200,0,0,0,0],
       "teji": ["8004002", "8006008", "8003001", "8001001"],
       "follower": ["9000201"]
