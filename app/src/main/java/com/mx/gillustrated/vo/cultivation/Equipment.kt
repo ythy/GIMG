@@ -15,7 +15,7 @@ open class EquipmentBak(val id: String, val seq:Int = 0) {
 data class EquipmentConfig(
         val id:String,
         val name:String,
-        val type: Int, // 0 Bao; 1 Wu; 2 Jia, 3 Yao; 5 Amulet; 6 boss?; 8 exclusive?; 9 spec; ?: 不添加至equipment list
+        val type: Int, // 0 Bao; 1 Wu; 2 Jia, 3 Yao; 5 Amulet; 6 boss?; 7 tips; 8 exclusive?; 9 spec; ?: 不添加至equipment list
         val rarity:Int = 0,//5 30, 6 40，7 50，8 ~
         val xiuwei:Int = 0,
         val success:Int = 0,
@@ -46,11 +46,19 @@ class Equipment(pId: String, pSeq: Int = 0, option:Triple<Int, Int, String>? = n
     var children:MutableList<Equipment> = mutableListOf() // 显示用
 
     init {
-        if (option != null){ //equipment type == 6
-            val setting = CultivationEnemyHelper.getEquipmentOfBoss(option.first, option.second)
-            this.detail = setting.first
-            this.uniqueName = setting.second
-            this.sortedWeight = setting.first.rarity
+        if (option != null){
+            if(option.third == "") {//equipment type == 6
+                val setting = CultivationEnemyHelper.getEquipmentOfBoss(option.first, option.second)
+                this.detail = setting.first
+                this.uniqueName = setting.second
+                this.sortedWeight = setting.first.rarity
+            }else{//equipment type == 7 tips
+                val setting = CultivationHelper.getEquipmentOfTips(option.first,
+                        CultivationHelper.mConfig.tips.find { it.id == pId }!!)
+                this.detail = setting.first
+                this.uniqueName = setting.second
+                this.sortedWeight = setting.first.rarity
+            }
         }else{
             if(pSeq > 0){ // equipment type == 5
                 val setting = CultivationSetting.getEquipmentCustom(pId, pSeq)

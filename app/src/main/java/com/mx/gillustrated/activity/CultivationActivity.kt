@@ -510,6 +510,7 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.updateBossBattleBonus(mPersons)
         mPersons.forEach {
            it.value.skin = CultivationHelper.generateSkinValue(it.value)
+           CultivationHelper.generateTips(it.value)
            CultivationHelper.updatePersonExtraProperty(it.value)
         }
         if(out == null || out.trim() == ""){
@@ -740,16 +741,16 @@ class CultivationActivity : BaseActivity() {
                     return
                 }
                 1 -> {
-                    it.lifetime += 5000
+                    it.lifetime += 5000L * 12
                 }
                 2 -> {
-                    it.lifetime += 10000
+                    it.lifetime += 10000L * 12
                     it.deadExceptTimes++
                     it.lifeTurn--
                     addPersonEvent(it,"修行失败, Total: ${it.deadExceptTimes}")
                 }
                 3 -> {
-                    it.lifetime += 10000
+                    it.lifetime += 20000L * 12
                     it.chongFailTimes++
                 }
             }
@@ -805,6 +806,11 @@ class CultivationActivity : BaseActivity() {
                     writeHistory("${getPersonBasicString(it)} $commonText", it)
                 }
                 it.jingJieSuccess += currentJinJie.fault
+                it.tipsList.filter { tips-> tips.level < tips.detail.bonus.size - 1 }.forEach { tips->
+                    if(Random().nextInt(tips.detail.difficulty) == 0){
+                        tips.level = Math.min(tips.detail.bonus.size - 1, tips.level + 1)
+                    }
+                }
             }
 
         }
@@ -1018,7 +1024,7 @@ class CultivationActivity : BaseActivity() {
         val person = mPersons[id]
         if(person != null){
             person.lifetime += 5000L
-            val commonText = "天机，寿命增加5000"
+            val commonText = "天机，寿命增加5000Xun"
             addPersonEvent(person,commonText)
             writeHistory("${getPersonBasicString(person)} $commonText", person)
             return true

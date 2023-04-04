@@ -42,6 +42,7 @@ open class PersonBak {
     var teji: MutableList<String> = Collections.synchronizedList(mutableListOf())
     var career: MutableList<CareerBak> = Collections.synchronizedList(mutableListOf())
     var follower: MutableList<FollowerBak> = Collections.synchronizedList(mutableListOf())
+    var tips: MutableList<TipsBak> = Collections.synchronizedList(mutableListOf())
     var equipment: MutableList<EquipmentBak> = Collections.synchronizedList(mutableListOf())
 
     var battleRecord: MutableMap<Int, Int> = mutableMapOf()
@@ -94,6 +95,7 @@ open class PersonBak {
         person.jingJieId = this.jingJieId
         person.jinJieName = CultivationHelper.getJinJieName(CultivationHelper.mConfig.jingJieType.find { it.id == this.jingJieId }!!.name)
         person.jinJieColor = CultivationHelper.mConfig.jingJieType.find { it.id == this.jingJieId }!!.color
+        person.jinJieMax = CultivationHelper.mConfig.jingJieType.find { it.id == this.jingJieId }!!.max
         person.jingJieSuccess = this.jingJieSuccess
         person.xiuXei = this.xiuXei
         person.maxXiuWei = this.maxXiuWei
@@ -115,6 +117,9 @@ open class PersonBak {
         person.followerList = this.follower.map {
            it.toFollower()
         }.toMutableList()
+        person.tipsList = this.tips.map {
+            it.toTips()
+        }.toMutableList()
         person.careerList = this.career.map {
            it.toCareer()
         }.toMutableList()
@@ -130,6 +135,7 @@ class Person: PersonBak() {
     var tianfuList: MutableList<TianFu> = mutableListOf()
     var equipmentList: MutableList<Equipment> = Collections.synchronizedList(mutableListOf())
     var followerList: MutableList<Follower> = Collections.synchronizedList(mutableListOf())
+    var tipsList: MutableList<Tips> = Collections.synchronizedList(mutableListOf())
     var careerList: MutableList<Career> = Collections.synchronizedList(mutableListOf())
 
     var HP: Int = 100
@@ -176,6 +182,7 @@ class Person: PersonBak() {
         bak.tianfu = this.tianfuList.map { it.id }.toMutableList()
         bak.equipment = this.equipmentList.filter { it.detail.type != 8 }.map { it.toBak() }.toMutableList()
         bak.follower = this.followerList.map { it.toBak() }.toMutableList()
+        bak.tips = this.tipsList.map { it.toBak() }.toMutableList()
         bak.career = this.careerList.map { it.toBak() }.toMutableList()
         return bak
     }

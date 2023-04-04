@@ -75,6 +75,9 @@ class FragmentEquipment: Fragment() {
             else
                 Equipment(index.toString(), 0, Triple(index, count, ""))
         }
+        val tipsEquipment = mPerson.tipsList.map{ tips ->
+            Equipment(tips.id, 0, Triple(tips.level, 0, "TIPS"))
+        }
         mEquipmentGroups.clear()
         // 0 1 2 3 by type / 5 by id ; 9 by id / 6 and 8 不在equiplist
         val groups = equipments.groupBy{ if(it.detail.type <= 3) it.detail.type  else it.id.toInt() }
@@ -87,6 +90,7 @@ class FragmentEquipment: Fragment() {
         }
         mEquipmentGroups.addAll(groups)
         mEquipmentGroups.addAll(bossEquipment)
+        mEquipmentGroups.addAll(tipsEquipment)
 
         mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
 

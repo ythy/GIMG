@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.content.res.Resources
+import android.util.Log
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
 import com.mx.gillustrated.component.CultivationSetting.BattleSettings
 import com.mx.gillustrated.util.NameUtil
@@ -61,6 +62,7 @@ object CultivationHelper {
                 break
             }
         }
+        generateTips(person)
     }
 
     fun joinFixedAlliance(person: Person, alliance:Alliance, changed:Boolean = false){
@@ -76,6 +78,7 @@ object CultivationHelper {
             person.dink = true
         }
         person.nationId = alliance.nation
+        generateTips(person)
     }
 
     fun changedToFixedAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>, newAlliance:Alliance){
@@ -612,9 +615,13 @@ object CultivationHelper {
             person.allianceXiuwei = allianceXiuwei
         }
         val postXiuwei = getNationPostXiuwei(person)
-        //clanXiuwei nationXiuwei allianceBattleXiuwei removed 
+        val tipsXiuwei = getTipsXiuwei(person)
+        //clanXiuwei nationXiuwei allianceBattleXiuwei removed
         var basic = person.lingGenDetail.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
-                            + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + postXiuwei
+                     + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei
+        basic += postXiuwei
+        basic += tipsXiuwei
+
         person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
             basic += it.property[4]
         }
@@ -626,6 +633,7 @@ object CultivationHelper {
         if (person.feiziFavor > 0){
             basic += EmperorData.FeiziBonos[person.feiziLevel]
         }
+
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
     }
@@ -644,6 +652,25 @@ object CultivationHelper {
         }
     }
 
+    fun getTipsXiuwei(person: Person):Int{
+        return  person.tipsList.sumBy { it.detail.bonus[it.level] }
+    }
+
+    fun getEquipmentOfTips(level:Int, detail:TipsConfig):Pair<EquipmentConfig, String>{
+        return Pair(EquipmentConfig(
+                "",
+                detail.name,
+                7,
+                detail.rarity,
+                detail.bonus[level],
+                0,
+                mutableListOf(),
+                mutableListOf(),
+                mutableListOf(),
+                mutableListOf(),
+                mutableListOf()
+        ), "${showing(detail.name)}(${level + 1}/${detail.bonus.size})")
+    }
     fun getNationPostXiuwei(person: Person):Int{
         return when {
             person.nationPost == 4 -> 100
@@ -857,6 +884,19 @@ object CultivationHelper {
        return mConfig.skin.find { it.id == realSkin }
     }
 
+    fun generateTips(person: Person){
+        mConfig.tips.forEach { tip->
+            if(person.tipsList.find { it.id == tip.id } == null){
+                if(tip.type == 0 && tip.alliances.contains(person.allianceId)){
+                    person.tipsList.add(Tips(tip.id, 0))
+                }else if (tip.type == 2 && tip.id == "7100201" && person.lingGenTypeId== "1000001"){
+                    person.tipsList.add(Tips(tip.id, 0))
+                }else if (tip.type == 2 && tip.id == "7100202" && person.lingGenTypeId== "1000005"){
+                    person.tipsList.add(Tips(tip.id, 0))
+                }
+            }
+        }
+    }
 
     fun getJinJieName(input:String):String{
         if(pinyinMode)

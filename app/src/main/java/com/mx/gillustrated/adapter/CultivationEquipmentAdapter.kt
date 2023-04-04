@@ -64,6 +64,8 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             component.name.setOnClickListener{
                 callbacks.onOpenDetailList(values)
             }
+        }else if(detail.type == 7){
+            component.name.text = CultivationHelper.showing(values.uniqueName)
         }
         component.name.setTextColor(Color.parseColor(CommonColors[detail.rarity]))
         val properties = mutableListOf(0,0,0,0)
@@ -88,7 +90,7 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
                     properties[index] += equipment.detail.property[index]
                 }
             }
-        }else if(detail.type == 6){
+        }else if(detail.type == 6 || detail.type == 7){
             component.xiuwei.text = detail.xiuwei.toString()
         }
         component.props.text = properties.joinToString()

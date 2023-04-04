@@ -78,14 +78,14 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         component.age.text = CultivationHelper.showAgeRemained(person)
         component.jingjie.text = CultivationHelper.showing(person.jinJieName)
         //component.jingjie.setTextColor(Color.parseColor(CommonColors[person.jinJieColor]))
-        component.xiuwei.text = "${person.xiuXei}/${person.jinJieMax}"
+        component.xiuwei.text = "${person.jinJieMax - person.xiuXei}"
         component.lingGen.text = CultivationHelper.showing(person.lingGenName)
         component.lingGen.setTextColor(Color.parseColor(CommonColors[person.lingGenDetail.color]))
         component.alliance.text = CultivationHelper.showing("${nation.find { it.id == person.nationId }?.name}-${person.allianceName}")
 
         if(person.nationPost > 0){
             component.name.background = context.getDrawable(R.drawable.box_bottom)
-            component.name.backgroundTintList = ColorStateList.valueOf(Color.parseColor(PostColors[person.nationPost - 1]))
+            component.name.backgroundTintList = ColorStateList.valueOf(Color.parseColor(PostColors[Math.max(0, person.nationPost - 1)]))
         }else{
             component.name.background = null
             component.name.backgroundTintList = null
