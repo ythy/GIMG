@@ -580,6 +580,9 @@ object CultivationBattleHelper {
         }.filter { it.teji.isNotEmpty() }.forEach {
             result.addAll(it.teji.map { m-> Pair(m, "") })
         }
+        person.tipsList.filter { it.detail.teji.isNotEmpty() }.forEach {
+            result.addAll(it.detail.teji.map { m-> Pair(m, "") })
+        }
 
         return result.map {
             convertTejiObject(it, person)

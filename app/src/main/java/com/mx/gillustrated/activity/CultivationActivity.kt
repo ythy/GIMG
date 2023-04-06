@@ -544,7 +544,7 @@ class CultivationActivity : BaseActivity() {
                     resetCustomBonus()
                 }
                 R.id.menu_shuffle->{
-                    killPersonShuffle()
+                    gainTips()
                 }
                 R.id.menu_temp->{
                     temp()
@@ -1854,13 +1854,14 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
-    private fun killPersonShuffle(){
-        mPersons.filter { it.value.specIdentity == 0 && isDeadException(it.value) != 1   }
-                .map { it.value }.toMutableList()
-                .forEach {
-            if (isTrigger(10 + CultivationHelper.talentValue(it))){
-                deadHandler(it)
-            }
+    private fun gainTips(){
+        val lucky = mPersons.map { it.value }.shuffled()[0]
+        val tips = mConfig.tips.filter { it.type == 3 }.shuffled()[0]
+        if(lucky.tipsList.find { it.id == tips.id } == null){
+            lucky.tipsList.add(Tips(tips.id, 0))
+            val commonText = "\u83B7\u5F97\u79D8\u7C4D : ${tips.name}"
+            addPersonEvent(lucky, commonText)
+            writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
         }
     }
 

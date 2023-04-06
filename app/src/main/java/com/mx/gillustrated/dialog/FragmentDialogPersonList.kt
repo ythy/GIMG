@@ -24,7 +24,8 @@ import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 import java.util.*
 
-//type 0 all; 1 never dead; 2 talent >= 10;
+//type 0 all; 1 never dead; 2 spec career
+//type 3 persons has spec tips
 //type 4 persons has amulet
 //type 5 persons has label
 //type 6 persons set skin
@@ -203,7 +204,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             1 -> mContext.mPersons.map { it.value }.filter { CultivationHelper.isNeverDead(it) }
             2 -> mContext.mPersons.map { it.value }.filter { p-> p.careerList.maxBy { m-> m.detail.rarity }?.detail?.rarity ?: 0 >= 8 }
             3 -> mContext.mPersons.map { it.value }.filter { p->
-                p.lifeTurn == 0 && p.ancestorLevel == 0 && CultivationHelper.talentValue(p) >= 10
+                p.tipsList.find { t-> t.detail.type > 2 } != null
             }
             4 -> mContext.mPersons.map { it.value }.filter { p->
                p.equipmentList.find { e-> e.detail.type == 5 } != null
@@ -223,19 +224,19 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                 it.name.startsWith(filterString, true) || PinyinUtil.convert(it.name).startsWith(filterString, true)
             })
 
-        if(mType == 4)
-            mSort = "E"
         if(mType == 2)
             mSort = "C"
+        if(mType == 4)
+            mSort = "E"
         if(mType == 5)
             mSort = "L"
 
         when (mSort) {
-            "X" -> mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it, mContext.mAlliance) }
-                    .thenByDescending { it.lifeTurn })
             "T" -> mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
                     .thenByDescending { it.jingJieId }
                     .thenByDescending { it.xiuXei } )
+            "X" -> mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it, mContext.mAlliance) }
+                    .thenByDescending { it.lifeTurn })
             "B" -> mPersonData.sortWith(compareByDescending<Person> {it.battleWinner}
                     .thenByDescending { it.lifeTurn })
             "E" -> mPersonData.sortWith(compareByDescending<Person> { it.equipmentList.filter {

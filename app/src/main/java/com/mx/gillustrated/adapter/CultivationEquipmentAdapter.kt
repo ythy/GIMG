@@ -92,6 +92,7 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             }
         }else if(detail.type == 6 || detail.type == 7){
             component.xiuwei.text = detail.xiuwei.toString()
+            component.success.text = "0"
         }
         component.props.text = properties.joinToString()
         return convertView
@@ -131,7 +132,7 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
         component.success.text = "${detail.success}"
         component.props.text = detail.property.take(4).joinToString()
 
-        if(detail.type == 9 || detail.type == 5){//bao and amulet can delete
+        if(detail.type == 9 || detail.type == 5 ||  detail.type == 7 ){//bao and amulet can delete
             component.del.visibility = View.VISIBLE
         }else{
             component.del.visibility = View.GONE

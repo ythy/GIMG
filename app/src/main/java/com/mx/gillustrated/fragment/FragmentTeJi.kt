@@ -106,6 +106,14 @@ class FragmentTeJi: Fragment() {
                 tejis.add(teji)
             }
         }
+        mPerson.tipsList.forEach {
+            it.detail.teji.forEach { id->
+                val teji = mConfig.teji.find { f-> f.id == id }!!.toTeji()
+                teji.form = 5
+                tejis.add(teji)
+            }
+        }
+
         tejis.sortByDescending { it.rarity }
         mTeJi.clear()
         mTeJi.addAll(tejis)

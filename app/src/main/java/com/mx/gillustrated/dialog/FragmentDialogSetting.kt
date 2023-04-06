@@ -122,8 +122,8 @@ class FragmentDialogSetting : DialogFragment() {
         newFragment.show(ft, "dialog_person_list")
     }
 
-    @OnClick(R.id.btn_talent)
-    fun onTalentClick(){
+    @OnClick(R.id.btn_tips)
+    fun onTipsClick(){
         val ft = childFragmentManager.beginTransaction()
         // Create and show the dialog.
         val newFragment = FragmentDialogPersonList.newInstance(3)

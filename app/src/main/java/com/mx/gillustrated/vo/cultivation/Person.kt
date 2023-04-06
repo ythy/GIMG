@@ -117,8 +117,12 @@ open class PersonBak {
         person.followerList = this.follower.map {
            it.toFollower()
         }.toMutableList()
-        person.tipsList = this.tips.map {
-            it.toTips()
+        person.tipsList = this.tips.mapNotNull {
+            val tips = it.toTips()
+            if (tips.detail.id == "")
+                null
+            else
+                tips
         }.toMutableList()
         person.careerList = this.career.map {
            it.toCareer()

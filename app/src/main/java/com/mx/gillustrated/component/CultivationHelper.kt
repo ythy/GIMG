@@ -658,7 +658,7 @@ object CultivationHelper {
 
     fun getEquipmentOfTips(level:Int, detail:TipsConfig):Pair<EquipmentConfig, String>{
         return Pair(EquipmentConfig(
-                "",
+                detail.id,
                 detail.name,
                 7,
                 detail.rarity,
@@ -889,9 +889,7 @@ object CultivationHelper {
             if(person.tipsList.find { it.id == tip.id } == null){
                 if(tip.type == 0 && tip.alliances.contains(person.allianceId)){
                     person.tipsList.add(Tips(tip.id, 0))
-                }else if (tip.type == 2 && tip.id == "7100201" && person.lingGenTypeId== "1000001"){
-                    person.tipsList.add(Tips(tip.id, 0))
-                }else if (tip.type == 2 && tip.id == "7100202" && person.lingGenTypeId== "1000005"){
+                }else if (tip.id == "7100202" && person.lingGenTypeId== "1000005"){
                     person.tipsList.add(Tips(tip.id, 0))
                 }
             }

@@ -52,8 +52,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 style="@style/ButtonSmall"
-                android:id="@+id/btn_talent"
-                android:text="TALENT"/>
+                android:id="@+id/btn_tips"
+                android:text="TIPS"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

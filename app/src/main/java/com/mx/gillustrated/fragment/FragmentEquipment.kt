@@ -76,10 +76,15 @@ class FragmentEquipment: Fragment() {
                 Equipment(index.toString(), 0, Triple(index, count, ""))
         }
         val tipsEquipment = mPerson.tipsList.map{ tips ->
-            Equipment(tips.id, 0, Triple(tips.level, 0, "TIPS"))
+            val equipment = Equipment(tips.id, 0, Triple(tips.level, 0, "TIPS"))
+            if (tips.detail.type > 2){
+                equipment.children.clear()
+                equipment.children.add(equipment)
+            }
+            equipment
         }
         mEquipmentGroups.clear()
-        // 0 1 2 3 by type / 5 by id ; 9 by id / 6 and 8 不在equiplist
+        // 0 1 2 3 by type / 5 by id ; 9 by id / 6 7 8 不在equiplist
         val groups = equipments.groupBy{ if(it.detail.type <= 3) it.detail.type  else it.id.toInt() }
         .map {
             it.value[0].children.clear()
@@ -99,14 +104,20 @@ class FragmentEquipment: Fragment() {
             }
 
             override fun onDeleteHandler(equipment: Equipment, group:Boolean) {
-                mPerson.equipmentList.removeIf {
-                    if(group){
-                        it.id == equipment.id
-                    }else{
-                        it.id == equipment.id && it.seq == equipment.seq
+                if (equipment.detail.type == 7){
+                    mPerson.tipsList.removeIf {
+                        it.detail.id == equipment.detail.id
                     }
+                }else{
+                    mPerson.equipmentList.removeIf {
+                        if(group){
+                            it.id == equipment.id
+                        }else{
+                            it.id == equipment.id && it.seq == equipment.seq
+                        }
+                    }
+                    CultivationHelper.updatePersonEquipment(mPerson)
                 }
-                CultivationHelper.updatePersonEquipment(mPerson)
                 updateList()
             }
 

@@ -18,16 +18,17 @@ data class TipsConfig(
         val rarity:Int = 0,
         val difficulty:Int = 0,
         val bonus:MutableList<Int> = mutableListOf(),
-        val alliances:MutableList<String> = mutableListOf()
+        val alliances:MutableList<String> = mutableListOf(),
+        val teji:MutableList<String> = mutableListOf()
 ){
     //Gson 序列化使用
     constructor():this(
-            "", "", 0,0,0, mutableListOf(),mutableListOf()
+            "", "", 0,0,0, mutableListOf(),mutableListOf(),mutableListOf()
     )
 }
 
 class Tips(id:String, level:Int = 0):TipsBak() {
-    val detail:TipsConfig = CultivationHelper.mConfig.tips.find { it.id == id }!!
+    val detail:TipsConfig = CultivationHelper.mConfig.tips.find { it.id == id } ?: TipsConfig("", "")
 
     init {
         this.id = id
