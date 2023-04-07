@@ -358,8 +358,7 @@ class CultivationActivity : BaseActivity() {
 
 
 //         mPersons.forEach { (_: String, u: Person) ->
-//             u.label = CultivationHelper.getLabel()
-//             CultivationHelper.updatePersonExtraProperty(u)
+//             u.events.removeIf { r -> r.content.contains("获得秘籍") }
 //         }
 
 //        mPersons.forEach { (_: String, u: Person) ->
@@ -544,7 +543,7 @@ class CultivationActivity : BaseActivity() {
                     resetCustomBonus()
                 }
                 R.id.menu_shuffle->{
-                    gainTips()
+
                 }
                 R.id.menu_temp->{
                     temp()
@@ -564,6 +563,7 @@ class CultivationActivity : BaseActivity() {
                 }
                 R.id.menu_lucky ->{
                     addAmuletEquipmentEvent(null, "Lucky", 1)
+                    addTipsEquipmentEvent(null, "Lucky", 1)
                 }
                 R.id.menu_add_spec ->{
                     addSpecPerson()
@@ -603,6 +603,7 @@ class CultivationActivity : BaseActivity() {
             "rain" -> getDrawable(R.drawable.skin_theme_rain)
             "equinox" -> getDrawable(R.drawable.skin_theme_spring_equinox)
             "grain_rain" -> getDrawable(R.drawable.skin_theme_grain_rain)
+            "grain_rain2" -> getDrawable(R.drawable.skin_theme_grain_rain2)
             else -> getDrawable(R.drawable.skin_theme_spring)
         }
     }
@@ -1054,6 +1055,7 @@ class CultivationActivity : BaseActivity() {
     private fun randomSpecialEquipmentEvent(xun: Long){
         if(inDurationByXun("SpecialEvent", 121212, xun)) {
             addAmuletEquipmentEvent(null, "Special", 100)
+            addTipsEquipmentEvent(null, "Special",1000)
         }
     }
 
@@ -1070,6 +1072,19 @@ class CultivationActivity : BaseActivity() {
             val commonText = "$tag \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.second}"
             addPersonEvent(lucky, commonText)
             writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
+        }
+    }
+
+    private fun addTipsEquipmentEvent(person:Person? = null, tag:String = "", weight:Int = 100){
+        if(isTrigger(weight)){
+            val lucky = person ?: mPersons.map { it.value }.shuffled().first()
+            val tips = mConfig.tips.filter { it.type == 3 }.shuffled()[0]
+            if(lucky.tipsList.find { it.id == tips.id } == null){
+                lucky.tipsList.add(Tips(tips.id, 0))
+                val commonText = "$tag \u83B7\u5F97\u79D8\u7C4D : ${tips.name}"
+                addPersonEvent(lucky, commonText)
+                writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
+            }
         }
     }
 
@@ -1171,6 +1186,7 @@ class CultivationActivity : BaseActivity() {
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
                         writeHistory("${u.name} 倒", u)
                         addAmuletEquipmentEvent(person, "Boss", Math.round(500f / u.type))
+                        addTipsEquipmentEvent(person, "Boss", Math.round(5000f / u.type))
                         mBossRecord[u.type - 1][mBattleRound.boss[u.type - 1]] = person.id
                         CultivationHelper.updateBossBattleBonus(mPersons)
                     }else{
@@ -1503,6 +1519,7 @@ class CultivationActivity : BaseActivity() {
                 person.battleRecord[mBattleRound.single] = reverseIndex
                 writeHistory("第${mBattleRound.single}届 Single Battle No $reverseIndex : ${person.name}", person)
                 addAmuletEquipmentEvent(person, "Single", reverseIndex * 100)
+                addTipsEquipmentEvent(person, "Single", reverseIndex * 1000)
             }
             CultivationHelper.updateSingleBattleBonus(mPersons)
 
@@ -1846,17 +1863,6 @@ class CultivationActivity : BaseActivity() {
                 addPersonEvent(person, commonText)
                 writeHistory("${getPersonBasicString(person)} $commonText", person)
             }
-        }
-    }
-
-    private fun gainTips(){
-        val lucky = mPersons.map { it.value }.shuffled()[0]
-        val tips = mConfig.tips.filter { it.type == 3 }.shuffled()[0]
-        if(lucky.tipsList.find { it.id == tips.id } == null){
-            lucky.tipsList.add(Tips(tips.id, 0))
-            val commonText = "\u83B7\u5F97\u79D8\u7C4D : ${tips.name}"
-            addPersonEvent(lucky, commonText)
-            writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
         }
     }
 

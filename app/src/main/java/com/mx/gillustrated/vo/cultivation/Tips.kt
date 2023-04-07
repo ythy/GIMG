@@ -14,7 +14,7 @@ open class TipsBak {
 data class TipsConfig(
         val id:String,
         val name:String,
-        val type:Int = 0,
+        val type:Int = 0,// 0: alliance  2: lingGen  3: reward
         val rarity:Int = 0,
         val difficulty:Int = 0,
         val bonus:MutableList<Int> = mutableListOf(),
