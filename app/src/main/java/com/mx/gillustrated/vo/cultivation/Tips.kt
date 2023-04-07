@@ -19,11 +19,17 @@ data class TipsConfig(
         val difficulty:Int = 0,
         val bonus:MutableList<Int> = mutableListOf(),
         val alliances:MutableList<String> = mutableListOf(),
-        val teji:MutableList<String> = mutableListOf()
+        val teji:MutableList<String> = mutableListOf(),
+        val hp:MutableList<Int> = mutableListOf(),
+        val attack:MutableList<Int> = mutableListOf(),
+        val defence:MutableList<Int> = mutableListOf(),
+        val speed:MutableList<Int> = mutableListOf(),
+        val lingGen: MutableList<String> = mutableListOf()
 ){
     //Gson 序列化使用
     constructor():this(
             "", "", 0,0,0, mutableListOf(),mutableListOf(),mutableListOf()
+            ,mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf()
     )
 }
 

@@ -563,7 +563,7 @@ class CultivationActivity : BaseActivity() {
                     showToast("不用谢")
                 }
                 R.id.menu_lucky ->{
-                    addSpecialEquipmentEvent(null, "Lucky")
+                    addAmuletEquipmentEvent(null, "Lucky", 1)
                 }
                 R.id.menu_add_spec ->{
                     addSpecPerson()
@@ -807,7 +807,7 @@ class CultivationActivity : BaseActivity() {
                 }
                 it.jingJieSuccess += currentJinJie.fault
                 it.tipsList.filter { tips-> tips.level < tips.detail.bonus.size - 1 }.forEach { tips->
-                    if(Random().nextInt(tips.detail.difficulty) == 0){
+                    if(Random().nextInt(tips.detail.difficulty * (tips.level + 1)) == 0){
                         tips.level = Math.min(tips.detail.bonus.size - 1, tips.level + 1)
                     }
                 }
@@ -1053,25 +1053,24 @@ class CultivationActivity : BaseActivity() {
 
     private fun randomSpecialEquipmentEvent(xun: Long){
         if(inDurationByXun("SpecialEvent", 121212, xun)) {
-            if(isTrigger(100)) {
-                val lucky = mPersons.map { it.value }.shuffled().first()
-                addSpecialEquipmentEvent(lucky, "Special")
-            }
+            addAmuletEquipmentEvent(null, "Special", 100)
         }
     }
 
-    private fun addSpecialEquipmentEvent(person:Person? = null, tag:String = ""){
-        val lucky = person ?: mPersons.map { it.value }.shuffled().first()
-        val spec = CultivationSetting.createEquipmentCustom()
-        if(spec == null || lucky.equipmentList.find { it.id == spec.first && it.seq == spec.second } != null){
-            return
+    private fun addAmuletEquipmentEvent(person:Person? = null, tag:String = "", weight:Int = 100){
+        if(isTrigger(weight)){
+            val lucky = person ?: mPersons.map { it.value }.shuffled().first()
+            val spec = CultivationSetting.createEquipmentCustom()
+            if(spec == null || lucky.equipmentList.find { it.id == spec.first && it.seq == spec.second } != null){
+                return
+            }
+            lucky.equipmentList.add(Equipment(spec.first, spec.second))
+            CultivationHelper.updatePersonEquipment(lucky)
+            val equipment = CultivationSetting.getEquipmentCustom(spec.first, spec.second)
+            val commonText = "$tag \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.second}"
+            addPersonEvent(lucky, commonText)
+            writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
         }
-        lucky.equipmentList.add(Equipment(spec.first, spec.second))
-        CultivationHelper.updatePersonEquipment(lucky)
-        val equipment = CultivationSetting.getEquipmentCustom(spec.first, spec.second)
-        val commonText = "$tag \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.second}"
-        addPersonEvent(lucky, commonText)
-        writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
     }
 
     private fun updateNationPost(xun:Long, force:Boolean = false){
@@ -1171,9 +1170,7 @@ class CultivationActivity : BaseActivity() {
                         u.lifetime = 0
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
                         writeHistory("${u.name} 倒", u)
-                        if(isTrigger(500 / u.type)) {
-                            addSpecialEquipmentEvent(person, "Boss")
-                        }
+                        addAmuletEquipmentEvent(person, "Boss", Math.round(500f / u.type))
                         mBossRecord[u.type - 1][mBattleRound.boss[u.type - 1]] = person.id
                         CultivationHelper.updateBossBattleBonus(mPersons)
                     }else{
@@ -1505,9 +1502,7 @@ class CultivationActivity : BaseActivity() {
                 val person = restPersons[reverseIndex - 1]
                 person.battleRecord[mBattleRound.single] = reverseIndex
                 writeHistory("第${mBattleRound.single}届 Single Battle No $reverseIndex : ${person.name}", person)
-                if(isTrigger(reverseIndex * 100)) {
-                    addSpecialEquipmentEvent(person, "Single")
-                }
+                addAmuletEquipmentEvent(person, "Single", reverseIndex * 100)
             }
             CultivationHelper.updateSingleBattleBonus(mPersons)
 

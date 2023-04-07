@@ -25,7 +25,7 @@ object CultivationEnemyHelper {
                 bossSettings[index].ratity,
                 bossSettings[index].bonus * CultivationHelper.getValidBonus(count),
                 0,
-                mutableListOf(),
+                mutableListOf(0,0,0,0),
                 mutableListOf(),
                 mutableListOf(),
                 mutableListOf(),

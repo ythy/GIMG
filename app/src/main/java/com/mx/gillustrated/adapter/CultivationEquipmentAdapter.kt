@@ -65,7 +65,13 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
                 callbacks.onOpenDetailList(values)
             }
         }else if(detail.type == 7){
-            component.name.text = CultivationHelper.showing(values.uniqueName)
+            val tejiString = if (detail.teji.size > 0) "+" else  ""
+            component.name.text = CultivationHelper.showing("\uD83D\uDCDC " + values.uniqueName + tejiString)
+            if (child.isEmpty() && tejiString == "+"){
+                component.name.setOnClickListener{
+                    Toast.makeText(mContext, detail.teji.joinToString { CultivationBattleHelper.tejiDetail(it).name }, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
         component.name.setTextColor(Color.parseColor(CommonColors[detail.rarity]))
         val properties = mutableListOf(0,0,0,0)
@@ -93,6 +99,9 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
         }else if(detail.type == 6 || detail.type == 7){
             component.xiuwei.text = detail.xiuwei.toString()
             component.success.text = "0"
+            (0 until 4).forEach { index ->
+                properties[index] += detail.property[index]
+            }
         }
         component.props.text = properties.joinToString()
         return convertView
@@ -149,7 +158,8 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
             if(followerString == "#"){
                 toastString += detail.follower.joinToString {  CultivationHelper.mConfig.follower.find { f-> f.id == it }?.name ?: "" }
             }
-            Toast.makeText(mContext, toastString, Toast.LENGTH_SHORT).show()
+            if(toastString != "")
+                Toast.makeText(mContext, toastString, Toast.LENGTH_SHORT).show()
         }
         return convertView
     }
