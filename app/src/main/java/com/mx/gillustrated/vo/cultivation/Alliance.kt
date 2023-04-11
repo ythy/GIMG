@@ -22,6 +22,7 @@ open class AllianceBak{
         alliance.tianfu = allianceConfig.tianfu
         alliance.property = allianceConfig.property.toMutableList()
         alliance.nation = allianceConfig.nation
+        alliance.tips = allianceConfig.tips.toMutableList()
 
         alliance.battleRecord = ConcurrentHashMap(this.battleRecord)
         alliance.personList.putAll(personMap.filterKeys { this.persons.contains(it) })
@@ -45,9 +46,7 @@ open class AllianceConfig : AllianceBak() {
     var success:Int = 0//突破率
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
     var nation:String = ""
-
-
-
+    var tips:MutableList<String> = mutableListOf()//max  level 9
 
 }
 

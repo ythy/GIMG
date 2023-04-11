@@ -63,7 +63,7 @@ object CultivationHelper {
                 break
             }
         }
-        generateTips(person)
+        generateTips(person, allAlliance[person.allianceId]!!)
     }
 
     fun joinFixedAlliance(person: Person, alliance:Alliance, changed:Boolean = false){
@@ -80,7 +80,7 @@ object CultivationHelper {
             person.dink = true
         }
         person.nationId = alliance.nation
-        generateTips(person)
+        generateTips(person, alliance)
     }
 
     fun changedToFixedAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>, newAlliance:Alliance){
@@ -88,7 +88,7 @@ object CultivationHelper {
         originAlliance.personList.remove(person.id)
         if(originAlliance.zhuPerson == person)
             originAlliance.zhuPerson = null
-        person.tipsList.removeIf { it.detail.alliances.contains(originAlliance.id) }
+        person.tipsList.removeIf { it.detail.type == 0 }
         joinFixedAlliance(person, newAlliance, true)
     }
 
@@ -615,9 +615,10 @@ object CultivationHelper {
     }
 
     fun getXiuweiGrow(person:Person):Int{
-        //clanXiuwei nationXiuwei allianceBattleXiuwei removed
-        var basic = person.lingGenDetail.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
-                     + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + person.tipsXiuwei
+        var basic = person.lingGenDetail.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei
+        basic += person.battlexiuwei
+        basic += person.bossXiuwei
+        basic += person.tipsXiuwei
         basic += getNationPostXiuwei(person)
         basic += getLastSingleBattleXiuwei(person)
         if (person.feiziFavor > 0){
@@ -658,7 +659,7 @@ object CultivationHelper {
                 mutableListOf(),
                 detail.teji,
                 mutableListOf()
-        ), "${showing(detail.name)}(${level + 1}/${detail.bonus.size})")
+        ), "(${level + 1}/${detail.bonus.size})")
     }
     fun getNationPostXiuwei(person: Person):Int{
         return when {
@@ -873,13 +874,16 @@ object CultivationHelper {
        return mConfig.skin.find { it.id == realSkin }
     }
 
-    fun generateTips(person: Person){
+    fun generateTips(person: Person, alliance: Alliance){
+        person.tipsList.filter { it.detail.type == 0 }.forEach {
+            it.tipsName = alliance.tips[it.detail.rarity - 2]
+        }
         mConfig.tips.forEach { tip->
             if(person.tipsList.find { it.id == tip.id } == null){
-                if(tip.type == 0 && tip.alliances.contains(person.allianceId) &&
+                if(tip.type == 0 && alliance.tips[tip.rarity - 2] != "" &&
                   ( if (tip.rarity <= 5) talentValue(person) in tip.talent .. (tip.talent + 10) else talentValue(person) >= tip.talent )
                 ){
-                    person.tipsList.add(Tips(tip.id, 0))
+                    person.tipsList.add(Tips(tip.id, 0, alliance.tips[tip.rarity - 2]))
                 }else if (tip.type == 2 && (tip.lingGen.contains(person.lingGenTypeId) || tip.lingGen.contains(person.lingGenSpecId)) ){
                     person.tipsList.add(Tips(tip.id, 0))
                 }

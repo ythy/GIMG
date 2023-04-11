@@ -56,7 +56,7 @@ class Equipment(pId: String, pSeq: Int = 0, option:Triple<Int, Int, String>? = n
                 val setting = CultivationHelper.getEquipmentOfTips(option.first,
                         CultivationHelper.mConfig.tips.find { it.id == pId }!!)
                 this.detail = setting.first
-                this.uniqueName = setting.second
+                this.uniqueName = "${option.third}${setting.second}"
                 this.sortedWeight = setting.first.rarity
             }
         }else{

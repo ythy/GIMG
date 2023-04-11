@@ -19,7 +19,6 @@ data class TipsConfig(
         val talent:Int = 0, // min talent
         val difficulty:Int = 0,
         val bonus:MutableList<Int> = mutableListOf(),
-        val alliances:MutableList<String> = mutableListOf(),
         val teji:MutableList<String> = mutableListOf(),
         val hp:MutableList<Int> = mutableListOf(),
         val attack:MutableList<Int> = mutableListOf(),
@@ -29,18 +28,25 @@ data class TipsConfig(
 ){
     //Gson 序列化使用
     constructor():this(
-            "", "", 0,0,0, 0, mutableListOf(),mutableListOf(),mutableListOf()
+            "", "", 0,0,0, 0, mutableListOf(),mutableListOf()
             ,mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf()
     )
 }
 
 class Tips(id:String, level:Int = 0):TipsBak() {
+
     val detail:TipsConfig = CultivationHelper.mConfig.tips.find { it.id == id } ?: TipsConfig("", "")
+    var tipsName = detail.name
 
     init {
         this.id = id
         this.level = level
     }
+
+    constructor(id:String, level: Int, name:String):this(id, level){
+        this.tipsName = name
+    }
+
 
     fun toBak():TipsBak{
         val bak = TipsBak()

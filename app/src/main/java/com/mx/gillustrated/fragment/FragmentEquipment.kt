@@ -76,7 +76,7 @@ class FragmentEquipment: Fragment() {
                 Equipment(index.toString(), 0, Triple(index, count, ""))
         }
         val tipsEquipment = mPerson.tipsList.map{ tips ->
-            val equipment = Equipment(tips.id, 0, Triple(tips.level, 0, "TIPS"))
+            val equipment = Equipment(tips.id, 0, Triple(tips.level, 0, tips.tipsName))
             if (tips.detail.type > 2){
                 equipment.children.clear()
                 equipment.children.add(equipment)
