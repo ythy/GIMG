@@ -509,8 +509,9 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.updateBossBattleBonus(mPersons)
         mPersons.forEach {
            it.value.skin = CultivationHelper.generateSkinValue(it.value)
+           it.value.tipsList.removeIf { t-> t.detail.type == 0 }
            CultivationHelper.generateTips(it.value)
-           CultivationHelper.updatePersonExtraProperty(it.value)
+           CultivationHelper.updatePersonExtraProperty(it.value, mAlliance[it.value.allianceId])
         }
         if(out == null || out.trim() == ""){
             startWorld()
@@ -760,7 +761,7 @@ class CultivationActivity : BaseActivity() {
         var remainingStep = step
         loop@ while (remainingStep-- > 0){
             val currentJinJie = CultivationHelper.getJingJie(it.jingJieId)
-            val xiuweiGrow = getXiuweiGrow(it, mAlliance)
+            val xiuweiGrow = getXiuweiGrow(it)
             it.maxXiuWei += xiuweiGrow
             it.pointXiuWei += xiuweiGrow
             it.xiuXei += xiuweiGrow
@@ -785,6 +786,9 @@ class CultivationActivity : BaseActivity() {
                     it.jinJieColor = next.color
                     it.jinJieMax = next.max
                     it.lifetime +=  CultivationHelper.getLifetimeBonusRealm(it, allianceNow)
+                    if(it.jinJieColor > 4){
+                        CultivationHelper.handleTipsLevel(it)
+                    }
                 } else {
                     val commonText = "转转成功，${personDataString[2]} $random/$totalSuccess"
                     if(it.isFav){
@@ -807,13 +811,10 @@ class CultivationActivity : BaseActivity() {
                     writeHistory("${getPersonBasicString(it)} $commonText", it)
                 }
                 it.jingJieSuccess += currentJinJie.fault
-                it.tipsList.filter { tips-> tips.level < tips.detail.bonus.size - 1 }.forEach { tips->
-                    if(Random().nextInt(tips.detail.difficulty * (tips.level + 1)) == 0){
-                        tips.level = Math.min(tips.detail.bonus.size - 1, tips.level + 1)
-                    }
+                if(it.jinJieColor > 9){
+                    CultivationHelper.handleTipsLevel(it)
                 }
             }
-
         }
     }
 

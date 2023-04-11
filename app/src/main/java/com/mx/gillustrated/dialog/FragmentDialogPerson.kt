@@ -385,7 +385,7 @@ class FragmentDialogPerson : DialogFragment() {
         mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.nickName ?: "")
         mDialogView.jingjie.text = CultivationHelper.showing(mPerson.jinJieName)
         mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
-        mDialogView.xiuweiAdd.text =  "${CultivationHelper.getXiuweiGrow(mPerson, mContext.mAlliance)}"
+        mDialogView.xiuweiAdd.text =  "${CultivationHelper.getXiuweiGrow(mPerson)}"
         mDialogView.success.text = "↑${CultivationHelper.getTotalSuccess(mPerson)}"
         mDialogView.xiuweiAdd.setTextColor(Color.parseColor(CommonColors[1]))
         mDialogView.success.setTextColor(Color.parseColor(CommonColors[1]))

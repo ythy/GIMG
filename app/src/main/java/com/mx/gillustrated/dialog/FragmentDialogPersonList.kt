@@ -235,7 +235,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             "T" -> mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
                     .thenByDescending { it.jingJieId }
                     .thenByDescending { it.xiuXei } )
-            "X" -> mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it, mContext.mAlliance) }
+            "X" -> mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it) }
                     .thenByDescending { it.lifeTurn })
             "B" -> mPersonData.sortWith(compareByDescending<Person> {it.battleWinner}
                     .thenByDescending { it.lifeTurn })

@@ -16,6 +16,7 @@ data class TipsConfig(
         val name:String,
         val type:Int = 0,// 0: alliance  2: lingGen  3: reward
         val rarity:Int = 0,
+        val talent:Int = 0, // min talent
         val difficulty:Int = 0,
         val bonus:MutableList<Int> = mutableListOf(),
         val alliances:MutableList<String> = mutableListOf(),
@@ -28,7 +29,7 @@ data class TipsConfig(
 ){
     //Gson 序列化使用
     constructor():this(
-            "", "", 0,0,0, mutableListOf(),mutableListOf(),mutableListOf()
+            "", "", 0,0,0, 0, mutableListOf(),mutableListOf(),mutableListOf()
             ,mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf()
     )
 }

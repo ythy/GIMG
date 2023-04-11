@@ -151,10 +151,11 @@ class Person: PersonBak() {
     var nationId = ""
 
     var extraProperty: MutableList<Int> = mutableListOf(0, 0, 0, 0, 0, 0, 0, 0)//update once deps tian linggen, label, skin
-    var extraXiuwei: Int = 0 //tianfu 初始和读取更新
+    var extraXiuwei: Int = 0 //tianfu + label + skin 初始和读取更新, skin changed 更新
     var extraTupo: Int = 0 //tianfu 初始和读取更新
     var extraSpeed: Int = 0 //tianfu 初始和读取更新
-    var extraXuiweiMulti: Int = 0 //tianfu + alliance  初始和读取更新
+    var extraXuiweiMulti: Int = 0 //tianfu + alliance + label + skin  初始和读取更新，skin changed 更新
+    var tipsXiuwei:Int = 0 //初始和读取更新，变化更新
 
     var equipmentXiuwei: Int = 0 //
     var equipmentSuccess: Int = 0 //

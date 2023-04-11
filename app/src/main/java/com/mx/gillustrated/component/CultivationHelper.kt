@@ -56,6 +56,7 @@ object CultivationHelper {
                 person.allianceName = alliance.name
                 person.allianceSuccess = alliance.success
                 person.allianceProperty = alliance.property.toMutableList()
+                person.allianceXiuwei = alliance.xiuwei
                 person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
                 person.lifetime = mCurrentXun + getLifetimeBonusInitial(person, alliance)
                 person.nationId = alliance.nation
@@ -71,6 +72,7 @@ object CultivationHelper {
         person.allianceName = alliance.name
         person.allianceSuccess = alliance.success
         person.allianceProperty = alliance.property.toMutableList()
+        person.allianceXiuwei = alliance.xiuwei
         person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
         person.lifetime = mCurrentXun + getLifetimeBonusInitial(person, alliance, changed)
         if(alliance.type >= 3 && !changed){
@@ -86,6 +88,7 @@ object CultivationHelper {
         originAlliance.personList.remove(person.id)
         if(originAlliance.zhuPerson == person)
             originAlliance.zhuPerson = null
+        person.tipsList.removeIf { it.detail.alliances.contains(originAlliance.id) }
         joinFixedAlliance(person, newAlliance, true)
     }
 
@@ -522,6 +525,9 @@ object CultivationHelper {
         val tianFus = person.tianfuList.map { getPersonTianfu(it.id)!! }
         person.tianfuList = tianFus.toMutableList()
         person.extraXiuwei = tianFus.find { it.type == 1 }?.bonus ?: 0
+        person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
+            person.extraXiuwei += it.property[4]
+        }
         person.extraTupo = tianFus.find { it.type == 4 }?.bonus ?: 0
         person.extraSpeed = tianFus.find { it.type == 5 }?.bonus ?: 0
         val extraProperty = mConfig.lingGenTian.find { it.id == person.lingGenSpecId }?.property?.toMutableList() ?: mutableListOf(0,0,0,0,0,0,0,0)
@@ -538,8 +544,11 @@ object CultivationHelper {
             (0..3).forEach { count->
                 extraProperty[count] += skin.property[count]
             }
+            person.extraXiuwei += skin.property[4]
         }
         person.extraProperty = Collections.synchronizedList(extraProperty.toMutableList())
+        if (alliance != null)
+            person.allianceXiuwei = alliance.xiuwei
         person.extraXuiweiMulti =  getExtraXuiweiMulti(person, alliance)
     }
 
@@ -605,40 +614,15 @@ object CultivationHelper {
         }
     }
 
-    //20220927 added nation bonus: cishi + 100, duwei + 50
-    fun getXiuweiGrow(person:Person, allAllianceMap:ConcurrentHashMap<String, Alliance>):Int{
-        val alliance = allAllianceMap[person.allianceId] ?: return 0
-        return getXiuweiGrow(person, alliance)
-    }
-
-    private fun getXiuweiGrow(person:Person, alliance: Alliance):Int{
-        synchronized(person){
-            var allianceXiuwei = alliance.xiuwei
-            if(person.id == alliance.zhuPerson?.id){
-                allianceXiuwei += 50
-            }
-            person.allianceXiuwei = allianceXiuwei
-        }
-        val postXiuwei = getNationPostXiuwei(person)
-        val tipsXiuwei = getTipsXiuwei(person)
+    fun getXiuweiGrow(person:Person):Int{
         //clanXiuwei nationXiuwei allianceBattleXiuwei removed
         var basic = person.lingGenDetail.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei + person.battlexiuwei
-                     + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei
-        basic += postXiuwei
-        basic += tipsXiuwei
-
-        person.label.mapNotNull { m -> mConfig.label.find { it.id == m } }.forEach {
-            basic += it.property[4]
-        }
-        val skin = getSkinObject(person.skin)
-        if(skin != null){
-            basic += skin.property[4]
-        }
+                     + person.clanXiuwei + person.nationXiuwei + person.bossXiuwei + person.tipsXiuwei
+        basic += getNationPostXiuwei(person)
         basic += getLastSingleBattleXiuwei(person)
         if (person.feiziFavor > 0){
             basic += EmperorData.FeiziBonos[person.feiziLevel]
         }
-
         val multi = (person.extraXuiweiMulti + 100).toDouble() / 100
         return (basic * multi).toInt()
     }
@@ -655,10 +639,6 @@ object CultivationHelper {
         }else{
             0
         }
-    }
-
-    fun getTipsXiuwei(person: Person):Int{
-        return  person.tipsList.sumBy { it.detail.bonus[it.level] }
     }
 
     fun getEquipmentOfTips(level:Int, detail:TipsConfig):Pair<EquipmentConfig, String>{
@@ -896,11 +876,29 @@ object CultivationHelper {
     fun generateTips(person: Person){
         mConfig.tips.forEach { tip->
             if(person.tipsList.find { it.id == tip.id } == null){
-                if(tip.type == 0 && tip.alliances.contains(person.allianceId)){
+                if(tip.type == 0 && tip.alliances.contains(person.allianceId) &&
+                  ( if (tip.rarity <= 5) talentValue(person) in tip.talent .. (tip.talent + 10) else talentValue(person) >= tip.talent )
+                ){
                     person.tipsList.add(Tips(tip.id, 0))
                 }else if (tip.type == 2 && (tip.lingGen.contains(person.lingGenTypeId) || tip.lingGen.contains(person.lingGenSpecId)) ){
                     person.tipsList.add(Tips(tip.id, 0))
                 }
+            }
+        }
+        updateTipsXiuwei(person)
+    }
+
+    fun updateTipsXiuwei(person: Person){
+        person.tipsXiuwei = person.tipsList.sumBy { it.detail.bonus[it.level] }
+    }
+
+    fun handleTipsLevel(person: Person){
+        val tipsList = person.tipsList.filter { tips-> tips.level < tips.detail.bonus.size - 1 }.shuffled()
+        if(tipsList.isNotEmpty()){
+            val tips = tipsList.first()
+            if(Random().nextInt(tips.detail.difficulty * (tips.level + 1)) == 0){
+                tips.level = Math.min(tips.detail.bonus.size - 1, tips.level + 1)
+                updateTipsXiuwei(person)
             }
         }
     }
