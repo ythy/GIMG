@@ -11,6 +11,7 @@ open class AllianceBak{
         val alliance = Alliance()
         alliance.id = allianceConfig.id
         alliance.name = allianceConfig.name
+        alliance.abridgeName = allianceConfig.abridgeName
         alliance.type = allianceConfig.type
         alliance.level = allianceConfig.level
         alliance.maxPerson = allianceConfig.maxPerson
@@ -35,6 +36,7 @@ open class AllianceBak{
 open class AllianceConfig : AllianceBak() {
     lateinit var id:String
     lateinit var name:String
+    var abridgeName:String = ""
     var type:Int = 0//类型，0 all, 1 spec
     var level:Int = 1// 权重100的约分 默认1
     var maxPerson:Int = 0//最大人数

@@ -120,7 +120,8 @@ class FragmentDialogAlliance : DialogFragment() {
         mId = this.arguments!!.getString("id", "")
         mContext = activity as CultivationActivity
         mAlliance = mContext.mAlliance[mId]!!
-        mDialogView.name.text = CultivationHelper.showing("${nation.find { it.id == mAlliance.nation }?.name}-${mAlliance.name}")
+        val abridgeName = if (mAlliance.abridgeName != "") "(${mAlliance.abridgeName})" else ""
+        mDialogView.name.text = CultivationHelper.showing("${nation.find { it.id == mAlliance.nation }?.name}-${mAlliance.name}$abridgeName")
         mDialogView.lifetime.text = "life: ${mAlliance.lifetime}"
         mDialogView.xiuwei.text = "xiuwei: ${mAlliance.xiuwei}(${mAlliance.xiuweiMulti})  ↑${mAlliance.success}"
         mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList, true, true)

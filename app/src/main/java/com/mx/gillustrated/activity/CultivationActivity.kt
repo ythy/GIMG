@@ -1519,7 +1519,6 @@ class CultivationActivity : BaseActivity() {
                 person.battleRecord[mBattleRound.single] = reverseIndex
                 writeHistory("第${mBattleRound.single}届 Single Battle No $reverseIndex : ${person.name}", person)
                 addAmuletEquipmentEvent(person, "Single", reverseIndex * 100)
-                addTipsEquipmentEvent(person, "Single", reverseIndex * 1000)
             }
             CultivationHelper.updateSingleBattleBonus(mPersons)
 

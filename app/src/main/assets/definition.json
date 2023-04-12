@@ -1487,7 +1487,8 @@
   "alliance": [
     {
       "id": "6000101",
-      "name": "\u91D1\u521A\u5B97(金)",
+      "name": "\u91D1\u521A\u5B97",
+      "abridgeName": "金",
       "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
@@ -1497,7 +1498,8 @@
     },
     {
       "id": "6000102",
-      "name": "\u7487\u5973\u6D3E(水)",
+      "name": "\u7487\u5973\u6D3E",
+      "abridgeName": "水",
       "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
@@ -1507,7 +1509,8 @@
     },
     {
       "id": "6000103",
-      "name": "空桑\u6D3E(木)",
+      "name": "空桑\u6D3E",
+      "abridgeName": "木",
       "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
@@ -1517,7 +1520,8 @@
     },
     {
       "id": "6000104",
-      "name": "\u4F0F\u9F99\u575B(火)",
+      "name": "\u4F0F\u9F99\u575B",
+      "abridgeName": "火",
       "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
@@ -1527,7 +1531,8 @@
     },
     {
       "id": "6000105",
-      "name": "\u5C11\u6797\u6D3E(土)",
+      "name": "\u5C11\u6797\u6D3E",
+      "abridgeName": "土",
       "nation": "6200001",
       "lifetime": 0,
       "xiuwei": 0,
@@ -1537,7 +1542,8 @@
     },
     {
       "id": "6000106",
-      "name": "界青\u95E8(隐)",
+      "name": "界青\u95E8",
+      "abridgeName": "隐",
       "nation": "6200008",
       "tianfu": 1,
       "level": 10,
@@ -1549,7 +1555,8 @@
     },
     {
       "id": "6000107",
-      "name": "\u4E94\u4ED9\u6559(魔)",
+      "name": "\u4E94\u4ED9\u6559",
+      "abridgeName": "魔",
       "nation": "6200008",
       "tianfu": 1,
       "level": 10,
@@ -1561,7 +1568,8 @@
     },
     {
       "id": "6000108",
-      "name": "然山派(天)",
+      "name": "然山派",
+      "abridgeName": "天",
       "nation": "6200008",
       "tianfu": 2,
       "level": 20,
@@ -1573,7 +1581,8 @@
     },
     {
       "id": "6000109",
-      "name": "武当派(地)",
+      "name": "武当派",
+      "abridgeName": "地",
       "nation": "6200008",
       "tianfu": 2,
       "level": 20,
@@ -1584,7 +1593,8 @@
     },
     {
       "id": "6000110",
-      "name": "峨眉派(人)",
+      "name": "峨眉派",
+      "abridgeName": "人",
       "nation": "6200008",
       "tianfu": 2,
       "level": 20,
@@ -1596,7 +1606,8 @@
     },
     {
       "id": "6000111",
-      "name": "铸剑山庄(神)",
+      "name": "铸剑山庄",
+      "abridgeName": "神",
       "nation": "6200008",
       "tianfu": 3,
       "level": 50,

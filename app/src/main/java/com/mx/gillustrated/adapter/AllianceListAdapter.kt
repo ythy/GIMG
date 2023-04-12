@@ -42,8 +42,8 @@ class AllianceListAdapter  constructor(mContext: Context, private val list: List
             convertView!!.tag = component
         } else
             component = convertView.tag as ViewHolder
-
-        component.name.text =  CultivationHelper.showing("${nation.find { it.id == list[arg0].nation }?.name}-${list[arg0].name}")
+        val abridgeName = if (list[arg0].abridgeName != "") "(${list[arg0].abridgeName})" else ""
+        component.name.text =  CultivationHelper.showing("${nation.find { it.id == list[arg0].nation }?.name}-${list[arg0].name}$abridgeName")
         component.persons.text =  "${list[arg0].personList.size}-${list[arg0].personList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
         component.total.text  = CultivationHelper.showLifeTurn(list[arg0].totalXiuwei)
         component.winner.text  = list[arg0].battleWinner.toString()
