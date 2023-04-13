@@ -74,7 +74,7 @@ class FragmentEquipment: Fragment() {
                 null
             else
                 Equipment(index.toString(), 0, Triple(index, count, ""))
-        }
+        }.sortedBy { it.sortedWeight }
         val tipsEquipment = mPerson.tipsList.map{ tips ->
             val equipment = Equipment(tips.id, 0, Triple(tips.level, 0, tips.tipsName))
             if (tips.detail.type > 2){
@@ -82,7 +82,7 @@ class FragmentEquipment: Fragment() {
                 equipment.children.add(equipment)
             }
             equipment
-        }
+        }.sortedBy { it.sortedWeight }
         mEquipmentGroups.clear()
         // 0 1 2 3 by type / 5 by id ; 9 by id / 6 7 8 不在equiplist
         val groups = equipments.groupBy{ if(it.detail.type <= 3) it.detail.type  else it.id.toInt() }

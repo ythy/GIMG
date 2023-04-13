@@ -10,7 +10,7 @@ open class TipsBak {
     }
 
 }
-
+//alliance 1-4 nei; 5,6 gongji; 7;jueji; 8: nei; 9:shen; 10: SSS
 data class TipsConfig(
         val id:String,
         val name:String,

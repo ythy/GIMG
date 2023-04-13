@@ -876,14 +876,14 @@ object CultivationHelper {
 
     fun generateTips(person: Person, alliance: Alliance){
         person.tipsList.filter { it.detail.type == 0 }.forEach {
-            it.tipsName = alliance.tips[it.detail.rarity - 2]
+            it.tipsName = alliance.tips[it.id.toInt() % 100000 - 1]
         }
         mConfig.tips.forEach { tip->
             if(person.tipsList.find { it.id == tip.id } == null){
-                if(tip.type == 0 && alliance.tips[tip.rarity - 2] != "" &&
+                if(tip.type == 0 && alliance.tips[tip.id.toInt() % 100000 - 1] != "" &&
                   ( if (tip.rarity <= 5) talentValue(person) in tip.talent .. (tip.talent + 10) else talentValue(person) >= tip.talent )
                 ){
-                    person.tipsList.add(Tips(tip.id, 0, alliance.tips[tip.rarity - 2]))
+                    person.tipsList.add(Tips(tip.id, 0, alliance.tips[tip.id.toInt() % 100000 - 1]))
                 }else if (tip.type == 2 && (tip.lingGen.contains(person.lingGenTypeId) || tip.lingGen.contains(person.lingGenSpecId)) ){
                     person.tipsList.add(Tips(tip.id, 0))
                 }
