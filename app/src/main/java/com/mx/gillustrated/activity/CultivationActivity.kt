@@ -509,8 +509,12 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.updateBossBattleBonus(mPersons)
         mPersons.forEach {
            it.value.skin = CultivationHelper.generateSkinValue(it.value)
-           CultivationHelper.generateTips(it.value, mAlliance[it.value.allianceId]!!)
-           CultivationHelper.updatePersonExtraProperty(it.value, mAlliance[it.value.allianceId])
+           val alliance =  mAlliance[it.value.allianceId]!!
+           CultivationHelper.generateTips(it.value, alliance)
+            it.value.tipsList.removeIf { tips->
+                !CultivationHelper.allianceTipsJudgment(it.value, tips.detail, alliance)
+            }
+           CultivationHelper.updatePersonExtraProperty(it.value, alliance)
         }
         if(out == null || out.trim() == ""){
             startWorld()

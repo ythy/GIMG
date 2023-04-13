@@ -266,6 +266,7 @@ object CultivationSetting {
         return persons
     }
 
+
     //1 '3' 000010
     fun getIdentityType(identity:Int):Int{
         return (identity / 1000000) % 10

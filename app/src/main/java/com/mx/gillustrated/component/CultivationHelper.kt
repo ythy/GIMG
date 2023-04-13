@@ -880,19 +880,24 @@ object CultivationHelper {
         }
         mConfig.tips.forEach { tip->
             if(person.tipsList.find { it.id == tip.id } == null){
-                if(tip.type == 0 && alliance.tips[tip.id.toInt() % 100000 - 1] != "" &&
-                  ( if (tip.rarity <= 5) talentValue(person) in tip.talent .. (tip.talent + 10) else talentValue(person) >= tip.talent )
-                ){
+                if(allianceTipsJudgment(person, tip, alliance)){
                     person.tipsList.add(Tips(tip.id, 0, alliance.tips[tip.id.toInt() % 100000 - 1]))
-                }else if (tip.type == 2 && (tip.lingGen.contains(person.lingGenTypeId) || tip.lingGen.contains(person.lingGenSpecId)) ){
-                    person.tipsList.add(Tips(tip.id, 0))
                 }
             }
         }
         updateTipsXiuwei(person)
     }
 
-    fun updateTipsXiuwei(person: Person){
+    fun allianceTipsJudgment(person: Person, tips:TipsConfig, alliance: Alliance):Boolean{
+        return tips.type == 0 && alliance.tips[tips.id.toInt() % 100000 - 1] != "" &&
+                (when {
+                    tips.rarity <= 5 -> talentValue(person) in tips.talent .. (tips.talent + 10)
+                    tips.rarity <= 8 -> talentValue(person) in tips.talent .. (tips.talent + 20)
+                    else -> talentValue(person) >= tips.talent
+                })
+    }
+
+    private fun updateTipsXiuwei(person: Person){
         person.tipsXiuwei = person.tipsList.sumBy { it.detail.bonus[it.level] }
     }
 
