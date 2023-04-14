@@ -3128,168 +3128,168 @@
     },
     {
       "id": "4100201",
-      "name": "\u6728\u7075\u4F53",
+      "name": "琨玉秋霜",
       "weight": 1,
       "rarity": 2,
       "property": [100,0,0,0,0,0,0,0]
     },
     {
       "id": "4100202",
-      "name": "\u706B\u7075\u4F53",
+      "name": "拔山扛鼎",
       "weight": 1,
       "rarity": 2,
       "property": [0,20,0,0,0,0,0,0]
     },
     {
       "id": "4100203",
-      "name": "\u571F\u7075\u4F53",
+      "name": "天人骨血",
       "weight": 1,
       "rarity": 2,
       "property": [0,0,20,0,0,0,0,0]
     },
     {
       "id": "4100204",
-      "name": "\u6C34\u7075\u4F53",
+      "name": "诡变无踪",
       "weight": 1,
       "rarity": 2,
       "property": [0,0,0,20,0,0,0,0]
     },
     {
       "id": "4100205",
-      "name": "\u91D1\u7075\u4F53",
+      "name": "行正神明",
       "weight": 1,
       "rarity": 2,
       "property": [0,10,0,10,0,0,0,0]
     },
     {
       "id": "4100206",
-      "name": "\u98CE\u7075\u4F53",
+      "name": "良才美玉",
       "weight": 1,
       "rarity": 3,
       "property": [0,0,0,30,0,0,0,0]
     },
     {
       "id": "4100207",
-      "name": "\u96F7\u7075\u4F53",
+      "name": "不世奇才",
       "weight": 1,
       "rarity": 3,
       "property": [0,30,0,0,0,0,0,0]
     },
     {
       "id": "4100208",
-      "name": "\u51B0\u7075\u4F53",
+      "name": "天元一气",
       "weight": 1,
       "rarity": 4,
       "property": [50,10,10,10,0,0,0,0]
     },
     {
       "id": "4100211",
-      "name": "\u7834\u519B",
+      "name": "舍生忘死",
       "weight": 2,
       "rarity": 2,
       "property": [0,20,0,0,0,0,0,0]
     },
     {
       "id": "4100212",
-      "name": "\u7FBD\u58EB",
+      "name": "电光石火",
       "weight": 2,
       "rarity": 2,
       "property": [0,10,0,10,0,0,0,0]
     },
     {
       "id": "4100213",
-      "name": "\u9752\u4E91",
+      "name": "穷极要妙",
       "weight": 2,
       "rarity": 2,
       "property": [0,10,10,0,0,0,0,0]
     },
     {
       "id": "4100214",
-      "name": "\u5F71\u5203",
+      "name": "奔逸绝尘",
       "weight": 2,
       "rarity": 2,
       "property": [0,0,0,20,0,0,0,0]
     },
     {
       "id": "4100215",
-      "name": "\u4E5D\u9ECE",
+      "name": "沉机观变",
       "weight": 2,
       "rarity": 2,
       "property": [0,0,20,0,0,0,0,0]
     },
     {
       "id": "4100216",
-      "name": "\u5929\u97F3",
+      "name": "脉象殷实",
       "weight": 2,
       "rarity": 3,
       "property": [50,10,10,0,0,0,0,0]
     },
     {
       "id": "4100217",
-      "name": "\u771F\u4EBA",
+      "name": "气海充盈",
       "weight": 2,
       "rarity": 3,
       "property": [50,10,0,10,0,0,0,0]
     },
     {
       "id": "4100218",
-      "name": "\u5C0A\u8005",
+      "name": "真气精纯",
       "weight": 2,
       "rarity": 4,
       "property": [50,10,10,10,0,0,0,0]
     },
     {
       "id": "4100221",
-      "name": "\u8DEF\u75F4",
+      "name": "优游自若",
       "weight": 3,
       "rarity": 2,
       "property": [0,10,0,10,0,0,0,0]
     },
     {
       "id": "4100222",
-      "name": "\u95ED\u5173",
+      "name": "洞若观火",
       "weight": 3,
       "rarity": 2,
       "property": [0,20,0,0,0,0,0,0]
     },
     {
       "id": "4100223",
-      "name": "\u4E91\u6E38",
+      "name": "蹑影藏形",
       "weight": 3,
       "rarity": 2,
       "property": [0,0,0,20,0,0,0,0]
     },
     {
       "id": "4100224",
-      "name": "\u4F5C\u5996",
+      "name": "听风辩位",
       "weight": 3,
       "rarity": 2,
       "property": [0,0,0,20,0,0,0,0]
     },
     {
       "id": "4100225",
-      "name": "\u5E72\u996D",
+      "name": "克己慎行",
       "weight": 3,
       "rarity": 2,
       "property": [0,20,0,0,0,0,0,0]
     },
     {
       "id": "4100226",
-      "name": "\u4FCA\u4FCF",
+      "name": "三元汇聚",
       "weight": 3,
       "rarity": 3,
       "property": [50,10,10,0,0,0,0,0]
     },
     {
       "id": "4100227",
-      "name": "\u66B4\u5BCC",
+      "name": "先天气体",
       "weight": 3,
       "rarity": 3,
       "property": [50,10,0,10,0,0,0,0]
     },
     {
       "id": "4100228",
-      "name": "\u5E9F\u67F4",
+      "name": "身披华光",
       "weight": 3,
       "rarity": 4,
       "property": [50,10,10,10,0,0,0,0]
