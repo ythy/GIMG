@@ -52,6 +52,7 @@ open class PersonBak {
     var maxXiuWei: Long = 0
     var pointXiuWei: Long = 0
     var allianceId: String = ""
+    var genres:MutableList<String> = Collections.synchronizedList(mutableListOf())
     var specIdentity: Int = 0 //spec person nid
     var specIdentityTurn: Int = 0 //spec person turn added while dead
     var feiziLevel:Int = 0 // 1-12
@@ -101,6 +102,7 @@ open class PersonBak {
         person.maxXiuWei = this.maxXiuWei
         person.pointXiuWei = this.pointXiuWei
         person.allianceId = this.allianceId
+        person.genres = this.genres
         person.specIdentity = this.specIdentity
         person.specIdentityTurn = this.specIdentityTurn
         person.feiziLevel = this.feiziLevel

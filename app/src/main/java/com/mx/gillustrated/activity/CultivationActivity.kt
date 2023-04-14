@@ -315,6 +315,15 @@ class CultivationActivity : BaseActivity() {
         }
     }
 
+    private fun genreShuffled(){
+        mPersons.forEach { t: String, u: Person ->
+            if (u.careerList.find { f->f.detail.rarity > 10 } != null && !u.genres.contains("7300001")){
+                u.genres.add("7300001")
+                CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
+            }
+        }
+    }
+
     private fun temp(){
         val specConfig = getAllSpecPersons()
         mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
@@ -512,7 +521,7 @@ class CultivationActivity : BaseActivity() {
            val alliance =  mAlliance[it.value.allianceId]!!
            CultivationHelper.generateTips(it.value, alliance)
             it.value.tipsList.removeIf { tips->
-                !CultivationHelper.allianceTipsJudgment(it.value, tips.detail, alliance)
+                !CultivationHelper.tipsJudgment(it.value, tips.detail, alliance)
             }
            CultivationHelper.updatePersonExtraProperty(it.value, alliance)
         }
@@ -547,7 +556,7 @@ class CultivationActivity : BaseActivity() {
                     resetCustomBonus()
                 }
                 R.id.menu_shuffle->{
-
+                    genreShuffled()
                 }
                 R.id.menu_temp->{
                     temp()

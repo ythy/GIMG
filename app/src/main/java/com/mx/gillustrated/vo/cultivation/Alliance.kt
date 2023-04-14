@@ -48,7 +48,7 @@ open class AllianceConfig : AllianceBak() {
     var success:Int = 0//突破率
     var property:MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0)
     var nation:String = ""
-    var tips:MutableList<String> = mutableListOf()//max  level 9
+    var tips:MutableList<String> = mutableListOf()//max  level 10
 
 }
 

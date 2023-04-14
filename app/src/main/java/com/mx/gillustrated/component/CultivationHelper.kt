@@ -878,19 +878,28 @@ object CultivationHelper {
         person.tipsList.filter { it.detail.type == 0 }.forEach {
             it.tipsName = alliance.tips[it.id.toInt() % 100000 - 1]
         }
-        mConfig.tips.forEach { tip->
-            if(person.tipsList.find { it.id == tip.id } == null){
-                if(allianceTipsJudgment(person, tip, alliance)){
-                    person.tipsList.add(Tips(tip.id, 0, alliance.tips[tip.id.toInt() % 100000 - 1]))
+        mConfig.tips.filter { it.type == 0 }.forEach { tip->
+            if(person.tipsList.find { it.id == tip.id } == null && tipsJudgment(person, tip, alliance)){
+                person.tipsList.add(Tips(tip.id, 0, alliance.tips[tip.id.toInt() % 100000 - 1]))
+            }
+        }
+
+        person.genres.mapNotNull { mConfig.genre.find { f-> f.id == it } }.forEach { genre->
+            genre.tips.mapNotNull {  mConfig.tips.find { f-> f.id == it }  }.forEach { tips->
+                if(person.tipsList.find { it.id == tips.id } == null && tipsJudgment(person, tips, null) ) {
+                    person.tipsList.add(Tips(tips.id, 0 ))
                 }
             }
         }
+
         updateTipsXiuwei(person)
     }
 
-    fun allianceTipsJudgment(person: Person, tips:TipsConfig, alliance: Alliance):Boolean{
-        return tips.type == 0 && alliance.tips[tips.id.toInt() % 100000 - 1] != "" &&
+    fun tipsJudgment(person: Person, tips:TipsConfig, alliance: Alliance?):Boolean{
+        val right = if( alliance != null && tips.type == 0 ) alliance.tips[tips.id.toInt() % 100000 - 1] != "" else true
+        return right &&
                 (when {
+                    tips.type > 1 -> true
                     tips.rarity <= 5 -> talentValue(person) in tips.talent .. (tips.talent + 10)
                     tips.rarity <= 8 -> talentValue(person) in tips.talent .. (tips.talent + 20)
                     else -> talentValue(person) >= tips.talent

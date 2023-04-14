@@ -29,6 +29,10 @@ class FragmentEquipment: Fragment() {
     @BindView(R.id.lv_equipment)
     lateinit var mListView: ExpandableListView
 
+    @BindView(R.id.tv_genre)
+    lateinit var mGenre: TextView
+
+
     @OnClick(R.id.btn_add_equipment_bao)
     fun onAddBaoClickHandler(){
         val ft = mContext.supportFragmentManager.beginTransaction()
@@ -62,6 +66,7 @@ class FragmentEquipment: Fragment() {
     fun init(){
         val id = this.arguments!!.getString("id", "")
         mPerson = mContext.getPersonData(id)!!
+        mGenre.text = mPerson.genres.mapNotNull { CultivationHelper.mConfig.genre.find { f-> f.id == it } }.joinToString{ it.name }
         updateList()
     }
 
