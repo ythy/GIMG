@@ -617,6 +617,7 @@ class CultivationActivity : BaseActivity() {
             "equinox" -> getDrawable(R.drawable.skin_theme_spring_equinox)
             "grain_rain" -> getDrawable(R.drawable.skin_theme_grain_rain)
             "grain_rain2" -> getDrawable(R.drawable.skin_theme_grain_rain2)
+            "grain_rain3" -> getDrawable(R.drawable.skin_theme_grain_rain3)
             else -> getDrawable(R.drawable.skin_theme_spring)
         }
     }
