@@ -3383,6 +3383,14 @@
       "property": [0,50,0,0,100,50,0,0]
     },
     {
+      "id": "4200104",
+      "name": "\u590F\u8377",
+      "resource": "skin_bg_summer_begin",
+      "rarity": 5,
+      "description": "红楼\u9650\u5B9A",
+      "property": [0,100,0,0,200,100,0,0]
+    },
+    {
       "id": "4200201",
       "name": "\u5927\u5C55\u5B8F\u5154",
       "resource": "skin_bg_rabbit",

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:paddingTop="20dp"
+    android:paddingBottom="10dp" android:paddingStart="20dp" android:paddingEnd="20dp">
+    <item android:drawable="@drawable/skin_bg_base_bottom"
+        android:top="20dp" android:bottom="10dp" android:left="20dp" android:right="20dp">
+    </item>
+    <item android:drawable="@drawable/skin_bg_base_mid"
+        android:top="20dp" android:bottom="10dp" android:left="20dp" android:right="20dp">
+    </item>
+    <item android:width="400dp" android:height="865dp" android:top="50dp" android:left="30dp" >
+        <bitmap android:gravity="fill"
+            android:alpha="0.4"
+            android:antialias="true"
+            android:src="@drawable/skin_summer_begin2" />
+    </item>
+
+</layer-list>

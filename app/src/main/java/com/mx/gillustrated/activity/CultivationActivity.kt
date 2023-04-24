@@ -554,7 +554,7 @@ class CultivationActivity : BaseActivity() {
                     resetHandler()
                 }
                 R.id.menu_reset_wtf->{
-                    resetCustomBonus()
+                    //resetCustomBonus()
                 }
                 R.id.menu_shuffle->{
                     //genreShuffled()

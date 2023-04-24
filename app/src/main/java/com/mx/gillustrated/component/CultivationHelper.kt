@@ -852,6 +852,7 @@ object CultivationHelper {
                     101 -> person.battleRecord.filterValues { m-> m <= 2 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
                     102 -> person.battleRecord.filterValues { m-> m == 1 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
                     103 -> person.battleRecord.filterValues { m-> m == 32 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
+                    104 -> person.allianceId == "6000601"
                     else -> false
                 }
             }
