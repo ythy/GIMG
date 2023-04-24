@@ -85,6 +85,11 @@ class FragmentFollower: Fragment() {
                 mFollowers.add(Follower(id))
             }
         }
+        mPerson.tipsList.forEach { tips->
+            tips.detail.follower.forEach { id->
+                mFollowers.add(Follower(id))
+            }
+        }
         (mListView.adapter as BaseAdapter).notifyDataSetChanged()
         mListView.invalidateViews()
     }

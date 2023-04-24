@@ -82,10 +82,11 @@
 
     <string-array name="cultivation_skin">
         <item>立春卷云</item>
-        <item>雨水</item>
+        <item>雨水画眉</item>
         <item>春分雨燕</item>
-        <item>谷雨</item>
-        <item>谷雨2</item>
-        <item>谷雨3</item>
+        <item>谷雨桃花</item>
+        <item>谷雨芭蕉</item>
+        <item>谷雨青莲</item>
+        <item>立夏荷禾</item>
     </string-array>
 </resources>

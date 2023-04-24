@@ -142,6 +142,7 @@ class CultivationActivity : BaseActivity() {
                 it.HP = Math.min(it.HP, it.maxHP)
                 it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null && getOfflinePersonDetail(f) == null }.toMutableList()
             }
+            genreShuffled()
             backupInfo.persons = mPersons.mapValues { it.value.toPersonBak() }
             mClans.map { it.key }.toMutableList().forEach { id ->
                 if(mPersons[id] == null){
@@ -316,7 +317,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun genreShuffled(){
-        mPersons.forEach { t: String, u: Person ->
+        mPersons.forEach { (_: String, u: Person) ->
             if (u.careerList.find { f->f.detail.rarity > 10 } != null && !u.genres.contains("7300001")){
                 u.genres.add("7300001")
                 CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
@@ -556,7 +557,7 @@ class CultivationActivity : BaseActivity() {
                     resetCustomBonus()
                 }
                 R.id.menu_shuffle->{
-                    genreShuffled()
+                    //genreShuffled()
                 }
                 R.id.menu_temp->{
                     temp()
@@ -618,6 +619,7 @@ class CultivationActivity : BaseActivity() {
             "grain_rain" -> getDrawable(R.drawable.skin_theme_grain_rain)
             "grain_rain2" -> getDrawable(R.drawable.skin_theme_grain_rain2)
             "grain_rain3" -> getDrawable(R.drawable.skin_theme_grain_rain3)
+            "summer_begin" -> getDrawable(R.drawable.skin_theme_summer_begin)
             else -> getDrawable(R.drawable.skin_theme_spring)
         }
     }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item >
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="1dp"
+                android:color="?attr/colorFontPrimary"/>
+            <solid android:color="?attr/colorBackPrimary" />
+        </shape>
+    </item>
+    <item android:width="450dp" android:height="974dp" android:top="-100dp">
+        <bitmap android:gravity="fill"
+            android:alpha="0.5"
+            android:antialias="true"
+            android:src="@drawable/skin_summer_begin" />
+    </item>
+</layer-list>

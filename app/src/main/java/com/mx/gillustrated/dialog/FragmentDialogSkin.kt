@@ -43,6 +43,7 @@ class FragmentDialogSkin : DialogFragment() {
             3-> context.mSP.edit().putString("cultivation_skin", "grain_rain").apply()
             4-> context.mSP.edit().putString("cultivation_skin", "grain_rain2").apply()
             5-> context.mSP.edit().putString("cultivation_skin", "grain_rain3").apply()
+            6-> context.mSP.edit().putString("cultivation_skin", "summer_begin").apply()
         }
         context.loadSkin()
         this.dismiss()
@@ -67,6 +68,7 @@ class FragmentDialogSkin : DialogFragment() {
             "grain_rain" -> selectIndex = 3
             "grain_rain2" -> selectIndex = 4
             "grain_rain3" -> selectIndex = 5
+            "summer_begin" -> selectIndex = 6
         }
         mSpinner.setSelection(selectIndex)
         mOldSkinIndex = selectIndex

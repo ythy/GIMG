@@ -520,34 +520,24 @@ object CultivationBattleHelper {
         battlePerson.defenceBasis -= person.equipmentProperty[2]
         battlePerson.speedBasis -= person.equipmentProperty[3]
 
-        if(person.followerList.isNotEmpty()){
-            battlePerson.follower.addAll(person.followerList.map { follower->
-                val props = follower.detail.property
-                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(Pair(f, "")) }.toMutableList())
-                result.name = "${person.name}-${follower.detail.name}${follower.uniqueName}"
-                result.battleId = battlePerson.battleId
-                result
-            })
+        person.followerList.forEach { follower->
+            setFollower(battlePerson, follower.id, follower)
         }
+
         person.equipmentList.forEach {
             it.detail.follower.forEach { id->
-                val follower = Follower(id)
-                val props = follower.detail.property
-                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(Pair(f, "")) }.toMutableList())
-                result.name = "${person.name}-${follower.detail.name}"
-                result.battleId = battlePerson.battleId
-                battlePerson.follower.add(result)
+                setFollower(battlePerson, id)
             }
         }
         person.label.forEach {
             val label = mConfig.label.find { f-> f.id == it }!!.copy()
             label.follower.forEach { id->
-                val follower = Follower(id)
-                val props = follower.detail.property
-                val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(Pair(f, "")) }.toMutableList())
-                result.name = "${person.name}-${follower.detail.name}"
-                result.battleId = battlePerson.battleId
-                battlePerson.follower.add(result)
+                setFollower(battlePerson, id)
+            }
+        }
+        person.tipsList.forEach { tips->
+            tips.detail.follower.forEach { id->
+                setFollower(battlePerson, id)
             }
         }
 
@@ -564,6 +554,14 @@ object CultivationBattleHelper {
         }
     }
 
+    fun setFollower(battlePerson:BattleObject, id:String, followerFixed: Follower? = null){
+        val follower = followerFixed ?: Follower(id)
+        val props = follower.detail.property
+        val result = BattleObject(props[0], props[0], props[1], props[2], props[3], 2, follower.detail.teji.map { f-> convertTejiObject(Pair(f, "")) }.toMutableList())
+        result.name = "${battlePerson.name}-${follower.detail.name}${follower.uniqueName }"
+        result.battleId = battlePerson.battleId
+        battlePerson.follower.add(result)
+    }
 
     fun getAllTeji(person: Person):MutableList<TeJiObject>{
         val result = mutableListOf<Pair<String,String>>()
