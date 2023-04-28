@@ -322,6 +322,10 @@ class CultivationActivity : BaseActivity() {
                 u.genres.add("7300001")
                 CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
             }
+            if (u.battleRecord.count { it.value == 1 } > 999 && !u.genres.contains("7300002")){
+                u.genres.add("7300002")
+                CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
+            }
         }
     }
 
