@@ -104,20 +104,37 @@ object CultivationBattleHelper {
                 if (hasTeji("8001005", current)) {
                     current.extraDamage += tejiDetail("8001005").power
                     printBattleInfo(battleId, current, 1, "\u9644\u52a0\u4f24\u5bb3", "8001005")
-                } else if (hasTeji("8001004", current)) {
+                }else if (hasTeji("8001004", current)) {
                     current.extraDamage += tejiDetail("8001004").power
                     printBattleInfo(battleId, current, 1, "\u9644\u52a0\u4f24\u5bb3", "8001004")
                 }
+                if(hasTeji("8004001", current)){
+                    val multi = tejiDetail("8004001").power.toFloat() / 100
+                    current.attack += Math.round(current.attackBasis * multi)
+                    current.defence += Math.round(current.defenceBasis * multi)
+                    current.speed += Math.round(current.speedBasis * multi)
+                    val opponent = getBattleObject(allOpponent)
+                    val status = addStatus(current, opponent, "8004001")
+                    printBattleInfo(battleId, current, 2, "\u5c5e\u6027\u5F3A\u5316", "8004001", status)
+                }
                 if(hasTeji("8002004", current)){
-                    allOpponent.forEach { opponent ->
-                        opponent.hp -= tejiDetail("8002004").power
-                    }
                     printBattleInfo(battleId, current, 1, "\u654C\u65B9\u5168\u4F53HP-", "8002004")
-                }else if(hasTeji("8002003", current)){
                     allOpponent.forEach { opponent ->
-                        opponent.hp -= tejiDetail("8002003").power
+                        if (isStatuTrigger(opponent, "8100006")){
+                            printBattleInfo(battleId, current, 4, "领域无效, ${opponent.name}${statusDetail("8100006").name}中")
+                        }else{
+                            opponent.hp -= tejiDetail("8002004").power
+                        }
                     }
+                }else if(hasTeji("8002003", current)){
                     printBattleInfo(battleId, current, 1, "\u654C\u65B9\u5168\u4F53HP-", "8002003")
+                    allOpponent.forEach { opponent ->
+                        if (isStatuTrigger(opponent, "8100006")){
+                            printBattleInfo(battleId, current, 4, "领域无效, ${opponent.name}${statusDetail("8100006").name}中")
+                        }else{
+                            opponent.hp -= tejiDetail("8002003").power
+                        }
+                    }
                 }
                 if(hasTeji("8002007", current)){//weakness 50
                     allOpponent.forEach { opponent ->
@@ -149,14 +166,13 @@ object CultivationBattleHelper {
                     current.speed += Math.round(current.speedBasis * multi)
                     printBattleInfo(battleId, current, 2, "\u5c5e\u6027\u5F3A\u5316", "8002008")
                 }
-                if(hasTeji("8004001", current)){
-                    val multi = tejiDetail("8004001").power.toFloat() / 100
-                    current.attack += Math.round(current.attackBasis * multi)
+
+                if(hasTeji("8004004", current)){
+                    val multi = tejiDetail("8004004").power.toFloat() / 100
                     current.defence += Math.round(current.defenceBasis * multi)
-                    current.speed += Math.round(current.speedBasis * multi)
                     val opponent = getBattleObject(allOpponent)
-                    val status = addStatus(current, opponent, "8004001")
-                    printBattleInfo(battleId, current, 2, "\u5c5e\u6027\u5F3A\u5316", "8004001", status)
+                    val status = addStatus(current, opponent, "8004004")
+                    printBattleInfo(battleId, current, 2, "防御\u5F3A\u5316", "8004004", status)
                 }
                 if(hasTeji("8004002", current)){
                     val multi = tejiDetail("8004002").power.toFloat() / 100
@@ -184,29 +200,38 @@ object CultivationBattleHelper {
             val allOpponent = battlePersons[Math.abs(index - 1)]
             currentList.forEach { current ->
                 if(hasTeji("8002002", current) && isTrigger(current)){
-                    allOpponent.forEach { opponent ->
-                        opponent.hp -= tejiDetail("8002002").power
-                    }
                     printBattleInfo(battleId, current, 1, "\u654C\u65B9\u5168\u4F53HP-", "8002002")
-                }else if(hasTeji("8002001", current) && isTrigger(current)){
                     allOpponent.forEach { opponent ->
-                        opponent.hp -= tejiDetail("8002001").power
+                        if (isStatuTrigger(opponent, "8100006")){
+                            printBattleInfo(battleId, current, 4, "领域无效, ${opponent.name}${statusDetail("8100006").name}中")
+                        }else{
+                            opponent.hp -= tejiDetail("8002002").power
+                        }
                     }
+                }else if(hasTeji("8002001", current) && isTrigger(current)){
                     printBattleInfo(battleId, current, 1, "\u654C\u65B9\u5168\u4F53HP-", "8002001")
+                    allOpponent.forEach { opponent ->
+                        if (isStatuTrigger(opponent, "8100006")){
+                            printBattleInfo(battleId, current, 4, "领域无效, ${opponent.name}${statusDetail("8100006").name}中")
+                        }else{
+                            opponent.hp -= tejiDetail("8002001").power
+                        }
+                    }
                 }
                 if(hasTeji("8002005", current) && isTrigger(current)){
                     current.hp += tejiDetail("8002005").power
                     current.hp = Math.min(current.hp, current.maxhp)
                     printBattleInfo(battleId, current, 1, "HP+", "8002005")
                 }
-                if(isStatuTrigger(current, "8100003")){
+                if(isStatuTrigger(current, "8100003") && !isStatuTrigger(current, "8100006")){
                     val multi = statusDetail("8100003").power.toFloat() / 100
                     val reduced = Math.round( current.hp * multi)
                     current.hp -= reduced
                     printBattleInfo(battleId, current, 4, "${statusDetail("8100003").name}\u53d1\u52a8 , HP-$reduced")
                 }
                 val opponent8001007 = getBattleObject(allOpponent)
-                if(hasTeji("8001007", current) && current.hp > 0 && isTrigger(tejiDetail("8001007").chance, current, opponent8001007) ){//kill immediately
+                if(hasTeji("8001007", current) && current.hp > 0 && isTrigger(tejiDetail("8001007").chance, current, opponent8001007)
+                        && !isStatuTrigger(opponent8001007, "8100006") ){//kill immediately
                     if(opponent8001007.hp > 0) {
                         opponent8001007.hp = 0
                         printBattleInfo(battleId, current, 3, "${showName(opponent8001007)}HP0", "8001007")
@@ -271,6 +296,10 @@ object CultivationBattleHelper {
     }
 
     private fun battleCycle(attacker: BattleObject, defender: BattleObject){
+        if (isStatuTrigger(defender, "8100006")){
+            printBattleInfo(attacker.battleId, attacker, 4, "攻击无效, ${defender.name}${statusDetail("8100006").name}中")
+            return
+        }
         inBattles(attacker, defender)
         while (isStatuTrigger(attacker, "8100001")){
             if(attacker.hp <= 0 || defender.hp <= 0)
