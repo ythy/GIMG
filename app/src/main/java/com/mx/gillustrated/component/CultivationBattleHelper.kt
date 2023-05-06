@@ -250,12 +250,15 @@ object CultivationBattleHelper {
             currentList.forEach { current ->
                 if(hasTeji("8001003", current) && current.hp <= 0 && isTrigger(tejiDetail("8001003").chance, current)){
                     current.hp = current.maxhp
-                    current.goneCount++
                     printBattleInfo(battleId, current, 3, "HP\u5168\u6062\u590d", "8001003")
                 }else if(hasTeji("8001001", current) && current.hp <= 0 && isTrigger(tejiDetail("8001001").chance, current)){
                     current.hp = 1
-                    current.goneCount++
                     printBattleInfo(battleId, current, 3, "HP1", "8001001")
+                }else if(hasTeji("8001012", current) && current.hp <= 0 && current.goneCount <  tejiDetail("8001012").power
+                        && isTrigger(tejiDetail("8001012").chance, current)){
+                    current.hp = current.maxhp
+                    current.goneCount++
+                    printBattleInfo(battleId, current, 3, "HP\u5168\u6062\u590d", "8001012")
                 }
                 val opponent8001002 = getBattleObject(opponentList)
                 if(hasTeji("8001002", current) && current.hp <= 0 && isTrigger(tejiDetail("8001002").chance, current, opponent8001002)){
