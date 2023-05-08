@@ -1,15 +1,13 @@
 package com.mx.gillustrated.component
 
 import com.mx.gillustrated.util.NameUtil
-import com.mx.gillustrated.vo.cultivation.Equipment
 import com.mx.gillustrated.vo.cultivation.EquipmentConfig
 import com.mx.gillustrated.vo.cultivation.Person
-import java.util.*
 import kotlin.collections.HashMap
 
 object CultivationSetting {
 
-    val CommonColors = arrayOf("#EAEFE8", "#539B35", "#3B86D4", "#8850CD", "#FFA500", "#FC2CBB", "#FE4B4B", "#FFFF00", "#04B4BA","#BDA072", "#CBD289", "#B8DAD2", "#A390A2", "#E7C2D8", "#DE7487", "#EEEAC1")
+    val CommonColors = arrayOf("#E1DAD3", "#539B35", "#3B86D4", "#8850CD", "#FF8C00", "#FC2CBB", "#FE4B4B", "#FFD700", "#04B4BA","#BDA072", "#CBD289", "#B8DAD2", "#E8D3C0", "#E7C2D8", "#DE7487", "#FFFFFF")
     val PostColors = arrayOf("#E2D223", "#BE0012", "#0272E4", "#12A703", "#EF7362")
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
