@@ -1205,8 +1205,8 @@ class CultivationActivity : BaseActivity() {
                         u.lifetime = 0
                         mAlliance[u.allianceId]?.personList?.remove(u.id)
                         writeHistory("${u.name} 倒", u)
-                        addAmuletEquipmentEvent(person, "Boss", Math.round(500f / u.type))
-                        addTipsEquipmentEvent(person, "Boss", Math.round(5000f / u.type))
+                        addAmuletEquipmentEvent(person, "Boss", Math.round(100f / u.type))
+                        addTipsEquipmentEvent(person, "Boss", Math.round(1000f / u.type))
                         mBossRecord[u.type - 1][mBattleRound.boss[u.type - 1]] = person.id
                         //CultivationHelper.updateBossBattleBonus(mPersons)
                     }else{

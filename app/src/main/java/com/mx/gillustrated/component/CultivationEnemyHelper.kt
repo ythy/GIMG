@@ -36,6 +36,7 @@ object CultivationEnemyHelper {
     }
 
 
+    //jingJieLevel  total 92
     private fun updateBossProps(person: Person, tejiQuantity:Int, followerQuantity:Pair<Int, Int>, jingJieLevel:Int, hp:Int, hit:Int, specTeji:List<String> = listOf()){
         val tejiList = CultivationHelper.mConfig.teji.filter { it.type != 4 && it.type != 6 }.shuffled()
         person.teji.addAll(tejiList.subList(0, tejiQuantity).map { it.id })
@@ -47,7 +48,8 @@ object CultivationEnemyHelper {
                 person.teji.add(it)
             }
         }
-        person.equipmentList.addAll(listOf(Equipment("7002901")))
+        person.equipmentList.addAll(listOf(Equipment("7002901"), Equipment("7003701"),
+                Equipment("7004901")))//weapon 200, armor 100, belt 500
         repeat(followerQuantity.first) {
             person.followerList.add(Follower("9000101", "${it + 1}号"))
         }
@@ -67,7 +69,7 @@ object CultivationEnemyHelper {
                 CultivationSetting.PersonFixedInfoMix(null, null, 1000, 1000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 1
-        updateBossProps(person, 4, Pair(4, 1), 60,1200, 60, listOf("8001004", "8002001"))
+        updateBossProps(person, 4, Pair(4, 1), 70,1500, 60, listOf("8001004", "8002001"))
         return person
     }
 
@@ -76,7 +78,7 @@ object CultivationEnemyHelper {
                 CultivationSetting.PersonFixedInfoMix(null, null, 4000, 4000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 2
-        updateBossProps(person, 6, Pair(4, 1), 65,1400, 80, listOf("8001005", "8002002"))
+        updateBossProps(person, 6, Pair(4, 2), 75,1800, 80, listOf("8001005", "8002002"))
         return person
     }
 
@@ -85,7 +87,7 @@ object CultivationEnemyHelper {
                 CultivationSetting.PersonFixedInfoMix(null, null, 6000, 6000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 3
-        updateBossProps(person, 8, Pair(4, 1), 70,1600, 100, listOf("8004001", "8002002"))
+        updateBossProps(person, 8, Pair(6, 2), 80,2200, 100, listOf("8004001", "8002002"))
         return person
     }
 
@@ -94,7 +96,7 @@ object CultivationEnemyHelper {
                 CultivationSetting.PersonFixedInfoMix(null, null, 8000, 80000))
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 4
-        updateBossProps(person, 10, Pair(6, 2), 75,2000, 120, listOf("8004002", "8002002"))
+        updateBossProps(person, 10, Pair(8, 3), 90,2700, 120, listOf("8004002", "8002002"))
         return person
     }
 
