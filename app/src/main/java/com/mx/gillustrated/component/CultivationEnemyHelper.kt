@@ -10,6 +10,7 @@ object CultivationEnemyHelper {
 
     data class BossSetting(val name:String, val type:Int, val bonus: Int, val ratity:Int)
 
+    //暂定取消
     val bossSettings = mutableListOf(
             BossSetting("\u674e\u5143\u9738\u4e4b\u9b42", 6,20, 5),
             BossSetting("\u6697\u5f71\u4e4b\u9b42", 6,30, 7),
@@ -17,6 +18,7 @@ object CultivationEnemyHelper {
             BossSetting("\u989C\u4e4b\u9b42", 6,50, 9)
     )
 
+    //暂定取消
     fun getEquipmentOfBoss(index:Int, count:Int):Pair<EquipmentConfig, String>{
         return Pair(EquipmentConfig(
                 "",

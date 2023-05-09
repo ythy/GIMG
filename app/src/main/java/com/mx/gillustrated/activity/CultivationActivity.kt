@@ -520,7 +520,7 @@ class CultivationActivity : BaseActivity() {
         CultivationHelper.updateClanBattleBonus(mClans)
         CultivationHelper.updateNationBattleBonus(mNations, mPersons)
         CultivationHelper.updateSingleBattleBonus(mPersons)
-        CultivationHelper.updateBossBattleBonus(mPersons)
+        //CultivationHelper.updateBossBattleBonus(mPersons)
         mPersons.forEach {
            it.value.skin = CultivationHelper.generateSkinValue(it.value)
            val alliance =  mAlliance[it.value.allianceId]!!
@@ -1208,7 +1208,7 @@ class CultivationActivity : BaseActivity() {
                         addAmuletEquipmentEvent(person, "Boss", Math.round(500f / u.type))
                         addTipsEquipmentEvent(person, "Boss", Math.round(5000f / u.type))
                         mBossRecord[u.type - 1][mBattleRound.boss[u.type - 1]] = person.id
-                        CultivationHelper.updateBossBattleBonus(mPersons)
+                        //CultivationHelper.updateBossBattleBonus(mPersons)
                     }else{
                         u.remainHit --
                         val punishWeight = mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)

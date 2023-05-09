@@ -205,6 +205,7 @@ object CultivationHelper {
         }
     }
 
+    //暂定取消
     fun updateBossBattleBonus(allPerson:ConcurrentHashMap<String, Person>){
         allPerson.forEach { data->
             data.value.bossXiuwei = 0
@@ -617,7 +618,6 @@ object CultivationHelper {
     fun getXiuweiGrow(person:Person):Int{
         var basic = person.lingGenDetail.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei
         basic += person.battlexiuwei
-        basic += person.bossXiuwei
         basic += person.tipsXiuwei
         basic += getNationPostXiuwei(person)
         basic += getLastSingleBattleXiuwei(person)

@@ -74,12 +74,6 @@ class FragmentEquipment: Fragment() {
         val equipments = mPerson.equipmentList.sortedWith(compareByDescending<Equipment> {
             it.sortedWeight
         }.thenByDescending { it.seq }).toMutableList()
-        val bossEquipment = mPerson.bossRound.mapIndexedNotNull{ index, count ->
-            if (count == 0)
-                null
-            else
-                Equipment(index.toString(), 0, Triple(index, count, ""))
-        }.sortedBy { it.sortedWeight }
         val tipsEquipment = mPerson.tipsList.map{ tips ->
             val equipment = Equipment(tips.id, 0, Triple(tips.level, 0, tips.tipsName))
             if (tips.detail.type > 2){
@@ -99,7 +93,6 @@ class FragmentEquipment: Fragment() {
             it.value[0]
         }
         mEquipmentGroups.addAll(groups)
-        mEquipmentGroups.addAll(bossEquipment)
         mEquipmentGroups.addAll(tipsEquipment)
 
         mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {

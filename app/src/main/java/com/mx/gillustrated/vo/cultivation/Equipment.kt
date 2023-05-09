@@ -47,7 +47,7 @@ class Equipment(pId: String, pSeq: Int = 0, option:Triple<Int, Int, String>? = n
 
     init {
         if (option != null){
-            if(option.third == "") {//equipment type == 6
+            if(option.third == "") {//equipment type == 6 boss 暂定取消
                 val setting = CultivationEnemyHelper.getEquipmentOfBoss(option.first, option.second)
                 this.detail = setting.first
                 this.uniqueName = setting.second
