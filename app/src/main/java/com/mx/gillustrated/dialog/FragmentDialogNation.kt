@@ -21,7 +21,6 @@ import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.vo.cultivation.Nation
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
-import java.util.concurrent.ConcurrentHashMap
 
 @RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
@@ -50,32 +49,6 @@ class FragmentDialogNation : DialogFragment() {
         mThreadRunnable = false
         this.dismiss()
     }
-
-    @OnClick(R.id.btn_generate)
-    fun onGenerateClickHandler(){
-        val nation = mContext.updateNationPost(mNation.id)
-        if(nation != null){
-            Toast.makeText(context, "已生成", Toast.LENGTH_SHORT).show()
-            updateView()
-        }
-
-    }
-
-    @OnClick(R.id.tv_emperor)
-    fun onEmperorClickHandler(){
-        showPersonInfo(mNation.emperor)
-    }
-
-    @OnClick(R.id.tv_wei)
-    fun onTaiweiClickHandler(){
-        showPersonInfo(mNation.taiWei)
-    }
-
-    @OnClick(R.id.tv_shang)
-    fun onShangshuClickHandler(){
-        showPersonInfo(mNation.shangShu)
-    }
-
 
     @OnItemClick(R.id.lv_person)
     fun onItemClick(position:Int){
@@ -142,39 +115,22 @@ class FragmentDialogNation : DialogFragment() {
         (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
         mDialogView.persons.invalidateViews()
         mDialogView.total.text = "${mPersonList.size}-${mPersonList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
-        mDialogView.xiuwei.text = "${mNation.battleWinner}-${mNation.xiuweiBattle}↑"
+        //mDialogView.xiuwei.text = "${mNation.battleWinner}-${mNation.xiuweiBattle}↑"
         updatePost()
     }
 
     private fun updatePost(){
-        mDialogView.emperor.text = CultivationHelper.showing( mContext.getOnlinePersonDetail(mNation.emperor)?.name ?: "")
-        mDialogView.taiWei.text = CultivationHelper.showing(mContext.getOnlinePersonDetail(mNation.taiWei)?.name ?: "")
-        mDialogView.shangShu.text = CultivationHelper.showing(mContext.getOnlinePersonDetail(mNation.shangShu)?.name ?: "")
-        updateCiShi()
+
         updateduWei()
     }
 
-    private fun updateCiShi(){
-        mDialogView.ciShi.removeAllViews()
-        if(mNation.ciShi.isNotEmpty()){
-            mDialogView.measures.measure(0,0)
-            mDialogView.ciShi.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
-            val list = mNation.ciShi.mapNotNull { mContext.getOnlinePersonDetail(it) }
-            mDialogView.ciShi.setCallback(object : TextViewBox.Callback {
-                override fun onClick(index: Int) {
-                    showPersonInfo(list[index].id)
-                }
-            })
-            mDialogView.ciShi.setDataProvider(list.map { CultivationHelper.showing(it.name) }, null)
-        }
-    }
 
     private fun updateduWei(){
         mDialogView.duWei.removeAllViews()
-        if(mNation.duWei.isNotEmpty()){
+        if(mPersonList.size > 50){
             mDialogView.measures.measure(0,0)
             mDialogView.duWei.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
-            val list = mNation.duWei.mapNotNull { mContext.getOnlinePersonDetail(it) }
+            val list = mPersonList.shuffled().subList(0,5)
             mDialogView.duWei.setCallback(object : TextViewBox.Callback {
                 override fun onClick(index: Int) {
                     showPersonInfo(list[index].id)
@@ -212,17 +168,8 @@ class FragmentDialogNation : DialogFragment() {
         @BindView(R.id.tv_emperor)
         lateinit var emperor:TextView
 
-        @BindView(R.id.tv_shang)
-        lateinit var shangShu:TextView
-
-        @BindView(R.id.tv_wei)
-        lateinit var taiWei:TextView
-
         @BindView(R.id.lv_person)
         lateinit var persons:ListView
-
-        @BindView(R.id.ll_cishi)
-        lateinit var ciShi: TextViewBox
 
         @BindView(R.id.ll_duwei)
         lateinit var duWei: TextViewBox

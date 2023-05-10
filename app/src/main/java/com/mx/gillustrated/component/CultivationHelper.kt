@@ -232,26 +232,6 @@ object CultivationHelper {
         }
     }
 
-    // rank total 4
-    fun updateNationBattleBonus(allNations:ConcurrentHashMap<String, Nation>, allPersons:ConcurrentHashMap<String, Person>){
-        allNations.forEach { data->
-            var xiuwei = 0
-            data.value.battleRecord.map { it.value }.groupBy { it }.forEach { (t, u) ->
-                if(t in 1..BattleSettings.NationBonusCount){
-                    xiuwei += getValidBonus(u.size, BattleSettings.NationBonus[0]) * BattleSettings.NationBonus[t]
-                }
-            }
-            data.value.xiuweiBattle = xiuwei
-            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.NationMinSize + 1 - it }
-
-//            allPersons.map { it.value }.filter { it.nationId == data.value.id }.forEach {
-//                it.nationXiuwei = xiuwei
-//            }
-        }
-    }
-
-
-
     private fun getTianFu(parent: Pair<Person, Person>?, fixedTianfus:MutableList<String>?, tianFuWeight:Int):MutableList<TianFu>{
         if(fixedTianfus != null && fixedTianfus.isNotEmpty()){
             return fixedTianfus.map { getPersonTianfu(it)!! }.toMutableList()
@@ -554,23 +534,19 @@ object CultivationHelper {
     }
 
     //0 ~ 5
-    //20220927 nation add bonus：emperor attack + 100 hp + 200, taiwei hp + 200, shangshu attack + 100, cishi hp + 100, duwei attack + 50
     //
     fun getProperty(person: Person):MutableList<Int>{
         val property = person.extraProperty.mapIndexed { index, it ->
             it + person.allianceProperty[index] + person.equipmentProperty[index]
         }
-        val nationAttack = if(person.nationPost == 1) 100 else if(person.nationPost == 3 ) 100 else if(person.nationPost == 5 ) 50 else 0
-        val nationHP = if(person.nationPost == 1) 200 else if(person.nationPost == 2 ) 200 else if(person.nationPost == 4 ) 100 else 0
-
         val tipsHP = person.tipsList.filter { it.detail.hp.isNotEmpty() }.sumBy { it.detail.hp[it.level] }
         val tipsAttack = person.tipsList.filter { it.detail.attack.isNotEmpty() }.sumBy { it.detail.attack[it.level] }
         val tipsDefence = person.tipsList.filter { it.detail.defence.isNotEmpty() }.sumBy { it.detail.defence[it.level] }
         val tipsSpeed = person.tipsList.filter { it.detail.speed.isNotEmpty() }.sumBy { it.detail.speed[it.level] }
 
         val jingJieLevel = getJingJieLevel(person.jingJieId)
-        val extraHP = jingJieLevel.first + 10 * jingJieLevel.second + property[0] + nationHP + tipsHP// 0 ~ 70 + 80
-        val attack =  5 * jingJieLevel.second +  property[1] + nationAttack + tipsAttack// yuan 2, hua 4, he 4,di 5, tai 6, zhun 7, di 8 // 0 ~ 40
+        val extraHP = jingJieLevel.first + 10 * jingJieLevel.second + property[0] + tipsHP// 0 ~ 70 + 80
+        val attack =  5 * jingJieLevel.second +  property[1] + tipsAttack// yuan 2, hua 4, he 4,di 5, tai 6, zhun 7, di 8 // 0 ~ 40
         val defence = 5 * jingJieLevel.second +  property[2] + tipsDefence // 0 ~ 40
         val speed =   5 * jingJieLevel.second + property[3] + tipsSpeed// 0 ~ 40
 
@@ -619,7 +595,6 @@ object CultivationHelper {
         var basic = person.lingGenDetail.qiBasic + person.extraXiuwei + person.allianceXiuwei + person.equipmentXiuwei
         basic += person.battlexiuwei
         basic += person.tipsXiuwei
-        basic += getNationPostXiuwei(person)
         basic += getLastSingleBattleXiuwei(person)
         if (person.feiziFavor > 0){
             basic += EmperorData.FeiziBonos[person.feiziLevel]
@@ -660,13 +635,6 @@ object CultivationHelper {
                 detail.teji,
                 mutableListOf()
         ), "(${level + 1}/${detail.bonus.size})")
-    }
-    fun getNationPostXiuwei(person: Person):Int{
-        return when {
-            person.nationPost == 4 -> 100
-            person.nationPost == 5 -> 50
-            else -> 0
-        }
     }
 
     fun getTotalSuccess(person:Person):Int{

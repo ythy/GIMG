@@ -269,15 +269,23 @@ class FragmentDialogPerson : DialogFragment() {
 
     fun setProfile(){
         val person = mPerson
-        if(person.nationPost > 0){
+        val lastRanking = person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100
+        if (lastRanking < 11){
+            val index = when(lastRanking){
+                1 -> 0
+                2 -> 1
+                3 -> 2
+                else -> 3
+            }
             mDialogView.profileBorder.background = mContext.getDrawable(R.drawable.profile_frame1)
-            mDialogView.profileBorder.backgroundTintList = ColorStateList.valueOf(Color.parseColor(CultivationSetting.PostColors[person.nationPost - 1]))
+            mDialogView.profileBorder.backgroundTintList = ColorStateList.valueOf(Color.parseColor(CultivationSetting.PostColors[index]))
             mDialogView.profileBorder.setPadding(8,8,8,8)
         }else{
             mDialogView.profileBorder.background = null
             mDialogView.profileBorder.backgroundTintList = null
             mDialogView.profileBorder.setPadding(0,0,0,0)
         }
+
         var profile = mPerson.profile
         if(!showSS && mPerson.gender == NameUtil.Gender.Female && mPerson.profile in 1701..1799){
             profile = 0

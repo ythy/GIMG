@@ -149,7 +149,6 @@ class Person: PersonBak() {
     var attack: Int = 20
     var defence: Int = 20
     var speed: Int = 20
-    var nationPost: Int = 0
     var nationId = ""
 
     var extraProperty: MutableList<Int> = mutableListOf(0, 0, 0, 0, 0, 0, 0, 0)//update once deps tian linggen, label, skin

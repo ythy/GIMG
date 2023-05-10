@@ -14,9 +14,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
-import com.mx.gillustrated.component.CultivationSetting.PostColors
 import com.mx.gillustrated.vo.cultivation.Person
 
 class CultivationPersonListAdapter constructor(private val context: Context, private val list: MutableList<Person>, private val showStar:Boolean, private val showSpecEquipment:Boolean) : BaseAdapter() {
@@ -83,13 +81,10 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         component.lingGen.setTextColor(Color.parseColor(CommonColors[person.lingGenDetail.color]))
         component.alliance.text = CultivationHelper.showing("${nation.find { it.id == person.nationId }?.name}-${person.allianceName}")
 
-        if(person.nationPost > 0){
-            component.name.background = context.getDrawable(R.drawable.box_bottom)
-            component.name.backgroundTintList = ColorStateList.valueOf(Color.parseColor(PostColors[Math.max(0, person.nationPost - 1)]))
-        }else{
-            component.name.background = null
-            component.name.backgroundTintList = null
-        }
+
+        component.name.background = null
+        component.name.backgroundTintList = null
+
 
         return convertView!!
     }

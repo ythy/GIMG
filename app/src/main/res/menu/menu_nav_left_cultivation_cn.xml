@@ -11,9 +11,6 @@
             android:id="@+id/menu_battle_single"
             android:title="个人战"/>
         <item
-            android:id="@+id/menu_battle_nation"
-            android:title="联盟战"/>
-        <item
             android:id="@+id/menu_enemy_list"
             android:title="天降Boss"/>
     </group>

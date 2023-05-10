@@ -11,9 +11,6 @@
             android:id="@+id/menu_battle_single"
             android:title="battleSingle"/>
         <item
-            android:id="@+id/menu_battle_nation"
-            android:title="battleNation"/>
-        <item
             android:id="@+id/menu_enemy_list"
             android:title="disaster"/>
     </group>

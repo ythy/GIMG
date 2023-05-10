@@ -509,16 +509,13 @@ class CultivationActivity : BaseActivity() {
             it.value.allianceName = mAlliance[it.value.allianceId]!!.name
             it.value.extraXuiweiMulti = CultivationHelper.getExtraXuiweiMulti(it.value,  mAlliance[it.value.allianceId]!!)
             it.value.nationId = mAlliance[it.value.allianceId]!!.nation
-            it.value.nationPost = 0
             if(it.value.label.contains("4100302")){
                 CultivationHelper.resumeLife(it.value, mAlliance)
             }
             CultivationHelper.updatePersonEquipment(it.value)
         }
-        updateNationPost(0, true)
         CultivationHelper.updateAllianceBattleBonus(mAlliance)
         CultivationHelper.updateClanBattleBonus(mClans)
-        CultivationHelper.updateNationBattleBonus(mNations, mPersons)
         CultivationHelper.updateSingleBattleBonus(mPersons)
         //CultivationHelper.updateBossBattleBonus(mPersons)
         mPersons.forEach {
@@ -594,9 +591,6 @@ class CultivationActivity : BaseActivity() {
                 }
                 R.id.menu_battle_single ->{
                     battleSingleHandler()
-                }
-                R.id.menu_battle_nation ->{
-                    battleNationHandler()
                 }
                 R.id.menu_enemy_list->{
                     addBossHandler()
@@ -685,7 +679,6 @@ class CultivationActivity : BaseActivity() {
     private fun deadHandler(it:Person, force:Boolean = false){
         mPersons.remove(it.id)
         mDeadPersons[it.id] = it
-        it.nationPost = 0
         addPersonEvent(it, personDataString[0])
         writeHistory("${getPersonBasicString(it)} ${personDataString[0]}", it)
         val alliance = mAlliance[it.allianceId]
@@ -865,7 +858,6 @@ class CultivationActivity : BaseActivity() {
         updateClans(currentXun)
         updateBoss(currentXun)
         randomSpecialEquipmentEvent(currentXun)
-        updateNationPost(currentXun)
     }
 
     private fun setMicroMainExecutor(){
@@ -1107,59 +1099,6 @@ class CultivationActivity : BaseActivity() {
             }
         }
     }
-
-    private fun updateNationPost(xun:Long, force:Boolean = false){
-        if(inDurationByXun("NationPost", 60000, xun) || force) {
-            mNations.forEach { (t: String, _: Nation) ->
-                updateNationPost(t)
-            }
-        }
-    }
-
-    fun updateNationPost(id:String):Nation?{
-        val mNation = mNations[id]!!
-        val ps = ConcurrentHashMap(mPersons.filter {
-            it.value.nationId == mNation.id })
-                .map { it.value }.toMutableList()
-        if (ps.size < 11)
-            return null
-        ps.forEach {
-            it.nationPost = 0
-        }
-        val emperor = ps.sortedWith(compareByDescending<Person>{ talentValue(it) }
-                .thenByDescending { it.jingJieId })[0]
-        emperor.nationPost = 1
-        mNation.emperor = emperor.id
-        ps.remove(emperor)
-        val taiwei = ps.sortedWith(compareByDescending<Person>{ it.tianfuList.sumBy { s->s.weight } }
-                .thenByDescending { it.jingJieId })[0]
-        taiwei.nationPost = 2
-        mNation.taiWei = taiwei.id
-        ps.remove(taiwei)
-        val shangshu = ps.sortedWith(compareByDescending<Person>{
-            val property = CultivationHelper.getProperty(it)
-            property[1]/5 + property[2] +  property[3] +  property[4]
-        }.thenByDescending { it.jingJieId })[0]
-        shangshu.nationPost = 3
-        mNation.shangShu = shangshu.id
-        ps.remove(shangshu)
-
-        mNation.ciShi = ps.sortedWith(compareByDescending<Person>{ talentValue(it) }
-                .thenByDescending { it.jingJieId }).subList(0, 4).map {
-            it.nationPost = 4
-            it.id
-        }.toMutableList()
-        ps.removeIf { mNation.ciShi.find { f-> f == it.id } != null }
-
-        val endIndex = Math.max(4, ps.size / 10)
-        mNation.duWei = ps.shuffled().subList(0, endIndex).map {
-            it.nationPost = 5
-            it.id
-        }.toMutableList()
-
-        return mNation
-    }
-
 
     // Every 10 Years
     private fun updatePartnerChildren(){
@@ -1642,59 +1581,6 @@ class CultivationActivity : BaseActivity() {
         }).start()
     }
 
-    private fun battleNationHandler(block: Boolean = true){
-        setTimeLooper(false)
-        if(block){
-            mHistoryData.clear()
-            CultivationHelper.mHistoryTempData.clear()
-            (mHistory.adapter as BaseAdapter).notifyDataSetChanged()
-            mHistory.invalidateViews()
-        }
-        val nations = mConfig.nation.map { n->
-            val nation = Nation()
-            val result: ConcurrentHashMap<String, Person> = ConcurrentHashMap()
-            mAlliance.filter { it.value.nation == n.id }.forEach { (_, u) ->
-                result.putAll(u.personList)
-            }
-            nation.id = n.id
-            nation.name = n.name
-            nation.nationPersonList = result
-            nation
-        }.toMutableList()
-        Thread(Runnable {
-            Thread.sleep(500)
-            mBattleRound.nation++
-            writeHistory("第${mBattleRound.nation}届 Nation Battle Start")
-            val restNation = mutableListOf<Nation>()
-            var roundNumber = 1
-
-            while (true){
-                writeHistory("Nation Battle ${roundNumber}轮 Start")
-                roundNumber++
-                val result = roundNationHandler(nations, restNation, 20, 50)
-                if(result)
-                    break
-            }
-            val minSize = CultivationSetting.BattleSettings.NationMinSize
-            repeat(minSize){ index-> // 0 ~ 3
-                val reverseIndex = minSize - index //4 ~ 1
-                val nation = mNations[restNation[reverseIndex - 1].id]!!
-                nation.battleRecord[mBattleRound.nation] = reverseIndex
-                writeHistory("第${mBattleRound.nation}届 Nation Battle No $reverseIndex : ${nation.name}")
-            }
-            CultivationHelper.updateNationBattleBonus(mNations, mPersons)
-
-            if(!block){
-                Thread.sleep(5000)
-            }
-            val message = Message.obtain()
-            message.what = 8
-            message.arg1 = if (block) 0 else 1
-            mTimeHandler.sendMessage(message)
-        }).start()
-    }
-
-
     private fun roundSingleHandler(persons: MutableList<Person>, restPersons:MutableList<Person>, round:Int):Boolean{
         persons.shuffle()
         val passIds = mutableListOf<String>()
@@ -1719,29 +1605,6 @@ class CultivationActivity : BaseActivity() {
             true
         }else{
             persons.removeIf { passIds.contains(it.id) }
-            false
-        }
-    }
-
-    private fun roundNationHandler(nation: MutableList<Nation>, restNation: MutableList<Nation>, round:Int, count:Int):Boolean{
-        nation.shuffle()
-        val passIds = mutableListOf<String>()
-        for (i in 0 until nation.size step 2){
-            if( i + 1 >= nation.size){
-                break
-            }
-            val firstNation = nation[i]
-            val secondNation = nation[i+1]
-            val result = roundMultiBattle(firstNation.nationPersonList, secondNation.nationPersonList, round, count)
-            passIds.add(if(result) secondNation.id else firstNation.id)
-            restNation.add(0, if(result) secondNation else firstNation)
-        }
-        return if(nation.size == 2){
-            nation.removeIf { it.id == passIds[0] }
-            restNation.add(0, nation.first())
-            true
-        }else{
-            nation.removeIf { passIds.contains(it.id) }
             false
         }
     }
