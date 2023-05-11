@@ -4,7 +4,8 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.content.res.Resources
-import android.util.Log
+import android.graphics.Color
+import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
 import com.mx.gillustrated.component.CultivationSetting.BattleSettings
 import com.mx.gillustrated.util.NameUtil
@@ -888,6 +889,19 @@ object CultivationHelper {
                 updateTipsXiuwei(person)
             }
         }
+    }
+
+    fun getProfileFrame(person: Person):Pair<Int, Int>{
+        val lastRanking = person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100
+        if (lastRanking < 11){
+            return when(lastRanking){
+                1 ->  Pair(R.drawable.profile_frame_hd_1, Color.parseColor(CultivationSetting.RankingColors[0]))
+                2 -> Pair(R.drawable.profile_frame_hd_1, Color.parseColor(CultivationSetting.RankingColors[1]))
+                3 -> Pair(R.drawable.profile_frame_hd_1, Color.parseColor(CultivationSetting.RankingColors[2]))
+                else -> Pair(R.drawable.profile_frame_hd_1, Color.parseColor(CultivationSetting.RankingColors[3]))
+            }
+        }
+        return Pair(-1, -1)
     }
 
     fun getJinJieName(input:String):String{

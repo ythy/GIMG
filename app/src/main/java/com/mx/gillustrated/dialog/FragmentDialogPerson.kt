@@ -268,22 +268,13 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     fun setProfile(){
-        val person = mPerson
-        val lastRanking = person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100
-        if (lastRanking < 11){
-            val index = when(lastRanking){
-                1 -> 0
-                2 -> 1
-                3 -> 2
-                else -> 3
-            }
-            mDialogView.profileBorder.background = mContext.getDrawable(R.drawable.profile_frame1)
-            mDialogView.profileBorder.backgroundTintList = ColorStateList.valueOf(Color.parseColor(CultivationSetting.PostColors[index]))
-            mDialogView.profileBorder.setPadding(8,8,8,8)
+        val profileFrame = CultivationHelper.getProfileFrame(mPerson)
+        if(profileFrame.first != -1){
+            mDialogView.profileBorder.background = mContext.getDrawable(profileFrame.first)
+            mDialogView.profileBorder.backgroundTintList = if(profileFrame.second != -1) ColorStateList.valueOf(profileFrame.second) else null
         }else{
             mDialogView.profileBorder.background = null
             mDialogView.profileBorder.backgroundTintList = null
-            mDialogView.profileBorder.setPadding(0,0,0,0)
         }
 
         var profile = mPerson.profile
@@ -292,7 +283,7 @@ class FragmentDialogPerson : DialogFragment() {
         }
         try {
             val imageDir = File(Environment.getExternalStorageDirectory(),
-                    MConfig.SD_CULTIVATION_HEADER_PATH + "/" + person.gender)
+                    MConfig.SD_CULTIVATION_HEADER_PATH + "/" + mPerson.gender)
             var file = File(imageDir.path, "$profile.png")
             if (!file.exists()) {
                 file = File(imageDir.path, "$profile.jpg")
