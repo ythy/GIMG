@@ -28,6 +28,7 @@ import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.EmperorData
 import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.fragment.*
+import com.mx.gillustrated.util.CommonUtil
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Label
 import com.mx.gillustrated.vo.cultivation.Person
@@ -268,7 +269,7 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     fun setProfile(){
-        val profileFrame = CultivationHelper.getProfileFrame(mPerson)
+        val profileFrame = CultivationHelper.getProfileFrame(mPerson, mContext.mClans)
         if(profileFrame.first != -1){
             mDialogView.profileBorder.background = mContext.getDrawable(profileFrame.first)
             mDialogView.profileBorder.backgroundTintList = if(profileFrame.second != -1) ColorStateList.valueOf(profileFrame.second) else null
@@ -290,7 +291,12 @@ class FragmentDialogPerson : DialogFragment() {
             }
             if (file.exists()) {
                 val bmp = MediaStore.Images.Media.getBitmap(mContext.contentResolver, Uri.fromFile(file))
-                mDialogView.profile.setImageBitmap(bmp)
+                if(profileFrame.third != -1){
+                    mDialogView.profile.setImageBitmap(CommonUtil.toRoundBitmap(bmp))
+                    mDialogView.profile.setPadding(profileFrame.third,profileFrame.third,profileFrame.third,profileFrame.third)
+                }
+                else
+                    mDialogView.profile.setImageBitmap(bmp)
             } else
                 mDialogView.profile.setImageBitmap(null)
 

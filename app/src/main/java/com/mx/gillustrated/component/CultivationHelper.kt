@@ -891,17 +891,33 @@ object CultivationHelper {
         }
     }
 
-    fun getProfileFrame(person: Person):Pair<Int, Int>{
+    fun getProfileFrame(person: Person, clans:ConcurrentHashMap<String, Clan>):Triple<Int, Int, Int>{
         val lastRanking = person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100
         if (lastRanking < 11){
             return when(lastRanking){
-                1 ->  Pair(R.drawable.profile_frame_hd_1, Color.parseColor(CultivationSetting.RankingColors[0]))
-                2 -> Pair(R.drawable.profile_frame_hd_1, Color.parseColor(CultivationSetting.RankingColors[1]))
-                3 -> Pair(R.drawable.profile_frame_hd_1, Color.parseColor(CultivationSetting.RankingColors[2]))
-                else -> Pair(R.drawable.profile_frame_hd_1, Color.parseColor(CultivationSetting.RankingColors[3]))
+                1 ->  Triple(R.drawable.profile_frame_hb_2, -1, 10)
+                2 -> Triple(R.drawable.profile_frame_hb_3, -1, -1)
+                3 -> Triple(R.drawable.profile_frame_hb_4, -1, -1)
+                else -> Triple(R.drawable.profile_frame_hd_1, -1, -1)
+            }
+        }else{
+            if (person.specIdentity == 12000100){
+                return Triple(R.drawable.profile_frame_hb_1, -1, 10)
+            }else if(clans[person.ancestorId]?.crest ?: -1 > 0){
+                return getClanCrest(clans[person.ancestorId]?.crest ?: -1)
             }
         }
-        return Pair(-1, -1)
+
+        return Triple(-1, -1, -1)
+    }
+
+    fun getClanCrest(id:Int):Triple<Int, Int, Int>{
+        return when(id){
+            1 -> Triple(R.drawable.profile_frame_hb_10, -1, 10)
+            2 -> Triple(R.drawable.profile_frame_hb_13, -1, 10)
+            3 -> Triple(R.drawable.profile_frame_hb_14, -1, 10)
+            else -> Triple(-1, -1, -1)
+        }
     }
 
     fun getJinJieName(input:String):String{

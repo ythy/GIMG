@@ -1,6 +1,7 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -89,6 +90,15 @@ class FragmentDialogClan : DialogFragment() {
         updateName()
     }
 
+    @OnTextChanged(R.id.et_crest)
+    fun onCrestChangedHandler(text:CharSequence){
+        val current = text.toString()
+        if(current != ""){
+            mContext.mClans[mId]?.crest = current.toInt()
+            updateCrest()
+        }
+    }
+
 
     lateinit var mId:String
     lateinit var mContext:CultivationActivity
@@ -118,6 +128,7 @@ class FragmentDialogClan : DialogFragment() {
         if(clan != null){
             mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList, true, true)
             updateName()
+            updateCrest()
             updateView()
             registerTimeLooper()
         }
@@ -141,6 +152,19 @@ class FragmentDialogClan : DialogFragment() {
         mDialogView.name.text = CultivationHelper.showing("${clan.nickName}${if(clan.name == clan.nickName) "" else "-${clan.name}"}")
         mDialogView.reName.setText(CultivationHelper.showing(clan.name))
         mDialogView.nickName.setText(CultivationHelper.showing(clan.nickName))
+        mDialogView.crestName.text = CultivationHelper.showing(clan.nickName)
+        mDialogView.crestIndex.setText(clan.crest.toString())
+    }
+
+    private fun updateCrest(){
+        val profileFrame = CultivationHelper.getClanCrest(mContext.mClans[mId]?.crest ?: 0)
+        if(profileFrame.first != -1){
+            mDialogView.crest.background = mContext.getDrawable(profileFrame.first)
+            mDialogView.crest.backgroundTintList = if(profileFrame.second != -1) ColorStateList.valueOf(profileFrame.second) else null
+        }else{
+            mDialogView.crest.background = null
+            mDialogView.crest.backgroundTintList = null
+        }
     }
 
     private fun updateView(){
@@ -189,6 +213,16 @@ class FragmentDialogClan : DialogFragment() {
 
         @BindView(R.id.et_nickName)
         lateinit var nickName:EditText
+
+        @BindView(R.id.iv_crest_name)
+        lateinit var crestName:TextView
+
+        @BindView(R.id.ll_crest)
+        lateinit var crest:LinearLayout
+
+        @BindView(R.id.et_crest)
+        lateinit var crestIndex:EditText
+
 
 
         init {

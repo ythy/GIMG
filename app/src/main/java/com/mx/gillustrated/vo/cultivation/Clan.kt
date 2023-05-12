@@ -10,13 +10,14 @@ open class ClanBak {
     var createDate:Long = 0//xun
     var persons: List<String> = Collections.synchronizedList(mutableListOf())
     var battleRecord:MutableMap<Int, Int> = mutableMapOf()
-
+    var crest:Int = 0
 
     fun toClan(personMap: ConcurrentHashMap<String, Person>):Clan{
         val clan = Clan()
         val zhu = personMap[this.id]
         clan.id = this.id
         clan.name = this.name
+        clan.crest = this.crest
         clan.nickName = if(this.nickName == "") this.name.substring(0,1) else this.nickName
         clan.zhu = zhu
         clan.createDate = this.createDate
@@ -39,6 +40,7 @@ class Clan : ClanBak(){
         val bak = ClanBak()
         bak.id = super.id
         bak.name = super.name
+        bak.crest = super.crest
         bak.nickName = super.nickName
         bak.createDate = super.createDate
         bak.persons = this.clanPersonList.filter { it.value.ancestorId == super.id }.map { it.key }
