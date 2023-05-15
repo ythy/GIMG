@@ -326,8 +326,18 @@ class CultivationActivity : BaseActivity() {
                 u.genres.add("7300002")
                 CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
             }
+            if (u.feiziFavor > 0 && !u.genres.contains("7300003")){
+                u.genres.add("7300003")
+                CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
+            }
+            if ((mClans[u.ancestorId]?.crest ?: -1) == 2  && !u.genres.contains("7310001")){
+                u.genres.add("7310001")
+                CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
+            }
+
         }
     }
+
 
     private fun temp(){
         val specConfig = getAllSpecPersons()
