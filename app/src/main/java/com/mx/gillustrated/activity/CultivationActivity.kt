@@ -318,26 +318,28 @@ class CultivationActivity : BaseActivity() {
 
     private fun genreShuffled(){
         mPersons.forEach { (_: String, u: Person) ->
-            if (u.careerList.find { f->f.detail.rarity > 10 } != null && !u.genres.contains("7300001")){
-                u.genres.add("7300001")
-                CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
-            }
-            if (u.battleRecord.count { it.value == 1 } > 999 && !u.genres.contains("7300002")){
-                u.genres.add("7300002")
-                CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
-            }
-            if (u.feiziFavor > 0 && !u.genres.contains("7300003")){
-                u.genres.add("7300003")
-                CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
-            }
-            if ((mClans[u.ancestorId]?.crest ?: -1) == 2  && !u.genres.contains("7310001")){
-                u.genres.add("7310001")
-                CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
-            }
-
+            genreShuffledSingle(u)
         }
     }
 
+    private fun genreShuffledSingle(u: Person){
+        if (u.careerList.find { f->f.detail.rarity > 10 } != null && !u.genres.contains("7300001")){
+            u.genres.add("7300001")
+            CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
+        }
+        if (u.battleRecord.count { it.value == 1 } > 999 && !u.genres.contains("7300002")){
+            u.genres.add("7300002")
+            CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
+        }
+        if (u.feiziFavor > 0 && !u.genres.contains("7300003")){
+            u.genres.add("7300003")
+            CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
+        }
+        if ((mClans[u.ancestorId]?.crest ?: -1) == 2  && !u.genres.contains("7310001")){
+            u.genres.add("7310001")
+            CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
+        }
+    }
 
     private fun temp(){
         val specConfig = getAllSpecPersons()
@@ -967,6 +969,7 @@ class CultivationActivity : BaseActivity() {
         if(mClans[person.ancestorId] != null){
             mClans[person.ancestorId]!!.clanPersonList[person.id] = person
         }
+        genreShuffledSingle(person)
         if(log){
             val extra = person.parentName
             addPersonEvent(person,"加入")
@@ -1421,6 +1424,7 @@ class CultivationActivity : BaseActivity() {
             writeHistory("${getPersonBasicString(person)} 加入", person)
             person.equipmentList = CultivationHelper.getSpecPersonEquipment(person)
             CultivationHelper.updatePersonEquipment(person)
+            genreShuffledSingle(person)
             return person
         }
         return null
