@@ -870,8 +870,8 @@ object CultivationHelper {
         return right &&
                 (when {
                     tips.type > 1 -> true
-                    tips.rarity <= 5 -> talentValue(person) in tips.talent .. (tips.talent + 10)
-                    tips.rarity <= 8 -> talentValue(person) in tips.talent .. (tips.talent + 20)
+                    tips.rarity <= 5 -> talentValue(person) in tips.talent .. (tips.talent + 5)
+                    tips.rarity <= 8 -> talentValue(person) in tips.talent .. (tips.talent + 10)
                     else -> talentValue(person) >= tips.talent
                 })
     }
