@@ -70,12 +70,20 @@ class FragmentEquipment: Fragment() {
         updateList()
     }
 
+
+
+
+
     fun updateList(){
         val equipments = mPerson.equipmentList.sortedWith(compareByDescending<Equipment> {
             it.sortedWeight
-        }.thenByDescending { it.seq }).toMutableList()
+        }.thenByDescending { it.amuletSerialNo }).toMutableList()
         val tipsEquipment = mPerson.tipsList.map{ tips ->
-            val equipment = Equipment(tips.id, 0, Triple(tips.level, 0, tips.tipsName))
+            val tipsConfig =  CultivationHelper.mConfig.tips.find { it.id == tips.id }!!
+            val setting = CultivationHelper.getEquipmentOfTips(tips.level, tipsConfig)
+            val equipment = Equipment("", 0, setting.first)
+            val prefix = if (tipsConfig.type == 1) "\u2694" else "\uD83D\uDCDC"
+            equipment.uniqueName = "$prefix ${tips.tipsName}${setting.second}"
             if (tips.detail.type > 2){
                 equipment.children.clear()
                 equipment.children.add(equipment)
@@ -111,7 +119,7 @@ class FragmentEquipment: Fragment() {
                         if(group){
                             it.id == equipment.id
                         }else{
-                            it.id == equipment.id && it.seq == equipment.seq
+                            it.id == equipment.id && it.amuletSerialNo == equipment.amuletSerialNo
                         }
                     }
                     CultivationHelper.updatePersonEquipment(mPerson)

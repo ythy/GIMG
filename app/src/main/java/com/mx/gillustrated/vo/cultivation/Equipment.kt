@@ -1,13 +1,14 @@
 package com.mx.gillustrated.vo.cultivation
 
+import com.mx.gillustrated.component.CultivationAmuletHelper
 import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 
-open class EquipmentBak(val id: String, val seq:Int = 0) {
+open class EquipmentBak(val id: String, val amuletSerialNo:Int = 0) {
 
     fun toEquipment():Equipment{
-        return Equipment(id, seq)
+        return Equipment(id, amuletSerialNo)
     }
 
 }
@@ -38,55 +39,37 @@ data class EquipmentConfig(
     }
 }
 
-class Equipment(pId: String, pSeq: Int = 0, option:Triple<Int, Int, String>? = null) : EquipmentBak(pId, pSeq) {
-    val detail:EquipmentConfig
+class Equipment(pId: String, pAmuletSerialNo: Int = 0, pDetails:EquipmentConfig? = null) : EquipmentBak(pId, pAmuletSerialNo) {
+    var detail:EquipmentConfig
     var uniqueName:String = ""
     var sortedWeight:Int = 0
     var childrenAll:MutableList<Equipment> = mutableListOf() //计算用
     var children:MutableList<Equipment> = mutableListOf() // 显示用
 
     init {
-        if (option != null){
-            if(option.third == "") {//equipment type == 6 boss 暂定取消
-                val setting = CultivationEnemyHelper.getEquipmentOfBoss(option.first, option.second)
-                this.detail = setting.first
-                this.uniqueName = setting.second
-                this.sortedWeight = setting.first.rarity
-            }else{//equipment type == 7 tips
-                val tipsConfig =  CultivationHelper.mConfig.tips.find { it.id == pId }!!
-                val setting = CultivationHelper.getEquipmentOfTips(option.first, tipsConfig)
-                this.detail = setting.first
-                val prefix = if (tipsConfig.type == 1) "\u2694" else "\uD83D\uDCDC"
-                this.uniqueName = "$prefix ${option.third}${setting.second}"
-                this.sortedWeight = setting.first.rarity
-            }
+        if(amuletSerialNo > 0){ // equipment type == 5
+            val setting = CultivationAmuletHelper.getEquipmentCustom(pId, amuletSerialNo)
+            this.detail = setting.first
+            this.uniqueName = setting.second
+            this.sortedWeight = 10 + setting.first.rarity
         }else{
-            if(pSeq > 0){ // equipment type == 5
-                val setting = CultivationSetting.getEquipmentCustom(pId, pSeq)
-                this.detail = setting.first
-                this.uniqueName = setting.second
-                this.sortedWeight = 10 + setting.first.rarity
-            }else {
-                this.detail = CultivationHelper.mConfig.equipment.find { it.id == this.id }!!
-                this.uniqueName = this.detail.name
-                this.sortedWeight = when(this.detail.type){
-                    in 0..3 -> 100 + this.detail.rarity // career
-                    8 -> 10000 +  this.detail.rarity // exclude
-                    9 -> 1000 +  this.detail.rarity // custom
-                    else -> this.detail.rarity
-                }
+            this.detail = pDetails ?: CultivationHelper.mConfig.equipment.find { it.id == this.id }!!
+            this.uniqueName = this.detail.name
+            this.sortedWeight = when(this.detail.type){
+                in 0..3 -> 100 + this.detail.rarity // career
+                8 -> 10000 +  this.detail.rarity // exclude
+                9 -> 1000 +  this.detail.rarity // custom
+                else -> this.detail.rarity
             }
         }
     }
-
-
 
     override fun toString(): String {
         return CultivationHelper.showing("${detail.name}:(${detail.xiuwei}/${detail.success})(${detail.property.take(4).joinToString()})")
     }
 
     fun toBak():EquipmentBak{
-        return  EquipmentBak(this.id, this.seq)
+        return  EquipmentBak(this.id, this.amuletSerialNo)
     }
 
 }

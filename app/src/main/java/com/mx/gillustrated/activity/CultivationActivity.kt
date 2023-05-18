@@ -21,9 +21,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CultivationHistoryAdapter
-import com.mx.gillustrated.component.CultivationBattleHelper
-import com.mx.gillustrated.component.CultivationEnemyHelper
-import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.component.*
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName2
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
@@ -42,7 +40,6 @@ import com.mx.gillustrated.component.CultivationHelper.pinyinMode
 import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
 import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
 import com.mx.gillustrated.component.CultivationHelper.talentValue
-import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.CultivationSetting.getIdentityGender
 import com.mx.gillustrated.component.CultivationSetting.getIdentityIndex
 import com.mx.gillustrated.component.CultivationSetting.createIdentitySeq
@@ -1087,13 +1084,13 @@ class CultivationActivity : BaseActivity() {
     private fun addAmuletEquipmentEvent(person:Person? = null, tag:String = "", weight:Int = 100){
         if(isTrigger(weight)){
             val lucky = person ?: mPersons.map { it.value }.shuffled().first()
-            val spec = CultivationSetting.createEquipmentCustom()
-            if(spec == null || lucky.equipmentList.find { it.id == spec.first && it.seq == spec.second } != null){
+            val spec = CultivationAmuletHelper.createEquipmentCustom()
+            if(spec == null || lucky.equipmentList.find { it.id == spec.first && it.amuletSerialNo == spec.second } != null){
                 return
             }
             lucky.equipmentList.add(Equipment(spec.first, spec.second))
             CultivationHelper.updatePersonEquipment(lucky)
-            val equipment = CultivationSetting.getEquipmentCustom(spec.first, spec.second)
+            val equipment = CultivationAmuletHelper.getEquipmentCustom(spec.first, spec.second)
             val commonText = "$tag \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.second}"
             addPersonEvent(lucky, commonText)
             writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
