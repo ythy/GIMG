@@ -817,11 +817,11 @@ object CultivationHelper {
             if(it.spec.isNotEmpty())
                 it.spec.contains(person.specIdentity)
             else {
-                when(it.id.toInt() % 10000 ){
-                    101 -> person.battleRecord.filterValues { m-> m <= 2 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
-                    102 -> person.battleRecord.filterValues { m-> m == 1 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
-                    103 -> person.battleRecord.filterValues { m-> m == 32 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
-                    104 -> person.nationId == "6200006"
+                when(it.id){
+                    "4200101" -> person.battleRecord.filterValues { m-> m <= 2 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
+                    "4200102" -> person.battleRecord.filterValues { m-> m == 1 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
+                    "4200103" -> person.battleRecord.filterValues { m-> m == 32 }.size >= CultivationSetting.TEMP_SKIN_BATTLE_MIN
+                    "4200104" -> person.nationId == "6200006"
                     else -> false
                 }
             }
@@ -846,11 +846,11 @@ object CultivationHelper {
 
     fun generateTips(person: Person, alliance: Alliance){
         person.tipsList.filter { it.detail.type == 0 }.forEach {
-            it.tipsName = alliance.tips[it.id.toInt() % 100000 - 1]
+            it.tipsName = alliance.tips[it.detail.seq]
         }
         mConfig.tips.filter { it.type == 0 }.forEach { tip->
             if(person.tipsList.find { it.id == tip.id } == null && tipsJudgment(person, tip, alliance)){
-                person.tipsList.add(Tips(tip.id, 0, alliance.tips[tip.id.toInt() % 100000 - 1]))
+                person.tipsList.add(Tips(tip.id, 0, alliance.tips[tip.seq]))
             }
         }
 
@@ -866,7 +866,7 @@ object CultivationHelper {
     }
 
     fun tipsJudgment(person: Person, tips:TipsConfig, alliance: Alliance?):Boolean{
-        val right = if( alliance != null && tips.type == 0 ) alliance.tips[tips.id.toInt() % 100000 - 1] != "" else true
+        val right = if( alliance != null && tips.type == 0 ) alliance.tips[tips.seq] != "" else true
         return right &&
                 (when {
                     tips.type > 1 -> true

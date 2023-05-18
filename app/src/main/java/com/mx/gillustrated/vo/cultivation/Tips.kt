@@ -24,12 +24,13 @@ data class TipsConfig(
         val attack:MutableList<Int> = mutableListOf(),
         val defence:MutableList<Int> = mutableListOf(),
         val speed:MutableList<Int> = mutableListOf(),
-        var follower:MutableList<String> = mutableListOf()
+        val follower:MutableList<String> = mutableListOf(),
+        val seq:Int = 0
 ){
     //Gson 序列化使用
     constructor():this(
             "", "", 0,0,0, 0, mutableListOf(),mutableListOf()
-            ,mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf()
+            ,mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),0
     )
 }
 
