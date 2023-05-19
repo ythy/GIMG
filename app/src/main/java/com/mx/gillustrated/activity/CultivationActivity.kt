@@ -1084,7 +1084,7 @@ class CultivationActivity : BaseActivity() {
     private fun addAmuletEquipmentEvent(person:Person? = null, tag:String = "", weight:Int = 100){
         if(isTrigger(weight)){
             val lucky = person ?: mPersons.map { it.value }.shuffled().first()
-            val spec = CultivationAmuletHelper.createEquipmentCustom()
+            val spec = CultivationAmuletHelper.createEquipmentCustom(0, 50)
             if(spec == null || lucky.equipmentList.find { it.id == spec.first && it.amuletSerialNo == spec.second } != null){
                 return
             }

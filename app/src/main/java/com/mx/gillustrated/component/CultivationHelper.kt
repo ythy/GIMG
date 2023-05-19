@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
 import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationSetting.HistoryInfo
 import com.mx.gillustrated.component.CultivationSetting.BattleSettings

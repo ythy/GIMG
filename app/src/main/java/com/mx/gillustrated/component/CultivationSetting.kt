@@ -1,7 +1,6 @@
 package com.mx.gillustrated.component
 
 import com.mx.gillustrated.util.NameUtil
-import com.mx.gillustrated.vo.cultivation.EquipmentConfig
 import com.mx.gillustrated.vo.cultivation.Person
 import kotlin.collections.HashMap
 
