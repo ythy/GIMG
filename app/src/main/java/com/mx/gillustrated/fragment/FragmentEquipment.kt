@@ -70,10 +70,6 @@ class FragmentEquipment: Fragment() {
         updateList()
     }
 
-
-
-
-
     fun updateList(){
         val equipments = mPerson.equipmentList.sortedWith(compareByDescending<Equipment> {
             it.sortedWeight

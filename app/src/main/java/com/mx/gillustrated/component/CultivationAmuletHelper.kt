@@ -9,7 +9,7 @@ object CultivationAmuletHelper {
     data class AmuletNormal(val id:Int, val weight:Int, val rarityAddon:Int, val bonusMultiple:Int, val xiuweiAddon:Int, val prefix:String)
 
     private object Amulet {
-        val NormalSizeWeight = mutableListOf(1,50,500)
+        val NormalSizeWeight = mutableListOf(1,50,500)// used in creation
         val NormalSizeMultiple = mutableListOf(1,1,2,4)
         val NormalSizeRarityAddon = mutableListOf(0,0,1,2)
 
