@@ -13,7 +13,7 @@ import com.mx.gillustrated.R
 
 import javax.inject.Inject
 
-abstract class BaseActivity constructor(): AppCompatActivity() {
+abstract class BaseActivity: AppCompatActivity() {
 
     @Inject
     lateinit var mOrmHelper: DataBaseHelper

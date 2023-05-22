@@ -1,31 +1,22 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ListView
-import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import butterknife.OnItemClick
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.AllianceListAdapter
-import com.mx.gillustrated.adapter.CultivationPersonListAdapter
+import com.mx.gillustrated.databinding.FragmentDialogAllianceListBinding
 import com.mx.gillustrated.vo.cultivation.Alliance
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 
-@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class FragmentDialogAllianceList  : DialogFragment() {
 
@@ -35,14 +26,14 @@ class FragmentDialogAllianceList  : DialogFragment() {
             return FragmentDialogAllianceList()
         }
 
-        class TimeHandler constructor(val context: FragmentDialogAllianceList): Handler(){
+        class TimeHandler constructor(val context: FragmentDialogAllianceList): Handler(Looper.getMainLooper()){
 
             private val reference: WeakReference<FragmentDialogAllianceList> = WeakReference(context)
 
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val dialog = reference.get()
-                if(msg?.what == 1 && dialog != null ){
+                if(msg.what == 1 && dialog != null ){
                     dialog.updateView()
                 }
             }
@@ -50,31 +41,10 @@ class FragmentDialogAllianceList  : DialogFragment() {
 
     }
 
-    @BindView(R.id.lv_alliance)
-    lateinit var mListView: ListView
-
-    @BindView(R.id.tv_total)
-    lateinit var mTotalText: TextView
-
-
-    @OnClick(R.id.btn_close)
-    fun onCloseHandler(){
-        mThreadRunnable = false
-        this.dismiss()
-    }
-
-    @OnItemClick(R.id.lv_alliance)
-    fun onItemClick(position:Int){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogAlliance.newInstance()
-        newFragment.isCancelable = false
-
-        val bundle = Bundle()
-        bundle.putString("id", mAllianceListData[position].id)
-        newFragment.arguments = bundle
-        newFragment.show(ft, "dialog_alliance_info")
-    }
+    private var _binding: FragmentDialogAllianceListBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     lateinit var mContext: CultivationActivity
     var mAllianceListData: MutableList<Alliance> = mutableListOf()
@@ -82,22 +52,48 @@ class FragmentDialogAllianceList  : DialogFragment() {
     private var mThreadRunnable:Boolean = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_dialog_alliance_list, container, false)
-        mContext = activity as CultivationActivity
-        ButterKnife.bind(this, v)
-        return v
+                              savedInstanceState: Bundle?): View {
+        _binding = FragmentDialogAllianceListBinding.inflate(inflater, container, false)
+        return binding.root
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mListView.adapter = AllianceListAdapter(this.context!!, mAllianceListData)
+        mContext = activity as CultivationActivity
+        binding.lvAlliance.adapter = AllianceListAdapter(requireContext(), mAllianceListData)
+        initListener()
         updateView()
         registerTimeLooper()
+
+    }
+
+    private fun initListener(){
+
+        binding.btnClose.setOnClickListener {
+            mThreadRunnable = false
+            this.dismiss()
+        }
+        binding.lvAlliance.setOnItemClickListener { _, _, position, _ ->
+            val ft = mContext.supportFragmentManager.beginTransaction()
+            val newFragment = FragmentDialogAlliance.newInstance()
+            newFragment.isCancelable = false
+
+            val bundle = Bundle()
+            bundle.putString("id", mAllianceListData[position].id)
+            newFragment.arguments = bundle
+            newFragment.show(ft, "dialog_alliance_info")
+        }
+
     }
 
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread{
             while (true){
                 Thread.sleep(2000)
                 if(mThreadRunnable){
@@ -106,7 +102,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     private fun updateView(){
@@ -117,9 +113,9 @@ class FragmentDialogAllianceList  : DialogFragment() {
                     { p: Person -> p.lifeTurn.toLong() }, 0, { left, right -> left + right })
         }
         mAllianceListData.sortWith(compareByDescending<Alliance> {it.battleWinner}.thenByDescending { it.totalXiuwei })
-        (mListView.adapter as BaseAdapter).notifyDataSetChanged()
-        mListView.invalidateViews()
-        mTotalText.text = mAllianceListData.sumBy { it.personList.size }.toString()
+        (binding.lvAlliance.adapter as BaseAdapter).notifyDataSetChanged()
+        binding.lvAlliance.invalidateViews()
+        binding.tvTotal.text = mAllianceListData.sumOf { it.personList.size }.toString()
     }
 
 }

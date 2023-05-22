@@ -86,7 +86,7 @@ class ImageAdjustActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.activity_image_adjust)
         ButterKnife.bind(this)
-        originImagePath = this.intent.getStringExtra("source")
+        originImagePath = this.intent.getStringExtra("source") ?: ""
         this.initView()
     }
 
@@ -133,7 +133,7 @@ class ImageAdjustActivity : BaseActivity() {
                             if(Math.abs(space) > MIN_SCALE_START_WIDTH && lastWidth + space < MAX_SCALE_WIDTH && lastWidth + space > MIN_SCALE_WIDTH ){
                                 resize(mImage, (lastWidth + space ) / mImage.width  )
                             }
-                        }
+                        }else -> TODO()
                     }
                 }
                 MotionEvent.ACTION_POINTER_DOWN ->{
@@ -181,6 +181,7 @@ class ImageAdjustActivity : BaseActivity() {
                             resize(mCut, scaleX, scaleY, mCut.x + (event.rawX - lastPoint.x )/2, mCut.y + (event.rawY - lastPoint.y )/2 )
                             lastPoint = PointF(event.rawX, event.rawY)
                         }
+                        else -> TODO()
                     }
                 }
                 MotionEvent.ACTION_UP ->{

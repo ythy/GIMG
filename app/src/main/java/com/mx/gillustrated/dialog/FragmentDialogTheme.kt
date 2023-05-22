@@ -47,7 +47,7 @@ class FragmentDialogTheme : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        dialog!!.window.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         val v = inflater.inflate(R.layout.fragment_dialog_theme, container, false)
         ButterKnife.bind(this, v)
         init()

@@ -454,7 +454,7 @@ object CultivationBattleHelper {
             }
             propsSpeed
         }
-        return Math.round((speedList.maxBy { it } ?: 1).toFloat() *  (100 - Random().nextInt(50)) / 100) + Random().nextInt(randomBasis)
+        return Math.round((speedList.maxByOrNull { it } ?: 1).toFloat() *  (100 - Random().nextInt(50)) / 100) + Random().nextInt(randomBasis)
     }
 
     private fun getBattleValue(origin:Int, person:BattleObject):Int{

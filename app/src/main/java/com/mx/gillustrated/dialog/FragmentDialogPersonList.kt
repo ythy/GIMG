@@ -44,10 +44,10 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             private val reference: WeakReference<FragmentDialogPersonList> = WeakReference(context)
 
             @TargetApi(Build.VERSION_CODES.N)
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val dialog = reference.get()
-                if(msg?.what == 1 && dialog != null ){
+                if(msg.what == 1 && dialog != null ){
                     dialog.updateList()
                 }
             }
@@ -202,7 +202,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
         mPersonData.clear()
         val persons = when (mType) {
             1 -> mContext.mPersons.map { it.value }.filter { CultivationHelper.isNeverDead(it) }
-            2 -> mContext.mPersons.map { it.value }.filter { p-> p.careerList.maxBy { m-> m.detail.rarity }?.detail?.rarity ?: 0 >= 8 }
+            2 -> mContext.mPersons.map { it.value }.filter { p-> (p.careerList.maxByOrNull { m-> m.detail.rarity }?.detail?.rarity ?: 0) >= 8 }
             3 -> mContext.mPersons.map { it.value }.filter { p->
                 p.tipsList.find { t-> t.detail.type > 2 } != null
             }
@@ -243,7 +243,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                         e-> e.amuletSerialNo > 0
                     }.sumBy { s-> s.detail.rarity }})
             "C" -> mPersonData.sortByDescending{
-                val max = it.careerList.maxBy { m-> m.detail.rarity }
+                val max = it.careerList.maxByOrNull { m-> m.detail.rarity }
                 (max?.detail?.rarity ?: 0) * 1000 + (max?.level ?: 0)
             }
             "L" -> mPersonData.sortByDescending{ p->

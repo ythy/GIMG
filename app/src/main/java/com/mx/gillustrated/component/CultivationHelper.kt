@@ -160,7 +160,7 @@ object CultivationHelper {
     fun addPersonToClan(person: Person, clan:Clan, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>){
         val originClanId = person.ancestorId!!
         person.ancestorId = clan.id
-        val minLevel = clan.clanPersonList.minBy { it.value.ancestorLevel }?.value?.ancestorLevel ?: 0
+        val minLevel = clan.clanPersonList.minByOrNull { it.value.ancestorLevel }?.value?.ancestorLevel ?: 0
         person.ancestorLevel = minLevel + 1
         allClan[originClanId]?.clanPersonList?.remove(person.id)
         changedAncestorId(person, allClan, allPersons)
@@ -568,7 +568,7 @@ object CultivationHelper {
                 }
             }
             equipments.filter { it.detail.type <= 3 }.groupBy { it.detail.type }.forEach { (_, u) ->
-                val effectEquipment = u.maxBy { it.detail.rarity }!!
+                val effectEquipment = u.maxByOrNull { it.detail.rarity }!!
                 summationEquipmentValues(person, effectEquipment, equipmentProperty)
             }
         }
@@ -833,7 +833,7 @@ object CultivationHelper {
             return ""
         if (person.skin.length > 7)
             return person.skin
-        return candidate.maxBy { it.rarity }?.id ?: ""
+        return candidate.maxByOrNull { it.rarity }?.id ?: ""
     }
 
     fun getSkinObject(skin:String):Skin?{

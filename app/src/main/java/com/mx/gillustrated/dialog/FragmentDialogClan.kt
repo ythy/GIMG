@@ -35,10 +35,10 @@ class FragmentDialogClan : DialogFragment() {
 
             private val reference: WeakReference<FragmentDialogClan> = WeakReference(context)
 
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val dialog = reference.get()
-                if(msg?.what == 1 && dialog != null ){
+                if(msg.what == 1 && dialog != null ){
                     dialog.updateView()
                 }
             }

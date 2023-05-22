@@ -3,11 +3,12 @@ package com.mx.gillustrated.component
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import kotlin.collections.HashMap
+import kotlin.math.min
 
 object CultivationSetting {
 
     val CommonColors = arrayOf("#E1DAD3", "#539B35", "#3B86D4", "#8850CD", "#FF8C00", "#FC2CBB", "#FE4B4B", "#FFD700", "#04B4BA","#BDA072", "#CBD289", "#B8DAD2", "#E8D3C0", "#E7C2D8", "#DE7487", "#FFFFFF")
-    val RankingColors = arrayOf("#F2C056", "#E9E9D8", "#BA6E40", "#767778", "#DCDFE3")
+    //val RankingColors = arrayOf("#F2C056", "#E9E9D8", "#BA6E40", "#767778", "#DCDFE3")
     val EnemyNames = arrayOf("\u83dc\u83dc", "\u8fdc\u53e4", "\u68ee\u7f57", "\u4e07\u8c61", "\u9b51\u9b45", "\u9b4d\u9b49")
 
 
@@ -20,9 +21,9 @@ object CultivationSetting {
         const val ClanBonusCount = 3
         const val ClanMaxXiuwei = 20
         val ClanBonus = arrayOf(5, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0)
-        const val NationMinSize = 4
-        const val NationBonusCount = 3
-        val NationBonus = arrayOf(5, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0)
+//        const val NationMinSize = 4
+//        const val NationBonusCount = 3
+//        val NationBonus = arrayOf(5, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0)
         const val SingleMinSize = 32
         const val SingleBonusCount = 8
         val SingleBonus = arrayOf(5, 30, 20, 15, 10, 6, 4, 2, 1, 0, 0)
@@ -144,7 +145,8 @@ object CultivationSetting {
             PresetInfo(15000121, Triple("\u88AD\u4EBA", "", 1212), 0, 100, 200),
 
             PresetInfo(15010011, Triple("\u7532\u6590\u59EC", "", 1215), 0, 1000, 2000),
-            PresetInfo(15010021, Triple("\u4E95\u4F0A", "\u76F4\u864E", 1216), 0, 200, 600)
+            PresetInfo(15010021, Triple("\u4E95\u4F0A", "\u76F4\u864E", 1216), 0, 200, 600),
+            PresetInfo(15010031, Triple("\u963F\u9505", "\u4E4B\u65B9", 1217), 0, 200, 600)
     )
 
     private val SpecPersonFirstName6:MutableList<PresetInfo> = mutableListOf(
@@ -298,7 +300,7 @@ object CultivationSetting {
         return  when(index){
             in 0..8 -> "00${index + 1}"
             in 9..98 -> "0${index + 1}"
-            else -> "${Math.min(999, index + 1)}"
+            else -> "${min(999, index + 1)}"
         }
     }
 

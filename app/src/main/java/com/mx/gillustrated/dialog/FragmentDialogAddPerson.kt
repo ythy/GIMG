@@ -21,7 +21,6 @@ import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 
 
-@RequiresApi(Build.VERSION_CODES.N)
 class FragmentDialogAddPerson: DialogFragment()  {
 
     companion object{

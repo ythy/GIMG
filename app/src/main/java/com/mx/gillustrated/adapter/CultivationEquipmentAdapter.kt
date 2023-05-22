@@ -76,7 +76,7 @@ class CultivationEquipmentAdapter constructor(private val mContext: Context, pri
         component.name.setTextColor(Color.parseColor(CommonColors[detail.rarity]))
         val properties = mutableListOf(0,0,0,0)
         if(detail.type <= 3 ){
-            val maxEquipment = child.maxBy { it.detail.rarity }!!
+            val maxEquipment = child.maxByOrNull { it.detail.rarity }!!
             component.xiuwei.text = maxEquipment.detail.xiuwei.toString()
             component.success.text = maxEquipment.detail.success.toString()
             (0 until 4).forEach { index ->

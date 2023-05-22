@@ -112,7 +112,7 @@ class WebActivity: BaseActivity() {
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             Toast.makeText(view!!.context, "LOADING", Toast.LENGTH_LONG).show()
-            view.loadUrl(url)
+            view.loadUrl(url ?: "")
             return true
         }
 
