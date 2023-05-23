@@ -34,7 +34,7 @@ object CultivationBakUtil {
 
     fun findFemaleHeaderSize():Int {
         val imageDir = File(Environment.getExternalStorageDirectory(),
-                MConfig.SD_CULTIVATION_HEADER_PATH + "/" + NameUtil.Gender.Female)
+                MConfig.SD_CULTIVATION_HEADER_PATH_OLD + "/" + NameUtil.Gender.Female)
         if (imageDir.exists()) {
             return  imageDir.list().filter { it != null && getFileName(it).length < 4  }.size
         }
@@ -43,7 +43,7 @@ object CultivationBakUtil {
 
     fun findMaleHeaderSize():Int {
         val imageDir = File(Environment.getExternalStorageDirectory(),
-                MConfig.SD_CULTIVATION_HEADER_PATH + "/" + NameUtil.Gender.Male)
+                MConfig.SD_CULTIVATION_HEADER_PATH_OLD + "/" + NameUtil.Gender.Male)
         if (imageDir.exists()) {
             return  imageDir.list().filter { it != null && getFileName(it).length < 4  }.size
         }

@@ -902,7 +902,7 @@ object CultivationHelper {
         }else{
             if (person.specIdentity == 12000100){
                 return Triple(R.drawable.profile_frame_hb_1, -1, 10)
-            }else if(clans[person.ancestorId]?.crest ?: -1 > 0){
+            }else if((clans[person.ancestorId]?.crest ?: -1) > 0){
                 return getClanCrest(clans[person.ancestorId]?.crest ?: -1)
             }
         }

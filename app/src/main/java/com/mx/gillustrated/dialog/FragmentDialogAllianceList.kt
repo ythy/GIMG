@@ -47,7 +47,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
     private val binding get() = _binding!!
 
     lateinit var mContext: CultivationActivity
-    var mAllianceListData: MutableList<Alliance> = mutableListOf()
+    private var mAllianceListData: MutableList<Alliance> = mutableListOf()
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
 

@@ -1,29 +1,30 @@
 package com.mx.gillustrated.dialog
 
+import android.annotation.SuppressLint
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.EmperorData.FeiLevel
 import com.mx.gillustrated.component.EmperorData.FeiziStep
+import com.mx.gillustrated.databinding.FragmentDialogEmperorBinding
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
 import java.util.*
+import kotlin.math.max
 
+@RequiresApi(Build.VERSION_CODES.P)
 class FragmentDialogEmperor constructor(private val mId:String)  : DialogFragment() {
 
     companion object{
@@ -32,26 +33,10 @@ class FragmentDialogEmperor constructor(private val mId:String)  : DialogFragmen
         }
     }
 
-    @BindView(R.id.iv_profile)
-    lateinit var mImage:ImageView
-
-    @BindView(R.id.tv_name)
-    lateinit var mName:TextView
-
-    @BindView(R.id.tv_content)
-    lateinit var mContent:TextView
-
-    @BindView(R.id.spinner_level)
-    lateinit var mSpinner: Spinner
-
-    @BindView(R.id.sv_content)
-    lateinit var mScroll: ScrollView
-
-
-    @OnClick(R.id.btn_close)
-    fun onCloseHandler(){
-        this.dismiss()
-    }
+    private var _binding: FragmentDialogEmperorBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     var count = 0
     private var mLevelList = mutableListOf<String>()
@@ -66,105 +51,60 @@ class FragmentDialogEmperor constructor(private val mId:String)  : DialogFragmen
 
     private lateinit var mPerson: Person
 
-    @OnClick(R.id.btn_reward)
-    fun onRewardHandler(){
-        mPerson.feiziFavor += 1000
-        showName()
-        makeContent("\u8C22\u4E3B\u516C.")
-        setLevelSpinner()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        _binding = FragmentDialogEmperorBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    @OnClick(R.id.btn_punish)
-    fun onPunishHandler(){
-        mPerson.feiziFavor = Math.max(0, mPerson.feiziFavor - 1000)
-        makeContent("\u59BE\u77E5\u9519.")
-        showName()
-        setLevelSpinner()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        init()
+        initListener()
     }
 
-    @OnClick(R.id.btn_bye)
-    fun onByeHandler(){
-        makeContent(mEnd.shuffled()[0])
-        mContent.postDelayed({
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initListener(){
+
+        binding.btnClose.setOnClickListener {
             this.dismiss()
-        }, 1000)
-    }
-
-
-    @OnClick(R.id.btn_ml)
-    fun onMLHandler(){
-        if (count < 5){
-            val random = Random().nextInt(5)
-            mPerson.feiziFavor += 10 * (random + 1)
-            val showing = mDetail.shuffled()[0]
-            makeContent("$showing, ${getNameSimple()}\u5BA0\u7231+${10 * (random + 1)}")
-            mDetail.removeIf { it == showing }
+        }
+        binding.btnReward.setOnClickListener {
+            mPerson.feiziFavor += 1000
+            showName()
+            makeContent("\u8C22\u4E3B\u516C.")
+            setLevelSpinner()
+        }
+        binding.btnPunish.setOnClickListener {
+            mPerson.feiziFavor = max(0, mPerson.feiziFavor - 1000)
+            makeContent("\u59BE\u77E5\u9519.")
             showName()
             setLevelSpinner()
-            count++
-        }else{
-            makeContent("\u4E3B\u516C\u8FD8\u6709\u4E8B\u5417?")
         }
-    }
-
-    private fun makeContent(text:String){
-        if(mContent.text.toString() == "")
-            mContent.text = CultivationHelper.showing(text)
-        else
-            mContent.text = mContent.text.toString() +  "\n" + CultivationHelper.showing(text)
-        mScroll.post {
-            mScroll.smoothScrollTo(0, 1000)
+        binding.btnBye.setOnClickListener {
+            makeContent(mEnd.shuffled()[0])
+            binding.tvContent.postDelayed({
+                this.dismiss()
+            }, 1000)
         }
-
-    }
-
-    fun showName(){
-        mName.text = CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}·${mPerson.name}(${mPerson.feiziFavor})")
-    }
-
-    fun getName():String{
-        return CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}·${mPerson.fullName}")
-    }
-
-    fun getNameSimple():String{
-        return CultivationHelper.showing("${mPerson.lastName}${FeiLevel[mPerson.feiziLevel]}")
-    }
-
-    fun initLevelSpinner(){
-        mLevelList.addAll(FeiLevel.filterIndexed { index, _ -> FeiziStep[index] <= mPerson.feiziFavor  }
-                .map { CultivationHelper.showing(it) })
-        val adapter = ArrayAdapter<String>(context!!,
-                android.R.layout.simple_spinner_item, mLevelList)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        mSpinner.adapter = adapter
-        mSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selected = parent.selectedItem.toString()
-                mPerson.feiziLevel = FeiLevel.map { CultivationHelper.showing(it)  }.indexOf(selected)
+        binding.btnMl.setOnClickListener {
+            if (count < 5){
+                val random = Random().nextInt(5)
+                mPerson.feiziFavor += 10 * (random + 1)
+                val showing = mDetail.shuffled()[0]
+                makeContent("$showing, ${getNameSimple()}\u5BA0\u7231+${10 * (random + 1)}")
+                mDetail.removeIf { it == showing }
                 showName()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {
+                setLevelSpinner()
+                count++
+            }else{
+                makeContent("\u4E3B\u516C\u8FD8\u6709\u4E8B\u5417?")
             }
         }
-        mSpinner.setSelection(mLevelList.indexOf(CultivationHelper.showing(FeiLevel[mPerson.feiziLevel])))
-    }
-
-    fun setLevelSpinner(){
-        mLevelList.clear()
-        mLevelList.addAll(FeiLevel.filterIndexed { index, _ -> FeiziStep[index] <= mPerson.feiziFavor  }
-                .map { CultivationHelper.showing(it) })
-        (mSpinner.adapter as BaseAdapter).notifyDataSetChanged()
-        mSpinner.setSelection(mLevelList.indexOf(CultivationHelper.showing(FeiLevel[mPerson.feiziLevel])))
-    }
-
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        val v = inflater.inflate(R.layout.fragment_dialog_emperor, container, false)
-        ButterKnife.bind(this, v)
-        init()
-        return v
     }
 
     fun init(){
@@ -174,8 +114,8 @@ class FragmentDialogEmperor constructor(private val mId:String)  : DialogFragmen
         initLevelSpinner()
         makeContent(mStart.shuffled()[0])
         try {
-            val imageDir = File(Environment.getExternalStorageDirectory(),
-                    MConfig.SD_CULTIVATION_HEADER_PATH + "/" + NameUtil.Gender.Female)
+            val imageDir = requireActivity().getExternalFilesDir(
+                    MConfig.SD_CULTIVATION_HEADER_PATH + "/" + NameUtil.Gender.Female) ?: return
             var file = File(imageDir.path, "${mPerson.profile}.png")
             if (!file.exists()) {
                 file = File(imageDir.path, "${mPerson.profile}.jpg")
@@ -184,13 +124,60 @@ class FragmentDialogEmperor constructor(private val mId:String)  : DialogFragmen
                 file = File(imageDir.path, "1002.jpg")
             }
             if (file.exists()) {
-                val bmp = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, Uri.fromFile(file))
-                mImage.setImageBitmap(bmp)
+                val bmp = ImageDecoder.createSource(requireContext().contentResolver, Uri.fromFile(file))
+                binding.ivProfile.setImageBitmap(ImageDecoder.decodeBitmap(bmp))
             } else
-                mImage.setImageBitmap(null)
+                binding.ivProfile.setImageBitmap(null)
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun makeContent(text:String){
+        if(binding.tvContent.text.toString() == "")
+            binding.tvContent.text = CultivationHelper.showing(text)
+        else
+            binding.tvContent.text = binding.tvContent.text.toString() +  "\n" + CultivationHelper.showing(text)
+        binding.svContent.post {
+            binding.svContent.smoothScrollTo(0, 1000)
+        }
+
+    }
+
+    fun showName(){
+        binding.tvName.text = CultivationHelper.showing("${FeiLevel[mPerson.feiziLevel]}·${mPerson.name}(${mPerson.feiziFavor})")
+    }
+
+    private fun getNameSimple():String{
+        return CultivationHelper.showing("${mPerson.lastName}${FeiLevel[mPerson.feiziLevel]}")
+    }
+
+    private fun initLevelSpinner(){
+        mLevelList.addAll(FeiLevel.filterIndexed { index, _ -> FeiziStep[index] <= mPerson.feiziFavor  }
+                .map { CultivationHelper.showing(it) })
+        val adapter = ArrayAdapter(requireContext(),
+                android.R.layout.simple_spinner_item, mLevelList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerLevel.adapter = adapter
+        binding.spinnerLevel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selected = parent.selectedItem.toString()
+                mPerson.feiziLevel = FeiLevel.map { CultivationHelper.showing(it)  }.indexOf(selected)
+                showName()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+        binding.spinnerLevel.setSelection(mLevelList.indexOf(CultivationHelper.showing(FeiLevel[mPerson.feiziLevel])))
+    }
+
+    private fun setLevelSpinner(){
+        mLevelList.clear()
+        mLevelList.addAll(FeiLevel.filterIndexed { index, _ -> FeiziStep[index] <= mPerson.feiziFavor  }
+                .map { CultivationHelper.showing(it) })
+        (binding.spinnerLevel.adapter as BaseAdapter).notifyDataSetChanged()
+        binding.spinnerLevel.setSelection(mLevelList.indexOf(CultivationHelper.showing(FeiLevel[mPerson.feiziLevel])))
     }
 }

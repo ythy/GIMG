@@ -2,12 +2,11 @@ package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
-import android.graphics.Color
+import android.graphics.*
 import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.*
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,6 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
-import butterknife.*
-import com.google.android.material.tabs.TabLayout
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.PersonPagerAdapter
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
@@ -27,6 +22,7 @@ import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.component.EmperorData
 import com.mx.gillustrated.component.TextViewBox
+import com.mx.gillustrated.databinding.FragmentDialogPersionBinding
 import com.mx.gillustrated.fragment.*
 import com.mx.gillustrated.util.CommonUtil
 import com.mx.gillustrated.util.NameUtil
@@ -35,10 +31,11 @@ import com.mx.gillustrated.vo.cultivation.Person
 import com.mx.gillustrated.vo.cultivation.TianFu
 import java.io.File
 import java.lang.ref.WeakReference
+import androidx.appcompat.content.res.AppCompatResources
+import kotlin.math.min
 
 
-
-@RequiresApi(Build.VERSION_CODES.N)
+@RequiresApi(Build.VERSION_CODES.P)
 @SuppressLint("SetTextI18n")
 class FragmentDialogPerson : DialogFragment() {
 
@@ -46,7 +43,7 @@ class FragmentDialogPerson : DialogFragment() {
         fun newInstance(): FragmentDialogPerson {
             return FragmentDialogPerson()
         }
-        class TimeHandler constructor(val context: FragmentDialogPerson): Handler(){
+        class TimeHandler constructor(val context: FragmentDialogPerson): Handler(Looper.getMainLooper()){
 
             private val reference: WeakReference<FragmentDialogPerson> = WeakReference(context)
 
@@ -60,91 +57,13 @@ class FragmentDialogPerson : DialogFragment() {
         }
     }
 
+    private var _binding: FragmentDialogPersionBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
-    @OnClick(R.id.btn_close)
-    fun onCloseHandler(){
-        mThreadRunnable = false
-        this.dismiss()
-    }
-
-    @OnClick(R.id.tv_lingGen)
-    fun onLingGenClickHandler(){
-        val prop = mPerson.extraProperty.joinToString()
-        Toast.makeText(mContext, prop, Toast.LENGTH_SHORT).show()
-    }
-
-    @OnClick(R.id.tv_partner)
-    fun onPartnerClickHandler(){
-        val partner = mContext.getOnlinePersonDetail(mPerson.partner)
-        if(partner != null){
-            openPersonDetail(partner.id)
-            onCloseHandler()
-        }else{
-            Toast.makeText(mContext, mPerson.partnerName ?: "", Toast.LENGTH_SHORT).show()
-        }
-
-    }
-
-    @OnClick(R.id.tv_parent_dad)
-    fun onDadClickHandler(){
-        val person = mContext.getOnlinePersonDetail(mPerson.parent?.first)
-        if(person != null){
-            openPersonDetail(person.id)
-            onCloseHandler()
-        }else{
-            Toast.makeText(mContext, mPerson.parentName?.first ?: "", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    @OnClick(R.id.tv_parent_mum)
-    fun onMumClickHandler(){
-        val person = mContext.getOnlinePersonDetail(mPerson.parent?.second)
-        if(person != null){
-            openPersonDetail(person.id)
-            onCloseHandler()
-        }else{
-            Toast.makeText(mContext, mPerson.parentName?.second ?: "", Toast.LENGTH_SHORT).show()
-        }
-
-    }
-
-    @OnClick(R.id.tv_winner)
-    fun onWinnerClickHandler(){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        val newFragment = FragmentDialogRank.newInstance(6, mPerson.id)
-        newFragment.isCancelable = false
-        newFragment.show(ft, "dialog_rank_info")
-    }
-
-    @OnClick(R.id.iv_profile)
-    fun onProfileClickHandler(){
-        if (mPerson.profile == 0)
-            return
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        val newFragment = FragmentDialogImage.newInstance(mPerson.profile.toString(), mPerson.gender)
-        newFragment.isCancelable = true
-        newFragment.show(ft, "dialog_image")
-    }
-
-
-
-    @BindView(R.id.sch_fav)
-    lateinit var mSwitchFav:Switch
-
-    @BindView(R.id.vp_person)
-    lateinit var mViewPager: ViewPager
-
-    @BindView(R.id.tabLayout)
-    lateinit var mTabLayout: TabLayout
-
-    @OnCheckedChanged(R.id.sch_fav)
-    fun onFavSwitch(checked:Boolean){
-        mPerson.isFav = checked
-    }
-
-    lateinit var mPerson:Person
+    private lateinit var mPerson:Person
     lateinit var mContext:CultivationActivity
-    lateinit var mDialogView:DialogView
     private val mFragments:MutableList<Fragment> = mutableListOf()
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
@@ -152,17 +71,76 @@ class FragmentDialogPerson : DialogFragment() {
     private var showSS:Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_dialog_persion, container, false)
+                              savedInstanceState: Bundle?): View {
+        _binding = FragmentDialogPersionBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
-        mDialogView = DialogView(view)
         init()
+        initListener()
     }
 
+    private fun initListener(){
+
+        binding.btnClose.setOnClickListener {
+            onCloseHandler()
+        }
+        binding.tvLingGen.setOnClickListener {
+            val prop = mPerson.extraProperty.joinToString()
+            Toast.makeText(mContext, prop, Toast.LENGTH_SHORT).show()
+        }
+        binding.tvPartner.setOnClickListener {
+            val partner = mContext.getOnlinePersonDetail(mPerson.partner)
+            if(partner != null){
+                openPersonDetail(partner.id)
+                onCloseHandler()
+            }else{
+                Toast.makeText(mContext, mPerson.partnerName ?: "", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.tvParentDad.setOnClickListener {
+            val person = mContext.getOnlinePersonDetail(mPerson.parent?.first)
+            if(person != null){
+                openPersonDetail(person.id)
+                onCloseHandler()
+            }else{
+                Toast.makeText(mContext, mPerson.parentName?.first ?: "", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.tvParentMum.setOnClickListener {
+            val person = mContext.getOnlinePersonDetail(mPerson.parent?.second)
+            if(person != null){
+                openPersonDetail(person.id)
+                onCloseHandler()
+            }else{
+                Toast.makeText(mContext, mPerson.parentName?.second ?: "", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.tvWinner.setOnClickListener {
+            val ft = mContext.supportFragmentManager.beginTransaction()
+            val newFragment = FragmentDialogRank.newInstance(6, mPerson.id)
+            newFragment.isCancelable = false
+            newFragment.show(ft, "dialog_rank_info")
+        }
+        binding.ivProfile.setOnClickListener {
+            if (mPerson.profile == 0)
+                return@setOnClickListener
+            val ft = mContext.supportFragmentManager.beginTransaction()
+            val newFragment = FragmentDialogImage.newInstance(mPerson.profile.toString(), mPerson.gender)
+            newFragment.isCancelable = true
+            newFragment.show(ft, "dialog_image")
+        }
+        binding.schFav.setOnCheckedChangeListener { _, isChecked ->
+            mPerson.isFav = isChecked
+        }
+    }
 //   // RelativeLayout 需要
 //    override fun onResume() {
 //        super.onResume()
@@ -174,9 +152,14 @@ class FragmentDialogPerson : DialogFragment() {
 //        }
 //    }
 
+    fun onCloseHandler(){
+        mThreadRunnable = false
+        this.dismiss()
+    }
+
     fun init(){
         mContext = activity as CultivationActivity
-        val id = this.arguments!!.getString("id", "")
+        val id = requireArguments().getString("id", "")
         val person = mContext.getPersonData(id)
         if(person == null){
             onCloseHandler()
@@ -185,12 +168,13 @@ class FragmentDialogPerson : DialogFragment() {
         val skin = CultivationHelper.getSkinObject(person.skin)
         if (skin != null){
             if (!skin.animated){
-                mDialogView.measures.background = ColorDrawable(Color.TRANSPARENT)
+                binding.llParentMeasure.background = ColorDrawable(Color.TRANSPARENT)
                 dialog?.window?.setBackgroundDrawableResource(CultivationHelper.getResouresId(resources, skin.resource))
             }else{
-                val animate = mContext.getDrawable(CultivationHelper.getResouresId(resources, skin.resource)) as AnimationDrawable
+                val animate = AppCompatResources.getDrawable(requireContext(),CultivationHelper.getResouresId(resources, skin.resource)) as AnimationDrawable
+                //mContext.getDrawable(CultivationHelper.getResouresId(resources, skin.resource)) as AnimationDrawable
                 dialog?.window?.setBackgroundDrawable(animate)
-                mDialogView.measures.background = ColorDrawable(Color.TRANSPARENT)
+                binding.llParentMeasure.background = ColorDrawable(Color.TRANSPARENT)
                 animate.start()
             }
         }
@@ -203,7 +187,7 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread{
             while (true){
                 Thread.sleep(2000)
                 if(mThreadRunnable){
@@ -212,7 +196,7 @@ class FragmentDialogPerson : DialogFragment() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     private val innerCallback = object:IViewpageCallback{
@@ -254,15 +238,13 @@ class FragmentDialogPerson : DialogFragment() {
         mFragments.add(follower)
         mFragments.add(his)
         val title = mutableListOf("Eq.", "In.", "Tj.", "Fw.", "Ev.")
-        mViewPager.adapter = PersonPagerAdapter(childFragmentManager, mFragments, title)
-        mViewPager.currentItem = 0
-
-        mTabLayout.setupWithViewPager(mViewPager)
-
+        binding.vpPerson.adapter = PersonPagerAdapter(childFragmentManager, mFragments, title)
+        binding.vpPerson.currentItem = 0
+        binding.tabLayout.setupWithViewPager(binding.vpPerson)
     }
 
     private fun updateViewPager(){
-        if(mViewPager.currentItem == 4){
+        if(binding.vpPerson.currentItem == 4){
             val fragment:FragmentPersonEvent = mFragments[4] as FragmentPersonEvent
             fragment.updateEvent()
         }
@@ -271,11 +253,11 @@ class FragmentDialogPerson : DialogFragment() {
     fun setProfile(){
         val profileFrame = CultivationHelper.getProfileFrame(mPerson, mContext.mClans)
         if(profileFrame.first != -1){
-            mDialogView.profileBorder.background = mContext.getDrawable(profileFrame.first)
-            mDialogView.profileBorder.backgroundTintList = if(profileFrame.second != -1) ColorStateList.valueOf(profileFrame.second) else null
+            binding.llProfile.background = AppCompatResources.getDrawable(requireContext(), profileFrame.first)
+            binding.llProfile.backgroundTintList = if(profileFrame.second != -1) ColorStateList.valueOf(profileFrame.second) else null
         }else{
-            mDialogView.profileBorder.background = null
-            mDialogView.profileBorder.backgroundTintList = null
+            binding.llProfile.background = null
+            binding.llProfile.backgroundTintList = null
         }
 
         var profile = mPerson.profile
@@ -283,22 +265,39 @@ class FragmentDialogPerson : DialogFragment() {
             profile = 0
         }
         try {
-            val imageDir = File(Environment.getExternalStorageDirectory(),
-                    MConfig.SD_CULTIVATION_HEADER_PATH + "/" + mPerson.gender)
+            val imageDir = requireActivity().getExternalFilesDir(
+                    MConfig.SD_CULTIVATION_HEADER_PATH + "/" + mPerson.gender) ?: return
             var file = File(imageDir.path, "$profile.png")
             if (!file.exists()) {
                 file = File(imageDir.path, "$profile.jpg")
             }
             if (file.exists()) {
-                val bmp = MediaStore.Images.Media.getBitmap(mContext.contentResolver, Uri.fromFile(file))
+                val source = ImageDecoder.createSource(requireContext().contentResolver, Uri.fromFile(file))
                 if(profileFrame.third != -1){
-                    mDialogView.profile.setImageBitmap(CommonUtil.toRoundBitmap(bmp))
-                    mDialogView.profile.setPadding(profileFrame.third,profileFrame.third,profileFrame.third,profileFrame.third)
+                    val decoder = ImageDecoder.decodeDrawable(source) { decoder, _, _ ->
+                        val path = Path().apply {
+                            fillType = Path.FillType.INVERSE_EVEN_ODD
+                        }
+                        val paint = Paint().apply {
+                            isAntiAlias = true
+                            color = Color.TRANSPARENT
+                            xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
+                        }
+                        decoder.setPostProcessor { canvas ->
+                            val length = min(canvas.width.toFloat(),canvas.height.toFloat())
+                            val direction = Path.Direction.CW
+                            path.addRoundRect(0f, 0f, length, length, length / 2, length / 2, direction)
+                            canvas.drawPath(path, paint)
+                            PixelFormat.TRANSLUCENT
+                        }
+                    }
+                    binding.ivProfile.setImageDrawable(decoder)
+                    binding.ivProfile.setPadding(profileFrame.third,profileFrame.third,profileFrame.third,profileFrame.third)
                 }
                 else
-                    mDialogView.profile.setImageBitmap(bmp)
+                    binding.ivProfile.setImageBitmap(ImageDecoder.decodeBitmap(source))
             } else
-                mDialogView.profile.setImageBitmap(null)
+                binding.ivProfile.setImageBitmap(null)
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -310,9 +309,9 @@ class FragmentDialogPerson : DialogFragment() {
         val tianFus = mPerson.tianfuList
         if(tianFus.isNotEmpty()){
 
-            mDialogView.measures.measure(0,0)
-            mDialogView.tianfu.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
-            mDialogView.tianfu.setCallback(object : TextViewBox.Callback {
+            binding.llParentMeasure.measure(0,0)
+            binding.llTianfu.setConfig(TextViewBox.TextViewBoxConfig(binding.llParentMeasure.measuredWidth - 100))
+            binding.llTianfu.setCallback(object : TextViewBox.Callback {
                 override fun onClick(index: Int) {
                     val data = tianFus[index]
                     val text = when (data.type) {
@@ -326,7 +325,7 @@ class FragmentDialogPerson : DialogFragment() {
                     Toast.makeText(context, "${text}增加${data.bonus}", Toast.LENGTH_SHORT).show()
                 }
             })
-            mDialogView.tianfu.setDataProvider(
+            binding.llTianfu.setDataProvider(
                     tianFus.map { getTianFuName(it) },
                     tianFus.map { CommonColors[it.rarity] })
 
@@ -334,12 +333,12 @@ class FragmentDialogPerson : DialogFragment() {
 
         val labels = mPerson.label
         if(labels.isNotEmpty()){
-            mDialogView.measures.measure(0,0)
-            mDialogView.label.setConfig(TextViewBox.TextViewBoxConfig(mDialogView.measures.measuredWidth - 100))
-            mDialogView.label.setDataProvider(
+            binding.llParentMeasure.measure(0,0)
+            binding.llLabel.setConfig(TextViewBox.TextViewBoxConfig(binding.llParentMeasure.measuredWidth - 100))
+            binding.llLabel.setDataProvider(
                     labels.map { getLabelName(CultivationHelper.mConfig.label.find { l -> l.id == it }!!.copy())},
                     labels.map { CommonColors[CultivationHelper.mConfig.label.find { l -> l.id == it }!!.copy().rarity] })
-            mDialogView.label.setCallback(object : TextViewBox.Callback {
+            binding.llLabel.setCallback(object : TextViewBox.Callback {
                 override fun onClick(index: Int) {
                     val data = CultivationHelper.mConfig.label.find { it.id == labels[index] }!!
                     Toast.makeText(context, data.toString(), Toast.LENGTH_SHORT).show()
@@ -361,9 +360,7 @@ class FragmentDialogPerson : DialogFragment() {
         return ""
     }
 
-    fun getLabelName(label:Label):String{
-//        val tejiString = if (label.teji.size > 0) "+" else  ""
-//        val followerString = if (label.follower.size > 0) "#" else  ""
+    private fun getLabelName(label:Label):String{
         return CultivationHelper.showing(label.name)
     }
 
@@ -379,23 +376,23 @@ class FragmentDialogPerson : DialogFragment() {
         if(mContext.getOnlinePersonDetail(mPerson.id) == null){
             mThreadRunnable = false
         }
-        mSwitchFav.isChecked = mPerson.isFav
-        mDialogView.name.text ="${CultivationHelper.showing(getName())}${CultivationHelper.showLifeTurn(mPerson)}${CultivationHelper.showAncestorLevel(mPerson)}"
+        binding.schFav.isChecked = mPerson.isFav
+        binding.tvName.text ="${CultivationHelper.showing(getName())}${CultivationHelper.showLifeTurn(mPerson)}${CultivationHelper.showAncestorLevel(mPerson)}"
         setFamily()
-        mDialogView.alliance.text = CultivationHelper.showing(mPerson.allianceName)
-        mDialogView.age.text = "${getGender()}${CultivationHelper.talentValue(mPerson)}${if(CultivationHelper.isTalent(mPerson)) "⭐" else ""}/${CultivationHelper.showAgeRemained(mPerson)}"
-        mDialogView.career.text = mPerson.careerList.joinToString()
-        mDialogView.props.text = getProperty()
-        mDialogView.winner.text = "${mPerson.battleWinner}-${mPerson.battlexiuwei}↑"
-        mDialogView.clan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.nickName ?: "")
-        mDialogView.jingjie.text = CultivationHelper.showing(mPerson.jinJieName)
-        mDialogView.jingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
-        mDialogView.xiuweiAdd.text =  "${CultivationHelper.getXiuweiGrow(mPerson)}"
-        mDialogView.success.text = "↑${CultivationHelper.getTotalSuccess(mPerson)}"
-        mDialogView.xiuweiAdd.setTextColor(Color.parseColor(CommonColors[1]))
-        mDialogView.success.setTextColor(Color.parseColor(CommonColors[1]))
-        mDialogView.lingGen.text = CultivationHelper.showing(mPerson.lingGenName)
-        mDialogView.lingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenDetail.color]))
+        binding.tvAlliance.text = CultivationHelper.showing(mPerson.allianceName)
+        binding.tvAge.text = "${getGender()}${CultivationHelper.talentValue(mPerson)}${if(CultivationHelper.isTalent(mPerson)) "⭐" else ""}/${CultivationHelper.showAgeRemained(mPerson)}"
+        binding.tvCareer.text = mPerson.careerList.joinToString()
+        binding.tvProps.text = getProperty()
+        binding.tvWinner.text = "${mPerson.battleWinner}-${mPerson.battlexiuwei}↑"
+        binding.tvClan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.nickName ?: "")
+        binding.tvJingjie.text = CultivationHelper.showing(mPerson.jinJieName)
+        binding.tvJingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
+        binding.tvXiuweiAdd.text =  "${CultivationHelper.getXiuweiGrow(mPerson)}"
+        binding.tvSuccess.text = "↑${CultivationHelper.getTotalSuccess(mPerson)}"
+        binding.tvXiuweiAdd.setTextColor(Color.parseColor(CommonColors[1]))
+        binding.tvSuccess.setTextColor(Color.parseColor(CommonColors[1]))
+        binding.tvLingGen.text = CultivationHelper.showing(mPerson.lingGenName)
+        binding.tvLingGen.setTextColor(Color.parseColor(CommonColors[mPerson.lingGenDetail.color]))
 
         updateViewPager()
     }
@@ -410,12 +407,12 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     private fun setFamily(){
-        setRelationName(mDialogView.partner, mPerson.partnerName, mContext.getOnlinePersonDetail(mPerson.partner), mDialogView.symbol3, mDialogView.symbol4)
-        setRelationName(mDialogView.parentDad, mPerson.parentName?.first, mContext.getOnlinePersonDetail(mPerson.parent?.first),  mDialogView.symbol1, null)
-        setRelationName(mDialogView.parentMum, mPerson.parentName?.second, mContext.getOnlinePersonDetail(mPerson.parent?.second), mDialogView.symbol2, null)
+        setRelationName(binding.tvPartner, mPerson.partnerName, mContext.getOnlinePersonDetail(mPerson.partner), binding.tvSymbol3, binding.tvSymbol4)
+        setRelationName(binding.tvParentDad, mPerson.parentName?.first, mContext.getOnlinePersonDetail(mPerson.parent?.first),  binding.tvSymbol1, null)
+        setRelationName(binding.tvParentMum, mPerson.parentName?.second, mContext.getOnlinePersonDetail(mPerson.parent?.second), binding.tvSymbol2, null)
 
         val children = mPerson.children.mapNotNull { mContext.getOnlinePersonDetail(it) }
-        mDialogView.children.removeAllViews()
+        binding.llChildren.removeAllViews()
         if(children.isNotEmpty()){
             children.forEach {
                 val person = it
@@ -429,10 +426,10 @@ class FragmentDialogPerson : DialogFragment() {
                 val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 layoutParams.marginEnd = 5
                 textView.layoutParams = layoutParams
-                mDialogView.children.addView(textView)
+                binding.llChildren.addView(textView)
             }
         }
-        mDialogView.children.visibility = if(children.isNotEmpty()) View.VISIBLE else View.GONE
+        binding.llChildren.visibility = if(children.isNotEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun setRelationName(text:TextView, name:String?, person: Person?, symbol1:TextView?, symbol2:TextView?){
@@ -463,7 +460,6 @@ class FragmentDialogPerson : DialogFragment() {
 
     private fun openPersonDetail(id:String){
         val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
         val newFragment = newInstance()
         newFragment.isCancelable = false
         val bundle = Bundle()
@@ -472,85 +468,7 @@ class FragmentDialogPerson : DialogFragment() {
         newFragment.show(ft, "dialog_person_info")
     }
 
-    class DialogView constructor(view: View){
 
-        @BindView(R.id.tv_name)
-        lateinit var name:TextView
-
-        @BindView(R.id.iv_profile)
-        lateinit var profile:ImageView
-
-        @BindView(R.id.tv_partner)
-        lateinit var partner:TextView
-
-        @BindView(R.id.tv_parent_dad)
-        lateinit var parentDad:TextView
-
-        @BindView(R.id.tv_parent_mum)
-        lateinit var parentMum:TextView
-
-        @BindView(R.id.ll_children)
-        lateinit var children: LinearLayout
-
-        @BindView(R.id.tv_alliance)
-        lateinit var alliance:TextView
-
-        @BindView(R.id.tv_age)
-        lateinit var age:TextView
-
-        @BindView(R.id.tv_jingjie)
-        lateinit var jingjie:TextView
-
-        @BindView(R.id.tv_success)
-        lateinit var success:TextView
-
-        @BindView(R.id.tv_lingGen)
-        lateinit var lingGen:TextView
-
-        @BindView(R.id.ll_tianfu)
-        lateinit var tianfu:TextViewBox
-
-        @BindView(R.id.ll_label)
-        lateinit var label:TextViewBox
-
-        @BindView(R.id.tv_xiuwei_add)
-        lateinit var xiuweiAdd:TextView
-
-        @BindView(R.id.tv_career)
-        lateinit var career:TextView
-
-        @BindView(R.id.tv_clan)
-        lateinit var clan:TextView
-
-        @BindView(R.id.tv_winner)
-        lateinit var winner:TextView
-
-        @BindView(R.id.tv_props)
-        lateinit var props:TextView
-
-        @BindView(R.id.tv_symbol1)
-        lateinit var symbol1:TextView
-
-        @BindView(R.id.tv_symbol2)
-        lateinit var symbol2:TextView
-
-        @BindView(R.id.tv_symbol3)
-        lateinit var symbol3:TextView
-
-        @BindView(R.id.tv_symbol4)
-        lateinit var symbol4:TextView
-
-        @BindView(R.id.ll_parent_measure)
-        lateinit var measures:LinearLayout
-
-        @BindView(R.id.ll_profile)
-        lateinit var profileBorder:LinearLayout
-
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-    }
 
     interface IViewpageCallback{
         fun update(type:Int, params:String = "")
