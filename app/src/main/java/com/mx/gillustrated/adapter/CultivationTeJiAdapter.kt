@@ -77,7 +77,7 @@ class CultivationTeJiAdapter constructor(mContext: Context, private val list: Li
     }
 
     interface TeJiAdapterCallback {
-        fun onDeleteHandler(teJi: TeJi)
+        fun onDeleteHandler(item: TeJi)
     }
 
 }

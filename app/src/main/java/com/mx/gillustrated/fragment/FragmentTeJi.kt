@@ -1,79 +1,67 @@
 package com.mx.gillustrated.fragment
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Range
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ListView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationTeJiAdapter
-import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationHelper.mConfig
-import com.mx.gillustrated.component.CultivationSetting
-import com.mx.gillustrated.dialog.FragmentDialogEquipment
+import com.mx.gillustrated.databinding.FragmentVpTejiBinding
 import com.mx.gillustrated.dialog.FragmentDialogTeJi
-import com.mx.gillustrated.vo.cultivation.Equipment
 import com.mx.gillustrated.vo.cultivation.Person
 import com.mx.gillustrated.vo.cultivation.TeJi
 
-@RequiresApi(Build.VERSION_CODES.N)
+
 class FragmentTeJi: Fragment() {
 
-    private val mConfigTeji = CultivationHelper.mConfig.teji
-
-    @BindView(R.id.lv_teji)
-    lateinit var mListView: ListView
-
-
-    @OnClick(R.id.btn_add_teji)
-    fun onAddClickHandler(){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogTeJi.
-                newInstance( object : FragmentDialogTeJi.TeJiSelectorCallback{
-                    override fun onItemSelected(teJi: TeJi) {
-                        updateTeji(teJi)
-                    }
-                }, 1)
-        newFragment.isCancelable = true
-        newFragment.show(ft, "dialog_teji")
-    }
-
+    private val mConfigTeji = mConfig.teji
+    private var _binding: FragmentVpTejiBinding? = null
+    private val binding get() = _binding!!
     lateinit var mContext: CultivationActivity
     lateinit var mPerson: Person
     private val mTeJi: MutableList<TeJi> = mutableListOf()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_vp_teji, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentVpTejiBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
         mContext = activity as CultivationActivity
         init()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     fun init(){
-        val id = this.arguments!!.getString("id", "")
+        val id = requireArguments().getString("id", "")
         mPerson = mContext.getPersonData(id)!!
-        mListView.adapter = CultivationTeJiAdapter(this.context!!, mTeJi, object : CultivationTeJiAdapter.TeJiAdapterCallback {
-            override fun onDeleteHandler(teji: TeJi) {
+        binding.lvTeji.adapter = CultivationTeJiAdapter(requireContext(), mTeJi, object : CultivationTeJiAdapter.TeJiAdapterCallback {
+            override fun onDeleteHandler(item: TeJi) {
                 mPerson.teji.removeIf {
-                    it == teji.id && teji.form == 0
+                    it == item.id && item.form == 0
                 }
                 updateList()
             }
         })
+        binding.btnAddTeji.setOnClickListener {
+            val ft = mContext.supportFragmentManager.beginTransaction()
+            val newFragment = FragmentDialogTeJi.
+            newInstance( object : FragmentDialogTeJi.TeJiSelectorCallback{
+                override fun onItemSelected(item: TeJi) {
+                    updateTeji(item)
+                }
+            }, 1)
+            newFragment.isCancelable = true
+            newFragment.show(ft, "dialog_teji")
+        }
         updateList()
     }
 
@@ -117,8 +105,8 @@ class FragmentTeJi: Fragment() {
         tejis.sortByDescending { it.rarity }
         mTeJi.clear()
         mTeJi.addAll(tejis)
-        (mListView.adapter as BaseAdapter).notifyDataSetChanged()
-        mListView.invalidateViews()
+        (binding.lvTeji.adapter as BaseAdapter).notifyDataSetChanged()
+        binding.lvTeji.invalidateViews()
     }
 
     fun updateTeji(teJi: TeJi){

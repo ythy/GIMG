@@ -1,72 +1,62 @@
 package com.mx.gillustrated.fragment
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.util.Range
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationEquipmentAdapter
 import com.mx.gillustrated.component.CultivationHelper
+import com.mx.gillustrated.databinding.FragmentVpEquipmentBinding
 import com.mx.gillustrated.dialog.FragmentDialogEquipment
 import com.mx.gillustrated.dialog.FragmentDialogRank
 import com.mx.gillustrated.vo.cultivation.Equipment
 import com.mx.gillustrated.vo.cultivation.EquipmentConfig
 import com.mx.gillustrated.vo.cultivation.Person
 
-@RequiresApi(Build.VERSION_CODES.N)
+
 class FragmentEquipment: Fragment() {
 
-    @BindView(R.id.lv_equipment)
-    lateinit var mListView: ExpandableListView
-
-    @BindView(R.id.tv_genre)
-    lateinit var mGenre: TextView
-
-
-    @OnClick(R.id.btn_add_equipment_bao)
-    fun onAddBaoClickHandler(){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogEquipment.
-                newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
-                    override fun onItemSelected(equipment: EquipmentConfig) {
-                        updateEquipment(equipment)
-                    }
-                }, mutableListOf(9))
-        newFragment.isCancelable = true
-        newFragment.show(ft, "dialog_equipment")
-    }
-
-
+    private var _binding: FragmentVpEquipmentBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
     lateinit var mContext: CultivationActivity
     lateinit var mPerson: Person
     private val mEquipmentGroups: MutableList<Equipment> = mutableListOf()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_vp_equipment, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentVpEquipmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
         mContext = activity as CultivationActivity
         init()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     fun init(){
-        val id = this.arguments!!.getString("id", "")
+        val id = requireArguments().getString("id", "")
         mPerson = mContext.getPersonData(id)!!
-        mGenre.text = mPerson.genres.mapNotNull { CultivationHelper.mConfig.genre.find { f-> f.id == it } }.joinToString{ it.name }
+        binding.tvGenre.text = mPerson.genres.mapNotNull { CultivationHelper.mConfig.genre.find { f-> f.id == it } }.joinToString{ it.name }
+        binding.btnAddEquipmentBao.setOnClickListener {
+            val ft = mContext.supportFragmentManager.beginTransaction()
+            val newFragment = FragmentDialogEquipment.
+            newInstance( object : FragmentDialogEquipment.EquipmentSelectorCallback{
+                override fun onItemSelected(equipment: EquipmentConfig) {
+                    updateEquipment(equipment)
+                }
+            }, mutableListOf(9))
+            newFragment.isCancelable = true
+            newFragment.show(ft, "dialog_equipment")
+        }
         updateList()
     }
 
@@ -99,7 +89,7 @@ class FragmentEquipment: Fragment() {
         mEquipmentGroups.addAll(groups)
         mEquipmentGroups.addAll(tipsEquipment)
 
-        mListView.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
+        binding.lvEquipment.setAdapter(CultivationEquipmentAdapter(requireContext(), mEquipmentGroups, object : CultivationEquipmentAdapter.EquipmentAdapterCallback {
 
             override fun onOpenDetailList(equipment: Equipment) {
                 openRankDialog(equipment.id)

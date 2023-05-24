@@ -70,6 +70,6 @@ class FragmentDialogTeJi constructor(private val callback:TeJiSelectorCallback, 
     }
 
     interface TeJiSelectorCallback{
-        fun onItemSelected(teji: TeJi)
+        fun onItemSelected(item: TeJi)
     }
 }
