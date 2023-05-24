@@ -1,30 +1,19 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ListView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import butterknife.OnItemClick
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationClanListAdapter
+import com.mx.gillustrated.databinding.FragmentDialogClanListBinding
 import com.mx.gillustrated.vo.cultivation.Clan
 import java.lang.ref.WeakReference
 
-@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class FragmentDialogClanList  : DialogFragment() {
 
@@ -34,7 +23,7 @@ class FragmentDialogClanList  : DialogFragment() {
             return FragmentDialogClanList()
         }
 
-        class TimeHandler constructor(val context: FragmentDialogClanList): Handler(){
+        class TimeHandler constructor(val context: FragmentDialogClanList): Handler(Looper.getMainLooper()){
 
             private val reference: WeakReference<FragmentDialogClanList> = WeakReference(context)
 
@@ -49,58 +38,69 @@ class FragmentDialogClanList  : DialogFragment() {
 
     }
 
-    @BindView(R.id.lv_clan)
-    lateinit var mListView: ListView
+//    @BindView(R.id.lv_clan)
+//    lateinit var mListView: ListView
+//
+//    @BindView(R.id.tv_total)
+//    lateinit var mTotalText: TextView
 
-    @BindView(R.id.tv_total)
-    lateinit var mTotalText: TextView
 
 
-    @OnClick(R.id.btn_close)
-    fun onCloseHandler(){
-        mThreadRunnable = false
-        this.dismiss()
-    }
 
-    @OnItemClick(R.id.lv_clan)
-    fun onItemClick(position:Int){
-        if(mClanListData[position].clanPersonList.map { it.value }.count() == 0){
-            Toast.makeText(mContext, "size 0", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogClan.newInstance()
-        newFragment.isCancelable = false
-
-        val bundle = Bundle()
-        bundle.putString("id", mClanListData[position].id)
-        newFragment.arguments = bundle
-        newFragment.show(ft, "dialog_clan_info")
-    }
+    private var _binding: FragmentDialogClanListBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     lateinit var mContext: CultivationActivity
-    var mClanListData: MutableList<Clan> = mutableListOf()
+    private var mClanListData: MutableList<Clan> = mutableListOf()
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_dialog_clan_list, container, false)
-        mContext = activity as CultivationActivity
-        ButterKnife.bind(this, v)
-        return v
+                              savedInstanceState: Bundle?): View {
+        _binding = FragmentDialogClanListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mListView.adapter = CultivationClanListAdapter(this.context!!, mClanListData)
+        mContext = activity as CultivationActivity
+        binding.lvClan.adapter = CultivationClanListAdapter(requireContext(), mClanListData)
+        initListener()
         updateView()
         registerTimeLooper()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initListener(){
+        binding.btnClose.setOnClickListener {
+            mThreadRunnable = false
+            this.dismiss()
+        }
+        binding.lvClan.setOnItemClickListener { _, _, position, _ ->
+            if(mClanListData[position].clanPersonList.map { it.value }.isEmpty()){
+                Toast.makeText(mContext, "size 0", Toast.LENGTH_SHORT).show()
+                return@setOnItemClickListener
+            }
+            val ft = mContext.supportFragmentManager.beginTransaction()
+            val newFragment = FragmentDialogClan.newInstance()
+            newFragment.isCancelable = false
+            val bundle = Bundle()
+            bundle.putString("id", mClanListData[position].id)
+            newFragment.arguments = bundle
+            newFragment.show(ft, "dialog_clan_info")
+        }
+
+
+    }
+
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread{
             while (true){
                 Thread.sleep(2000)
                 if(mThreadRunnable){
@@ -109,18 +109,18 @@ class FragmentDialogClanList  : DialogFragment() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     fun updateView(){
         mClanListData.clear()
         mContext.mClans.forEach {
-            it.value.totalXiuwei = it.value.clanPersonList.map { c->c.value }.sumByDouble { s-> s.lifeTurn.toDouble() }.toLong()
+            it.value.totalXiuwei = it.value.clanPersonList.map { c->c.value }.sumOf { s-> s.lifeTurn.toDouble() }.toLong()
         }
         mClanListData.addAll(mContext.mClans.map { it.value })
         mClanListData.sortByDescending { it.totalXiuwei }
-        (mListView.adapter as BaseAdapter).notifyDataSetChanged()
-        mListView.invalidateViews()
-        mTotalText.text = mClanListData.size.toString()
+        (binding.lvClan.adapter as BaseAdapter).notifyDataSetChanged()
+        binding.lvClan.invalidateViews()
+        binding.tvTotal.text = mClanListData.size.toString()
     }
 }

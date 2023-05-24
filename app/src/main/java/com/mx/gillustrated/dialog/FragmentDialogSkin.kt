@@ -4,16 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
-import com.mx.gillustrated.activity.MainActivity
+import com.mx.gillustrated.databinding.FragmentDialogSkinBinding
 
 class FragmentDialogSkin : DialogFragment() {
 
@@ -23,39 +17,25 @@ class FragmentDialogSkin : DialogFragment() {
         }
     }
 
-    var mOldSkinIndex = 0
-
-    @BindView(R.id.spinnerSkin)
-    lateinit var mSpinner:Spinner
-
-    @OnClick(R.id.btnSave)
-    fun onSaveClick(){
-        val context = activity as CultivationActivity
-        val currentSelectIndex = mSpinner.selectedItemPosition
-        if(mOldSkinIndex == currentSelectIndex){
-            Toast.makeText(context, "没有变化", Toast.LENGTH_SHORT).show()
-            return
-        }
-        when (currentSelectIndex){
-            0-> context.mSP.edit().putString("cultivation_skin", "spring").apply()
-            1-> context.mSP.edit().putString("cultivation_skin", "rain").apply()
-            2-> context.mSP.edit().putString("cultivation_skin", "equinox").apply()
-            3-> context.mSP.edit().putString("cultivation_skin", "grain_rain").apply()
-            4-> context.mSP.edit().putString("cultivation_skin", "grain_rain2").apply()
-            5-> context.mSP.edit().putString("cultivation_skin", "grain_rain3").apply()
-            6-> context.mSP.edit().putString("cultivation_skin", "summer_begin").apply()
-        }
-        context.loadSkin()
-        this.dismiss()
-    }
+    private var mOldSkinIndex = 0
+    private var _binding: FragmentDialogSkinBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        val v = inflater.inflate(R.layout.fragment_dialog_skin, container, false)
-        ButterKnife.bind(this, v)
+                              savedInstanceState: Bundle?): View {
+        _binding =  FragmentDialogSkinBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         init()
-        return v
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun init(){
@@ -70,7 +50,26 @@ class FragmentDialogSkin : DialogFragment() {
             "grain_rain3" -> selectIndex = 5
             "summer_begin" -> selectIndex = 6
         }
-        mSpinner.setSelection(selectIndex)
+        binding.spinnerSkin.setSelection(selectIndex)
         mOldSkinIndex = selectIndex
+        binding.btnSave.setOnClickListener {
+            val currentSelectIndex = binding.spinnerSkin.selectedItemPosition
+            if(mOldSkinIndex == currentSelectIndex){
+                Toast.makeText(context, "没有变化", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            when (currentSelectIndex){
+                0-> context.mSP.edit().putString("cultivation_skin", "spring").apply()
+                1-> context.mSP.edit().putString("cultivation_skin", "rain").apply()
+                2-> context.mSP.edit().putString("cultivation_skin", "equinox").apply()
+                3-> context.mSP.edit().putString("cultivation_skin", "grain_rain").apply()
+                4-> context.mSP.edit().putString("cultivation_skin", "grain_rain2").apply()
+                5-> context.mSP.edit().putString("cultivation_skin", "grain_rain3").apply()
+                6-> context.mSP.edit().putString("cultivation_skin", "summer_begin").apply()
+            }
+            context.loadSkin()
+            this.dismiss()
+        }
+
     }
 }

@@ -1,24 +1,19 @@
 package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.graphics.Color
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
-import butterknife.*
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
+import com.mx.gillustrated.databinding.FragmentDialogPersionListBinding
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
@@ -29,7 +24,6 @@ import java.util.*
 //type 4 persons has amulet
 //type 5 persons has label
 //type 6 persons set skin
-@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("SetTextI18n")
 class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFragment() {
 
@@ -39,11 +33,10 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             return FragmentDialogPersonList(type)
         }
 
-        class TimeHandler constructor(val context: FragmentDialogPersonList): Handler(){
+        class TimeHandler constructor(val context: FragmentDialogPersonList): Handler(Looper.getMainLooper()){
 
             private val reference: WeakReference<FragmentDialogPersonList> = WeakReference(context)
 
-            @TargetApi(Build.VERSION_CODES.N)
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val dialog = reference.get()
@@ -54,95 +47,37 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
         }
     }
 
-    @BindView(R.id.lv_person)
-    lateinit var mListView: ListView
+//    @BindView(R.id.lv_person)
+//    lateinit var mListView: ListView
+//
+//    @BindView(R.id.tv_total)
+//    lateinit var mTotalText: TextView
+//
+//    @BindView(R.id.btn_switch)
+//    lateinit var mSwitchBtn: Button
+//
+//    @BindView(R.id.btn_be)
+//    lateinit var mBe: Button
+//
+//    @BindView(R.id.btn_clear)
+//    lateinit var mClear: Button
+//
+//    @BindView(R.id.btn_sort_t)
+//    lateinit var mBtnLifeturn: Button
+//
+//    @BindView(R.id.btn_sort_x)
+//    lateinit var mBtnXiuwei: Button
+//
+//    @BindView(R.id.btn_sort_b)
+//    lateinit var mBtnBattle: Button
+//
+//    @BindView(R.id.et_name)
+//    lateinit var etName:EditText
 
-    @BindView(R.id.tv_total)
-    lateinit var mTotalText: TextView
-
-    @BindView(R.id.btn_switch)
-    lateinit var mSwitchBtn: Button
-
-    @BindView(R.id.btn_be)
-    lateinit var mBe: Button
-
-    @BindView(R.id.btn_clear)
-    lateinit var mClear: Button
-
-    @BindView(R.id.btn_sort_t)
-    lateinit var mBtnLifeturn: Button
-
-    @BindView(R.id.btn_sort_x)
-    lateinit var mBtnXiuwei: Button
-
-    @BindView(R.id.btn_sort_b)
-    lateinit var mBtnBattle: Button
-
-    @OnClick(R.id.btn_sort_t, R.id.btn_sort_x, R.id.btn_sort_b)
-    fun onSortHandler(btn:Button){
-        mBtnLifeturn.setTextColor(mContext.getColor(R.color.color_blue))
-        mBtnXiuwei.setTextColor(mContext.getColor(R.color.color_blue))
-        mBtnBattle.setTextColor(mContext.getColor(R.color.color_blue))
-        btn.setTextColor(Color.parseColor("white"))
-        mSort = btn.tag.toString()
-        setOnlineList()
-    }
-
-
-    @OnClick(R.id.btn_close)
-    fun onCloseHandler(){
-        mThreadRunnable = false
-        this.dismiss()
-    }
-
-    @OnClick(R.id.btn_be)
-    fun onBeClickHandler(){
-       mContext.bePerson()
-    }
-
-    @OnClick(R.id.btn_clear)
-    fun onClearClickHandler(){
-        mContext.mDeadPersons.clear()
-    }
-
-    @OnClick(R.id.btn_switch)
-    fun onSwitchClickHandler(){
-        if (mType > 0)
-            return
-        val tag = mSwitchBtn.tag
-        if(tag == "ON"){
-            mSwitchBtn.text = "offline"
-            mSwitchBtn.tag = "OFF"
-            mBe.visibility = View.VISIBLE
-            mClear.visibility = View.VISIBLE
-            setOfflineList()
-        }else{
-            mSwitchBtn.text = "online"
-            mSwitchBtn.tag = "ON"
-            mBe.visibility = View.GONE
-            mClear.visibility = View.GONE
-            setOnlineList()
-        }
-    }
-
-
-
-    @OnItemClick(R.id.lv_person)
-    fun onItemClick(position:Int){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogPerson.newInstance()
-        newFragment.isCancelable = false
-        val person = mPersonData[position]
-        val bundle = Bundle()
-        bundle.putString("id", person.id)
-        newFragment.arguments = bundle
-        newFragment.show(ft, "dialog_person_info")
-    }
-
-    @BindView(R.id.et_name)
-    lateinit var etName:EditText
-
+    private var _binding: FragmentDialogPersionListBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     lateinit var mContext:CultivationActivity
     private var mThreadRunnable:Boolean = true
@@ -150,26 +85,93 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     private var mSort = "T"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_dialog_persion_list, container, false)
-        mContext = activity as CultivationActivity
-        ButterKnife.bind(this, v)
-        return v
+                              savedInstanceState: Bundle?): View {
+        _binding = FragmentDialogPersionListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mContext = activity as CultivationActivity
         init()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun init(){
-        mListView.adapter =  CultivationPersonListAdapter(this.context!!, mPersonData, false, false)
+        binding.lvPerson.adapter =  CultivationPersonListAdapter(requireContext(), mPersonData, showStar = false, showSpecEquipment = false)
         updateList()
+        initListener()
         registerTimeLooper()
     }
 
+    private fun sortBtnHandler(btn:Button){
+        binding.btnSortT.setTextColor(mContext.getColor(R.color.color_blue))
+        binding.btnSortX.setTextColor(mContext.getColor(R.color.color_blue))
+        binding.btnSortB.setTextColor(mContext.getColor(R.color.color_blue))
+        btn.setTextColor(Color.parseColor("white"))
+        mSort = btn.tag.toString()
+        setOnlineList()
+    }
+
+    private fun initListener(){
+        binding.btnSortT.setOnClickListener {
+            sortBtnHandler(it as Button)
+        }
+        binding.btnSortX.setOnClickListener {
+            sortBtnHandler(it as Button)
+        }
+        binding.btnSortB.setOnClickListener {
+            sortBtnHandler(it as Button)
+        }
+        binding.btnClose.setOnClickListener {
+            mThreadRunnable = false
+            this.dismiss()
+        }
+        binding.btnBe.setOnClickListener {
+            mContext.bePerson()
+        }
+        binding.btnClear.setOnClickListener {
+            mContext.mDeadPersons.clear()
+        }
+        binding.btnSwitch.setOnClickListener {
+            if (mType > 0)
+                return@setOnClickListener
+            val btn = it as Button
+            val tag = btn.tag
+            if(tag == "ON"){
+                btn.text = "offline"
+                btn.tag = "OFF"
+                binding.btnBe.visibility = View.VISIBLE
+                binding.btnClear.visibility = View.VISIBLE
+                setOfflineList()
+            }else{
+                btn.text = "online"
+                btn.tag = "ON"
+                binding.btnBe.visibility = View.GONE
+                binding.btnClear.visibility = View.GONE
+                setOnlineList()
+            }
+        }
+        binding.lvPerson.setOnItemClickListener { _, _, position, _ ->
+            val ft = mContext.supportFragmentManager.beginTransaction()
+            // Create and show the dialog.
+            val newFragment = FragmentDialogPerson.newInstance()
+            newFragment.isCancelable = false
+            val person = mPersonData[position]
+            val bundle = Bundle()
+            bundle.putString("id", person.id)
+            newFragment.arguments = bundle
+            newFragment.show(ft, "dialog_person_info")
+        }
+
+    }
+
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread{
             while (true){
                 Thread.sleep(2000)
                 if(mThreadRunnable){
@@ -178,11 +180,11 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     private fun updateList(){
-        if(mSwitchBtn.tag == "ON"){
+        if(binding.btnSwitch.tag == "ON"){
             setOnlineList()
         }else{
             setOfflineList()
@@ -193,9 +195,9 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
         mPersonData.clear()
         mPersonData.addAll(mContext.mDeadPersons.map { it.value })
         mPersonData.sortByDescending { it.lifeTurn * 1000000 + it.jinJieMax}
-        (mListView.adapter as BaseAdapter).notifyDataSetChanged()
-        mListView.invalidateViews()
-        mTotalText.text = mPersonData.size.toString()
+        (binding.lvPerson.adapter as BaseAdapter).notifyDataSetChanged()
+        binding.lvPerson.invalidateViews()
+        binding.tvTotal.text = mPersonData.size.toString()
     }
 
     private fun setOnlineList(){
@@ -216,7 +218,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             6 -> mContext.mPersons.map { it.value }.filter { p -> p.skin != ""}
             else -> mContext.mPersons.map { it.value }
         }
-        val filterString = etName.text.toString()
+        val filterString = binding.etName.text.toString()
         if(filterString == "" )
             mPersonData.addAll(persons)
         else
@@ -241,21 +243,21 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                     .thenByDescending { it.lifeTurn })
             "E" -> mPersonData.sortWith(compareByDescending<Person> { it.equipmentList.filter {
                         e-> e.amuletSerialNo > 0
-                    }.sumBy { s-> s.detail.rarity }})
+                    }.sumOf { s-> s.detail.rarity }})
             "C" -> mPersonData.sortByDescending{
                 val max = it.careerList.maxByOrNull { m-> m.detail.rarity }
                 (max?.detail?.rarity ?: 0) * 1000 + (max?.level ?: 0)
             }
             "L" -> mPersonData.sortByDescending{ p->
-                p.label.mapNotNull { m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumBy {
+                p.label.mapNotNull { m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumOf {
                     it.weight
                 }
             }
 
         }
 
-        (mListView.adapter as BaseAdapter).notifyDataSetChanged()
-        mListView.invalidateViews()
-        mTotalText.text = "${mPersonData.size}-${mPersonData.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        (binding.lvPerson.adapter as BaseAdapter).notifyDataSetChanged()
+        binding.lvPerson.invalidateViews()
+        binding.tvTotal.text = "${mPersonData.size}-${mPersonData.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
     }
 }

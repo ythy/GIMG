@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.mx.gillustrated.activity.CultivationActivity
@@ -24,7 +23,6 @@ import com.mx.gillustrated.component.EmperorData
 import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.databinding.FragmentDialogPersionBinding
 import com.mx.gillustrated.fragment.*
-import com.mx.gillustrated.util.CommonUtil
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.Label
 import com.mx.gillustrated.vo.cultivation.Person
@@ -34,8 +32,6 @@ import java.lang.ref.WeakReference
 import androidx.appcompat.content.res.AppCompatResources
 import kotlin.math.min
 
-
-@RequiresApi(Build.VERSION_CODES.P)
 @SuppressLint("SetTextI18n")
 class FragmentDialogPerson : DialogFragment() {
 
@@ -347,7 +343,7 @@ class FragmentDialogPerson : DialogFragment() {
         }
     }
 
-    fun getTianFuName(tianFu: TianFu):String{
+    private fun getTianFuName(tianFu: TianFu):String{
         if (CultivationHelper.pinyinMode)
             return tianFu.name.replace(Regex("\\d"), "")
         when {

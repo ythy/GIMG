@@ -2,28 +2,25 @@ package com.mx.gillustrated.dialog
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.os.*
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.DialogFragment
-import butterknife.*
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
-import com.mx.gillustrated.util.NameUtil
+import com.mx.gillustrated.databinding.FragmentDialogClanBinding
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
 
-@RequiresApi(Build.VERSION_CODES.N)
+
 @SuppressLint("SetTextI18n")
 class FragmentDialogClan : DialogFragment() {
 
@@ -31,7 +28,7 @@ class FragmentDialogClan : DialogFragment() {
         fun newInstance(): FragmentDialogClan {
             return FragmentDialogClan()
         }
-        class TimeHandler constructor(val context: FragmentDialogClan): Handler(){
+        class TimeHandler constructor(val context: FragmentDialogClan): Handler(Looper.getMainLooper()){
 
             private val reference: WeakReference<FragmentDialogClan> = WeakReference(context)
 
@@ -45,88 +42,42 @@ class FragmentDialogClan : DialogFragment() {
         }
     }
 
-    @OnClick(R.id.btn_close)
-    fun onCloseHandler(){
-        mThreadRunnable = false
-        this.dismiss()
-    }
-
-    @OnItemClick(R.id.lv_person)
-    fun onItemClick(position:Int){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        // Create and show the dialog.
-        val newFragment = FragmentDialogPerson.newInstance()
-        newFragment.isCancelable = false
-
-        val bundle = Bundle()
-        bundle.putString("id", mPersonList[position].id)
-        newFragment.arguments = bundle
-        newFragment.show(ft, "dialog_person_info")
-    }
-
-    @OnClick(R.id.tv_xiuwei)
-    fun onWinnerClickHandler(){
-        val ft = mContext.supportFragmentManager.beginTransaction()
-        val newFragment = FragmentDialogRank.newInstance(4, mId)
-        newFragment.isCancelable = false
-        newFragment.show(ft, "dialog_rank_info")
-    }
-
-    @OnClick(R.id.btn_add)
-    fun onAddClickHandler(){
-        val name = mDialogView.abdicate.text.toString()
-        val person = mContext.mPersons.map { it.value }.find { it.name == name || PinyinUtil.convert(it.name) == name }
-        if (person != null){
-            CultivationHelper.addPersonToClan(person,  mContext.mClans[mId]!!, mContext.mClans, mContext.mPersons)
-            mDialogView.abdicate.setText("")
-            Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    @OnClick(R.id.btn_change)
-    fun onChangeNameClickHandler(){
-        mContext.mClans[mId]?.name = mDialogView.reName.text.toString()
-        mContext.mClans[mId]?.nickName = mDialogView.nickName.text.toString()
-        updateName()
-    }
-
-    @OnTextChanged(R.id.et_crest)
-    fun onCrestChangedHandler(text:CharSequence){
-        val current = text.toString()
-        if(current != ""){
-            mContext.mClans[mId]?.crest = current.toInt()
-            updateCrest()
-        }
-    }
-
+    private var _binding: FragmentDialogClanBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     lateinit var mId:String
     lateinit var mContext:CultivationActivity
-    lateinit var mDialogView:DialogView
+
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
     private var mPersonList = mutableListOf<Person>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_dialog_clan, container, false)
-        ButterKnife.bind(this, v)
-        mDialogView = DialogView(v)
-        return v
+                              savedInstanceState: Bundle?): View {
+        _binding = FragmentDialogClanBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
+        initListener()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun init(){
-        mId = this.arguments!!.getString("id", "")
+        mId = requireArguments().getString("id", "")
         mContext = activity as CultivationActivity
         val clan = mContext.mClans[mId]
         if(clan != null){
-            mDialogView.persons.adapter = CultivationPersonListAdapter(this.context!!, mPersonList, true, true)
+            binding.lvPerson.adapter = CultivationPersonListAdapter(requireContext(), mPersonList, showStar = true, showSpecEquipment = true)
             updateName()
             updateCrest()
             updateView()
@@ -134,8 +85,61 @@ class FragmentDialogClan : DialogFragment() {
         }
     }
 
+    private fun initListener(){
+
+        binding.btnClose.setOnClickListener {
+            onCloseHandler()
+        }
+        binding.lvPerson.setOnItemClickListener { _, _, position, _ ->
+            val ft = mContext.supportFragmentManager.beginTransaction()
+            val newFragment = FragmentDialogPerson.newInstance()
+            newFragment.isCancelable = false
+
+            val bundle = Bundle()
+            bundle.putString("id", mPersonList[position].id)
+            newFragment.arguments = bundle
+            newFragment.show(ft, "dialog_person_info")
+        }
+        binding.tvXiuwei.setOnClickListener {
+            val ft = mContext.supportFragmentManager.beginTransaction()
+            val newFragment = FragmentDialogRank.newInstance(4, mId)
+            newFragment.isCancelable = false
+            newFragment.show(ft, "dialog_rank_info")
+        }
+        binding.btnAdd.setOnClickListener {
+            val name = binding.etAbdicate.text.toString()
+            val person = mContext.mPersons.map { it.value }.find { it.name == name || PinyinUtil.convert(it.name) == name }
+            if (person != null){
+                CultivationHelper.addPersonToClan(person,  mContext.mClans[mId]!!, mContext.mClans, mContext.mPersons)
+                binding.etAbdicate.setText("")
+                Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.btnChange.setOnClickListener {
+            mContext.mClans[mId]?.name =  binding.etName.text.toString()
+            mContext.mClans[mId]?.nickName = binding.etNickName.text.toString()
+            updateName()
+        }
+        binding.etCrest.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val current = s.toString()
+                if(current != ""){
+                    mContext.mClans[mId]?.crest = current.toInt()
+                    updateCrest()
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun onCloseHandler(){
+        mThreadRunnable = false
+        this.dismiss()
+    }
+
     private fun registerTimeLooper(){
-        Thread(Runnable {
+        Thread{
             while (true){
                 Thread.sleep(2000)
                 if(mThreadRunnable){
@@ -144,26 +148,26 @@ class FragmentDialogClan : DialogFragment() {
                     mTimeHandler.sendMessage(message)
                 }
             }
-        }).start()
+        }.start()
     }
 
     private fun updateName(){
         val clan = mContext.mClans[mId]!!
-        mDialogView.name.text = CultivationHelper.showing("${clan.nickName}${if(clan.name == clan.nickName) "" else "-${clan.name}"}")
-        mDialogView.reName.setText(CultivationHelper.showing(clan.name))
-        mDialogView.nickName.setText(CultivationHelper.showing(clan.nickName))
-        mDialogView.crestName.text = CultivationHelper.showing(clan.nickName)
-        mDialogView.crestIndex.setText(clan.crest.toString())
+        binding.tvName.text = CultivationHelper.showing("${clan.nickName}${if(clan.name == clan.nickName) "" else "-${clan.name}"}")
+        binding.etName.setText(CultivationHelper.showing(clan.name))
+        binding.etNickName.setText(CultivationHelper.showing(clan.nickName))
+        binding.ivCrestName.text = CultivationHelper.showing(clan.nickName)
+        binding.etCrest.setText(clan.crest.toString())
     }
 
     private fun updateCrest(){
         val profileFrame = CultivationHelper.getClanCrest(mContext.mClans[mId]?.crest ?: 0)
         if(profileFrame.first != -1){
-            mDialogView.crest.background = mContext.getDrawable(profileFrame.first)
-            mDialogView.crest.backgroundTintList = if(profileFrame.second != -1) ColorStateList.valueOf(profileFrame.second) else null
+            binding.llCrest.background = AppCompatResources.getDrawable(requireContext(),profileFrame.first)
+            binding.llCrest.backgroundTintList = if(profileFrame.second != -1) ColorStateList.valueOf(profileFrame.second) else null
         }else{
-            mDialogView.crest.background = null
-            mDialogView.crest.backgroundTintList = null
+            binding.llCrest.background = null
+            binding.llCrest.backgroundTintList = null
         }
     }
 
@@ -178,55 +182,15 @@ class FragmentDialogClan : DialogFragment() {
             onCloseHandler()
             return
         }
-        mDialogView.total.text = "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
-        mDialogView.zhu.text = if(clan.zhu?.name == null ) "" else CultivationHelper.showing(clan.zhu!!.name)
-        mDialogView.xiuwei.text = "${clan.battleWinner}-${clan.xiuweiBattle}↑"
+        binding.tvTotal.text = "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        binding.tvZhu.text = if(clan.zhu?.name == null ) "" else CultivationHelper.showing(clan.zhu!!.name)
+        binding.tvXiuwei.text = "${clan.battleWinner}-${clan.xiuweiBattle}↑"
         mPersonList.clear()
         mPersonList.addAll(personList.sortedBy { it.ancestorLevel })
-        (mDialogView.persons.adapter as BaseAdapter).notifyDataSetChanged()
-        mDialogView.persons.invalidateViews()
+        (binding.lvPerson.adapter as BaseAdapter).notifyDataSetChanged()
+        binding.lvPerson.invalidateViews()
 
     }
 
-    class DialogView constructor(view: View){
 
-        @BindView(R.id.tv_name)
-        lateinit var name:TextView
-
-        @BindView(R.id.tv_xiuwei)
-        lateinit var xiuwei:TextView
-
-        @BindView(R.id.tv_total)
-        lateinit var total:TextView
-
-        @BindView(R.id.tv_zhu)
-        lateinit var zhu:TextView
-
-        @BindView(R.id.lv_person)
-        lateinit var persons:ListView
-
-        @BindView(R.id.et_abdicate)
-        lateinit var abdicate:EditText
-
-        @BindView(R.id.et_name)
-        lateinit var reName:EditText
-
-        @BindView(R.id.et_nickName)
-        lateinit var nickName:EditText
-
-        @BindView(R.id.iv_crest_name)
-        lateinit var crestName:TextView
-
-        @BindView(R.id.ll_crest)
-        lateinit var crest:LinearLayout
-
-        @BindView(R.id.et_crest)
-        lateinit var crestIndex:EditText
-
-
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-    }
 }

@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.mx.gillustrated.adapter.CultivationBattleAdapter
 import com.mx.gillustrated.common.MConfig
@@ -26,7 +25,6 @@ import com.mx.gillustrated.vo.cultivation.Person
 import java.io.File
 
 
-@RequiresApi(Build.VERSION_CODES.P)
 @SuppressLint("SetTextI18n")
 class FragmentDialogBattleInfo  : DialogFragment() {
 

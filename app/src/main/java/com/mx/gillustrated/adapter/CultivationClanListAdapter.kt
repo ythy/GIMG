@@ -1,23 +1,17 @@
 package com.mx.gillustrated.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
-import com.mx.gillustrated.R
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.TextView
-import androidx.annotation.RequiresApi
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
-import com.mx.gillustrated.util.PinyinUtil
-import com.mx.gillustrated.vo.cultivation.Alliance
+import com.mx.gillustrated.databinding.AdapterClanListBinding
 import com.mx.gillustrated.vo.cultivation.Clan
-import com.mx.gillustrated.vo.cultivation.Person
 
+@SuppressLint("SetTextI18n")
 class CultivationClanListAdapter  constructor(mContext: Context, private val list: List<Clan>) : BaseAdapter() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
@@ -34,53 +28,28 @@ class CultivationClanListAdapter  constructor(mContext: Context, private val lis
         return arg0.toLong()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
         var convertView = convertViews
-        lateinit var component: ViewHolder
-
+        lateinit var binding: AdapterClanListBinding
         if (convertView == null) {
-            convertView = layoutInflater.inflate(
-                    R.layout.adapter_clan_list, arg2, false)
-            component = ViewHolder(convertView)
-            convertView!!.tag = component
+            binding = AdapterClanListBinding.inflate(layoutInflater, arg2, false)
+            convertView = binding.root
+            convertView.tag = binding
         } else
-            component = convertView.tag as ViewHolder
+            binding = convertView.tag as AdapterClanListBinding
 
         val clan = list[arg0]
         val personList = clan.clanPersonList.map { it.value }
 
-        component.name.text = CultivationHelper.showing(clan.name)
+        binding.tvName.text = CultivationHelper.showing(clan.name)
         if(clan.zhu != null)
-            component.zhu.text = CultivationHelper.showing(clan.zhu!!.name)
+            binding.tvZhu.text = CultivationHelper.showing(clan.zhu!!.name)
         else
-            component.zhu.text = ""
-        component.persons.text = "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
-        component.total.text  = CultivationHelper.showLifeTurn(clan.totalXiuwei)
-        component.winner.text = clan.battleWinner.toString()
+            binding.tvZhu.text = ""
+        binding.tvPersons.text = "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        binding.tvTotal.text  = CultivationHelper.showLifeTurn(clan.totalXiuwei)
+        binding.tvWinner.text = clan.battleWinner.toString()
         return convertView
     }
 
-    internal class ViewHolder(view: View) {
-
-        @BindView(R.id.tv_name)
-        lateinit var name: TextView
-
-        @BindView(R.id.tv_zhu)
-        lateinit var zhu: TextView
-
-        @BindView(R.id.tv_persons)
-        lateinit var persons: TextView
-
-        @BindView(R.id.tv_winner)
-        lateinit var winner: TextView
-
-        @BindView(R.id.tv_total)
-        lateinit var total: TextView
-
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-    }
 }

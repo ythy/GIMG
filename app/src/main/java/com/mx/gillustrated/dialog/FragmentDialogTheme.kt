@@ -4,16 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import butterknife.OnItemSelected
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.MainActivity
+import com.mx.gillustrated.databinding.FragmentDialogThemeBinding
 
 class FragmentDialogTheme : DialogFragment() {
 
@@ -23,35 +17,24 @@ class FragmentDialogTheme : DialogFragment() {
         }
     }
 
-    var mOldThemeIndex = 0
-
-    @BindView(R.id.spinnerTheme)
-    lateinit var mSpinner:Spinner
-
-    @OnClick(R.id.btnSave)
-    fun onSaveClick(){
-        val context = activity as MainActivity
-        val currentSelectIndex = mSpinner.selectedItemPosition
-        if(mOldThemeIndex == currentSelectIndex){
-            Toast.makeText(context, "没有变化", Toast.LENGTH_SHORT).show()
-            return
-        }
-        when (currentSelectIndex){
-            0-> context.mSP.edit().putString("theme", "Green").apply()
-            1-> context.mSP.edit().putString("theme", "Blue").apply()
-            2-> context.mSP.edit().putString("theme", "Orange").apply()
-        }
-        this.dismiss()
-        context.recreate()
-    }
+    private var mOldThemeIndex = 0
+    private var _binding: FragmentDialogThemeBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        val v = inflater.inflate(R.layout.fragment_dialog_theme, container, false)
-        ButterKnife.bind(this, v)
+                              savedInstanceState: Bundle?): View{
+        _binding = FragmentDialogThemeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         init()
-        return v
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun init(){
@@ -62,7 +45,21 @@ class FragmentDialogTheme : DialogFragment() {
             "Blue"-> selectIndex = 1
             "Orange"-> selectIndex = 2
         }
-        mSpinner.setSelection(selectIndex)
+        binding.spinnerTheme.setSelection(selectIndex)
         mOldThemeIndex = selectIndex
+        binding.btnSave.setOnClickListener {
+            val currentSelectIndex = binding.spinnerTheme.selectedItemPosition
+            if(mOldThemeIndex == currentSelectIndex){
+                Toast.makeText(context, "没有变化", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            when (currentSelectIndex){
+                0-> context.mSP.edit().putString("theme", "Green").apply()
+                1-> context.mSP.edit().putString("theme", "Blue").apply()
+                2-> context.mSP.edit().putString("theme", "Orange").apply()
+            }
+            this.dismiss()
+            context.recreate()
+        }
     }
 }

@@ -2,20 +2,17 @@ package com.mx.gillustrated.dialog
 
 import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.databinding.FragmentDialogImageBinding
 import com.mx.gillustrated.util.NameUtil
 import java.io.File
 
-@RequiresApi(Build.VERSION_CODES.P)
 class FragmentDialogImage constructor(private val mId:String, private val mGender: NameUtil.Gender )  : DialogFragment() {
 
     companion object{

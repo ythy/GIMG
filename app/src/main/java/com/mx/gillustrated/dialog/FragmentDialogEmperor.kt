@@ -3,14 +3,12 @@ package com.mx.gillustrated.dialog
 import android.annotation.SuppressLint
 import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.common.MConfig
@@ -24,7 +22,6 @@ import java.io.File
 import java.util.*
 import kotlin.math.max
 
-@RequiresApi(Build.VERSION_CODES.P)
 class FragmentDialogEmperor constructor(private val mId:String)  : DialogFragment() {
 
     companion object{
