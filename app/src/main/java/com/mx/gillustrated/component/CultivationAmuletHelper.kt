@@ -65,14 +65,14 @@ object CultivationAmuletHelper {
         val size = Amulet.NormalSizeWeight.toMutableList().sortedBy { it }.reduceIndexed { index, acc, i ->
             if (CultivationHelper.isTrigger(i)){
                 index + 1
-            }
-            acc
+            }else
+                acc
         }
         val normal = Amulet.NormalSettings.toMutableList().sortedBy { it.weight }.reduce { acc, amuletNormal ->
             if (CultivationHelper.isTrigger(amuletNormal.weight)){
                 amuletNormal.copy()
-            }
-            acc
+            }else
+                acc
         }
         return Pair(when(size){1->"7005101" 2-> "7005102" else-> "7005103"}, "${type.id}$size${normal.id}".toInt())
     }

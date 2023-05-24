@@ -3,7 +3,6 @@ package com.mx.gillustrated.component
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
 import android.widget.LinearLayout
 import android.view.ViewGroup
 import android.widget.TextView

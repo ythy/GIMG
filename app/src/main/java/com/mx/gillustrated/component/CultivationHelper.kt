@@ -12,6 +12,10 @@ import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.abs
+import kotlin.math.ln
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 @SuppressLint("SetTextI18n")
 object CultivationHelper {
@@ -45,7 +49,7 @@ object CultivationHelper {
             allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.map { it.value }.toMutableList()
         }
         options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfuList.filter { f->f.rarity >=3 }.size >= it.value.tianfu  && it.value.personList.size < it.value.maxPerson }.map { it.value })
-        val random = Random().nextInt(options.map { 100 / it.level }.sum() )
+        val random = Random().nextInt(options.sumOf { 100 / it.level })
         var count = 0
         for (i in 0 until options.size){
             val alliance = options[i]
@@ -115,8 +119,8 @@ object CultivationHelper {
                     xiuwei += getValidBonus(u.size, BattleSettings.AllianceBonus[0]) * BattleSettings.AllianceBonus[t]
                 }
             }
-            data.value.xiuweiBattle = Math.min(xiuwei, BattleSettings.AllianceMaxXiuwei)
-            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.AllianceMinSize + 1 - it }
+            data.value.xiuweiBattle = xiuwei.coerceAtMost(BattleSettings.AllianceMaxXiuwei)
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumOf { BattleSettings.AllianceMinSize + 1 - it }
         }
     }
 
@@ -126,7 +130,7 @@ object CultivationHelper {
             return
         }
         val personList = Collections.synchronizedList( persons.map { it.value })
-        alliance.zhuPerson = personList.sortedBy { it.birthtime }.first()
+        alliance.zhuPerson = personList.minByOrNull { it.birthtime }!!
     }
 
     // rank total 4
@@ -138,8 +142,8 @@ object CultivationHelper {
                     xiuwei += getValidBonus(u.size, BattleSettings.ClanBonus[0]) * BattleSettings.ClanBonus[t]
                 }
             }
-            data.value.xiuweiBattle = Math.min(xiuwei, BattleSettings.ClanMaxXiuwei)
-            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.ClanMinSize + 1 - it }
+            data.value.xiuweiBattle = xiuwei.coerceAtMost(BattleSettings.ClanMaxXiuwei)
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumOf { BattleSettings.ClanMinSize + 1 - it }
 //            data.value.clanPersonList.forEach { (_: String, clanPerson: Person) ->
 //                clanPerson.clanXiuwei = data.value.xiuweiBattle
 //            }
@@ -201,36 +205,36 @@ object CultivationHelper {
                 }
             }
             data.value.battlexiuwei = xiuwei
-            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumBy { BattleSettings.SingleMinSize + 1 - it }
+            data.value.battleWinner = data.value.battleRecord.map { it.value }.sumOf { BattleSettings.SingleMinSize + 1 - it }
         }
     }
 
     //暂定取消
-    fun updateBossBattleBonus(allPerson:ConcurrentHashMap<String, Person>){
-        allPerson.forEach { data->
-            data.value.bossXiuwei = 0
-            data.value.bossRound = mutableListOf()
-            repeat(CultivationEnemyHelper.bossSettings.size) {
-                data.value.bossRound.add(0)
-            }
-        }
-        mBossRecord.forEachIndexed { index, mutableMap ->
-            mutableMap.forEach { (t, u) ->
-                val person = allPerson[u]
-                if (person != null){
-                    person.bossRound[index]++
-                }
-            }
-            mutableMap.entries.removeIf { allPerson[it.value] == null }
-        }
-        allPerson.forEach { data->
-            var count = 0
-            data.value.bossRound.forEachIndexed { index, total->
-                count += CultivationEnemyHelper.bossSettings[index].bonus * getValidBonus(total)
-            }
-            data.value.bossXiuwei = count
-        }
-    }
+//    fun updateBossBattleBonus(allPerson:ConcurrentHashMap<String, Person>){
+//        allPerson.forEach { data->
+//            data.value.bossXiuwei = 0
+//            data.value.bossRound = mutableListOf()
+//            repeat(CultivationEnemyHelper.bossSettings.size) {
+//                data.value.bossRound.add(0)
+//            }
+//        }
+//        mBossRecord.forEachIndexed { index, mutableMap ->
+//            mutableMap.forEach { (t, u) ->
+//                val person = allPerson[u]
+//                if (person != null){
+//                    person.bossRound[index]++
+//                }
+//            }
+//            mutableMap.entries.removeIf { allPerson[it.value] == null }
+//        }
+//        allPerson.forEach { data->
+//            var count = 0
+//            data.value.bossRound.forEachIndexed { index, total->
+//                count += CultivationEnemyHelper.bossSettings[index].bonus * getValidBonus(total)
+//            }
+//            data.value.bossXiuwei = count
+//        }
+//    }
 
     private fun getTianFu(parent: Pair<Person, Person>?, fixedTianfus:MutableList<String>?, tianFuWeight:Int):MutableList<TianFu>{
         if(fixedTianfus != null && fixedTianfus.isNotEmpty()){
@@ -240,10 +244,10 @@ object CultivationHelper {
         mConfig.tianFuType.groupBy { it.type }.forEach { (_, l) ->
             var data: TianFu? = null
             val sortU = l.sortedByDescending { it.weight }
-            for (i in 0 until sortU.size){
+            for (i in sortU.indices){
                 if(tianFuWeight > 1 && sortU[i].rarity < 3)
                     continue
-                if(Random().nextInt( Math.max(1, sortU[i].weight / tianFuWeight )) == 0){
+                if(Random().nextInt((sortU[i].weight / tianFuWeight).coerceAtLeast(1)) == 0){
                     data = sortU[i]
                     break
                 }
@@ -251,7 +255,7 @@ object CultivationHelper {
             if(data != null){
                 tianFus.add(data)
             }else if(parent != null){
-                for (i in 0 until sortU.size){
+                for (i in sortU.indices){
                     var addonWeight = 1
                     val extraFirst = parent.first.tianfuList.find { it.type == sortU[i].type }
                     val extraSecond = parent.second.tianfuList.find { it.type == sortU[i].type }
@@ -322,8 +326,8 @@ object CultivationHelper {
             lingGenName = maxPerson.lingGenName
         }else{
             val lingGenList = mConfig.lingGenType.sortedByDescending { it.randomBasic }
-            for (i in 0 until lingGenList.size){
-                val weight = Math.max(1, lingGenList[i].randomBasic / lingGenWeight)
+            for (i in lingGenList.indices){
+                val weight = (lingGenList[i].randomBasic / lingGenWeight).coerceAtLeast(1)
                 if(Random().nextInt(weight) == 0){
                     lingGen = lingGenList[i]
                     break
@@ -341,12 +345,12 @@ object CultivationHelper {
          val tejiList = mConfig.teji.filter { it.type < 4 }
          if(!multi){
              val teji =tejiList.shuffled()[0]
-             if(isTrigger( teji.weight / Math.max(1, weight))){
+             if(isTrigger( teji.weight / weight.coerceAtLeast(1))){
                  result.add(teji.id)
              }
          }else{
              tejiList.forEach {
-                 if(isTrigger( it.weight / Math.max(1, weight))){
+                 if(isTrigger( it.weight / weight.coerceAtLeast(1))){
                      result.add(it.id)
                  }
              }
@@ -354,7 +358,7 @@ object CultivationHelper {
         return result
     }
 
-    fun getLabel():MutableList<String>{
+    private fun getLabel():MutableList<String>{
         val result = mutableListOf<String>()
         val label1 = mConfig.label.filter { it.weight == 1 }.shuffled()[0].copy()
         val label2 = mConfig.label.filter { it.weight == 2 }.shuffled()[0].copy()
@@ -375,13 +379,6 @@ object CultivationHelper {
         return result
     }
 
-    fun gainLabel(person: Person){
-        mConfig.label.filter { it.weight > 5 && !person.label.contains(it.id) }.sortedBy { it.weight }.forEach {
-            if(isTrigger( it.weight) && person.label.size < 6 ){
-                person.label.add(it.id)
-            }
-        }
-    }
 
     fun getCareer():CareerConfig{
         var result:CareerConfig? = null
@@ -399,7 +396,7 @@ object CultivationHelper {
             null
         else{
             val equipment = Equipment(list[0].id)
-            val success = Random().nextInt( (Math.pow(equipment.detail.rarity.toDouble(), 5.0) / Math.log(weight.toDouble())).toInt() ) == 0
+            val success = Random().nextInt( (equipment.detail.rarity.toDouble().pow(5.0) / ln(weight.toDouble())).toInt() ) == 0
             if(success)
                 equipment
             else
@@ -413,7 +410,7 @@ object CultivationHelper {
             null
         else{
             val follower = list[0]
-            val success = Random().nextInt( (Math.pow(follower.rarity.toDouble(), 5.0) / Math.log(weight.toDouble())).toInt() ) == 0
+            val success = Random().nextInt( (follower.rarity.toDouble().pow(5.0) / ln(weight.toDouble())).toInt() ) == 0
             if(success)// rarity 9: 11784 - 13000
                 follower
             else
@@ -539,10 +536,10 @@ object CultivationHelper {
         val property = person.extraProperty.mapIndexed { index, it ->
             it + person.allianceProperty[index] + person.equipmentProperty[index]
         }
-        val tipsHP = person.tipsList.filter { it.detail.hp.isNotEmpty() }.sumBy { it.detail.hp[it.level] }
-        val tipsAttack = person.tipsList.filter { it.detail.attack.isNotEmpty() }.sumBy { it.detail.attack[it.level] }
-        val tipsDefence = person.tipsList.filter { it.detail.defence.isNotEmpty() }.sumBy { it.detail.defence[it.level] }
-        val tipsSpeed = person.tipsList.filter { it.detail.speed.isNotEmpty() }.sumBy { it.detail.speed[it.level] }
+        val tipsHP = person.tipsList.filter { it.detail.hp.isNotEmpty() }.sumOf { it.detail.hp[it.level] }
+        val tipsAttack = person.tipsList.filter { it.detail.attack.isNotEmpty() }.sumOf { it.detail.attack[it.level] }
+        val tipsDefence = person.tipsList.filter { it.detail.defence.isNotEmpty() }.sumOf { it.detail.defence[it.level] }
+        val tipsSpeed = person.tipsList.filter { it.detail.speed.isNotEmpty() }.sumOf { it.detail.speed[it.level] }
 
         val jingJieLevel = getJingJieLevel(person.jingJieId)
         val extraHP = jingJieLevel.first + 10 * jingJieLevel.second + property[0] + tipsHP// 0 ~ 70 + 80
@@ -563,8 +560,8 @@ object CultivationHelper {
         val equipmentProperty =  mutableListOf(0,0,0,0,0,0,0,0)
         if(equipments.isNotEmpty()){
             equipments.filter { it.detail.type > 3 }.groupBy { it.id }.forEach { (_, u) ->
-                for (index in 0 until u.size){
-                    summationEquipmentValues(person,  u[index], equipmentProperty)
+                for (element in u){
+                    summationEquipmentValues(person, element, equipmentProperty)
                 }
             }
             equipments.filter { it.detail.type <= 3 }.groupBy { it.detail.type }.forEach { (_, u) ->
@@ -576,11 +573,11 @@ object CultivationHelper {
     }
 
     private fun getMaxBonus(size:Int, min:Int = 1):Int{
-        return Math.max(min, Math.round( Math.log(size.toDouble())).toInt())
+        return  ln(size.toDouble()).roundToInt().coerceAtLeast(min)
     }
 
-    fun getValidBonus(size:Int, min:Int = 1):Int{
-        return Math.min(size, getMaxBonus(size, min))
+    private fun getValidBonus(size:Int, min:Int = 1):Int{
+        return size.coerceAtMost(getMaxBonus(size, min))
     }
 
     private fun summationEquipmentValues(person: Person, effectEquipment: Equipment, equipmentProperty:MutableList<Int>){
@@ -603,8 +600,8 @@ object CultivationHelper {
         return (basic * multi).toInt()
     }
 
-    fun getLastSingleBattleXiuwei(person: Person):Int{
-        val singleBattle = person.battleRecord[CultivationHelper.mBattleRound.single]
+    private fun getLastSingleBattleXiuwei(person: Person):Int{
+        val singleBattle = person.battleRecord[mBattleRound.single]
         return if(singleBattle != null && singleBattle < 11){
             when(singleBattle){
                 1 -> 1000
@@ -661,7 +658,7 @@ object CultivationHelper {
         return tianValue + allianceValue + labelValue + skinValue
     }
 
-    fun getPersonTianfu(id:String?):TianFu?{
+    private fun getPersonTianfu(id:String?):TianFu?{
         if(id == null)
             return null
         return mConfig.tianFuType.find { it.id == id }
@@ -681,7 +678,7 @@ object CultivationHelper {
             synchronized(females){
                 val man = males[Random().nextInt(males.size)]
                 val manAge = man.birthtime
-                val womanPair = females.map { Pair(it.id, it.birthtime) }.sortedBy { Math.abs(manAge - it.second) }[0]
+                val womanPair = females.map { Pair(it.id, it.birthtime) }.sortedBy { abs(manAge - it.second) }[0]
                 val woman = allPerson[womanPair.first]
                 if(woman == null || ( man.ancestorOrignId != null && woman.ancestorOrignId != null && man.ancestorOrignId == woman.ancestorOrignId))
                     return
@@ -691,7 +688,7 @@ object CultivationHelper {
     }
 
 
-    fun createPartner(man:Person, woman:Person){
+    private fun createPartner(man:Person, woman:Person){
         man.partner = woman.id
         man.partnerName = woman.name
         woman.partner = man.id
@@ -722,7 +719,7 @@ object CultivationHelper {
     }
 
     fun getYearString(xun:Long = mCurrentXun):String{
-        val wan = Math.max(1, xun / 12 / 10000)
+        val wan = (xun / 12 / 10000).coerceAtLeast(1)
         return "$wan${showing("万年")}"
     }
 
@@ -731,7 +728,7 @@ object CultivationHelper {
     }
 
     fun isTrigger(weight:Int = 2):Boolean{
-        return Random().nextInt(Math.max(1, weight)) == 0
+        return Random().nextInt(weight.coerceAtLeast(1)) == 0
     }
 
     fun showLifeTurn(person:Person):String{
@@ -796,7 +793,7 @@ object CultivationHelper {
     }
 
     fun getSpecPersonEquipment(person: Person):MutableList<Equipment>{
-        return CultivationHelper.mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity)}.map {
+        return mConfig.equipment.filter { it.type == 8 && it.spec.contains(person.specIdentity)}.map {
             val ex = Equipment(it.id)
             if(ex.detail.specName.isNotEmpty()){
                 val index = ex.detail.spec.indexOf(person.specIdentity)
@@ -812,7 +809,7 @@ object CultivationHelper {
     }
 
     fun getSkinList(person: Person):List<Skin>{
-        return CultivationHelper.mConfig.skin.filter {
+        return mConfig.skin.filter {
             if(it.spec.isNotEmpty())
                 it.spec.contains(person.specIdentity)
             else {
@@ -876,7 +873,7 @@ object CultivationHelper {
     }
 
     private fun updateTipsXiuwei(person: Person){
-        person.tipsXiuwei = person.tipsList.sumBy { it.detail.bonus[it.level] }
+        person.tipsXiuwei = person.tipsList.sumOf { it.detail.bonus[it.level] }
     }
 
     fun handleTipsLevel(person: Person){
@@ -884,14 +881,14 @@ object CultivationHelper {
         if(tipsList.isNotEmpty()){
             val tips = tipsList.first()
             if(Random().nextInt(tips.detail.difficulty * (tips.level + 1)) == 0){
-                tips.level = Math.min(tips.detail.bonus.size - 1, tips.level + 1)
+                tips.level = (tips.level + 1).coerceAtMost(tips.detail.bonus.size - 1)
                 updateTipsXiuwei(person)
             }
         }
     }
 
     fun getProfileFrame(person: Person, clans:ConcurrentHashMap<String, Clan>):Triple<Int, Int, Int>{
-        val lastRanking = person.battleRecord[CultivationHelper.mBattleRound.single] ?: 100
+        val lastRanking = person.battleRecord[mBattleRound.single] ?: 100
         if (lastRanking < 11){
             return when(lastRanking){
                 1 ->  Triple(R.drawable.profile_frame_hb_2, -1, 10)
@@ -960,18 +957,19 @@ object CultivationHelper {
     }
 
     fun talentValue(person: Person):Int{
-        val tianfu = person.tianfuList.sumBy {
+        val tianfu = person.tianfuList.sumOf {
             when(it.type){
-                1 ->  Math.round(it.rarity.toFloat() * 1f)
-                2 ->  Math.round(it.rarity.toFloat() * 1.5f)
-                3 ->  Math.round(it.rarity.toFloat() * 0.5f)
-                4 ->  Math.round(it.rarity.toFloat() * 2f)
-                else -> 0
+                1 -> it.rarity.toDouble() * 1.0
+                2 -> it.rarity.toDouble() * 1.5
+                3 -> it.rarity.toDouble() * 0.5
+                4 -> it.rarity.toDouble() * 2.0
+                else -> 0.0
             }
-        }
+        }.roundToInt()
+
         val label = person.label.mapNotNull { m-> mConfig.label.find { it.id == m } }
                 .filter { it.weight > 5 }
-                .sumBy {  Math.round(it.rarity.toFloat() * 2f)}
+                .sumOf { it.rarity * 2 }
 
         return if(person.lingGenDetail.type == 0 )
             tianfu + label
@@ -983,7 +981,8 @@ object CultivationHelper {
         return resources.getIdentifier(name, "drawable", "com.mx.gillustrated")
     }
 
-    fun isServiceRunning(context: Context,  serviceClass: Class<*>): Boolean {
+    @Suppress("DEPRECATION")
+    fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
         val manager =  context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
         for (service in manager!!.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.name == service.service.className) {

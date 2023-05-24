@@ -3,7 +3,6 @@ package com.mx.gillustrated.component
 import android.annotation.SuppressLint
 import com.mx.gillustrated.util.NameUtil
 import com.mx.gillustrated.vo.cultivation.*
-import java.util.*
 
 @SuppressLint("SetTextI18n")
 object CultivationEnemyHelper {
@@ -17,24 +16,6 @@ object CultivationEnemyHelper {
             BossSetting("\u7403\u4e4b\u9b42", 6,40, 8),
             BossSetting("\u989C\u4e4b\u9b42", 6,50, 9)
     )
-
-    //暂定取消
-    fun getEquipmentOfBoss(index:Int, count:Int):Pair<EquipmentConfig, String>{
-        return Pair(EquipmentConfig(
-                "",
-                bossSettings[index].name,
-                bossSettings[index].type,
-                bossSettings[index].ratity,
-                bossSettings[index].bonus * CultivationHelper.getValidBonus(count),
-                0,
-                mutableListOf(0,0,0,0),
-                mutableListOf(),
-                mutableListOf(),
-                mutableListOf(),
-                mutableListOf()
-        ), "${CultivationHelper.showing(bossSettings[index].name)}($count/${CultivationHelper.getValidBonus(count)})")
-    }
-
 
     //jingJieLevel  total 92
     private fun updateBossProps(person: Person, tejiQuantity:Int, followerQuantity:Pair<Int, Int>, jingJieLevel:Int, hp:Int, hit:Int, specTeji:List<String> = listOf()){
