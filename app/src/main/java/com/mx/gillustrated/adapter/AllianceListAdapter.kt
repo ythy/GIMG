@@ -1,51 +1,51 @@
 package com.mx.gillustrated.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.databinding.AdapterAllianceListBinding
 import com.mx.gillustrated.vo.cultivation.Alliance
+import androidx.recyclerview.widget.ListAdapter
 
-class AllianceListAdapter  constructor(mContext: Context, private val list: List<Alliance>) : BaseAdapter() {
+@SuppressLint("SetTextI18n")
+class AllianceListAdapter(private val callback: Callback): ListAdapter<Alliance, AllianceListAdapter.ViewHolder>(AllianceDiffCallback) {
 
-    private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
     private val nation = CultivationHelper.mConfig.nation
 
-    override fun getCount(): Int {
-        return list.size
+    object AllianceDiffCallback : DiffUtil.ItemCallback<Alliance>() {
+        override fun areItemsTheSame(oldItem: Alliance, newItem: Alliance): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Alliance, newItem: Alliance): Boolean {
+            return newItem == oldItem
+        }
     }
 
-    override fun getItem(arg0: Int): Any {
-        return list[arg0]
+    class ViewHolder(val binding: AdapterAllianceListBinding) : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(AdapterAllianceListBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
     }
 
-    override fun getItemId(arg0: Int): Long {
-        return arg0.toLong()
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        val binding = viewHolder.binding
+        val data = getItem(position)
+        val abridgeName = if (data.abridgeName != "") "(${data.abridgeName})" else ""
+        binding.tvName.text =  CultivationHelper.showing("${nation.find { it.id == data.nation }?.name}-${data.name}$abridgeName")
+        binding.tvPersons.text =  "${data.personList.size}-${data.personList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        binding.tvTotal.text  = CultivationHelper.showLifeTurn(data.totalXiuwei)
+        binding.tvWinner.text  = data.battleWinner.toString()
+        binding.root.setOnClickListener {
+            callback.onItemClick(data)
+        }
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
-        var convertView = convertViews
-        lateinit var binding: AdapterAllianceListBinding
-
-        if (convertView == null) {
-            binding = AdapterAllianceListBinding.inflate(layoutInflater, arg2, false)
-            convertView = binding.root
-            convertView.tag = binding
-        } else
-            binding = convertView.tag as AdapterAllianceListBinding
-
-        val abridgeName = if (list[arg0].abridgeName != "") "(${list[arg0].abridgeName})" else ""
-        binding.tvName.text =  CultivationHelper.showing("${nation.find { it.id == list[arg0].nation }?.name}-${list[arg0].name}$abridgeName")
-        binding.tvPersons.text =  "${list[arg0].personList.size}-${list[arg0].personList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
-        binding.tvTotal.text  = CultivationHelper.showLifeTurn(list[arg0].totalXiuwei)
-        binding.tvWinner.text  = list[arg0].battleWinner.toString()
-        return convertView
+    interface Callback{
+        fun onItemClick(item:Alliance)
     }
-
 }

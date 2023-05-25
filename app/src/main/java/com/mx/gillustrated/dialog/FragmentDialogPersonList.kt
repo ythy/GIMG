@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
@@ -17,7 +19,6 @@ import com.mx.gillustrated.databinding.FragmentDialogPersionListBinding
 import com.mx.gillustrated.util.PinyinUtil
 import com.mx.gillustrated.vo.cultivation.Person
 import java.lang.ref.WeakReference
-import java.util.*
 
 //type 0 all; 1 never dead; 2 spec career
 //type 3 persons has spec tips
@@ -47,33 +48,6 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
         }
     }
 
-//    @BindView(R.id.lv_person)
-//    lateinit var mListView: ListView
-//
-//    @BindView(R.id.tv_total)
-//    lateinit var mTotalText: TextView
-//
-//    @BindView(R.id.btn_switch)
-//    lateinit var mSwitchBtn: Button
-//
-//    @BindView(R.id.btn_be)
-//    lateinit var mBe: Button
-//
-//    @BindView(R.id.btn_clear)
-//    lateinit var mClear: Button
-//
-//    @BindView(R.id.btn_sort_t)
-//    lateinit var mBtnLifeturn: Button
-//
-//    @BindView(R.id.btn_sort_x)
-//    lateinit var mBtnXiuwei: Button
-//
-//    @BindView(R.id.btn_sort_b)
-//    lateinit var mBtnBattle: Button
-//
-//    @BindView(R.id.et_name)
-//    lateinit var etName:EditText
-
     private var _binding: FragmentDialogPersionListBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -81,7 +55,6 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     lateinit var mContext:CultivationActivity
     private var mThreadRunnable:Boolean = true
-    private var mPersonData =  Collections.synchronizedList(mutableListOf<Person>())
     private var mSort = "T"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -102,7 +75,22 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     }
 
     private fun init(){
-        binding.lvPerson.adapter =  CultivationPersonListAdapter(requireContext(), mPersonData, showStar = false, showSpecEquipment = false)
+        binding.lvPerson.layoutManager = LinearLayoutManager(requireContext())
+        binding.lvPerson.itemAnimator = null
+        binding.lvPerson.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
+        binding.lvPerson.adapter = CultivationPersonListAdapter(showStar = false, showSpecEquipment = false,
+                object : CultivationPersonListAdapter.Callback{
+                    override fun onItemClick(item: Person) {
+                        val ft = mContext.supportFragmentManager.beginTransaction()
+                        // Create and show the dialog.
+                        val newFragment = FragmentDialogPerson.newInstance()
+                        newFragment.isCancelable = false
+                        val bundle = Bundle()
+                        bundle.putString("id", item.id)
+                        newFragment.arguments = bundle
+                        newFragment.show(ft, "dialog_person_info")
+                    }
+                })
         updateList()
         initListener()
         registerTimeLooper()
@@ -156,18 +144,6 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
                 setOnlineList()
             }
         }
-        binding.lvPerson.setOnItemClickListener { _, _, position, _ ->
-            val ft = mContext.supportFragmentManager.beginTransaction()
-            // Create and show the dialog.
-            val newFragment = FragmentDialogPerson.newInstance()
-            newFragment.isCancelable = false
-            val person = mPersonData[position]
-            val bundle = Bundle()
-            bundle.putString("id", person.id)
-            newFragment.arguments = bundle
-            newFragment.show(ft, "dialog_person_info")
-        }
-
     }
 
     private fun registerTimeLooper(){
@@ -192,16 +168,13 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     }
 
     private fun setOfflineList(){
-        mPersonData.clear()
-        mPersonData.addAll(mContext.mDeadPersons.map { it.value })
-        mPersonData.sortByDescending { it.lifeTurn * 1000000 + it.jinJieMax}
-        (binding.lvPerson.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvPerson.invalidateViews()
-        binding.tvTotal.text = mPersonData.size.toString()
+        val list = mContext.mDeadPersons.map { it.value }.toMutableList()
+        list.sortByDescending { it.lifeTurn * 1000000 + it.jinJieMax}
+        (binding.lvPerson.adapter as CultivationPersonListAdapter).submitList(list)
+        binding.tvTotal.text = list.size.toString()
     }
 
     private fun setOnlineList(){
-        mPersonData.clear()
         val persons = when (mType) {
             1 -> mContext.mPersons.map { it.value }.filter { CultivationHelper.isNeverDead(it) }
             2 -> mContext.mPersons.map { it.value }.filter { p-> (p.careerList.maxByOrNull { m-> m.detail.rarity }?.detail?.rarity ?: 0) >= 8 }
@@ -219,12 +192,12 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             else -> mContext.mPersons.map { it.value }
         }
         val filterString = binding.etName.text.toString()
-        if(filterString == "" )
-            mPersonData.addAll(persons)
-        else
-            mPersonData.addAll(persons.filter {
-                it.name.startsWith(filterString, true) || PinyinUtil.convert(it.name).startsWith(filterString, true)
-            })
+        val list =  if(filterString == "" )
+                        persons.toMutableList()
+                    else
+                        persons.filter {
+                            it.name.startsWith(filterString, true) || PinyinUtil.convert(it.name).startsWith(filterString, true)
+                        }.toMutableList()
 
         if(mType == 2)
             mSort = "C"
@@ -234,30 +207,28 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             mSort = "L"
 
         when (mSort) {
-            "T" -> mPersonData.sortWith(compareByDescending<Person> {it.lifeTurn}
+            "T" -> list.sortWith(compareByDescending<Person> {it.lifeTurn}
                     .thenByDescending { it.jingJieId }
                     .thenByDescending { it.xiuXei } )
-            "X" -> mPersonData.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it) }
+            "X" -> list.sortWith(compareByDescending<Person> { CultivationHelper.getXiuweiGrow(it) }
                     .thenByDescending { it.lifeTurn })
-            "B" -> mPersonData.sortWith(compareByDescending<Person> {it.battleWinner}
+            "B" -> list.sortWith(compareByDescending<Person> {it.battleWinner}
                     .thenByDescending { it.lifeTurn })
-            "E" -> mPersonData.sortWith(compareByDescending<Person> { it.equipmentList.filter {
+            "E" -> list.sortWith(compareByDescending { it.equipmentList.filter {
                         e-> e.amuletSerialNo > 0
                     }.sumOf { s-> s.detail.rarity }})
-            "C" -> mPersonData.sortByDescending{
+            "C" -> list.sortByDescending{
                 val max = it.careerList.maxByOrNull { m-> m.detail.rarity }
                 (max?.detail?.rarity ?: 0) * 1000 + (max?.level ?: 0)
             }
-            "L" -> mPersonData.sortByDescending{ p->
+            "L" -> list.sortByDescending{ p->
                 p.label.mapNotNull { m -> CultivationHelper.mConfig.label.find { f-> f.id == m } }.sumOf {
                     it.weight
                 }
             }
 
         }
-
-        (binding.lvPerson.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvPerson.invalidateViews()
-        binding.tvTotal.text = "${mPersonData.size}-${mPersonData.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        (binding.lvPerson.adapter as CultivationPersonListAdapter).submitList(list)
+        binding.tvTotal.text = "${list.size}-${list.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
     }
 }

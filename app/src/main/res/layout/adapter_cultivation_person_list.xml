@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical" android:layout_width="320dp"
     android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,23 +40,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="0px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
             android:singleLine="true"
             android:id="@+id/tv_jingjie"/>
         <TextView
-            android:layout_width="0px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
             android:singleLine="true"
             android:id="@+id/tv_alliance"/>
         <TextView
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:layout_weight="8"
+            android:layout_weight="1"
             android:singleLine="true"
-            android:gravity="right"
+            android:gravity="end"
             android:id="@+id/tv_xiuwei"/>
     </LinearLayout>
 

@@ -1,48 +1,46 @@
 package com.mx.gillustrated.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.databinding.AdapterCultivationPersonListBinding
 import com.mx.gillustrated.vo.cultivation.Person
 
-class CultivationPersonListAdapter constructor(private val context: Context, private val list: MutableList<Person>, private val showStar:Boolean, private val showSpecEquipment:Boolean) : BaseAdapter() {
+@SuppressLint("SetTextI18n")
+class CultivationPersonListAdapter constructor(private val showStar:Boolean, private val showSpecEquipment:Boolean, private val callback: Callback) :
+        ListAdapter<Person, CultivationPersonListAdapter.ViewHolder>(PersonDiffCallback) {
 
-    private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
     private val nation = CultivationHelper.mConfig.nation
 
-    override fun getCount(): Int {
-        return list.size
-    }
-
-    override fun getItem(arg0: Int): Any {
-        return list[arg0]
-    }
-
-    override fun getItemId(arg0: Int): Long {
-        return arg0.toLong()
-    }
-
-    @SuppressLint("SetTextI18n")
-    override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
-        var convertView = convertViews
-        lateinit var binding: AdapterCultivationPersonListBinding
-        if (convertView == null) {
-            binding = AdapterCultivationPersonListBinding.inflate(layoutInflater, arg2, false)
-            convertView = binding.root
-            convertView.tag = binding
-        } else {
-            binding = convertView.tag as AdapterCultivationPersonListBinding
+    object PersonDiffCallback : DiffUtil.ItemCallback<Person>() {
+        override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {
+            return oldItem.id == newItem.id
         }
-        val person = list[arg0]
+
+        override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
+            return newItem == oldItem
+        }
+    }
+
+    class ViewHolder(val binding: AdapterCultivationPersonListBinding) : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(AdapterCultivationPersonListBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+    }
+
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        val binding = viewHolder.binding
+        val context = binding.root.context
+        val person = getItem(position)
         val talentSymbol = if(CultivationHelper.isTalent(person) && showStar) "⭐" else ""
         val zhuSymbol = if(person.equipmentList.find { it.id == "7009001" } != null && showSpecEquipment) "\u4E3B" else ""
         val shaoSymbol = if(person.equipmentList.find { it.id == "7009002" } != null && showSpecEquipment) "\u5C11" else ""
@@ -79,6 +77,17 @@ class CultivationPersonListAdapter constructor(private val context: Context, pri
         binding.tvName.background = null
         binding.tvName.backgroundTintList = null
 
-        return convertView
+
+        binding.root.setOnClickListener {
+            callback.onItemClick(person)
+        }
     }
+
+    interface Callback{
+        fun onItemClick(item: Person)
+    }
+
+
+
+
 }

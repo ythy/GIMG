@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
@@ -49,11 +51,8 @@ class FragmentDialogClan : DialogFragment() {
 
     lateinit var mId:String
     lateinit var mContext:CultivationActivity
-
-
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
-    private var mPersonList = mutableListOf<Person>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -77,7 +76,21 @@ class FragmentDialogClan : DialogFragment() {
         mContext = activity as CultivationActivity
         val clan = mContext.mClans[mId]
         if(clan != null){
-            binding.lvPerson.adapter = CultivationPersonListAdapter(requireContext(), mPersonList, showStar = true, showSpecEquipment = true)
+            binding.lvPerson.layoutManager = LinearLayoutManager(mContext)
+            binding.lvPerson.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
+            binding.lvPerson.adapter = CultivationPersonListAdapter(showStar = true, showSpecEquipment = true,
+                    object : CultivationPersonListAdapter.Callback{
+                        override fun onItemClick(item: Person) {
+                            val ft = mContext.supportFragmentManager.beginTransaction()
+                            val newFragment = FragmentDialogPerson.newInstance()
+                            newFragment.isCancelable = false
+                            val bundle = Bundle()
+                            bundle.putString("id", item.id)
+                            newFragment.arguments = bundle
+                            newFragment.show(ft, "dialog_person_info")
+                        }
+                    })
+
             updateName()
             updateCrest()
             updateView()
@@ -89,16 +102,6 @@ class FragmentDialogClan : DialogFragment() {
 
         binding.btnClose.setOnClickListener {
             onCloseHandler()
-        }
-        binding.lvPerson.setOnItemClickListener { _, _, position, _ ->
-            val ft = mContext.supportFragmentManager.beginTransaction()
-            val newFragment = FragmentDialogPerson.newInstance()
-            newFragment.isCancelable = false
-
-            val bundle = Bundle()
-            bundle.putString("id", mPersonList[position].id)
-            newFragment.arguments = bundle
-            newFragment.show(ft, "dialog_person_info")
         }
         binding.tvXiuwei.setOnClickListener {
             val ft = mContext.supportFragmentManager.beginTransaction()
@@ -141,7 +144,7 @@ class FragmentDialogClan : DialogFragment() {
     private fun registerTimeLooper(){
         Thread{
             while (true){
-                Thread.sleep(2000)
+                Thread.sleep(10000)
                 if(mThreadRunnable){
                     val message = Message.obtain()
                     message.what = 1
@@ -185,11 +188,9 @@ class FragmentDialogClan : DialogFragment() {
         binding.tvTotal.text = "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
         binding.tvZhu.text = if(clan.zhu?.name == null ) "" else CultivationHelper.showing(clan.zhu!!.name)
         binding.tvXiuwei.text = "${clan.battleWinner}-${clan.xiuweiBattle}↑"
-        mPersonList.clear()
-        mPersonList.addAll(personList.sortedBy { it.ancestorLevel })
-        (binding.lvPerson.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvPerson.invalidateViews()
 
+        val list = personList.sortedBy { it.ancestorLevel }
+        (binding.lvPerson.adapter as CultivationPersonListAdapter).submitList(list)
     }
 
 

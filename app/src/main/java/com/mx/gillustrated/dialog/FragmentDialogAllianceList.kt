@@ -8,8 +8,9 @@ import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.AllianceListAdapter
 import com.mx.gillustrated.databinding.FragmentDialogAllianceListBinding
@@ -47,9 +48,9 @@ class FragmentDialogAllianceList  : DialogFragment() {
     private val binding get() = _binding!!
 
     lateinit var mContext: CultivationActivity
-    private var mAllianceListData: MutableList<Alliance> = mutableListOf()
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -66,28 +67,29 @@ class FragmentDialogAllianceList  : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mContext = activity as CultivationActivity
-        binding.lvAlliance.adapter = AllianceListAdapter(requireContext(), mAllianceListData)
-        initListener()
+        init()
         updateView()
         registerTimeLooper()
-
     }
 
-    private fun initListener(){
-
+    private fun init(){
+        binding.lvAlliance.layoutManager = LinearLayoutManager(mContext)
+        binding.lvAlliance.itemAnimator = null
+        binding.lvAlliance.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
+        binding.lvAlliance.adapter = AllianceListAdapter(object : AllianceListAdapter.Callback{
+            override fun onItemClick(item: Alliance) {
+                val ft = mContext.supportFragmentManager.beginTransaction()
+                val newFragment = FragmentDialogAlliance.newInstance()
+                newFragment.isCancelable = false
+                val bundle = Bundle()
+                bundle.putString("id", item.id)
+                newFragment.arguments = bundle
+                newFragment.show(ft, "dialog_alliance_info")
+            }
+        })
         binding.btnClose.setOnClickListener {
             mThreadRunnable = false
             this.dismiss()
-        }
-        binding.lvAlliance.setOnItemClickListener { _, _, position, _ ->
-            val ft = mContext.supportFragmentManager.beginTransaction()
-            val newFragment = FragmentDialogAlliance.newInstance()
-            newFragment.isCancelable = false
-
-            val bundle = Bundle()
-            bundle.putString("id", mAllianceListData[position].id)
-            newFragment.arguments = bundle
-            newFragment.show(ft, "dialog_alliance_info")
         }
 
     }
@@ -106,16 +108,14 @@ class FragmentDialogAllianceList  : DialogFragment() {
     }
 
     private fun updateView(){
-        mAllianceListData.clear()
-        mAllianceListData.addAll(mContext.mAlliance.map { it.value })
-        mAllianceListData.forEach {
+        val list = mContext.mAlliance.map { it.value }.toMutableList()
+        list.forEach {
             it.totalXiuwei = it.personList.reduceValuesToLong(1000,
                     { p: Person -> p.lifeTurn.toLong() }, 0, { left, right -> left + right })
         }
-        mAllianceListData.sortWith(compareByDescending<Alliance> {it.battleWinner}.thenByDescending { it.totalXiuwei })
-        (binding.lvAlliance.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvAlliance.invalidateViews()
-        binding.tvTotal.text = mAllianceListData.sumOf { it.personList.size }.toString()
+        list.sortWith(compareByDescending<Alliance> {it.battleWinner}.thenByDescending { it.totalXiuwei })
+        (binding.lvAlliance.adapter as AllianceListAdapter).submitList(list)
+        binding.tvTotal.text = list.sumOf { it.personList.size }.toString()
     }
 
 }

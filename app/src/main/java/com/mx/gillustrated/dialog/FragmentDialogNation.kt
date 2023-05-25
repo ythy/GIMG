@@ -5,13 +5,13 @@ import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
-import com.mx.gillustrated.component.TextViewBox
 import com.mx.gillustrated.databinding.FragmentDialogNationBinding
 import com.mx.gillustrated.vo.cultivation.Nation
 import com.mx.gillustrated.vo.cultivation.Person
@@ -44,9 +44,7 @@ class FragmentDialogNation : DialogFragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var mNation: Nation
-    private var mPersonList = mutableListOf<Person>()
     lateinit var mContext:CultivationActivity
-
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
 
@@ -72,9 +70,6 @@ class FragmentDialogNation : DialogFragment() {
             mThreadRunnable = false
             this.dismiss()
         }
-        binding.lvPerson.setOnItemClickListener { _, _, position, _ ->
-            showPersonInfo(mPersonList[position].id)
-        }
         binding.tvXiuwei.setOnClickListener {
             val ft = mContext.supportFragmentManager.beginTransaction()
             val newFragment = FragmentDialogRank.newInstance(5, mNation.id)
@@ -88,7 +83,15 @@ class FragmentDialogNation : DialogFragment() {
         mContext = activity as CultivationActivity
         mNation = mContext.mNations[nationId]!!
         binding.tvName.text = CultivationHelper.showing(mNation.name)
-        binding.lvPerson.adapter = CultivationPersonListAdapter(requireContext(), mPersonList, showStar = true, showSpecEquipment = false)
+        binding.lvPerson.layoutManager = LinearLayoutManager(mContext)
+        binding.lvPerson.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
+        binding.lvPerson.adapter = CultivationPersonListAdapter(showStar = true, showSpecEquipment = false,
+                object : CultivationPersonListAdapter.Callback{
+                    override fun onItemClick(item: Person) {
+                        showPersonInfo(item.id)
+                    }
+                })
+
         updateView()
         registerTimeLooper()
     }
@@ -96,7 +99,7 @@ class FragmentDialogNation : DialogFragment() {
     private fun registerTimeLooper(){
         Thread{
             while (true){
-                Thread.sleep(4000)
+                Thread.sleep(10000)
                 if(mThreadRunnable){
                     val message = Message.obtain()
                     message.what = 1
@@ -107,33 +110,10 @@ class FragmentDialogNation : DialogFragment() {
     }
 
     private fun updateView(){
-        mPersonList.clear()
-        mPersonList.addAll(mContext.mPersons.filter { it.value.nationId == mNation.id }.map { it.value }.
-                sortedWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId }))
-        (binding.lvPerson.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvPerson.invalidateViews()
-        binding.tvTotal.text = "${mPersonList.size}-${mPersonList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
-        updatePost()
-    }
-
-    private fun updatePost(){
-        updateduWei()
-    }
-
-
-    private fun updateduWei(){
-        binding.llDuwei.removeAllViews()
-        if(mPersonList.size > 50){
-            binding.llParentMeasure.measure(0,0)
-            binding.llDuwei.setConfig(TextViewBox.TextViewBoxConfig(binding.llParentMeasure.measuredWidth - 100))
-            val list = mPersonList.shuffled().subList(0,5)
-            binding.llDuwei.setCallback(object : TextViewBox.Callback {
-                override fun onClick(index: Int) {
-                    showPersonInfo(list[index].id)
-                }
-            })
-            binding.llDuwei.setDataProvider(list.map { CultivationHelper.showing(it.name) }, null)
-        }
+        val list = mContext.mPersons.filter { it.value.nationId == mNation.id }.map { it.value }.
+                    sortedWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId })
+        (binding.lvPerson.adapter as CultivationPersonListAdapter).submitList(list)
+        binding.tvTotal.text = "${list.size}-${list.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
     }
 
     private fun showPersonInfo(id:String?){

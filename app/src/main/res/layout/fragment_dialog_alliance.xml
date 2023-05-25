@@ -39,8 +39,9 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="350dp">
-        <ListView
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:cacheColorHint="#00000000"
@@ -49,7 +50,7 @@
             android:dividerHeight="1px"
             android:fastScrollEnabled="true"
             android:id="@+id/lv_person">
-        </ListView>
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

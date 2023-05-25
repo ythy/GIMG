@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
@@ -49,7 +51,6 @@ class FragmentDialogAlliance : DialogFragment() {
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
-    private var mPersonList = mutableListOf<Person>()
     private val nation = CultivationHelper.mConfig.nation
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -101,10 +102,6 @@ class FragmentDialogAlliance : DialogFragment() {
             val prop = mAlliance.property.joinToString()
             Toast.makeText(mContext, prop, Toast.LENGTH_SHORT).show()
         }
-        binding.lvPerson.setOnItemClickListener { _, _, position, _ ->
-            showPersonInfo(mPersonList[position].id)
-        }
-
     }
 
     fun init(){
@@ -116,7 +113,15 @@ class FragmentDialogAlliance : DialogFragment() {
         binding.tvName.text = CultivationHelper.showing("${nation.find { it.id == mAlliance.nation }?.name}-${mAlliance.name}$abridgeName")
         binding.tvLifetime.text = "life: ${mAlliance.lifetime}"
         binding.tvXiuwei.text = "xiuwei: ${mAlliance.xiuwei}(${mAlliance.xiuweiMulti})  ↑${mAlliance.success}"
-        binding.lvPerson.adapter = CultivationPersonListAdapter(this.requireContext(), mPersonList, showStar = true, showSpecEquipment = true)
+
+        binding.lvPerson.layoutManager = LinearLayoutManager(mContext)
+        binding.lvPerson.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
+        binding.lvPerson.adapter = CultivationPersonListAdapter(showStar = true, showSpecEquipment = true,
+                object : CultivationPersonListAdapter.Callback{
+                    override fun onItemClick(item: Person) {
+                        showPersonInfo(item.id)
+                    }
+        })
         updateView()
         registerTimeLooper()
     }
@@ -124,7 +129,7 @@ class FragmentDialogAlliance : DialogFragment() {
     private fun registerTimeLooper(){
         Thread{
             while (true){
-                Thread.sleep(2000)
+                Thread.sleep(10000)
                 if(mThreadRunnable){
                     val message = Message.obtain()
                     message.what = 1
@@ -143,14 +148,10 @@ class FragmentDialogAlliance : DialogFragment() {
         }
         binding.tvWinner.text = "${mAlliance.battleWinner}-${mAlliance.xiuweiBattle}↑"
 
-
-        mPersonList.clear()
-        mPersonList.addAll(mAlliance.personList.map { it.value }.toMutableList())
-        mPersonList.sortWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId })
-        (binding.lvPerson.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvPerson.invalidateViews()
-
-        binding.tvTotal.text = "${mPersonList.size}-${mPersonList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        val list = mAlliance.personList.map { it.value }.toMutableList()
+        list.sortWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId })
+        (binding.lvPerson.adapter as CultivationPersonListAdapter).submitList(list)
+        binding.tvTotal.text = "${list.size}-${list.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
     }
 
     private fun showPersonInfo(id:String?){
