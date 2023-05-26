@@ -106,13 +106,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:dividerHeight="0px"
                 android:id="@+id/lv_history"
                 >
-            </ListView>
+            </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
     </LinearLayout>
     <com.google.android.material.navigation.NavigationView

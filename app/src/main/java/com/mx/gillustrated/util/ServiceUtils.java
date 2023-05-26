@@ -1,6 +1,6 @@
 package com.mx.gillustrated.util;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.mx.gillustrated.common.DBCall;

@@ -307,7 +307,7 @@ object CultivationSetting {
     data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?, var tianFuWeight: Int = 1, var lingGenWeight:Int = 1)
     // type 1 人物信息 assert(person != null), 2 流程信息 assert(battleId != "")
     // person : add lingGen color
-    data class HistoryInfo(var type:Int = 0, var content:String, var person: Person?, var battleId:String?)
+    data class HistoryInfo(var xun:Long, var type:Int = 0, var content:String, var person: Person?, var battleId:String?)
 
     class PresetInfo constructor(var identity:Int, var name: Pair<String, String>, var partner:Int = 0, var tianfuWeight:Int = 50, var linggenWeight:Int = 50){
         var profile:Int = 0

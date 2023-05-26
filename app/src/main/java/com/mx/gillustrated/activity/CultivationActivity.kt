@@ -11,10 +11,13 @@ import android.view.inputmethod.BaseInputConnection
 import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import butterknife.*
 import com.google.gson.Gson
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CultivationHistoryAdapter
+import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.*
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName2
@@ -75,7 +78,6 @@ class CultivationActivity : BaseActivity() {
     var mNations:ConcurrentHashMap<String, Nation> = ConcurrentHashMap()
 
     private var mBoss:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
-    private var mHistoryData = mutableListOf<CultivationSetting.HistoryInfo>()
     private val mTimeHandler:TimeHandler = TimeHandler(this)
 
     private val mExecutor:ExecutorService = Executors.newFixedThreadPool(20)
@@ -156,26 +158,6 @@ class CultivationActivity : BaseActivity() {
             val newFragment = FragmentDialogClanList.newInstance()
             newFragment.isCancelable = false
             newFragment.show(ft, "dialog_clan_list")
-        }
-        binding.lvHistory.setOnItemClickListener { _, _, position, _ ->
-            val row = mHistoryData[position]
-            val ft = supportFragmentManager.beginTransaction()
-            if(row.type == 1){
-                val person = row.person!!
-                val newFragment = FragmentDialogPerson.newInstance()
-                newFragment.isCancelable = false
-                val bundle = Bundle()
-                bundle.putString("id", person.id)
-                newFragment.arguments = bundle
-                newFragment.show(ft, "dialog_person_info")
-            }else if(row.type == 2 && CultivationBattleHelper.mBattles[row.battleId] != null){
-                val newFragment = FragmentDialogBattleInfo.newInstance()
-                newFragment.isCancelable = false
-                val bundle = Bundle()
-                bundle.putString("id", row.battleId)
-                newFragment.arguments = bundle
-                newFragment.show(ft, "dialog_battle_info")
-            }
         }
     }
 
@@ -535,7 +517,30 @@ class CultivationActivity : BaseActivity() {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             false
         }
-        binding.lvHistory.adapter = CultivationHistoryAdapter(this, mHistoryData)
+        binding.lvHistory.layoutManager = LinearLayoutManager(this)
+        binding.lvHistory.itemAnimator = null
+        binding.lvHistory.adapter = CultivationHistoryAdapter(
+                object : CultivationHistoryAdapter.Callback{
+                    override fun onItemClick(item: CultivationSetting.HistoryInfo) {
+                        val ft = supportFragmentManager.beginTransaction()
+                        if(item.type == 1){
+                            val person = item.person!!
+                            val newFragment = FragmentDialogPerson.newInstance()
+                            newFragment.isCancelable = false
+                            val bundle = Bundle()
+                            bundle.putString("id", person.id)
+                            newFragment.arguments = bundle
+                            newFragment.show(ft, "dialog_person_info")
+                        }else if(item.type == 2 && CultivationBattleHelper.mBattles[item.battleId] != null){
+                            val newFragment = FragmentDialogBattleInfo.newInstance()
+                            newFragment.isCancelable = false
+                            val bundle = Bundle()
+                            bundle.putString("id", item.battleId)
+                            newFragment.arguments = bundle
+                            newFragment.show(ft, "dialog_battle_info")
+                        }
+                    }
+                })
         binding.tvSpeed.text = mSpeed.toString()
 
         loadSkin()
@@ -834,8 +839,9 @@ class CultivationActivity : BaseActivity() {
     private fun updateHistory(){
         if(isHidden)
             return
-        if(mHistoryData.size > 500 && mThreadRunnable){
-            mHistoryData.clear()
+        val list = (binding.lvHistory.adapter as CultivationHistoryAdapter).getData().toMutableList()
+        if(list.size > 500 && mThreadRunnable){
+            list.clear()
             CultivationBattleHelper.mBattles.clear()
         }
         val tempList = CultivationHelper.mHistoryTempData.toList()
@@ -846,9 +852,9 @@ class CultivationActivity : BaseActivity() {
                 it.content = PinyinUtil.convert(it.content)
             }
         }
-        mHistoryData.addAll(0, tempList)
-        (binding.lvHistory.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvHistory.invalidateViews()
+        list.addAll(0, tempList)
+        (binding.lvHistory.adapter as CultivationHistoryAdapter).submitList(list)
+        binding.lvHistory.smoothScrollToPosition(0)
     }
 
     private fun Int.addMultiPerson() {
@@ -1355,10 +1361,8 @@ class CultivationActivity : BaseActivity() {
     private fun resetHandler(){
         setTimeLooper(false)
         mProgressDialog.show()
-        mHistoryData.clear()
         CultivationHelper.mHistoryTempData.clear()
-        (binding.lvHistory.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvHistory.invalidateViews()
+        (binding.lvHistory.adapter as CultivationHistoryAdapter).submitList(mutableListOf())
         Thread{
             Thread.sleep(1000)
             mCurrentXun = 0
@@ -1387,10 +1391,8 @@ class CultivationActivity : BaseActivity() {
         }
         setTimeLooper(false)
         if(block){
-            mHistoryData.clear()
             CultivationHelper.mHistoryTempData.clear()
-            (binding.lvHistory.adapter as BaseAdapter).notifyDataSetChanged()
-            binding.lvHistory.invalidateViews()
+            (binding.lvHistory.adapter as CultivationHistoryAdapter).submitList(mutableListOf())
         }
         Thread{
             Thread.sleep(500)
@@ -1436,10 +1438,8 @@ class CultivationActivity : BaseActivity() {
         }
         setTimeLooper(false)
         if(block){
-            mHistoryData.clear()
             CultivationHelper.mHistoryTempData.clear()
-            (binding.lvHistory.adapter as BaseAdapter).notifyDataSetChanged()
-            binding.lvHistory.invalidateViews()
+            (binding.lvHistory.adapter as CultivationHistoryAdapter).submitList(mutableListOf())
         }
         Thread{
             Thread.sleep(500)
@@ -1482,10 +1482,8 @@ class CultivationActivity : BaseActivity() {
         }
         setTimeLooper(false)
         if(block){
-            mHistoryData.clear()
             CultivationHelper.mHistoryTempData.clear()
-            (binding.lvHistory.adapter as BaseAdapter).notifyDataSetChanged()
-            binding.lvHistory.invalidateViews()
+            (binding.lvHistory.adapter as CultivationHistoryAdapter).submitList(mutableListOf())
         }
         Thread{
             Thread.sleep(500)

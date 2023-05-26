@@ -31,15 +31,15 @@ object CultivationHelper {
     var mHistoryTempData:MutableList<HistoryInfo> = Collections.synchronizedList(mutableListOf())
 
     fun writeHistory(content:String){
-        mHistoryTempData.add(0, HistoryInfo(0, content, null, null))
+        mHistoryTempData.add(0, HistoryInfo(mCurrentXun, 0, content, null, null))
     }
 
     fun writeHistory(content:String, person: Person?){
-        mHistoryTempData.add(0, HistoryInfo(1, content, person, null))
+        mHistoryTempData.add(0, HistoryInfo(mCurrentXun, 1, content, person, null))
     }
 
     fun writeHistory(content:String, battleId: String?){
-        mHistoryTempData.add(0, HistoryInfo(2, content, null, battleId))
+        mHistoryTempData.add(0, HistoryInfo(mCurrentXun, 2, content, null, battleId))
     }
 
     fun joinAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>){
