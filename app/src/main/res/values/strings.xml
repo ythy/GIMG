@@ -1,6 +1,8 @@
 <resources>
 
     <string name="app_name">G图鉴</string>
+    <string name="shortcut_cultivation_short_label">我的世界</string>
+    <string name="shortcut_cultivation_long_label">大千世界</string>
     <string name="header_img"></string>
     <string name="header_nid">No.</string>
     <string name="header_id">ID</string>
