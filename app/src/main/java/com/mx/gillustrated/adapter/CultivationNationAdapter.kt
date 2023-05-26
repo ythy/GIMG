@@ -1,70 +1,50 @@
 package com.mx.gillustrated.adapter
 
-import android.content.Context
-import com.mx.gillustrated.R
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
+import com.mx.gillustrated.databinding.AdapterCultivationNationBinding
 import com.mx.gillustrated.vo.cultivation.Nation
 
-class CultivationNationAdapter  constructor(mContext: Context, private val list: List<Nation>) : BaseAdapter() {
+@SuppressLint("SetTextI18n")
+class CultivationNationAdapter(private val callback: Callback): ListAdapter<Nation, CultivationNationAdapter.ViewHolder>(NationDiffCallback) {
 
-    private val layoutInflater: LayoutInflater = LayoutInflater.from(mContext)
-
-    override fun getCount(): Int {
-        return list.size
-    }
-
-    override fun getItem(arg0: Int): Any {
-        return list[arg0]
-    }
-
-    override fun getItemId(arg0: Int): Long {
-        return arg0.toLong()
-    }
-
-    override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
-        var convertView = convertViews
-        lateinit var component: ViewHolder
-
-        if (convertView == null) {
-            convertView = layoutInflater.inflate(
-                    R.layout.adapter_cultivation_nation, arg2, false)
-            component = ViewHolder(convertView)
-            convertView!!.tag = component
-        } else
-            component = convertView.tag as ViewHolder
-
-        component.name.text =  CultivationHelper.showing(list[arg0].name)
-        component.persons.text = "${ list[arg0].nationPersonList.size}-${ list[arg0].nationPersonList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
-        component.winner.text = list[arg0].battleWinner.toString()
-        component.total.text  = CultivationHelper.showLifeTurn(list[arg0].totalTurn.toLong())
-        return convertView
-    }
-
-    internal class ViewHolder(view: View) {
-
-        @BindView(R.id.tv_name)
-        lateinit var name: TextView
-
-        @BindView(R.id.tv_persons)
-        lateinit var persons: TextView
-
-        @BindView(R.id.tv_winner)
-        lateinit var winner: TextView
-
-        @BindView(R.id.tv_total)
-        lateinit var total: TextView
-
-
-        init {
-            ButterKnife.bind(this, view)
+    object NationDiffCallback : DiffUtil.ItemCallback<Nation>() {
+        override fun areItemsTheSame(oldItem: Nation, newItem: Nation): Boolean {
+            return oldItem.id == newItem.id
         }
+
+        override fun areContentsTheSame(oldItem: Nation, newItem: Nation): Boolean {
+            return newItem == oldItem
+        }
+    }
+
+    class ViewHolder(val binding: AdapterCultivationNationBinding) : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(AdapterCultivationNationBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+    }
+
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        val binding = viewHolder.binding
+        val data = getItem(position)
+
+        binding.tvName.text =  CultivationHelper.showing(data.name)
+        binding.tvPersons.text = "${ data.nationPersonList.size}-${ data.nationPersonList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        binding.tvWinner.text = data.battleWinner.toString()
+        binding.tvTotal.text  = CultivationHelper.showLifeTurn(data.totalTurn.toLong())
+
+        binding.root.setOnClickListener {
+            callback.onItemClick(data)
+        }
+    }
+
+    interface Callback{
+        fun onItemClick(item: Nation)
     }
 }

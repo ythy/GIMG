@@ -11,13 +11,11 @@ import android.view.inputmethod.BaseInputConnection
 import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import butterknife.*
 import com.google.gson.Gson
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CultivationHistoryAdapter
-import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.*
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName2

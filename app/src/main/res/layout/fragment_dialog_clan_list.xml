@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="1">
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:cacheColorHint="#00000000"
@@ -16,7 +16,7 @@
             android:dividerHeight="1px"
             android:fastScrollEnabled="true"
             android:id="@+id/lv_clan">
-        </ListView>
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

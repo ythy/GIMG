@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationNationAdapter
 import com.mx.gillustrated.databinding.FragmentDialogNationListBinding
@@ -45,7 +47,6 @@ class FragmentDialogNationList  : DialogFragment() {
     lateinit var mContext: CultivationActivity
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
-    private var mNationList = listOf<Nation>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -56,9 +57,9 @@ class FragmentDialogNationList  : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mContext = activity as CultivationActivity
+        init()
         updateView()
         registerTimeLooper()
-        initListener()
     }
 
     override fun onDestroyView() {
@@ -66,20 +67,24 @@ class FragmentDialogNationList  : DialogFragment() {
         _binding = null
     }
 
-    private fun initListener(){
+    private fun init(){
         binding.btnClose.setOnClickListener {
             mThreadRunnable = false
             this.dismiss()
         }
-        binding.lvNation.setOnItemClickListener { _, _, position, _ ->
-            val ft = mContext.supportFragmentManager.beginTransaction()
-            val newFragment = FragmentDialogNation.newInstance()
-            newFragment.isCancelable = false
-            val bundle = Bundle()
-            bundle.putString("id", mNationList[position].id)
-            newFragment.arguments = bundle
-            newFragment.show(ft, "dialog_nation_info")
-        }
+        binding.lvNation.layoutManager = LinearLayoutManager(mContext)
+        binding.lvNation.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
+        binding.lvNation.adapter = CultivationNationAdapter(object : CultivationNationAdapter.Callback{
+            override fun onItemClick(item: Nation) {
+                val ft = mContext.supportFragmentManager.beginTransaction()
+                val newFragment = FragmentDialogNation.newInstance()
+                newFragment.isCancelable = false
+                val bundle = Bundle()
+                bundle.putString("id", item.id)
+                newFragment.arguments = bundle
+                newFragment.show(ft, "dialog_nation_info")
+            }
+        })
     }
 
     private fun registerTimeLooper(){
@@ -96,14 +101,15 @@ class FragmentDialogNationList  : DialogFragment() {
     }
 
     private fun updateView(){
-        mNationList = mContext.mNations.map { c->
+        val list = mContext.mNations.map { c->
             val nation = c.value.copy()
             nation.nationPersonList = ConcurrentHashMap(mContext.mPersons.filter { it.value.nationId == nation.id })
             nation.totalTurn =  nation.nationPersonList.map { it.value }.sumOf { it.lifeTurn }
             nation
         }.sortedByDescending { it.totalTurn }
-        binding.lvNation.adapter = CultivationNationAdapter(requireContext(), mNationList)
-        binding.tvTotal.text = mNationList.sumOf { it.nationPersonList.size }.toString()
+
+        (binding.lvNation.adapter as CultivationNationAdapter).submitList(list)
+        binding.tvTotal.text = list.sumOf { it.nationPersonList.size }.toString()
     }
 
 }

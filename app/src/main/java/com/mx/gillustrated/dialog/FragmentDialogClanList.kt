@@ -5,9 +5,10 @@ import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationClanListAdapter
 import com.mx.gillustrated.databinding.FragmentDialogClanListBinding
@@ -38,22 +39,12 @@ class FragmentDialogClanList  : DialogFragment() {
 
     }
 
-//    @BindView(R.id.lv_clan)
-//    lateinit var mListView: ListView
-//
-//    @BindView(R.id.tv_total)
-//    lateinit var mTotalText: TextView
-
-
-
-
     private var _binding: FragmentDialogClanListBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
     lateinit var mContext: CultivationActivity
-    private var mClanListData: MutableList<Clan> = mutableListOf()
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
 
@@ -66,7 +57,24 @@ class FragmentDialogClanList  : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mContext = activity as CultivationActivity
-        binding.lvClan.adapter = CultivationClanListAdapter(requireContext(), mClanListData)
+        binding.lvClan.layoutManager = LinearLayoutManager(mContext)
+        binding.lvClan.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
+        binding.lvClan.adapter = CultivationClanListAdapter(object : CultivationClanListAdapter.Callback{
+            override fun onItemClick(item: Clan) {
+                if(item.clanPersonList.map { it.value }.isEmpty()){
+                    Toast.makeText(mContext, "size 0", Toast.LENGTH_SHORT).show()
+                    return
+                }
+                val ft = mContext.supportFragmentManager.beginTransaction()
+                val newFragment = FragmentDialogClan.newInstance()
+                newFragment.isCancelable = false
+                val bundle = Bundle()
+                bundle.putString("id",item.id)
+                newFragment.arguments = bundle
+                newFragment.show(ft, "dialog_clan_info")
+            }
+        })
+
         initListener()
         updateView()
         registerTimeLooper()
@@ -82,21 +90,6 @@ class FragmentDialogClanList  : DialogFragment() {
             mThreadRunnable = false
             this.dismiss()
         }
-        binding.lvClan.setOnItemClickListener { _, _, position, _ ->
-            if(mClanListData[position].clanPersonList.map { it.value }.isEmpty()){
-                Toast.makeText(mContext, "size 0", Toast.LENGTH_SHORT).show()
-                return@setOnItemClickListener
-            }
-            val ft = mContext.supportFragmentManager.beginTransaction()
-            val newFragment = FragmentDialogClan.newInstance()
-            newFragment.isCancelable = false
-            val bundle = Bundle()
-            bundle.putString("id", mClanListData[position].id)
-            newFragment.arguments = bundle
-            newFragment.show(ft, "dialog_clan_info")
-        }
-
-
     }
 
     private fun registerTimeLooper(){
@@ -113,14 +106,12 @@ class FragmentDialogClanList  : DialogFragment() {
     }
 
     fun updateView(){
-        mClanListData.clear()
         mContext.mClans.forEach {
             it.value.totalXiuwei = it.value.clanPersonList.map { c->c.value }.sumOf { s-> s.lifeTurn.toDouble() }.toLong()
         }
-        mClanListData.addAll(mContext.mClans.map { it.value })
-        mClanListData.sortByDescending { it.totalXiuwei }
-        (binding.lvClan.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvClan.invalidateViews()
-        binding.tvTotal.text = mClanListData.size.toString()
+        val list = mContext.mClans.map { it.value }.toMutableList()
+        list.sortByDescending { it.totalXiuwei }
+        (binding.lvClan.adapter as CultivationClanListAdapter).submitList(list)
+        binding.tvTotal.text = list.size.toString()
     }
 }
