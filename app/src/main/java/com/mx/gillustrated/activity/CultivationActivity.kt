@@ -44,10 +44,7 @@ import com.mx.gillustrated.component.CultivationSetting.getIdentityType
 import com.mx.gillustrated.databinding.ActivityCultivationBinding
 import com.mx.gillustrated.dialog.*
 import com.mx.gillustrated.service.StopService
-import com.mx.gillustrated.util.CultivationBakUtil
-import com.mx.gillustrated.util.JsonFileReader
-import com.mx.gillustrated.util.NameUtil
-import com.mx.gillustrated.util.PinyinUtil
+import com.mx.gillustrated.util.*
 import com.mx.gillustrated.vo.cultivation.*
 import java.io.IOException
 import java.lang.Exception
@@ -84,6 +81,8 @@ class CultivationActivity : BaseActivity() {
     private val mMicroMainExecutor:ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor() //12xun 为单位
 
     private lateinit var binding: ActivityCultivationBinding
+
+    private var badgeInit = 0
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -165,6 +164,7 @@ class CultivationActivity : BaseActivity() {
         if(!isFinishing){
             isHidden = true
             val serviceIntent = Intent(this, StopService::class.java)
+            serviceIntent.putExtra("badgeNumber", getBadgeNumber())
             this.startForegroundService(serviceIntent)
         }
     }
@@ -445,6 +445,7 @@ class CultivationActivity : BaseActivity() {
         }else{
             writeHistory("返回世界...")
         }
+        badgeInit = mPersons.map { it.value }.find { it.specIdentity == 12000041 }?.lifeTurn ?: 0
         registerTimeLooper()
         registerHistoryTimeLooper()
     }
@@ -468,10 +469,8 @@ class CultivationActivity : BaseActivity() {
                     resetHandler()
                 }
                 R.id.menu_reset_wtf->{
-
                 }
                 R.id.menu_shuffle->{
-
                 }
                 R.id.menu_temp->{
                     temp()
@@ -787,6 +786,7 @@ class CultivationActivity : BaseActivity() {
             }
             inDurationByXun("Xun12000", 12000) -> {
                 bePerson()
+                updateBadge()
             }
             else -> randomBattle(currentXun)
         }
@@ -794,6 +794,20 @@ class CultivationActivity : BaseActivity() {
         updateClans(currentXun)
         updateBoss(currentXun)
         randomSpecialEquipmentEvent(currentXun)
+    }
+
+    private fun updateBadge(){
+        if(isHidden){
+            val count = getBadgeNumber()
+            if (count > 0){
+                BadgeUtils.setBadgeNumber(this,count)
+            }
+        }
+    }
+
+    private fun getBadgeNumber():Int{
+        val currentNum = mPersons.map { it.value }.find { it.specIdentity == 12000041 }?.lifeTurn ?: 0
+        return currentNum - badgeInit
     }
 
     private fun setMicroMainExecutor(){

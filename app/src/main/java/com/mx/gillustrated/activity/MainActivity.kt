@@ -20,8 +20,6 @@ import androidx.appcompat.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -48,30 +46,36 @@ class MainActivity : BaseActivity() {
         const val MY_PERMISSIONS_REQUEST = 114
         val permissions:Array<String> = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE)
 
-        private class MainHandler(activity: MainActivity) : Handler() {
+        private class MainHandler(activity: MainActivity) : Handler(Looper.getMainLooper()) {
 
             private val weakReference: WeakReference<MainActivity> = WeakReference(activity)
 
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 val mainActivity:MainActivity = weakReference.get()!!
-                if (msg.what == 1) {
-                    mainActivity.setGameList()
-                } else if (msg.what == 2 || msg.what == 4) {
-                    val index = msg.what
-                    object : Thread() {
-                        override fun run() {
-                            CommonUtil.generateHeaderImg(mainActivity, mainActivity.mMainActivityListView.idListWithProfile, mainActivity.mGameType, index != 2)
-                            mainActivity.mainHandler.sendEmptyMessage(3)
-                        }
-                    }.start()
-                } else if (msg.what == 3) {
-                    Toast.makeText(mainActivity, "生成头像完成", Toast.LENGTH_SHORT).show()
-                } else if (msg.what == 5) {
-                    Toast.makeText(mainActivity, "删除完成", Toast.LENGTH_SHORT).show()
-                } else if (msg.what == 6){
-                    mainActivity.mMainActivityTop.setGameList(mainActivity.mGameType,
-                            msg.data!!.getParcelableArrayList<GameInfo>("list")!!.toList() )
+                when (msg.what) {
+                    1 -> {
+                        mainActivity.setGameList()
+                    }
+                    2, 4 -> {
+                        val index = msg.what
+                        object : Thread() {
+                            override fun run() {
+                                CommonUtil.generateHeaderImg(mainActivity, mainActivity.mMainActivityListView.idListWithProfile, mainActivity.mGameType, index != 2)
+                                mainActivity.mainHandler.sendEmptyMessage(3)
+                            }
+                        }.start()
+                    }
+                    3 -> {
+                        Toast.makeText(mainActivity, "生成头像完成", Toast.LENGTH_SHORT).show()
+                    }
+                    5 -> {
+                        Toast.makeText(mainActivity, "删除完成", Toast.LENGTH_SHORT).show()
+                    }
+                    6 -> {
+                        mainActivity.mMainActivityTop.setGameList(mainActivity.mGameType,
+                                msg.data!!.getParcelableArrayList<GameInfo>("list")!!.toList() )
+                    }
                 }
             }
 
