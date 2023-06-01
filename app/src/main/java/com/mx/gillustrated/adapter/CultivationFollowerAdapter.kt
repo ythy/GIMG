@@ -2,20 +2,14 @@ package com.mx.gillustrated.adapter
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageButton
-import android.widget.TextView
-import androidx.annotation.RequiresApi
-import butterknife.BindView
-import butterknife.ButterKnife
-import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.component.CultivationHelper.mConfig
+import com.mx.gillustrated.databinding.AdapterCultivationFollowerBinding
 import com.mx.gillustrated.vo.cultivation.Follower
 
 class CultivationFollowerAdapter constructor(mContext: Context, private val list: List<Follower>, private val callbacks: FollowerAdapterCallback) : BaseAdapter() {
@@ -33,59 +27,39 @@ class CultivationFollowerAdapter constructor(mContext: Context, private val list
         return arg0.toLong()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
         var convertView = convertViews
-        lateinit var component: ViewHolder
+        lateinit var component: AdapterCultivationFollowerBinding
 
         if (convertView == null) {
-            convertView = layoutInflater.inflate(
-                    R.layout.adapter_cultivation_follower, arg2, false)
-            component = ViewHolder(convertView)
-            convertView!!.tag = component
+            component = AdapterCultivationFollowerBinding.inflate(layoutInflater, arg2, false)
+            convertView = component.root
+            convertView.tag = component
         } else
-            component = convertView.tag as ViewHolder
+            component = convertView.tag as AdapterCultivationFollowerBinding
 
         val values = list[arg0].detail
-        component.name.text = CultivationHelper.showing(values.name + list[arg0].uniqueName)
-        component.name.setTextColor(Color.parseColor(CommonColors[values.rarity]))
+        component.tvName.text = CultivationHelper.showing(values.name + list[arg0].uniqueName)
+        component.tvName.setTextColor(Color.parseColor(CommonColors[values.rarity]))
         if(values.teji.isEmpty())
-            component.teji.text = ""
+            component.tvTeji.text = ""
         else
-            component.teji.text = CultivationHelper.showing(mConfig.teji.filter { values.teji.contains(it.id) }.joinToString { it.name })
+            component.tvTeji.text = CultivationHelper.showing(mConfig.teji.filter { values.teji.contains(it.id) }.joinToString { it.name })
 
-        component.props.text = values.property.take(4).joinToString()
+        component.tvProps.text = values.property.take(4).joinToString()
 
         if (values.type == 0){
-            component.del.visibility = View.VISIBLE
+            component.btnDel.visibility = View.VISIBLE
         }else{
-            component.del.visibility = View.GONE
+            component.btnDel.visibility = View.GONE
         }
 
-        component.del.setOnClickListener{
+        component.btnDel.setOnClickListener{
             callbacks.onDeleteHandler(list[arg0])
         }
         return convertView
     }
 
-    internal class ViewHolder(view: View) {
-
-        @BindView(R.id.tv_name)
-        lateinit var name: TextView
-
-        @BindView(R.id.tv_props)
-        lateinit var props: TextView
-
-        @BindView(R.id.tv_teji)
-        lateinit var teji: TextView
-
-        @BindView(R.id.btnDel)
-        lateinit var del: ImageButton
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-    }
 
     interface FollowerAdapterCallback {
         fun onDeleteHandler(follower: Follower)

@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationRankAdapter
 import com.mx.gillustrated.component.CultivationEnemyHelper
@@ -25,21 +26,11 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
 
     }
 
-//    @BindView(R.id.lv_person)
-//    lateinit var mListView: ListView
-//
-//    @BindView(R.id.tv_total)
-//    lateinit var mTotalText: TextView
-//
-//    @BindView(R.id.tv_title)
-//    lateinit var mTitle: TextView
-
     private var _binding: FragmentDialogRankListBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
     lateinit var mContext: CultivationActivity
-    private var mListData: MutableList<SimpleData> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -50,7 +41,38 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mContext = activity as CultivationActivity
-        binding.lvPerson.adapter = CultivationRankAdapter(requireContext(), mListData)
+        binding.lvPerson.layoutManager = LinearLayoutManager(mContext)
+        binding.lvPerson.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
+        binding.lvPerson.adapter = CultivationRankAdapter( object : CultivationRankAdapter.Callback {
+            override fun onItemClick(item: SimpleData) {
+                val ft = mContext.supportFragmentManager.beginTransaction()
+                val bundle = Bundle()
+                bundle.putString("id", item.id)
+                when (mType){
+                    0-> {
+                        val newFragment = FragmentDialogAlliance.newInstance()
+                        newFragment.isCancelable = false
+                        newFragment.arguments = bundle
+                        newFragment.show(ft, "dialog_alliance_info")
+                    }
+                    1-> {
+                        val newFragment = FragmentDialogClan.newInstance()
+                        newFragment.isCancelable = false
+                        newFragment.arguments = bundle
+                        newFragment.show(ft, "dialog_clan_info")
+                    }
+                    in 3..7 ->{
+
+                    }
+                    else ->{
+                        val newFragment = FragmentDialogPerson.newInstance()
+                        newFragment.isCancelable = false
+                        newFragment.arguments = bundle
+                        newFragment.show(ft, "dialog_person_info")
+                    }
+                }
+            }
+        })
         updateView()
         initListener()
     }
@@ -63,34 +85,6 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
     private fun initListener(){
         binding.btnClose.setOnClickListener {
             this.dismiss()
-        }
-        binding.lvPerson.setOnItemClickListener { _, _, position, _ ->
-            val ft = mContext.supportFragmentManager.beginTransaction()
-            val bundle = Bundle()
-            bundle.putString("id", mListData[position].id)
-            when (mType){
-                0-> {
-                    val newFragment = FragmentDialogAlliance.newInstance()
-                    newFragment.isCancelable = false
-                    newFragment.arguments = bundle
-                    newFragment.show(ft, "dialog_alliance_info")
-                }
-                1-> {
-                    val newFragment = FragmentDialogClan.newInstance()
-                    newFragment.isCancelable = false
-                    newFragment.arguments = bundle
-                    newFragment.show(ft, "dialog_clan_info")
-                }
-                in 3..7 ->{
-
-                }
-                else ->{
-                    val newFragment = FragmentDialogPerson.newInstance()
-                    newFragment.isCancelable = false
-                    newFragment.arguments = bundle
-                    newFragment.show(ft, "dialog_person_info")
-                }
-            }
         }
     }
 
@@ -205,10 +199,12 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
     }
 
     private fun updateList(list:MutableList<SimpleData>){
-        mListData.clear()
-        mListData.addAll(if(mType == 8) list.sortedBy { it.seq } else list.sortedByDescending { it.seq })
-        (binding.lvPerson.adapter as BaseAdapter).notifyDataSetChanged()
-        binding.lvPerson.invalidateViews()
+        if(mType == 8){
+            list.sortBy { it.seq }
+        } else {
+            list.sortByDescending { it.seq }
+        }
+        (binding.lvPerson.adapter as CultivationRankAdapter).submitList(list)
         binding.tvTotal.text = list.size.toString()
     }
 }
