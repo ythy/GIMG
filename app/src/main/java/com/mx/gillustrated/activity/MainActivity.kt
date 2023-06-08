@@ -294,6 +294,14 @@ class MainActivity : BaseActivity() {
                 val intent = Intent(this, WebActivity::class.java)
                 startActivity(intent)
             }
+            R.id.action_flutter-> {
+                val intent = Intent(this, FlutterEventsActivity::class.java)
+                intent.action = Intent.ACTION_SEND
+                intent.type = "text/plain"
+                intent.putExtra("game", mGameType)
+                intent.putExtra(Intent.EXTRA_TEXT, "MX")
+                startActivity(intent)
+            }
             R.id.action_game-> {
                 val intent = Intent(this, CultivationActivity::class.java)
                 startActivity(intent)

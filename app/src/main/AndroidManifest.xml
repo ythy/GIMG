@@ -1,9 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mx.gillustrated"
     android:versionCode="600"
     android:versionName="6.0.0" >
-
     <!-- 对外部存储设备的写入权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
     </uses-permission>
@@ -14,75 +14,78 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:name=".MyApplication"
-        tools:ignore="GoogleAppIndexingWarning,HardcodedDebugMode">
-        
-         <activity
-            android:name="com.mx.gillustrated.activity.MainActivity"
+        tools:ignore="GoogleAppIndexingWarning,HardcodedDebugMode" >
+        <activity
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-             <meta-data android:name="android.app.shortcuts"
-                 android:resource="@xml/shortcuts" />
-         </activity>
-        
-        <activity
-            android:name="com.mx.gillustrated.activity.DetailActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        
-        <activity
-            android:name="com.mx.gillustrated.activity.AddCardActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        
-        <activity
-            android:name="com.mx.gillustrated.activity.GameListActivity"
-            android:screenOrientation="portrait" >
-        </activity>  
-        
-        <activity
-            android:name="com.mx.gillustrated.activity.GameInfoActivity"
-            android:screenOrientation="portrait" >
-        </activity>
 
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
         <activity
-            android:name="com.mx.gillustrated.activity.EventsActivity"
+            android:name=".activity.DetailActivity"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
-            android:name="com.mx.gillustrated.activity.EventInfoActivity"
+            android:name=".activity.AddCardActivity"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
-            android:name="com.mx.gillustrated.activity.ImageAdjustActivity"
+            android:name=".activity.GameListActivity"
             android:screenOrientation="portrait" >
         </activity>
-
+        <activity
+            android:name=".activity.GameInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activity.EventsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activity.EventInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activity.ImageAdjustActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name=".activity.WebActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
-
         <activity
             android:name=".activity.CultivationActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
-
+        <activity
+            android:name=".activity.FlutterEventsActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.Blue"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
         <service
             android:name=".service.StopService"
-            android:enabled="true">
+            android:enabled="true" >
         </service>
     </application>
-	
-    
-        
+
 </manifest>
