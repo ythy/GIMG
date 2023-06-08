@@ -4,8 +4,17 @@ buildscript {
     ext.material_version = '1.2.0-alpha05'
 
     repositories {
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/central'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/gradle-plugin'
+        }
+        mavenCentral()
         maven{ url 'https://maven.aliyun.com/repository/google'}
-        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.2.1'
@@ -18,7 +27,16 @@ buildscript {
 allprojects {
 
     repositories {
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/central'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/gradle-plugin'
+        }
+        mavenCentral()
         maven{ url 'https://maven.aliyun.com/repository/google'}
-        jcenter()
     }
 }
