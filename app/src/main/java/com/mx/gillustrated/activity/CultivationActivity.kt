@@ -852,7 +852,7 @@ class CultivationActivity : BaseActivity() {
         if(isHidden)
             return
         val list = (binding.lvHistory.adapter as CultivationHistoryAdapter).getData().toMutableList()
-        if(list.size > 500 && mThreadRunnable){
+        if(list.size > 400 && mThreadRunnable){
             list.clear()
             CultivationBattleHelper.mBattles.clear()
         }
@@ -864,7 +864,8 @@ class CultivationActivity : BaseActivity() {
                 it.content = PinyinUtil.convert(it.content)
             }
         }
-        list.addAll(0, tempList)
+
+        list.addAll(0, if(tempList.size > 200) tempList.subList(0, 200) else tempList)
         (binding.lvHistory.adapter as CultivationHistoryAdapter).submitList(list)
         binding.lvHistory.smoothScrollToPosition(0)
     }

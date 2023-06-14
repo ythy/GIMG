@@ -1,25 +1,20 @@
 package com.mx.gillustrated.adapter
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
-import com.mx.gillustrated.R
 import com.mx.gillustrated.component.CultivationBattleHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.component.CultivationHelper.showing
+import com.mx.gillustrated.databinding.AdapterCultivationBattleHisBinding
 import com.mx.gillustrated.vo.cultivation.BattleInfoSeq
 
 class CultivationBattleAdapter constructor(mContext: Context, private val list: List<BattleInfoSeq>) : BaseAdapter() {
@@ -38,18 +33,16 @@ class CultivationBattleAdapter constructor(mContext: Context, private val list: 
         return arg0.toLong()
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
         var convertView = convertViews
-        lateinit var component: Component
+        lateinit var component: AdapterCultivationBattleHisBinding
 
         if (convertView == null) {
-            convertView = layoutInflater.inflate(
-                    R.layout.adapter_cultivation_battle_his, arg2, false)
-            component = Component(convertView)
+            component = AdapterCultivationBattleHisBinding.inflate(layoutInflater, arg2, false)
+            convertView = component.root
             convertView.tag = component
         } else {
-            component = convertView.tag as Component
+            component = convertView.tag as AdapterCultivationBattleHisBinding
         }
         val round = if(list[arg0].round > 0)  "${showing("\u56de\u5408")}${list[arg0].round}-${list[arg0].seq}:" else ""
         val history = "$round${showing(list[arg0].content)}"
@@ -90,18 +83,8 @@ class CultivationBattleAdapter constructor(mContext: Context, private val list: 
         } else {
             component.tvRow.text = history
         }
-        return convertView!!
+        return convertView
     }
 
-    internal class Component(view: View) {
 
-        @BindView(R.id.tv_row)
-        lateinit var tvRow: TextView
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-
-
-    }
 }

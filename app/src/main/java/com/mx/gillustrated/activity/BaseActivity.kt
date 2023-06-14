@@ -26,7 +26,7 @@ abstract class BaseActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         doInject()
-        when (mSP.getString("theme", "Green")){
+        when (mSP.getString("theme", "Blue")){
             "Green"-> theme.applyStyle(R.style.AppTheme_Green, true)
             "Blue"-> theme.applyStyle(R.style.AppTheme_Blue, true)
             "Orange"-> theme.applyStyle(R.style.AppTheme_Orange, true)
