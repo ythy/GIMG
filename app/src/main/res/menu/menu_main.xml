@@ -15,11 +15,6 @@
         android:title="@string/menu_create_header"/>
 
 	<item
-		android:id="@+id/menu_eventlist"
-		android:orderInCategory="400"
-		android:title="@string/menu_event_list"/>
-
-	<item
 		android:id="@+id/menu_delete"
 		android:orderInCategory="500"
 		android:title="@string/menu_event_delete"/>

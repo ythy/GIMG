@@ -1,29 +1,26 @@
 package com.mx.gillustrated.component
 
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.widget.AdapterView
-import android.widget.ListView
-import android.widget.RelativeLayout
-import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.MainActivity
 import com.mx.gillustrated.adapter.DataListAdapter
 import com.mx.gillustrated.database.DataBaseHelper
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler
 import com.mx.gillustrated.vo.CardInfo
 import java.util.ArrayList
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.mx.gillustrated.activity.BaseActivity.Companion.SHARE_PAGE_SIZE
+import com.mx.gillustrated.databinding.ActivityMainBinding
 import java.lang.ref.WeakReference
 
 /**
  * Created by maoxin on 2018/8/2.
  */
 
-class MainActivityListView(private val mContext: MainActivity, private val mOrmHelper: DataBaseHelper, private val mDataViewHandle: DataViewHandle) {
+class MainActivityListView(private val mContext: MainActivity, private val binding: ActivityMainBinding,
+                           private val mOrmHelper: DataBaseHelper, private val mDataViewHandle: DataViewHandle) {
 
-    private val mDataView: DataView
     private var mList: MutableList<CardInfo> = ArrayList()
     private var mAdapter: DataListAdapter? = null
     private var mListViewLastPosition: Int = 0 //保存最后一次本页面滚动位置
@@ -63,7 +60,7 @@ class MainActivityListView(private val mContext: MainActivity, private val mOrmH
         }
     }
 
-    private class ListHandler internal constructor(component: MainActivityListView ) : Handler() {
+    private class ListHandler constructor(component: MainActivityListView ) : Handler(Looper.getMainLooper()) {
 
         private val weakReference: WeakReference<MainActivityListView> = WeakReference(component)
 
@@ -87,7 +84,6 @@ class MainActivityListView(private val mContext: MainActivity, private val mOrmH
     }
 
     init {
-        mDataView = DataView()
         initialize()
     }
 
@@ -99,9 +95,9 @@ class MainActivityListView(private val mContext: MainActivity, private val mOrmH
         mOrderBy = if (order == null) INIT_ORDER_BY else order.split("\\*".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
         mIsAsc = if (order == null) INIT_ORDER_TYPE else order.split("\\*".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
 
-        mDataView.pageVBoxLayout!!.visibility = android.view.View.GONE
-        mDataView.listViewMain!!.onItemClickListener = itemClickListener
-        mDataView.listViewMain!!.setOnScrollListener(ListenerListViewScrollHandler(mDataView.listViewMain!!, mDataView.pageVBoxLayout!!, 0,
+        binding.pageVBox.visibility = android.view.View.GONE
+        binding.lvMain.onItemClickListener = itemClickListener
+        binding.lvMain.setOnScrollListener(ListenerListViewScrollHandler(binding.lvMain, binding.pageVBox, 0,
                 object : ListenerListViewScrollHandler.ScrollHandle {
                     override fun scrollLastRow(totalCount: Int) {
                         if (totalCount == totalItemCount)
@@ -117,13 +113,13 @@ class MainActivityListView(private val mContext: MainActivity, private val mOrmH
     private fun search() {
         mDataViewHandle.onSearchStart()
         val pageSize = mContext.mSP.getInt(SHARE_PAGE_SIZE + mContext.mGameType, PAGE_SIZE)
-        Thread(Runnable {
+        Thread{
             val list = mOrmHelper.cardInfoDao.queryCards(searchCondition, mOrderBy, mIsAsc == CardInfo.SORT_ASC,
                     (if (initPage == 1) (currentPage - 1) * pageSize else 0).toLong(), (initPage * pageSize).toLong())
             val msg = Message.obtain()
             msg.obj = list
             listHandler.sendMessage(msg)
-        }).start()
+        }.start()
     }
 
     fun searchData(info: CardInfo) {
@@ -156,32 +152,17 @@ class MainActivityListView(private val mContext: MainActivity, private val mOrmH
 
     private fun updateList(flag: Boolean) {
         if (flag)
-            mDataView.listViewMain!!.adapter = mAdapter
+            binding.lvMain.adapter = mAdapter
         else
             mAdapter!!.notifyDataSetChanged()
 
         if (mListViewLastPosition > 0) {
-            mDataView.listViewMain!!.setSelection(mListViewLastPosition)
+            binding.lvMain.setSelection(mListViewLastPosition)
             mListViewLastPosition = 0
         }
 
     }
 
-    internal inner class DataView {
-
-        @JvmField
-        @BindView(R.id.lvMain)
-        var listViewMain: ListView? = null
-
-        @JvmField
-        @BindView(R.id.pageVBox)
-        var pageVBoxLayout: RelativeLayout? = null
-
-        init {
-            ButterKnife.bind(this, mContext)
-        }
-
-    }
 
     interface DataViewHandle {
         fun onListItemClick(info: CardInfo, position: Int, totalCount: Int, currentPage: Int)

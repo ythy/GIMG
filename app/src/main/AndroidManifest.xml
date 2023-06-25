@@ -5,8 +5,9 @@
     android:versionCode="600"
     android:versionName="6.0.0" >
     <!-- 对外部存储设备的写入权限 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
-    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.GET_CLIPS" />
     <uses-permission android:name="android.permission.READ_CLIPS" />
     <uses-permission android:name="android.permission.WRITE_CLIPS" />
@@ -21,57 +22,58 @@
         android:label="@string/app_name"
         tools:ignore="GoogleAppIndexingWarning,HardcodedDebugMode" >
         <activity
+            android:exported="true"
             android:name=".activity.MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="fullSensor" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".activity.DetailActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="fullSensor" >
         </activity>
         <activity
             android:name=".activity.AddCardActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="fullSensor" >
         </activity>
         <activity
             android:name=".activity.GameListActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="fullSensor" >
         </activity>
         <activity
             android:name=".activity.GameInfoActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="fullSensor" >
         </activity>
         <activity
             android:name=".activity.EventsActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="fullSensor" >
         </activity>
         <activity
             android:name=".activity.EventInfoActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="fullSensor" >
         </activity>
         <activity
             android:name=".activity.ImageAdjustActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="fullSensor" >
         </activity>
         <activity
             android:name=".activity.WebActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="fullSensor" >
         </activity>
         <activity
             android:name=".activity.CultivationActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
         </activity>
         <activity
             android:name=".activity.FlutterEventsActivity"
             android:launchMode="singleTop"
+            android:exported="true"
             android:theme="@style/AppTheme.Blue"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection"
             android:hardwareAccelerated="true"

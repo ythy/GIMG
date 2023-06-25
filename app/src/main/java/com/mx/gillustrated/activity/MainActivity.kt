@@ -20,18 +20,15 @@ import androidx.appcompat.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.Window
 import android.view.inputmethod.BaseInputConnection
-import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.Toast
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import butterknife.OnTextChanged
+import com.mx.gillustrated.databinding.ActivityMainBinding
 import com.mx.gillustrated.dialog.FragmentDialogTheme
 
 class MainActivity : BaseActivity() {
@@ -41,6 +38,7 @@ class MainActivity : BaseActivity() {
     private lateinit var mMainActivityTop: MainActivityTop
     private lateinit var mMainActivityListView: MainActivityListView
     internal var mainHandler: Handler = MainHandler(this)
+    lateinit var binding: ActivityMainBinding
 
     companion object {
         const val MY_PERMISSIONS_REQUEST = 114
@@ -82,50 +80,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-
-
-    @JvmField
-    @BindView(R.id.etPinyin)
-    internal var etPinyin: EditText? = null
-
-    @JvmField
-    @BindView(R.id.btnShowMenu)
-    internal var btnMenu: ImageButton? = null
-
-    @OnClick(R.id.btnShowEvents)
-    internal fun onBtnShowEventsClick() {
-        val intentEvent = Intent(this@MainActivity, EventsActivity::class.java)
-        intentEvent.putExtra("game", mGameType)
-        startActivity(intentEvent)
-    }
-
-    @OnClick(R.id.btnShowMenu)
-    internal fun onBtnShowMenuClick() {
-        val mInputConnection = BaseInputConnection(btnMenu, true)
-        val down = KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MENU)
-        mInputConnection.sendKeyEvent(down)
-        val up = KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MENU)
-        mInputConnection.sendKeyEvent(up)
-    }
-
-    @OnTextChanged(R.id.etPinyin)
-    internal fun onEtPinyinChanged() {
-        val breaks = etPinyin!!.tag != null && etPinyin!!.tag as Boolean//防止change事件二次检索
-        if (breaks) {
-            etPinyin!!.tag = false
-            return
-        }
-        val input = etPinyin!!.text.toString()
-        mMainActivityListView.searchData(input)
-    }
-
-    @OnClick(R.id.btnAdd)
-    internal fun btnAddClickListener() {
-        val intent = Intent(this@MainActivity, AddCardActivity::class.java)
-        intent.putExtra("game", mGameType)
-        startActivity(intent)
-    }
-
     /* test call jni method
 
     static {
@@ -137,19 +91,50 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         mGameType = intent.getIntExtra("game", CommonUtil.getGameType(this))
-        ButterKnife.bind(this)
-
-//        val dm  =  DisplayMetrics()
-//        window.windowManager.defaultDisplay.getMetrics(dm)
-//        Log.d("dpi ---------", "${dm.density} : ${dm.xdpi} - ${dm.ydpi} : ${dm.scaledDensity} : ${dm.widthPixels} - ${dm.heightPixels}")
         requestPermission()
+    }
+
+    private fun initListener(){
+        binding.btnShowEvents.setOnClickListener {
+            val intentEvent = Intent(this@MainActivity, EventsActivity::class.java)
+            intentEvent.putExtra("game", mGameType)
+            startActivity(intentEvent)
+        }
+        binding.btnShowMenu.setOnClickListener {
+            val mInputConnection = BaseInputConnection(binding.btnShowMenu, true)
+            val down = KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MENU)
+            mInputConnection.sendKeyEvent(down)
+            val up = KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MENU)
+            mInputConnection.sendKeyEvent(up)
+        }
+        binding.btnAdd.setOnClickListener {
+            val intent = Intent(this@MainActivity, AddCardActivity::class.java)
+            intent.putExtra("game", mGameType)
+            startActivity(intent)
+        }
+        binding.etPinyin.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val breaks = binding.etPinyin.tag != null && binding.etPinyin.tag as Boolean//防止change事件二次检索
+                if (breaks) {
+                    binding.etPinyin.tag = false
+                    return
+                }
+                val input = binding.etPinyin.text.toString()
+                mMainActivityListView.searchData(input)
+            }
+            override fun afterTextChanged(s: Editable?) {}
+
+        })
     }
 
     private fun init(){
         //Log.d("NATIVE ",  stringFromJNI());
-
+        initListener()
         mMainActivityHeader = MainActivityHeader(this,
                 object : MainActivityHeader.HeaderHandle{
                     override fun onHeaderClick(c: String) {
@@ -159,7 +144,7 @@ class MainActivity : BaseActivity() {
                 },
                 mGameType)
 
-        mMainActivityTop = MainActivityTop(this, mOrmHelper, object : MainActivityTop.TopHandle {
+        mMainActivityTop = MainActivityTop(this, binding, mOrmHelper, object : MainActivityTop.TopHandle {
             override fun onSearchData() {
                 mMainActivityHeader.setHeaderColor(mMainActivityListView.orderBy.split("\\*".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0])
                 val card = mMainActivityTop.spinnerInfo
@@ -171,8 +156,8 @@ class MainActivity : BaseActivity() {
 
             override fun onRefresh() {
                 mMainActivityListView.setOrderBy(null, null)
-                etPinyin!!.tag = true
-                etPinyin!!.setText("")
+                binding.etPinyin.tag = true
+                binding.etPinyin.setText("")
             }
 
             override fun onGameTypeChanged(type: Int) {
@@ -181,7 +166,7 @@ class MainActivity : BaseActivity() {
             }
         })
 
-        mMainActivityListView = MainActivityListView(this, mOrmHelper, object : MainActivityListView.DataViewHandle {
+        mMainActivityListView = MainActivityListView(this, binding, mOrmHelper, object : MainActivityListView.DataViewHandle {
             override fun onListItemClick(info: CardInfo, position: Int, totalCount: Int, currentPage: Int) {
                 val intent = Intent(this@MainActivity,
                         DetailActivity::class.java)
@@ -288,7 +273,6 @@ class MainActivity : BaseActivity() {
                 startActivity(intent)
             }
             R.id.menu_header -> DialogExportImg.show(this, mMainActivityListView.dataList[0].id, mGameType, mainHandler)
-            R.id.menu_eventlist -> onBtnShowEventsClick()
             R.id.menu_delete -> onDeleteListData()
             R.id.action_h5-> {
                 val intent = Intent(this, WebActivity::class.java)
@@ -325,8 +309,8 @@ class MainActivity : BaseActivity() {
     private fun onDeleteListData() {
         AlertDialog.Builder(this)
                 .setMessage("确定要删除吗?")
-                .setNegativeButton(android.R.string.no, null)
-                .setPositiveButton(android.R.string.yes) { _, _ -> Thread(DeleteRunnable()).start() }
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok) { _, _ -> Thread(DeleteRunnable()).start() }
                 .show()
     }
 
@@ -343,11 +327,13 @@ class MainActivity : BaseActivity() {
                     MConfig.SD_PATH + "/" + mGameType)
             if (imagesFileDir.exists()) {
                 val child = imagesFileDir.listFiles()
-                for (i in child.indices) {
-                    val name = child[i].name
-                    val id = Integer.parseInt(name.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0].substring(2))
-                    if (idList.contains(id))
-                        CommonUtil.deleteImage(this@MainActivity, child[i])
+                if (child != null){
+                    for (i in child.indices) {
+                        val name = child[i].name
+                        val id = Integer.parseInt(name.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0].substring(2))
+                        if (idList.contains(id))
+                            CommonUtil.deleteImage(this@MainActivity, child[i])
+                    }
                 }
             }
 
@@ -356,11 +342,16 @@ class MainActivity : BaseActivity() {
                     MConfig.SD_HEADER_PATH + "/" + mGameType)
             if (imagesHeaderFileDir.exists()) {
                 val child = imagesHeaderFileDir.listFiles()
-                for (i in child.indices) {
-                    val name = child[i].name
-                    val id = Integer.parseInt(name.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0])
-                    if (idList.contains(id))
-                        CommonUtil.deleteImage(this@MainActivity, child[i])
+                if (child != null) {
+                    for (i in child.indices) {
+                        val name = child[i].name
+                        val id = Integer.parseInt(
+                            name.split("_".toRegex()).dropLastWhile { it.isEmpty() }
+                                .toTypedArray()[0]
+                        )
+                        if (idList.contains(id))
+                            CommonUtil.deleteImage(this@MainActivity, child[i])
+                    }
                 }
             }
             mOrmHelper.cardInfoDao.delCardsById(idList)

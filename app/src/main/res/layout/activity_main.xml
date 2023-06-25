@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/BaseActivityStyle" >
@@ -297,7 +296,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp">
-        <include layout="@layout/adapter_mainlist_header" />
+        <include android:id="@+id/ll_header_include" layout="@layout/adapter_mainlist_header" />
     </LinearLayout>
     <ListView
         android:id="@+id/lvMain"

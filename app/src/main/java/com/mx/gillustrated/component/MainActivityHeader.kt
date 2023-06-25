@@ -1,17 +1,15 @@
 package com.mx.gillustrated.component
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import com.mx.gillustrated.R
 import com.mx.gillustrated.activity.MainActivity
 import com.mx.gillustrated.vo.CardInfo
 import java.util.HashMap
-import butterknife.BindColor
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.mx.gillustrated.activity.BaseActivity.Companion.SHARE_SHOW_COST_COLUMN
+import com.mx.gillustrated.databinding.AdapterMainlistHeaderBinding
 
 /**
  * Created by maoxin on 2018/7/31.
@@ -20,10 +18,10 @@ import com.mx.gillustrated.activity.BaseActivity.Companion.SHARE_SHOW_COST_COLUM
 class MainActivityHeader(private val mContext: MainActivity, private val mHeaderHandle: HeaderHandle, gameId: Int) {
 
     private lateinit var mTextViewMap: Map<String, TextView>
-    private lateinit var mListHeaderView: ListHeaderView
     private lateinit var mResourceController: ResourceController
     private var mHeaderPressColor:Int = Color.TRANSPARENT
     private var mHeaderDefaultColor:Int = Color.WHITE
+    private lateinit var binding:AdapterMainlistHeaderBinding
 
     init {
         initialize()
@@ -32,33 +30,34 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
 
     fun setResourceController(gameId: Int) {
         mResourceController = ResourceController(mContext, gameId)
-        mListHeaderView.tvHP.text = mResourceController.number1
-        mListHeaderView.tvAttack.text = mResourceController.number2
-        mListHeaderView.tvDefense.text = mResourceController.number3
-        mListHeaderView.tvExtra1.text = mResourceController.number4
-        mListHeaderView.tvExtra2.text = mResourceController.number5
+        binding.tvHeaderHP.text = mResourceController.number1
+        binding.tvHeaderAttack.text = mResourceController.number2
+        binding.tvHeaderDefense.text = mResourceController.number3
+        binding.tvHeaderExtra1.text = mResourceController.number4
+        binding.tvHeaderExtra2.text = mResourceController.number5
         if ("E1" == mResourceController.number4) {
-            mListHeaderView.ivExtraGap1.visibility = View.GONE
-            mListHeaderView.tvExtra1.visibility = View.GONE
+            binding.ivExtra1Gap.visibility = View.GONE
+            binding.tvHeaderExtra1.visibility = View.GONE
         } else {
-            mListHeaderView.ivExtraGap1.visibility = View.VISIBLE
-            mListHeaderView.tvExtra1.visibility = View.VISIBLE
+            binding.ivExtra1Gap.visibility = View.VISIBLE
+            binding.tvHeaderExtra1.visibility = View.VISIBLE
         }
         if ("E2" == mResourceController.number5) {
-            mListHeaderView.ivExtraGap2.visibility = View.GONE
-            mListHeaderView.tvExtra2.visibility = View.GONE
+            binding.ivExtra2Gap.visibility = View.GONE
+            binding.tvHeaderExtra2.visibility = View.GONE
         } else {
-            mListHeaderView.ivExtraGap2.visibility = View.VISIBLE
-            mListHeaderView.tvExtra2.visibility = View.VISIBLE
+            binding.ivExtra2Gap.visibility = View.VISIBLE
+            binding.tvHeaderExtra2.visibility = View.VISIBLE
         }
         if (!mContext.mSP.getBoolean(SHARE_SHOW_COST_COLUMN + gameId, false)) {
-            mListHeaderView.ivCostGap.visibility = View.GONE
-            mListHeaderView.tvCost.visibility = View.GONE
+            binding.ivCostGap.visibility = View.GONE
+            binding.tvHeaderCost.visibility = View.GONE
         } else {
-            mListHeaderView.ivCostGap.visibility = View.VISIBLE
-            mListHeaderView.tvCost.visibility = View.VISIBLE
+            binding.ivCostGap.visibility = View.VISIBLE
+            binding.tvHeaderCost.visibility = View.VISIBLE
         }
     }
+    @SuppressLint("ResourceType")
     private fun initialize() {
         val attribute = intArrayOf(R.attr.colorGridPrimary, R.attr.colorBackPrimary)
         val array = mContext.theme.obtainStyledAttributes(attribute)
@@ -66,28 +65,28 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
         mHeaderDefaultColor = array.getColor(1, Color.WHITE)
         array.recycle()
 
-        mListHeaderView = ListHeaderView()
-        setHeaderClickHandler(mListHeaderView.tvHP, CardInfo.COLUMN_MAXHP)
-        setHeaderClickHandler(mListHeaderView.tvAttack, CardInfo.COLUMN_MAXATTACK)
-        setHeaderClickHandler(mListHeaderView.tvDefense, CardInfo.COLUMN_MAXDEFENSE)
-        setHeaderClickHandler(mListHeaderView.tvExtra1, CardInfo.COLUMN_EXTRA_VALUE1)
-        setHeaderClickHandler(mListHeaderView.tvExtra2, CardInfo.COLUMN_EXTRA_VALUE2)
-        setHeaderClickHandler(mListHeaderView.tvName, CardInfo.COLUMN_NAME)
-        setHeaderClickHandler(mListHeaderView.tvAttr, CardInfo.COLUMN_ATTR)
-        setHeaderClickHandler(mListHeaderView.tvCost, CardInfo.COLUMN_COST)
-        setHeaderClickHandler(mListHeaderView.tvImg, CardInfo.COLUMN_NID)
+        binding =  mContext.binding.llHeaderInclude
+        setHeaderClickHandler(binding.tvHeaderHP, CardInfo.COLUMN_MAXHP)
+        setHeaderClickHandler(binding.tvHeaderAttack, CardInfo.COLUMN_MAXATTACK)
+        setHeaderClickHandler(binding.tvHeaderDefense, CardInfo.COLUMN_MAXDEFENSE)
+        setHeaderClickHandler(binding.tvHeaderExtra1, CardInfo.COLUMN_EXTRA_VALUE1)
+        setHeaderClickHandler(binding.tvHeaderExtra2, CardInfo.COLUMN_EXTRA_VALUE2)
+        setHeaderClickHandler(binding.tvHeaderName, CardInfo.COLUMN_NAME)
+        setHeaderClickHandler(binding.tvHeaderAttr, CardInfo.COLUMN_ATTR)
+        setHeaderClickHandler(binding.tvHeaderCost, CardInfo.COLUMN_COST)
+        setHeaderClickHandler(binding.tvHeaderImg, CardInfo.COLUMN_NID)
 
         mTextViewMap = object : HashMap<String, TextView>() {
             init {
-                put(CardInfo.COLUMN_NID, mListHeaderView.tvImg)
-                put(CardInfo.COLUMN_MAXHP, mListHeaderView.tvHP)
-                put(CardInfo.COLUMN_MAXATTACK, mListHeaderView.tvAttack)
-                put(CardInfo.COLUMN_MAXDEFENSE, mListHeaderView.tvDefense)
-                put(CardInfo.COLUMN_EXTRA_VALUE1, mListHeaderView.tvExtra1)
-                put(CardInfo.COLUMN_EXTRA_VALUE2, mListHeaderView.tvExtra2)
-                put(CardInfo.COLUMN_NAME, mListHeaderView.tvName)
-                put(CardInfo.COLUMN_ATTR, mListHeaderView.tvAttr)
-                put(CardInfo.COLUMN_COST, mListHeaderView.tvCost)
+                put(CardInfo.COLUMN_NID, binding.tvHeaderImg)
+                put(CardInfo.COLUMN_MAXHP, binding.tvHeaderHP)
+                put(CardInfo.COLUMN_MAXATTACK, binding.tvHeaderAttack)
+                put(CardInfo.COLUMN_MAXDEFENSE, binding.tvHeaderDefense)
+                put(CardInfo.COLUMN_EXTRA_VALUE1, binding.tvHeaderExtra1)
+                put(CardInfo.COLUMN_EXTRA_VALUE2, binding.tvHeaderExtra2)
+                put(CardInfo.COLUMN_NAME, binding.tvHeaderName)
+                put(CardInfo.COLUMN_ATTR, binding.tvHeaderAttr)
+                put(CardInfo.COLUMN_COST, binding.tvHeaderCost)
             }
         }
     }
@@ -105,59 +104,6 @@ class MainActivityHeader(private val mContext: MainActivity, private val mHeader
         }
         if (mTextViewMap[orderby] != null)
             mTextViewMap[orderby]?.setBackgroundColor(mHeaderDefaultColor)
-    }
-
-    internal inner class ListHeaderView {
-
-        @BindView(R.id.tvHeaderImg)
-        lateinit var tvImg: TextView
-
-        @BindView(R.id.tvHeaderName)
-        lateinit var tvName: TextView
-
-        @BindView(R.id.tvHeaderAttr)
-        lateinit var tvAttr: TextView
-
-        @BindView(R.id.tvHeaderCost)
-        lateinit var tvCost: TextView
-
-        @BindView(R.id.tvHeaderHP)
-        lateinit var tvHP: TextView
-
-        @BindView(R.id.tvHeaderAttack)
-        lateinit var tvAttack: TextView
-
-        @BindView(R.id.tvHeaderDefense)
-        lateinit var tvDefense: TextView
-
-        @BindView(R.id.tvHeaderExtra1)
-        lateinit var tvExtra1: TextView
-
-        @BindView(R.id.tvHeaderExtra2)
-        lateinit var tvExtra2: TextView
-
-        @BindView(R.id.ivExtra1Gap)
-        lateinit var ivExtraGap1: ImageView
-
-        @BindView(R.id.ivExtra2Gap)
-        lateinit var ivExtraGap2: ImageView
-
-        @BindView(R.id.ivCostGap)
-        lateinit var ivCostGap: ImageView
-/*
-        @JvmField
-        @BindColor(R.color.color_white2)
-        var colorWhite2: Int = 0
-
-        @JvmField
-        @BindColor(R.color.color_white)
-        var colorWhite: Int = 0
-*/
-
-        init {
-            val view = mContext.findViewById<View>(R.id.ll_header)
-            ButterKnife.bind(this, view)
-        }
     }
 
     interface HeaderHandle {
