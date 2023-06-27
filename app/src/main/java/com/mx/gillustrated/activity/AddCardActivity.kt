@@ -18,70 +18,23 @@ import com.mx.gillustrated.vo.MatrixInfo
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.Message
+import android.os.*
 import android.provider.MediaStore
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ImageButton
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Spinner
 import android.widget.Toast
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnCheckedChanged
-import butterknife.OnClick
+import com.mx.gillustrated.databinding.ActivityAddBinding
 
+@Suppress("DEPRECATION")
 class AddCardActivity : BaseActivity() {
 
-    private var btnSave: ImageButton? = null
-    private var spinnerAttr: Spinner? = null
-    private var spinnerLevel: Spinner? = null
-    private var spinnerType: Spinner? = null
-    private var etId: EditText? = null
-    private var etNid: EditText? = null
-    private var etName: EditText? = null
-    private var etFrontName: EditText? = null
-    private var etCost: EditText? = null
-    private var etHP: EditText? = null
-    private var etAttack: EditText? = null
-    private var etDefense: EditText? = null
-    private var ivNumber: ImageView? = null
-    private var ivAll: ImageView? = null
     private var mFileNumber: File? = null
     private var mFileAll: File? = null
     private var mBitMapNumber: Bitmap? = null
     private var mBitMapAll: Bitmap? = null
     private var mGameType: Int = 0
     private var mImagesFileDir: File? = null
-    private var btnDelNumber: ImageButton? = null
-    private var btnDelAll: ImageButton? = null
-
-    @BindView(R.id.etDetailExtra1)
-    lateinit var etExtra1: EditText
-
-    @BindView(R.id.etDetailExtra2)
-    lateinit var etExtra2: EditText
-
-
-    @BindView(R.id.chkAdjustImg)
-    lateinit var chkAdjustImg: CheckBox
-
-    @BindView(R.id.tvAdjustImgTop)
-    lateinit var tvAdjustImgTop: EditText
-
-    @BindView(R.id.tvAdjustImgBottom)
-    lateinit var tvAdjustImgBottom: EditText
-
-    @BindView(R.id.tvAdjustImgLeft)
-    lateinit var tvAdjustImgLeft: EditText
-
-    @BindView(R.id.tvAdjustImgRight)
-    lateinit var tvAdjustImgRight: EditText
+    lateinit var binding:ActivityAddBinding
 
     private var onTypeSelectListener: AdapterView.OnItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
@@ -96,13 +49,13 @@ class AddCardActivity : BaseActivity() {
 
             val array = resources.getStringArray(R.array.addType)
             if (array[index] == "更新附加图" || array[index] == "更新数值图" || array[index] == "新增单张图" || array[index] == "新增无图") {
-                ivNumber!!.setImageDrawable(null)
-                btnDelNumber!!.visibility = View.GONE
+                binding.imgWithNumber.setImageDrawable(null)
+                binding.btnDelNumber.visibility = View.GONE
                 mBitMapNumber = null
             }
             if (array[index] == "新增无图") {
-                ivAll!!.setImageDrawable(null)
-                btnDelAll!!.visibility = View.GONE
+                binding.imgAll.setImageDrawable(null)
+                binding.btnDelAll.visibility = View.GONE
                 mBitMapAll = null
             }
         }
@@ -138,39 +91,39 @@ class AddCardActivity : BaseActivity() {
             override fun run() {
 
                 val card = CardInfo()
-                if ("" != etNid!!.text.toString().trim { it <= ' ' })
-                    card.nid = Integer.parseInt(etNid!!.text.toString())
+                if ("" != binding.etDetailNid.text.toString().trim { it <= ' ' })
+                    card.nid = Integer.parseInt(binding.etDetailNid.text.toString())
 
-                val cardTypeInfo = spinnerAttr!!.selectedItem as CardTypeInfo
+                val cardTypeInfo = binding.spinnerAttr.selectedItem as CardTypeInfo
                 card.attrId = cardTypeInfo.id
                 card.gameId = mGameType
-                card.level = spinnerLevel!!.selectedItem.toString()
-                card.name = etName!!.text.toString().trim { it <= ' ' }
+                card.level = binding.spinnerLevel.selectedItem.toString()
+                card.name = binding.etDetailName.text.toString().trim { it <= ' ' }
                 card.pinyinName = PinyinUtil.convert(card.name!!)
-                card.frontName = etFrontName!!.text.toString().trim { it <= ' ' }
+                card.frontName = binding.etDetailFrontName.text.toString().trim { it <= ' ' }
                 card.profile = "Y"
-                if (etCost!!.text.toString().trim { it <= ' ' } != "")
-                    card.cost = Integer.parseInt(etCost!!.text
+                if (binding.etDetailCost.text.toString().trim { it <= ' ' } != "")
+                    card.cost = Integer.parseInt(binding.etDetailCost.text
                             .toString())
                 else
                     card.cost = 0
-                if (etHP!!.text.toString().trim { it <= ' ' } != "")
-                    card.maxHP = etHP!!.text
+                if (binding.etDetailHP.text.toString().trim { it <= ' ' } != "")
+                    card.maxHP = binding.etDetailHP.text
                             .toString().trim { it <= ' ' }
-                if (etAttack!!.text.toString().trim { it <= ' ' } != "")
-                    card.maxAttack = etAttack!!.text
+                if (binding.etDetailAttack.text.toString().trim { it <= ' ' } != "")
+                    card.maxAttack = binding.etDetailAttack.text
                             .toString().trim { it <= ' ' }
-                if (etDefense!!.text.toString().trim { it <= ' ' } != "")
-                    card.maxDefense = etDefense!!.text
+                if (binding.etDetailDefense.text.toString().trim { it <= ' ' } != "")
+                    card.maxDefense = binding.etDetailDefense.text
                             .toString().trim { it <= ' ' }
-                if (etExtra1.text.toString().trim { it <= ' ' } != "")
-                    card.extraValue1 = etExtra1.text
+                if (binding.etDetailExtra1.text.toString().trim { it <= ' ' } != "")
+                    card.extraValue1 = binding.etDetailExtra1.text
                             .toString().trim { it <= ' ' }
-                if (etExtra2.text.toString().trim { it <= ' ' } != "")
-                    card.extraValue2 = etExtra2.text
+                if (binding.etDetailExtra2.text.toString().trim { it <= ' ' } != "")
+                    card.extraValue2 = binding.etDetailExtra2.text
                             .toString().trim { it <= ' ' }
 
-                val type = spinnerType!!.selectedItemPosition
+                val type = binding.spinnerType.selectedItemPosition
 
                 mImagesFileDir = File(
                         Environment.getExternalStorageDirectory(),
@@ -207,7 +160,7 @@ class AddCardActivity : BaseActivity() {
                     }
                 } else {
                     // 更新数值图  更新附加图
-                    val id = Integer.parseInt(etId!!.text.toString().trim { it <= ' ' })
+                    val id = Integer.parseInt(binding.etDetailId.text.toString().trim { it <= ' ' })
                     val nextnum = getNextImagesIndex(id)
                     val imageFile = File(mImagesFileDir!!.path,
                             CommonUtil.getImageFrontName(id, 1))
@@ -243,7 +196,7 @@ class AddCardActivity : BaseActivity() {
 
     companion object {
 
-        private class AddHandler internal constructor(activity: AddCardActivity) : Handler() {
+        private class AddHandler constructor(activity: AddCardActivity) : Handler(Looper.getMainLooper()) {
 
             private val mActivity: WeakReference<AddCardActivity> = WeakReference(activity)
 
@@ -261,92 +214,65 @@ class AddCardActivity : BaseActivity() {
     }
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityAddBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    @OnClick(R.id.btnSaveMatrix)
-    internal fun onSaveMatrixBtnClick() {
-        val top = Integer.parseInt(this.tvAdjustImgTop.text.toString())
-        val bottom = Integer.parseInt(this.tvAdjustImgBottom.text.toString())
-        val left = Integer.parseInt(this.tvAdjustImgLeft.text.toString())
-        val right = Integer.parseInt(this.tvAdjustImgRight.text.toString())
-        mSP.edit().putString(SHARE_IMAGES_MATRIX_NUMBER + mGameType, "$top,$bottom,$left,$right").apply()
-        if (chkAdjustImg.isChecked) {
+        mGameType = intent.getIntExtra("game", 0)
+
+
+        binding.btnSave.setOnClickListener(btnSaveClickListener)
+        binding.btnDelNumber.setOnClickListener(btnDelNumberClickListener)
+        binding.btnDelAll.setOnClickListener(btnDelAllClickListener)
+        CommonUtil.setSpinnerItemSelectedByValue(binding.spinnerLevel, "5")
+
+        val cardTypes = mOrmHelper.cardTypeInfoDao.queryForEq("game_type", mGameType)
+        val adapterName = SpinnerCommonAdapter(this, cardTypes)
+        binding.spinnerAttr.adapter = adapterName
+        setImagesMatrixConfig()
+        binding.spinnerType.onItemSelectedListener = onTypeSelectListener
+        binding.spinnerType.setSelection(4)
+
+        binding.btnSaveMatrix.setOnClickListener {
+            val top = Integer.parseInt(binding.tvAdjustImgTop.text.toString())
+            val bottom = Integer.parseInt(binding.tvAdjustImgBottom.text.toString())
+            val left = Integer.parseInt(binding.tvAdjustImgLeft.text.toString())
+            val right = Integer.parseInt(binding.tvAdjustImgRight.text.toString())
+            mSP.edit().putString(SHARE_IMAGES_MATRIX_NUMBER + mGameType, "$top,$bottom,$left,$right").apply()
+            if (binding.chkAdjustImg.isChecked) {
+                try {
+                    this.showPicture()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        binding.chkAdjustImg.setOnCheckedChangeListener { _, isChecked ->
+            mSP.edit().putBoolean(SHARE_IMAGES_MATRIX + mGameType, isChecked).apply()
             try {
                 this.showPicture()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         }
 
-
-    }
-
-    @OnCheckedChanged(R.id.chkAdjustImg)
-    internal fun onCheckAdjustImgTopChanged(checked: Boolean) {
-        mSP.edit().putBoolean(SHARE_IMAGES_MATRIX + mGameType, checked).apply()
-        try {
-            this.showPicture()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add)
-
-        ButterKnife.bind(this)
-
-        mGameType = intent.getIntExtra("game", 0)
-
-        btnSave = findViewById<View>(R.id.btnSave) as ImageButton
-        btnSave!!.setOnClickListener(btnSaveClickListener)
-
-        btnDelNumber = findViewById<View>(R.id.btnDelNumber) as ImageButton
-        btnDelNumber!!.setOnClickListener(btnDelNumberClickListener)
-        btnDelAll = findViewById<View>(R.id.btnDelAll) as ImageButton
-        btnDelAll!!.setOnClickListener(btnDelAllClickListener)
-
-        spinnerAttr = findViewById<View>(R.id.spinnerAttr) as Spinner
-        spinnerLevel = findViewById<View>(R.id.spinnerLevel) as Spinner
-        CommonUtil.setSpinnerItemSelectedByValue(spinnerLevel!!, "5")
-        etNid = findViewById<View>(R.id.etDetailNid) as EditText
-        etName = findViewById<View>(R.id.etDetailName) as EditText
-        etFrontName = findViewById<View>(R.id.etDetailFrontName) as EditText
-        etCost = findViewById<View>(R.id.etDetailCost) as EditText
-        etId = findViewById<View>(R.id.etDetailId) as EditText
-        etHP = findViewById<View>(R.id.etDetailHP) as EditText
-        etAttack = findViewById<View>(R.id.etDetailAttack) as EditText
-        etDefense = findViewById<View>(R.id.etDetailDefense) as EditText
-        ivNumber = findViewById<View>(R.id.imgWithNumber) as ImageView
-        ivAll = findViewById<View>(R.id.imgAll) as ImageView
-
-        val cardTypes = mOrmHelper.cardTypeInfoDao.queryForEq("game_type", mGameType)
-        val adapterName = SpinnerCommonAdapter(this, cardTypes)
-        spinnerAttr!!.adapter = adapterName
-        setImagesMatrixConfig()
-
-        spinnerType = findViewById<View>(R.id.spinnerType) as Spinner
-        spinnerType!!.onItemSelectedListener = onTypeSelectListener
-        spinnerType!!.setSelection(4)
     }
 
     private fun setImagesMatrixConfig() {
         val numbers = mSP.getString(SHARE_IMAGES_MATRIX_NUMBER + mGameType, "0,0,0,0")!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        tvAdjustImgTop.setText(numbers[0])
-        tvAdjustImgBottom.setText(numbers[1])
-        tvAdjustImgLeft.setText(numbers[2])
-        tvAdjustImgRight.setText(numbers[3])
-        chkAdjustImg.isChecked = mSP.getBoolean(SHARE_IMAGES_MATRIX + mGameType, false)
+        binding.tvAdjustImgTop.setText(numbers[0])
+        binding.tvAdjustImgBottom.setText(numbers[1])
+        binding.tvAdjustImgLeft.setText(numbers[2])
+        binding.tvAdjustImgRight.setText(numbers[3])
+        binding.chkAdjustImg.isChecked = mSP.getBoolean(SHARE_IMAGES_MATRIX + mGameType, false)
     }
 
     private fun getMatrixBitmap(input: Bitmap): Bitmap {
-        val top = Integer.parseInt(this.tvAdjustImgTop.text.toString())
-        val bottom = Integer.parseInt(this.tvAdjustImgBottom.text.toString())
-        val left = Integer.parseInt(this.tvAdjustImgLeft.text.toString())
-        val right = Integer.parseInt(this.tvAdjustImgRight.text.toString())
+        val top = Integer.parseInt(binding.tvAdjustImgTop.text.toString())
+        val bottom = Integer.parseInt(binding.tvAdjustImgBottom.text.toString())
+        val left = Integer.parseInt(binding.tvAdjustImgLeft.text.toString())
+        val right = Integer.parseInt(binding.tvAdjustImgRight.text.toString())
 
         val matrixInfo = MatrixInfo()
         matrixInfo.y = top
@@ -388,10 +314,10 @@ class AddCardActivity : BaseActivity() {
 
             })
 
-            btnDelAll!!.visibility = View.GONE
-            btnDelNumber!!.visibility = View.GONE
-            ivAll!!.setImageBitmap(null)
-            ivNumber!!.setImageBitmap(null)
+            binding.btnDelAll.visibility = View.GONE
+            binding.btnDelNumber.visibility = View.GONE
+            binding.imgAll.setImageBitmap(null)
+            binding.imgWithNumber.setImageBitmap(null)
             val isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false)
             for (i in fs.indices) {
                 if (i == 2)
@@ -399,19 +325,19 @@ class AddCardActivity : BaseActivity() {
 
                 var bmp = MediaStore.Images.Media.getBitmap(
                         this.contentResolver, Uri.fromFile(fs[i]))
-                if (this.chkAdjustImg.isChecked)
+                if (binding.chkAdjustImg.isChecked)
                     bmp = getMatrixBitmap(bmp)
 
                 if (i == 0) {
                     mFileAll = fs[i]
                     mBitMapAll = bmp
-                    ivAll!!.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
-                    btnDelAll!!.visibility = View.VISIBLE
+                    binding.imgAll.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                    binding.btnDelAll.visibility = View.VISIBLE
                 } else {
                     mFileNumber = fs[i]
                     mBitMapNumber = bmp
-                    ivNumber!!.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
-                    btnDelNumber!!.visibility = View.VISIBLE
+                    binding.imgWithNumber.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                    binding.btnDelNumber.visibility = View.VISIBLE
                 }
             }
 
