@@ -12,7 +12,6 @@ import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import butterknife.*
 import com.google.gson.Gson
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CultivationHistoryAdapter

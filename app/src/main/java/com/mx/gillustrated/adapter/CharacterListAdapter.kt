@@ -5,15 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.Spinner
 import com.mx.gillustrated.R
 import com.mx.gillustrated.vo.CardInfo
 import com.mx.gillustrated.vo.CharacterInfo
 import java.util.Arrays
-import butterknife.BindView
-import butterknife.ButterKnife
+import com.mx.gillustrated.databinding.AdapterCharacterBinding
 
 class CharacterListAdapter(private val context: Context, items: List<CharacterInfo>, private val associationList: List<CardInfo>?) : BaseAdapter() {
 
@@ -49,25 +45,24 @@ class CharacterListAdapter(private val context: Context, items: List<CharacterIn
 
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
         var convertView = convertViews //目的可修改
-        lateinit var component: Component
+        lateinit var component: AdapterCharacterBinding
 
         if (convertView == null) {
-            convertView = layoutInflater.inflate(
-                    R.layout.adapter_character, arg2, false)
-            component = Component(convertView)
+            component = AdapterCharacterBinding.inflate(layoutInflater, arg2, false )
+            convertView = component.root
             convertView.tag = component
         } else
-            component = convertView.tag as Component
+            component = convertView.tag as AdapterCharacterBinding
 
         try {
 
-            component.etName.setText(list[arg0].name)
+            component.etCharName.setText(list[arg0].name)
             component.spinnerNational.adapter = SpinnerSimpleAdapter(context, charNationalData, FONT_SIZE)
             component.spinnerNational.setSelection(list[arg0].nationality)
             component.spinnerAge.adapter = SpinnerSimpleAdapter(context, charAgeData, FONT_SIZE)
             component.spinnerAge.setSelection(list[arg0].age)
-            component.spinnerLine.adapter = SpinnerSimpleAdapter(context, charLineData, FONT_SIZE)
-            component.spinnerLine.setSelection(list[arg0].skilled)
+            component.spinnerSkilled.adapter = SpinnerSimpleAdapter(context, charLineData, FONT_SIZE)
+            component.spinnerSkilled.setSelection(list[arg0].skilled)
             component.spinnerChar.adapter = SpinnerSimpleAdapter(context, charCharData, FONT_SIZE)
             component.spinnerChar.setSelection(list[arg0].character)
 
@@ -109,8 +104,8 @@ class CharacterListAdapter(private val context: Context, items: List<CharacterIn
 
 
             val finalComponent = component
-            component.btnModify.setOnClickListener {
-                val name = component.etName.text.toString()
+            component.btnCharModify.setOnClickListener {
+                val name = component.etCharName.text.toString()
                 val id = list[arg0].id
                 val gid = list[arg0].gameId
                 val characterInfo = CharacterInfo()
@@ -120,7 +115,7 @@ class CharacterListAdapter(private val context: Context, items: List<CharacterIn
                 characterInfo.nationality = finalComponent.spinnerNational.selectedItemPosition
                 characterInfo.domain = finalComponent.spinnerDomain.selectedItemPosition
                 characterInfo.age = finalComponent.spinnerAge.selectedItemPosition
-                characterInfo.skilled = finalComponent.spinnerLine.selectedItemPosition
+                characterInfo.skilled = finalComponent.spinnerSkilled.selectedItemPosition
                 characterInfo.character = finalComponent.spinnerChar.selectedItemPosition
                 characterInfo.prop = finalComponent.spinnerProp.selectedItemPosition
                 if(newAssociationList != null){
@@ -130,7 +125,7 @@ class CharacterListAdapter(private val context: Context, items: List<CharacterIn
                 mListener!!.onSaveBtnClickListener(characterInfo, arg0)
             }
 
-            component.btnDel.setOnClickListener {
+            component.btnCharDel.setOnClickListener {
                 val id = list[arg0].id
                 val gid = list[arg0].gameId
                 val cardTypeInfo = CharacterInfo()
@@ -143,7 +138,7 @@ class CharacterListAdapter(private val context: Context, items: List<CharacterIn
             e.printStackTrace()
         }
 
-        return convertView!!
+        return convertView
     }
 
     private fun getAssociationSelection(list:List<CardInfo>, input: String?): Int {
@@ -158,43 +153,5 @@ class CharacterListAdapter(private val context: Context, items: List<CharacterIn
     interface CharacterTouchListener {
         fun onSaveBtnClickListener(info: CharacterInfo, index: Int)
         fun onDelBtnClickListener(info: CharacterInfo, index: Int)
-    }
-
-    inner class Component(view: View) {
-
-        @BindView(R.id.etCharName)
-        lateinit var etName: EditText
-
-        @BindView(R.id.spinnerChar)
-        lateinit var spinnerChar: Spinner
-
-        @BindView(R.id.spinnerNational)
-        lateinit var spinnerNational: Spinner
-
-        @BindView(R.id.spinnerDomain)
-        lateinit var spinnerDomain: Spinner
-
-        @BindView(R.id.spinnerAge)
-        lateinit var spinnerAge: Spinner
-
-        @BindView(R.id.spinnerSkilled)
-        lateinit var spinnerLine: Spinner
-
-        @BindView(R.id.spinnerProp)
-        lateinit var spinnerProp: Spinner
-
-        @BindView(R.id.spinnerMatching)
-        lateinit var spinnerMatching: Spinner
-
-        @BindView(R.id.btnCharModify)
-        lateinit var btnModify: ImageButton
-
-        @BindView(R.id.btnCharDel)
-        lateinit var btnDel: ImageButton
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-
     }
 }

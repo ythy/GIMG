@@ -1,15 +1,12 @@
 package com.mx.gillustrated.adapter
 
-import com.mx.gillustrated.R
 import com.mx.gillustrated.vo.EventInfo
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.mx.gillustrated.activity.BaseActivity
+import com.mx.gillustrated.databinding.AdapterEventsBinding
 
 class EventsAdapter  constructor(mContext: BaseActivity, private val list: List<EventInfo>) : BaseAdapter() {
 
@@ -29,27 +26,17 @@ class EventsAdapter  constructor(mContext: BaseActivity, private val list: List<
 
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
         var convertView = convertViews
-        lateinit var component: ViewHolder
+        lateinit var component: AdapterEventsBinding
 
         if (convertView == null) {
-            convertView = layoutInflater.inflate(
-                    R.layout.adapter_events, arg2, false)
-            component = ViewHolder(convertView)
-            convertView!!.tag = component
+            component = AdapterEventsBinding.inflate(layoutInflater, arg2, false)
+            convertView = component.root
+            convertView.tag = component
         } else
-            component = convertView.tag as ViewHolder
+            component = convertView.tag as AdapterEventsBinding
 
         component.tvName.text = list[arg0].name
         return convertView
     }
 
-    internal class ViewHolder(view: View) {
-
-        @BindView(R.id.tvName)
-        lateinit var tvName: TextView
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-    }
 }

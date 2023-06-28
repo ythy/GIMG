@@ -1,17 +1,13 @@
 package com.mx.gillustrated.adapter
 
-import com.mx.gillustrated.R
 import com.mx.gillustrated.vo.CardTypeInfo
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.EditText
-import android.widget.ImageButton
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.mx.gillustrated.activity.BaseActivity
+import com.mx.gillustrated.databinding.AdapterCardtypeBinding
 
 class CardTypeListAdapter constructor(mContext: BaseActivity, private val list: List<CardTypeInfo>) : BaseAdapter() {
 
@@ -36,21 +32,20 @@ class CardTypeListAdapter constructor(mContext: BaseActivity, private val list: 
 
     override fun getView(arg0: Int, convertViews: View?, arg2: ViewGroup): View {
         var convertView = convertViews
-        lateinit var component: Component
+        lateinit var component: AdapterCardtypeBinding
 
         if (convertView == null) {
-            convertView = layoutInflater.inflate(
-                    R.layout.adapter_cardtype, arg2, false)
-            component = Component(convertView)
-            convertView!!.tag = component
+            component =  AdapterCardtypeBinding.inflate(layoutInflater, arg2, false)
+            convertView = component.root
+            convertView.tag = component
         } else
-            component = convertView.tag as Component
+            component = convertView.tag as AdapterCardtypeBinding
 
         try {
 
-            component.etName.setText(list[arg0].name)
-            component.btnSave.setOnClickListener {
-                val name = component.etName.text.toString()
+            component.etCardType.setText(list[arg0].name)
+            component.btnCardTypeModify.setOnClickListener {
+                val name = component.etCardType.text.toString()
                 val id = list[arg0].id
                 val gid = list[arg0].gameId
                 val despairInfo = CardTypeInfo()
@@ -60,7 +55,7 @@ class CardTypeListAdapter constructor(mContext: BaseActivity, private val list: 
                 mListener!!.onSaveBtnClickListener(despairInfo)
             }
 
-            component.btnDel.setOnClickListener {
+            component.btnCardTypeDel.setOnClickListener {
                 val id = list[arg0].id
                 val gid = list[arg0].gameId
                 val cardTypeInfo = CardTypeInfo()
@@ -69,7 +64,7 @@ class CardTypeListAdapter constructor(mContext: BaseActivity, private val list: 
                 mListener!!.onDelBtnClickListener(cardTypeInfo)
             }
 
-            component.etName.setOnTouchListener { _, event ->
+            component.etCardType.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
                     //   index = position;
                 }
@@ -86,22 +81,5 @@ class CardTypeListAdapter constructor(mContext: BaseActivity, private val list: 
     interface DespairTouchListener {
         fun onSaveBtnClickListener(info: CardTypeInfo)
         fun onDelBtnClickListener(info: CardTypeInfo)
-    }
-
-    internal class Component(view: View) {
-
-        @BindView(R.id.etCardType)
-        lateinit var etName: EditText
-
-        @BindView(R.id.btnCardTypeModify)
-        lateinit var btnSave: ImageButton
-
-        @BindView(R.id.btnCardTypeDel)
-        lateinit var btnDel: ImageButton
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-
     }
 }

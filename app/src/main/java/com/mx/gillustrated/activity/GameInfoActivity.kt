@@ -14,39 +14,27 @@ import com.mx.gillustrated.vo.CardTypeInfo
 import com.mx.gillustrated.vo.GameInfo
 import androidx.appcompat.app.AlertDialog
 import android.content.Intent
-import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.Message
+import android.os.*
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.Window
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ListView
-import android.widget.RelativeLayout
-import android.widget.Spinner
-import android.widget.Toast
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnCheckedChanged
-import butterknife.OnClick
-import butterknife.OnItemSelected
-import butterknife.OnTextChanged
+import android.widget.*
+import com.mx.gillustrated.databinding.ActivityGameinfoBinding
 
 class GameInfoActivity : BaseActivity() {
 
-    private var btnAdd: ImageButton? = null
     private var mList: MutableList<CardTypeInfo> = mutableListOf()
     private var mGameType: Int = 0
     private var mAdapter: CardTypeListAdapter? = null
     private var mResourceController: ResourceController? = null
     private var mGameList: MutableList<GameInfo>? = null
+    lateinit var binding:ActivityGameinfoBinding
 
     companion object {
 
         @Suppress("UNCHECKED_CAST")
-        internal class MainHandler(activity: GameInfoActivity) : Handler() {
+        internal class MainHandler(activity: GameInfoActivity) : Handler(Looper.getMainLooper()) {
 
             private val weakReference: WeakReference<GameInfoActivity> = WeakReference(activity)
 
@@ -60,66 +48,14 @@ class GameInfoActivity : BaseActivity() {
                 } else if (msg.what == 2) {
                     activity.mGameList = msg.obj as MutableList<GameInfo>
                     activity.mGameList!!.add(0, GameInfo(0, "关联"))
-                    activity.spinnerAssociation.adapter = SpinnerCommonAdapter(activity, activity.mGameList!!)
+                    activity.binding.spinnerAssociation.adapter = SpinnerCommonAdapter(activity, activity.mGameList!!)
                     val index = activity.mSP.getInt(SHARE_ASSOCIATION_GAME_ID + activity.mGameType, 0)
-                    activity.spinnerAssociation.setSelection(activity.getGameSelection(index))
+                    activity.binding.spinnerAssociation.setSelection(activity.getGameSelection(index))
                 }
             }
         }
     }
 
-
-
-    @BindView(R.id.et_number1)
-    internal lateinit var mEtNumber1: EditText
-
-    @BindView(R.id.et_number2)
-    internal lateinit var mEtNumber2: EditText
-
-    @BindView(R.id.et_number3)
-    internal lateinit var mEtNumber3: EditText
-
-    @BindView(R.id.et_number4)
-    internal lateinit var mEtNumber4: EditText
-
-    @BindView(R.id.et_number5)
-    internal lateinit var mEtNumber5: EditText
-
-    @BindView(R.id.etGameDetail)
-    internal lateinit var mEtGameDetail: EditText
-
-    @BindView(R.id.etGameName)
-    internal lateinit var mEtGameName: EditText
-
-    @BindView(R.id.chkOrientation)
-    internal lateinit var chkOrientation: CheckBox
-
-    @BindView(R.id.chkOrientationEvent)
-    internal lateinit var chkOrientationE: CheckBox
-
-    @BindView(R.id.chkEventGap)
-    internal lateinit var chkEventGap: CheckBox
-
-    @BindView(R.id.chkImgDate)
-    internal lateinit var chkImgDate: CheckBox
-
-    @BindView(R.id.chkHeader)
-    internal lateinit var chkHeader: CheckBox
-
-    @BindView(R.id.chkCost)
-    internal lateinit var chkCost: CheckBox
-
-    @BindView(R.id.spinnerPager)
-    internal lateinit var spinnerPager: Spinner
-
-    @BindView(R.id.spinnerAssociation)
-    internal lateinit var spinnerAssociation: Spinner
-
-    @BindView(R.id.lvGameInfoMain)
-    internal lateinit var mLvGameMain: ListView
-
-    @BindView(R.id.pageVBox)
-    internal lateinit var pageVBoxLayout: RelativeLayout
 
 
     private var mainHandler: Handler = MainHandler(this)
@@ -156,87 +92,145 @@ class GameInfoActivity : BaseActivity() {
         updateList(false)
     }
 
-    @OnTextChanged(R.id.et_number1)
-    internal fun onNumber1TextChanged(text: CharSequence) {
-        mResourceController!!.number1 = text.toString()
+
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        binding = ActivityGameinfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
+        mGameType = intent.getIntExtra("game", 0)
+        mResourceController = ResourceController(this, mGameType)
+
+        binding.btnGameAdd.setOnClickListener(onAddBtnClickListerner)
+        val gameinfoList = mOrmHelper.gameInfoDao.queryForId(mGameType)
+        binding.etGameName.setText(gameinfoList.name)
+        binding.etGameDetail.setText(gameinfoList.detail)
+        binding.pageVBox.visibility = View.GONE
+
+        binding.etNumber1.setText(mResourceController!!.number1)
+        binding.etNumber2.setText(mResourceController!!.number2)
+        binding.etNumber3.setText(mResourceController!!.number3)
+        binding.etNumber4.setText(mResourceController!!.number4)
+        binding.etNumber5.setText(mResourceController!!.number5)
+
+        binding.chkOrientation.isChecked = mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false)
+        binding.chkOrientationEvent.isChecked = mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, false)
+        binding.chkImgDate.isChecked = mSP.getBoolean(SHARE_IMAGE_DATE + mGameType, true)
+        binding.chkEventGap.isChecked = mResourceController!!.eventImagesGap
+        binding.chkHeader.isChecked = mSP.getBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, false)
+        binding.chkCost.isChecked = mSP.getBoolean(SHARE_SHOW_COST_COLUMN + mGameType, false)
+
+        val pagerSize = mSP.getInt(SHARE_PAGE_SIZE + mGameType, 50)
+        val pagerArray = resources.getStringArray(R.array.pagerArray)
+        var position = 1
+        for (i in pagerArray.indices)
+            if (Integer.parseInt(pagerArray[i]) == pagerSize)
+                position = i
+        binding.spinnerPager.setSelection(position)
+
+        binding.lvGameInfoMain.setOnScrollListener(ListenerListViewScrollHandler(binding.lvGameInfoMain, binding.pageVBox))
+        mAdapter = CardTypeListAdapter(this, mList)
+        mAdapter!!.setDespairTouchListener(despairTouchListener)
+        initListener()
+
+        searchGameList()
+        searchMain()
     }
 
-    @OnTextChanged(R.id.et_number2)
-    internal fun onNumber2TextChanged(text: CharSequence) {
-        mResourceController!!.number2 = text.toString()
-    }
+    private fun initListener(){
+        binding.etNumber1.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                mResourceController!!.number1 = s.toString()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        binding.etNumber2.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                mResourceController!!.number2 = s.toString()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        binding.etNumber3.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                mResourceController!!.number3 = s.toString()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        binding.etNumber4.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                mResourceController!!.number4 = s.toString()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        binding.etNumber5.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                mResourceController!!.number5 = s.toString()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        binding.chkOrientation.setOnCheckedChangeListener { _, isChecked ->
+            mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION + mGameType, isChecked).apply()
+        }
+        binding.chkOrientationEvent.setOnCheckedChangeListener { _, isChecked ->
+            mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, isChecked).apply()
+        }
+        binding.chkEventGap.setOnCheckedChangeListener { _, isChecked ->
+            mResourceController!!.eventImagesGap = isChecked
+        }
+        binding.chkImgDate.setOnCheckedChangeListener { _, isChecked ->
+            mSP.edit().putBoolean(SHARE_IMAGE_DATE + mGameType, isChecked).apply()
+        }
+        binding.chkHeader.setOnCheckedChangeListener { _, isChecked ->
+            mSP.edit().putBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, isChecked).apply()
+        }
+        binding.chkCost.setOnCheckedChangeListener { _, isChecked ->
+            mSP.edit().putBoolean(SHARE_SHOW_COST_COLUMN + mGameType, isChecked).apply()
+        }
+        binding.spinnerPager.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val array = resources.getStringArray(R.array.pagerArray)
+                mSP.edit().putInt(SHARE_PAGE_SIZE + mGameType, Integer.parseInt(array[position])).apply()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-    @OnTextChanged(R.id.et_number3)
-    internal fun onNumber3TextChanged(text: CharSequence) {
-        mResourceController!!.number3 = text.toString()
-    }
+        }
+        binding.spinnerAssociation.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                mSP.edit().putInt(SHARE_ASSOCIATION_GAME_ID + mGameType, mGameList!![position].id).apply()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-    @OnTextChanged(R.id.et_number4)
-    internal fun onNumber4TextChanged(text: CharSequence) {
-        mResourceController!!.number4 = text.toString()
-    }
-
-    @OnTextChanged(R.id.et_number5)
-    internal fun onNumber5TextChanged(text: CharSequence) {
-        mResourceController!!.number5 = text.toString()
-    }
-
-    @OnCheckedChanged(R.id.chkOrientation)
-    internal fun onOrientationCheckedChanged(checkBox: CheckBox) {
-        mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION + mGameType, checkBox.isChecked).apply()
-    }
-
-    @OnCheckedChanged(R.id.chkOrientationEvent)
-    internal fun onOrientationECheckedChanged(checkBox: CheckBox) {
-        mSP.edit().putBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, checkBox.isChecked).apply()
-    }
-
-    @OnCheckedChanged(R.id.chkEventGap)
-    internal fun onEventGapCheckedChanged(checkBox: CheckBox) {
-        mResourceController!!.eventImagesGap = checkBox.isChecked
-    }
-
-    @OnCheckedChanged(R.id.chkImgDate)
-    internal fun onImageDateCheckedChanged(checkBox: CheckBox) {
-        mSP.edit().putBoolean(SHARE_IMAGE_DATE + mGameType, checkBox.isChecked).apply()
-    }
-
-    @OnCheckedChanged(R.id.chkHeader)
-    internal fun onHeaderCheckedChanged(checkBox: CheckBox) {
-        mSP.edit().putBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, checkBox.isChecked).apply()
-    }
-
-    @OnCheckedChanged(R.id.chkCost)
-    internal fun onCostCheckedChanged(checkBox: CheckBox) {
-        mSP.edit().putBoolean(SHARE_SHOW_COST_COLUMN + mGameType, checkBox.isChecked).apply()
-    }
-
-    @OnItemSelected(R.id.spinnerPager)
-    internal fun onPagerChanged(position: Int) {
-        val array = resources.getStringArray(R.array.pagerArray)
-        mSP.edit().putInt(SHARE_PAGE_SIZE + mGameType, Integer.parseInt(array[position])).apply()
-    }
-
-    @OnItemSelected(R.id.spinnerAssociation)
-    internal fun onAssociationChanged(position: Int) {
-        mSP.edit().putInt(SHARE_ASSOCIATION_GAME_ID + mGameType, this.mGameList!![position].id).apply()
-    }
-
-
-    @OnClick(R.id.btnSaveAll)
-    internal fun onSaveClickHandler() {
-        val gameInfo = GameInfo()
-        gameInfo.id = this.mGameType
-        gameInfo.detail = mEtGameDetail.text.toString()
-        gameInfo.name = mEtGameName.text.toString()
-        val result = mOrmHelper.gameInfoDao.update(gameInfo)
-        if (result == 1)
-            Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show()
-    }
-
-    @OnClick(R.id.btnDelAll)
-    internal fun onDeleteAllDataHandler() {
-        AlertDialog.Builder(this@GameInfoActivity)
+        }
+        binding.btnSaveAll.setOnClickListener {
+            val gameInfo = GameInfo()
+            gameInfo.id = this.mGameType
+            gameInfo.detail = binding.etGameDetail.text.toString()
+            gameInfo.name = binding.etGameName.text.toString()
+            val result = mOrmHelper.gameInfoDao.update(gameInfo)
+            if (result == 1)
+                Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show()
+        }
+        binding.btnDelAll.setOnClickListener {
+            AlertDialog.Builder(this@GameInfoActivity)
                 .setMessage("确定要删除吗")
                 .setPositiveButton("Ok"
                 ) { _, _ ->
@@ -246,78 +240,39 @@ class GameInfoActivity : BaseActivity() {
                     mOrmHelper.gameInfoDao.deleteById(mGameType)
 
                     val imagesFileDir = File(
-                            Environment.getExternalStorageDirectory(),
-                            MConfig.SD_PATH + "/" + mGameType)
+                        Environment.getExternalStorageDirectory(),
+                        MConfig.SD_PATH + "/" + mGameType)
                     if (imagesFileDir.exists()) {
                         val child = imagesFileDir.listFiles()
-                        for (i in child.indices) {
-                            CommonUtil.deleteImage(this@GameInfoActivity, child[i])
+                        if (child != null){
+                            for (i in child.indices) {
+                                CommonUtil.deleteImage(this@GameInfoActivity, child[i])
+                            }
                         }
                         imagesFileDir.delete()
                     }
                     val eventFileDir = File(
-                            Environment.getExternalStorageDirectory(),
-                            MConfig.SD_EVENT_PATH + "/" + mGameType)
+                        Environment.getExternalStorageDirectory(),
+                        MConfig.SD_EVENT_PATH + "/" + mGameType)
                     if (eventFileDir.exists()) {
                         val child = eventFileDir.listFiles()
-                        for (i in child.indices) {
-                            CommonUtil.deleteImage(this@GameInfoActivity, child[i])
+                        if (child != null){
+                            for (i in child.indices) {
+                                CommonUtil.deleteImage(this@GameInfoActivity, child[i])
+                            }
                         }
                         eventFileDir.delete()
                     }
 
                     val intent = Intent(
-                            this@GameInfoActivity,
-                            GameListActivity::class.java)
+                        this@GameInfoActivity,
+                        GameListActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
                     this@GameInfoActivity.finish()
                 }.setNegativeButton("Cancel", null).show()
-    }
+        }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(R.layout.activity_gameinfo)
-        ButterKnife.bind(this)
-
-        mGameType = intent.getIntExtra("game", 0)
-        mResourceController = ResourceController(this, mGameType)
-        btnAdd = findViewById<View>(R.id.btnGameAdd) as ImageButton
-        btnAdd!!.setOnClickListener(onAddBtnClickListerner)
-        val gameinfoList = mOrmHelper.gameInfoDao.queryForId(mGameType)
-        mEtGameName.setText(gameinfoList.name)
-        mEtGameDetail.setText(gameinfoList.detail)
-        pageVBoxLayout.visibility = View.GONE
-
-        mEtNumber1.setText(mResourceController!!.number1)
-        mEtNumber2.setText(mResourceController!!.number2)
-        mEtNumber3.setText(mResourceController!!.number3)
-        mEtNumber4.setText(mResourceController!!.number4)
-        mEtNumber5.setText(mResourceController!!.number5)
-
-        chkOrientation.isChecked = mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false)
-        chkOrientationE.isChecked = mSP.getBoolean(SHARE_IMAGE_ORIENTATION_EVENT + mGameType, false)
-        chkImgDate.isChecked = mSP.getBoolean(SHARE_IMAGE_DATE + mGameType, true)
-        chkEventGap.isChecked = mResourceController!!.eventImagesGap
-        chkHeader.isChecked = mSP.getBoolean(SHARE_SHOW_HEADER_IMAGES + mGameType, false)
-        chkCost.isChecked = mSP.getBoolean(SHARE_SHOW_COST_COLUMN + mGameType, false)
-
-        val pagerSize = mSP.getInt(SHARE_PAGE_SIZE + mGameType, 50)
-        val pagerArray = resources.getStringArray(R.array.pagerArray)
-        var position = 1
-        for (i in pagerArray.indices)
-            if (Integer.parseInt(pagerArray[i]) == pagerSize)
-                position = i
-        spinnerPager.setSelection(position)
-
-        mLvGameMain.setOnScrollListener(ListenerListViewScrollHandler(mLvGameMain, pageVBoxLayout))
-        mAdapter = CardTypeListAdapter(this, mList)
-        mAdapter!!.setDespairTouchListener(despairTouchListener)
-
-        searchGameList()
-        searchMain()
     }
 
     private fun searchMain() {
@@ -352,7 +307,7 @@ class GameInfoActivity : BaseActivity() {
 
     private fun updateList(flag: Boolean) {
         if (flag)
-            mLvGameMain.adapter = mAdapter
+            binding.lvGameInfoMain.adapter = mAdapter
         else
             mAdapter!!.notifyDataSetChanged()
     }

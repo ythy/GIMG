@@ -11,31 +11,27 @@ import android.os.Environment
 import android.webkit.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import butterknife.BindView
-import butterknife.ButterKnife
-import com.mx.gillustrated.R
 import com.mx.gillustrated.common.MConfig
 import java.io.*
 import android.webkit.WebView
-
+import com.mx.gillustrated.databinding.ActivityWebBinding
 
 
 class WebActivity: BaseActivity() {
 
-    @BindView(R.id.web_view)
-    lateinit var webView: WebView
+    lateinit var binding: ActivityWebBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web)
-        ButterKnife.bind(this)
+        binding = ActivityWebBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initWebView()
         loadWebPage()
     }
 
     private fun initWebView(){
-        val webSettings = webView.settings
+        val webSettings = binding.webView.settings
         webSettings.javaScriptEnabled = true
         webSettings.domStorageEnabled = true
         webSettings.useWideViewPort = true
@@ -45,11 +41,11 @@ class WebActivity: BaseActivity() {
         webSettings.setSupportZoom(true)
 
         webSettings.defaultTextEncodingName = "utf-8"
-        webView.addJavascriptInterface(JavaScriptInterface(this), "AndroidFunction")
-        webView.webChromeClient = MyWebChromeClient() //这里不设置， alert弹不出来
+        binding.webView.addJavascriptInterface(JavaScriptInterface(this), "AndroidFunction")
+        binding.webView.webChromeClient = MyWebChromeClient() //这里不设置， alert弹不出来
 //        webView.systemUiVisibility = (WebView.SYSTEM_UI_FLAG_IMMERSIVE or WebView.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 //                or WebView.SYSTEM_UI_FLAG_FULLSCREEN)
-        webView.webViewClient = MyWebViewClient()
+        binding.webView.webViewClient = MyWebViewClient()
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -62,7 +58,7 @@ class WebActivity: BaseActivity() {
     }
 
     private fun loadWebPage(){
-        webView.loadUrl("file:///android_asset/index.html")
+        binding.webView.loadUrl("file:///android_asset/index.html")
     }
 
     inner class JavaScriptInterface internal constructor(private var mContext: Context) {

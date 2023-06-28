@@ -1,66 +1,53 @@
 package com.mx.gillustrated.activity
 
-import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.EventsAdapter
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler
 import com.mx.gillustrated.vo.EventInfo
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.view.View
 import android.view.Window
-import android.widget.ListView
-import android.widget.RelativeLayout
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import butterknife.OnItemClick
+import com.mx.gillustrated.databinding.ActivityEventsBinding
 import java.lang.ref.WeakReference
 
 class EventsActivity : BaseActivity() {
 
-    @BindView(R.id.lvDespairMain)
-    internal lateinit var mLvDespairMain: ListView
 
-    @BindView(R.id.pageVBox)
-    internal lateinit var pageVboxLayout: RelativeLayout
 
     private var mAdapter: EventsAdapter? = null
     private var mList: MutableList<EventInfo> = mutableListOf()
     private var mGameId: Int = 0
     private val mainHandler = ManiHandler(this)
+    lateinit var binding:ActivityEventsBinding
 
 
-    @OnClick(R.id.btnDespairAdd)
-    internal fun onAddBtnClickListener() {
-        val intent = Intent(this@EventsActivity, EventInfoActivity::class.java)
-        intent.putExtra("event", 0)
-        intent.putExtra("game", mGameId)
-        startActivity(intent)
-    }
-
-    @OnItemClick(R.id.lvDespairMain)
-    internal fun listItemClickHandler(position: Int) {
-        val intent = Intent(this@EventsActivity, EventInfoActivity::class.java)
-        intent.putExtra("event", mList[position].id)
-        intent.putExtra("game", mGameId)
-        startActivity(intent)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(R.layout.activity_events)
-        ButterKnife.bind(this)
+        binding = ActivityEventsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         mGameId = intent.getIntExtra("game", 0)
-        pageVboxLayout.visibility = View.GONE
-        mLvDespairMain.setOnScrollListener(ListenerListViewScrollHandler(mLvDespairMain, pageVboxLayout))
+        binding.pageVBox.visibility = View.GONE
+        binding.lvDespairMain.setOnScrollListener(ListenerListViewScrollHandler(binding.lvDespairMain, binding.pageVBox))
         mAdapter = EventsAdapter(this, mList)
-
+        binding.btnDespairAdd.setOnClickListener {
+            val intent = Intent(this@EventsActivity, EventInfoActivity::class.java)
+            intent.putExtra("event", 0)
+            intent.putExtra("game", mGameId)
+            startActivity(intent)
+        }
+        binding.lvDespairMain.setOnItemClickListener { _, _, position, _ ->
+            val intent = Intent(this@EventsActivity, EventInfoActivity::class.java)
+            intent.putExtra("event", mList[position].id)
+            intent.putExtra("game", mGameId)
+            startActivity(intent)
+        }
         searchMain()
-
     }
 
     private fun searchMain() {
@@ -75,7 +62,7 @@ class EventsActivity : BaseActivity() {
 
     private fun updateList(flag: Boolean) {
         if (flag)
-            mLvDespairMain.adapter = mAdapter
+            binding.lvDespairMain.adapter = mAdapter
         else {
             mAdapter!!.notifyDataSetChanged()
         }
@@ -84,7 +71,7 @@ class EventsActivity : BaseActivity() {
     companion object {
 
         @Suppress("UNCHECKED_CAST")
-        internal class ManiHandler(eventsActivity: EventsActivity) : Handler(){
+        internal class ManiHandler(eventsActivity: EventsActivity) : Handler(Looper.getMainLooper()){
 
             private val weakReference: WeakReference<EventsActivity> = WeakReference(eventsActivity)
 

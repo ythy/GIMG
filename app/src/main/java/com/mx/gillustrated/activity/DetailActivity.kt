@@ -33,6 +33,7 @@ import android.view.View
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.util.forEach
 import com.mx.gillustrated.databinding.ActivityDetailBinding
 import com.mx.gillustrated.databinding.ChildEventBinding
 import com.mx.gillustrated.databinding.ChildImagesGapBinding
@@ -76,8 +77,6 @@ class DetailActivity : BaseActivity() {
         mCardInfo = mOrmHelper.cardInfoDao.queryForId(mId)
         mResourceController = ResourceController(this, mCardInfo.gameId)
 
-        initListener()
-
         binding.tvHeaderHp.text = mResourceController!!.number1
         binding.tvHeaderA.text = mResourceController!!.number2
         binding.tvHeaderD.text = mResourceController!!.number3
@@ -94,6 +93,7 @@ class DetailActivity : BaseActivity() {
         initChar()
         showEvents()
         showCardInfo()
+        initListener()
     }
 
     private fun initListener(){
@@ -110,9 +110,9 @@ class DetailActivity : BaseActivity() {
             removeCard()
         }
         binding.btnDel2.setOnClickListener {
-            for (i in 0 until mImagesView.size()) {
-                mImagesView[i].btnDel.visibility = View.VISIBLE
-                mImagesView[i].btnAdjust.visibility = View.VISIBLE
+            mImagesView.forEach { _, value ->
+                value.btnDel.visibility = View.VISIBLE
+                value.btnAdjust.visibility = View.VISIBLE
             }
         }
         binding.btnAddChar.setOnClickListener {

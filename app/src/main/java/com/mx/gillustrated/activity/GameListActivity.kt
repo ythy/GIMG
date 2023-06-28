@@ -1,6 +1,5 @@
 package com.mx.gillustrated.activity
 
-import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.GameListAdapter
 import com.mx.gillustrated.adapter.GameListAdapter.DespairTouchListener
 import com.mx.gillustrated.listener.ListenerListViewScrollHandler
@@ -8,28 +7,25 @@ import com.mx.gillustrated.vo.GameInfo
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.view.View
 import android.view.Window
-import android.widget.ImageButton
-import android.widget.ListView
-import android.widget.RelativeLayout
 import android.widget.Toast
+import com.mx.gillustrated.databinding.ActivityGameBinding
 import java.lang.ref.WeakReference
 
 class GameListActivity : BaseActivity() {
 
-    private var mBtnAdd: ImageButton? = null
-    private var mLvDespairMain: ListView? = null
     private var mAdapter: GameListAdapter? = null
     private var mList: MutableList<GameInfo> = mutableListOf()
-    private var pageVboxLayout: RelativeLayout? = null
     private var mainHandler: MainHandler = MainHandler(this)
+    lateinit var binding:ActivityGameBinding
 
     companion object {
 
         @Suppress("UNCHECKED_CAST")
-        internal class MainHandler(activity: GameListActivity) : Handler(){
+        internal class MainHandler(activity: GameListActivity) : Handler(Looper.getMainLooper()){
 
             private val weakReference:WeakReference<GameListActivity> = WeakReference(activity)
 
@@ -74,16 +70,13 @@ class GameListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(R.layout.activity_game)
+        binding = ActivityGameBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        mBtnAdd = findViewById<View>(R.id.btnDespairAdd) as ImageButton
-        mBtnAdd!!.setOnClickListener(onAddBtnClickListerner)
 
-        mLvDespairMain = findViewById<View>(R.id.lvDespairMain) as ListView
-        pageVboxLayout = findViewById<View>(R.id.pageVBox) as RelativeLayout
-        pageVboxLayout!!.visibility = View.GONE
-
-        mLvDespairMain!!.setOnScrollListener(ListenerListViewScrollHandler(mLvDespairMain!!, pageVboxLayout!!))
+        binding.btnDespairAdd.setOnClickListener(onAddBtnClickListerner)
+        binding.pageVBox.visibility = View.GONE
+        binding.lvDespairMain.setOnScrollListener(ListenerListViewScrollHandler(binding.lvDespairMain, binding.pageVBox))
         mAdapter = GameListAdapter(this, mList)
         mAdapter!!.setDespairTouchListener(despairTouchListener)
 
@@ -103,7 +96,7 @@ class GameListActivity : BaseActivity() {
 
     private fun updateList(flag: Boolean) {
         if (flag)
-            mLvDespairMain!!.adapter = mAdapter
+            binding.lvDespairMain.adapter = mAdapter
         else
             mAdapter!!.notifyDataSetChanged()
     }
