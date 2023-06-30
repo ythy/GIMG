@@ -18,6 +18,7 @@ import com.mx.gillustrated.common.MConfig;
 import com.mx.gillustrated.vo.MatrixInfo;
 import com.mx.gillustrated.vo.SpinnerInfo;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -643,5 +644,29 @@ public class CommonUtil {
 
 	}
 
+	public static Uri getImageContentUri(Context context, java.io.File imageFile) {
+		String filePath = imageFile.getAbsolutePath();
+
+		Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Images.Media._ID }, MediaStore.Images.Media.DATA + "=? ",new String[] { filePath }, null);
+
+		if (cursor != null && cursor.moveToFirst()) {
+			int index = cursor.getColumnIndex(MediaStore.MediaColumns._ID);
+			if(index == -1)
+				return null;
+			int id = cursor.getInt(index);
+			Uri baseUri = Uri.parse("content://media/external/images/media");
+			cursor.close();
+			return Uri.withAppendedPath(baseUri, "" + id);
+		} else {
+			if (imageFile.exists()) {
+				ContentValues values = new ContentValues();
+				values.put(MediaStore.Images.Media.DATA, filePath);
+
+				return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+			} else {
+				return null;
+			}
+		}
+	}
 
 }

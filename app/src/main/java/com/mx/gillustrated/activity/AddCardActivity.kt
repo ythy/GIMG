@@ -66,9 +66,16 @@ class AddCardActivity : BaseActivity() {
 
     }
 
+    override fun deleteSuccessHanlder(){
+        try {
+            showPicture()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 
     private var btnDelNumberClickListener: View.OnClickListener = View.OnClickListener {
-        CommonUtil.deleteImages(baseContext, mFileNumber)
+        deleteImages(mFileNumber)
         try {
             showPicture()
         } catch (e: IOException) {
@@ -77,7 +84,7 @@ class AddCardActivity : BaseActivity() {
     }
 
     private var btnDelAllClickListener: View.OnClickListener = View.OnClickListener {
-        CommonUtil.deleteImages(baseContext, mFileAll)
+        deleteImages(mFileAll)
         try {
             showPicture()
         } catch (e: IOException) {
@@ -147,11 +154,9 @@ class AddCardActivity : BaseActivity() {
                                     createImages(newId.toInt(), mBitMapAll!!, 1)
                             }
 
-                            CommonUtil.deleteImages(this@AddCardActivity,
-                                    mFileAll)
+                            deleteImages(mFileAll)
                             if (type == 0)
-                                CommonUtil.deleteImages(this@AddCardActivity,
-                                        mFileNumber)
+                                deleteImages(mFileNumber)
                         }
                         val msg = Message.obtain()
                         msg.what = 1
@@ -183,8 +188,7 @@ class AddCardActivity : BaseActivity() {
                             e.printStackTrace()
                         }
 
-                    CommonUtil.deleteImages(this@AddCardActivity,
-                            mFileAll)
+                    deleteImages(mFileAll)
                     addHandler.sendEmptyMessage(2)
                 }
             }
