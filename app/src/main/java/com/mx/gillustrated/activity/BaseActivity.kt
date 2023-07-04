@@ -54,19 +54,18 @@ abstract class BaseActivity: AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_PERMISSION_DELETE -> {
+        if (requestCode == REQUEST_PERMISSION_DELETE || requestCode == REQUEST_PERMISSION_DELETE2 ||
+                requestCode == REQUEST_PERMISSION_DELETE3 ) {
                 if (resultCode == Activity.RESULT_OK) {
                     Toast.makeText(this,"删除成功", Toast.LENGTH_SHORT).show()
-                    deleteSuccessHanlder()
+                    deleteSuccessHanlder(requestCode)
                 }else{
                     Toast.makeText(this,"删除失败", Toast.LENGTH_SHORT).show()
                 }
-            }
         }
     }
 
-    open fun deleteSuccessHanlder(){
+    open fun deleteSuccessHanlder(code:Int){
 
     }
 
@@ -77,16 +76,34 @@ abstract class BaseActivity: AppCompatActivity() {
             media.toMutableList()).intentSender
     }
 
-    fun deleteImages(mediaFile: File?) {
-        if(mediaFile == null)
-            return
+    fun deleteImages(mediaFiles: List<File>, callback:OnCallback? = null, code:Int = 0) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val uri = CommonUtil.getImageContentUri(this, mediaFile) ?: return
-            startIntentSenderForResult(deleteMediaBulk(this, listOf(uri)), REQUEST_PERMISSION_DELETE, null, 0, 0, 0)
+            val uriList = mediaFiles.mapNotNull {
+                CommonUtil.getImageContentUri(this, it)
+            }
+            startIntentSenderForResult(deleteMediaBulk(this, uriList), code, null, 0, 0, 0)
         }else {
-            CommonUtil.deleteImages(this, mediaFile)
+            mediaFiles.forEach {
+                CommonUtil.deleteImages(this, it)
+            }
+            callback?.deleted()
         }
 
+    }
+
+    fun deleteImages(mediaFile: File, callback:OnCallback? = null, code:Int = 0) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val uri = CommonUtil.getImageContentUri(this, mediaFile) ?: return
+            startIntentSenderForResult(deleteMediaBulk(this, listOf(uri)), code, null, 0, 0, 0)
+        }else {
+            CommonUtil.deleteImages(this, mediaFile)
+            callback?.deleted()
+        }
+
+    }
+
+    interface OnCallback{
+        fun deleted()
     }
 
    companion object {
@@ -102,5 +119,7 @@ abstract class BaseActivity: AppCompatActivity() {
         const val SHARE_IMAGES_HEADER_SCALE_NUMBER = "header_images_scale_float_number"
         const val SHARE_SHOW_COST_COLUMN = "gameinfo_show_cost_column"
         const val REQUEST_PERMISSION_DELETE = 4044
+        const val REQUEST_PERMISSION_DELETE2 = 4046
+        const val REQUEST_PERMISSION_DELETE3 = 4048
     }
 }

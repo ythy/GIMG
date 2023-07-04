@@ -66,30 +66,49 @@ class AddCardActivity : BaseActivity() {
 
     }
 
-    override fun deleteSuccessHanlder(){
-        try {
-            showPicture()
-        } catch (e: IOException) {
-            e.printStackTrace()
+    override fun deleteSuccessHanlder(code:Int){
+        when(code){
+            REQUEST_PERMISSION_DELETE->{
+                try {
+                    showPicture()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+            REQUEST_PERMISSION_DELETE2->{
+                val msg = Message.obtain()
+                msg.what = 1
+                msg.arg1 = 0
+                addHandler.sendMessage(msg)
+            }
+            REQUEST_PERMISSION_DELETE3->{
+                addHandler.sendEmptyMessage(2)
+            }
         }
     }
 
     private var btnDelNumberClickListener: View.OnClickListener = View.OnClickListener {
-        deleteImages(mFileNumber)
-        try {
-            showPicture()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        deleteImages(mFileNumber!!, object :OnCallback{
+            override fun deleted() {
+                try {
+                    showPicture()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }, REQUEST_PERMISSION_DELETE)
     }
 
     private var btnDelAllClickListener: View.OnClickListener = View.OnClickListener {
-        deleteImages(mFileAll)
-        try {
-            showPicture()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        deleteImages(mFileAll!!, object :OnCallback{
+            override fun deleted() {
+                try {
+                    showPicture()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }, REQUEST_PERMISSION_DELETE)
     }
 
     private var btnSaveClickListener: View.OnClickListener = View.OnClickListener {
@@ -154,14 +173,32 @@ class AddCardActivity : BaseActivity() {
                                     createImages(newId.toInt(), mBitMapAll!!, 1)
                             }
 
-                            deleteImages(mFileAll)
                             if (type == 0)
-                                deleteImages(mFileNumber)
+                                deleteImages(listOf(mFileNumber!!, mFileAll!!), object :OnCallback{
+                                    override fun deleted() {
+                                        val msg = Message.obtain()
+                                        msg.what = 1
+                                        msg.arg1 = newId.toInt()
+                                        addHandler.sendMessage(msg)
+                                    }
+
+                                }, REQUEST_PERMISSION_DELETE2)
+                            else
+                                deleteImages(mFileAll!!, object :OnCallback{
+                                    override fun deleted() {
+                                        val msg = Message.obtain()
+                                        msg.what = 1
+                                        msg.arg1 = newId.toInt()
+                                        addHandler.sendMessage(msg)
+                                    }
+
+                                }, REQUEST_PERMISSION_DELETE2)
+                        }else{
+                            val msg = Message.obtain()
+                            msg.what = 1
+                            msg.arg1 = newId.toInt()
+                            addHandler.sendMessage(msg)
                         }
-                        val msg = Message.obtain()
-                        msg.what = 1
-                        msg.arg1 = newId.toInt()
-                        addHandler.sendMessage(msg)
                     }
                 } else {
                     // 更新数值图  更新附加图
@@ -188,8 +225,12 @@ class AddCardActivity : BaseActivity() {
                             e.printStackTrace()
                         }
 
-                    deleteImages(mFileAll)
-                    addHandler.sendEmptyMessage(2)
+                    deleteImages(mFileAll!!, object :OnCallback{
+                        override fun deleted() {
+                            addHandler.sendEmptyMessage(2)
+                        }
+                    }, REQUEST_PERMISSION_DELETE3)
+
                 }
             }
         }.start()
