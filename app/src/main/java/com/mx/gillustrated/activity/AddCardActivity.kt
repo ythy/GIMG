@@ -66,26 +66,7 @@ class AddCardActivity : BaseActivity() {
 
     }
 
-    override fun deleteSuccessHanlder(code:Int){
-        when(code){
-            REQUEST_PERMISSION_DELETE->{
-                try {
-                    showPicture()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-            REQUEST_PERMISSION_DELETE2->{
-                val msg = Message.obtain()
-                msg.what = 1
-                msg.arg1 = 0
-                addHandler.sendMessage(msg)
-            }
-            REQUEST_PERMISSION_DELETE3->{
-                addHandler.sendEmptyMessage(2)
-            }
-        }
-    }
+
 
     private var btnDelNumberClickListener: View.OnClickListener = View.OnClickListener {
         deleteImages(mFileNumber!!, object :OnCallback{
@@ -96,7 +77,7 @@ class AddCardActivity : BaseActivity() {
                     e.printStackTrace()
                 }
             }
-        }, REQUEST_PERMISSION_DELETE)
+        })
     }
 
     private var btnDelAllClickListener: View.OnClickListener = View.OnClickListener {
@@ -108,7 +89,7 @@ class AddCardActivity : BaseActivity() {
                     e.printStackTrace()
                 }
             }
-        }, REQUEST_PERMISSION_DELETE)
+        })
     }
 
     private var btnSaveClickListener: View.OnClickListener = View.OnClickListener {
@@ -182,7 +163,7 @@ class AddCardActivity : BaseActivity() {
                                         addHandler.sendMessage(msg)
                                     }
 
-                                }, REQUEST_PERMISSION_DELETE2)
+                                })
                             else
                                 deleteImages(mFileAll!!, object :OnCallback{
                                     override fun deleted() {
@@ -192,7 +173,7 @@ class AddCardActivity : BaseActivity() {
                                         addHandler.sendMessage(msg)
                                     }
 
-                                }, REQUEST_PERMISSION_DELETE2)
+                                })
                         }else{
                             val msg = Message.obtain()
                             msg.what = 1
@@ -229,7 +210,7 @@ class AddCardActivity : BaseActivity() {
                         override fun deleted() {
                             addHandler.sendEmptyMessage(2)
                         }
-                    }, REQUEST_PERMISSION_DELETE3)
+                    })
 
                 }
             }

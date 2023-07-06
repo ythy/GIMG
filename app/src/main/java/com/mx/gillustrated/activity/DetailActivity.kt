@@ -34,6 +34,8 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.util.forEach
+import androidx.core.util.isNotEmpty
+import androidx.core.util.valueIterator
 import com.mx.gillustrated.databinding.ActivityDetailBinding
 import com.mx.gillustrated.databinding.ChildEventBinding
 import com.mx.gillustrated.databinding.ChildImagesGapBinding
@@ -348,11 +350,14 @@ class DetailActivity : BaseActivity() {
                             v.tag = "$key*$timenow"
                         } else {
                             v.tag = "$key*0"
-                            CommonUtil.deleteImage(this@DetailActivity, mImagesFiles.get(key))
-                            binding.llImages.removeView(line.root)
-                            mImagesView.remove(key)
-                            mImagesFiles.remove(key)
-                            Toast.makeText(this@DetailActivity, "删除成功", Toast.LENGTH_SHORT).show()
+                            deleteImages(mImagesFiles.get(key), object :OnCallback{
+                                override fun deleted() {
+                                    binding.llImages.removeView(line.root)
+                                    mImagesView.remove(key)
+                                    mImagesFiles.remove(key)
+                                    Toast.makeText(this@DetailActivity, "删除成功", Toast.LENGTH_SHORT).show()
+                                }
+                            })
                         }
                     }
                 }
@@ -569,18 +574,21 @@ class DetailActivity : BaseActivity() {
                 ) { _, _ ->
                     val result = mOrmHelper.cardInfoDao.deleteById(mCardInfo.id).toLong()
                     if (result != -1L) {
-
-                        for (i in 0 until mImagesFiles.size()) {
-                            CommonUtil.deleteImage(this,
-                                    mImagesFiles.get(mImagesFiles.keyAt(i)))
+                        val list = mutableListOf<File>()
+                        mImagesFiles.forEach { _, value ->
+                            list.add(value)
                         }
-
-                        val intent = Intent(
-                                this,
-                                MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        this.startActivity(intent)
-                        this.finish()
+                        if (list.isNotEmpty()){
+                            deleteImages(list, object :OnCallback{
+                                override fun deleted() {
+                                    val intent = Intent(
+                                        this@DetailActivity, MainActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                    this@DetailActivity.startActivity(intent)
+                                    this@DetailActivity.finish()
+                                }
+                            })
+                        }
                     } else
                         Toast.makeText(this,
                                 "删除失败", Toast.LENGTH_SHORT)

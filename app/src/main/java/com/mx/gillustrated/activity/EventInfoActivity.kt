@@ -180,11 +180,14 @@ class EventInfoActivity : BaseActivity() {
                             v.tag = "$key*$timenow"
                         } else {
                             v.tag = "$key*0"
-                            CommonUtil.deleteImage(this@EventInfoActivity, mImagesFiles!!.get(key))
-                            binding.llImages.removeView(line)
-                            mImagesView!!.remove(key)
-                            mImagesFiles!!.remove(key)
-                            Toast.makeText(this@EventInfoActivity, "删除成功", Toast.LENGTH_SHORT).show()
+                            deleteImages(mImagesFiles!!.get(key), object : OnCallback{
+                                override fun deleted() {
+                                    binding.llImages.removeView(line)
+                                    mImagesView!!.remove(key)
+                                    mImagesFiles!!.remove(key)
+                                    Toast.makeText(this@EventInfoActivity, "删除成功", Toast.LENGTH_SHORT).show()
+                                }
+                            })
                         }
                     }
 

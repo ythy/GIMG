@@ -328,12 +328,15 @@ class MainActivity : BaseActivity() {
             if (imagesFileDir.exists()) {
                 val child = imagesFileDir.listFiles()
                 if (child != null){
+                    val deletedList = mutableListOf<File>()
                     for (i in child.indices) {
                         val name = child[i].name
                         val id = Integer.parseInt(name.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0].substring(2))
                         if (idList.contains(id))
-                            CommonUtil.deleteImage(this@MainActivity, child[i])
+                            deletedList.add(child[i])
                     }
+                    if (deletedList.isNotEmpty())
+                        deleteImages(deletedList)
                 }
             }
 
@@ -343,6 +346,7 @@ class MainActivity : BaseActivity() {
             if (imagesHeaderFileDir.exists()) {
                 val child = imagesHeaderFileDir.listFiles()
                 if (child != null) {
+                    val deletedList = mutableListOf<File>()
                     for (i in child.indices) {
                         val name = child[i].name
                         val id = Integer.parseInt(
@@ -350,8 +354,10 @@ class MainActivity : BaseActivity() {
                                 .toTypedArray()[0]
                         )
                         if (idList.contains(id))
-                            CommonUtil.deleteImage(this@MainActivity, child[i])
+                            deletedList.add(child[i])
                     }
+                    if (deletedList.isNotEmpty())
+                        deleteImages(deletedList)
                 }
             }
             mOrmHelper.cardInfoDao.delCardsById(idList)

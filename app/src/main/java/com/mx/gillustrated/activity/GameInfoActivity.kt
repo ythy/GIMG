@@ -244,10 +244,8 @@ class GameInfoActivity : BaseActivity() {
                         MConfig.SD_PATH + "/" + mGameType)
                     if (imagesFileDir.exists()) {
                         val child = imagesFileDir.listFiles()
-                        if (child != null){
-                            for (i in child.indices) {
-                                CommonUtil.deleteImage(this@GameInfoActivity, child[i])
-                            }
+                        if (child?.isNotEmpty() == true){
+                            deleteImages(child.toList())
                         }
                         imagesFileDir.delete()
                     }
@@ -256,10 +254,8 @@ class GameInfoActivity : BaseActivity() {
                         MConfig.SD_EVENT_PATH + "/" + mGameType)
                     if (eventFileDir.exists()) {
                         val child = eventFileDir.listFiles()
-                        if (child != null){
-                            for (i in child.indices) {
-                                CommonUtil.deleteImage(this@GameInfoActivity, child[i])
-                            }
+                        if (child?.isNotEmpty() == true){
+                            deleteImages(child.toList())
                         }
                         eventFileDir.delete()
                     }

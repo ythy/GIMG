@@ -8,7 +8,6 @@ import com.mx.gillustrated.di.components.DaggerBaseActivityComponent
 import com.mx.gillustrated.di.modules.BaseActivityModule
 import android.app.ProgressDialog
 import android.content.*
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mx.gillustrated.R
 import com.mx.gillustrated.util.CommonUtil
 import java.io.File
-import java.net.URI
 
 import javax.inject.Inject
 
@@ -33,6 +31,8 @@ abstract class BaseActivity: AppCompatActivity() {
 
     @Inject
     lateinit var mSP: SharedPreferences
+
+    private var mCallback:OnCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         doInject()
@@ -54,19 +54,14 @@ abstract class BaseActivity: AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_PERMISSION_DELETE || requestCode == REQUEST_PERMISSION_DELETE2 ||
-                requestCode == REQUEST_PERMISSION_DELETE3 ) {
-                if (resultCode == Activity.RESULT_OK) {
-                    Toast.makeText(this,"删除成功", Toast.LENGTH_SHORT).show()
-                    deleteSuccessHanlder(requestCode)
-                }else{
-                    Toast.makeText(this,"删除失败", Toast.LENGTH_SHORT).show()
-                }
+        if (requestCode == REQUEST_PERMISSION_DELETE) {
+            if (resultCode == Activity.RESULT_OK) {
+                mCallback?.deleted()
+            }else{
+                Toast.makeText(this,"删除失败", Toast.LENGTH_SHORT).show()
+            }
+            mCallback = null
         }
-    }
-
-    open fun deleteSuccessHanlder(code:Int){
-
     }
 
     //method only call from API 30 onwards
@@ -76,12 +71,13 @@ abstract class BaseActivity: AppCompatActivity() {
             media.toMutableList()).intentSender
     }
 
-    fun deleteImages(mediaFiles: List<File>, callback:OnCallback? = null, code:Int = 0) {
+    fun deleteImages(mediaFiles: List<File>, callback:OnCallback? = null) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            mCallback = callback
             val uriList = mediaFiles.mapNotNull {
                 CommonUtil.getImageContentUri(this, it)
             }
-            startIntentSenderForResult(deleteMediaBulk(this, uriList), code, null, 0, 0, 0)
+            startIntentSenderForResult(deleteMediaBulk(this, uriList), REQUEST_PERMISSION_DELETE, null, 0, 0, 0)
         }else {
             mediaFiles.forEach {
                 CommonUtil.deleteImages(this, it)
@@ -91,10 +87,11 @@ abstract class BaseActivity: AppCompatActivity() {
 
     }
 
-    fun deleteImages(mediaFile: File, callback:OnCallback? = null, code:Int = 0) {
+    fun deleteImages(mediaFile: File, callback:OnCallback? = null) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            mCallback = callback
             val uri = CommonUtil.getImageContentUri(this, mediaFile) ?: return
-            startIntentSenderForResult(deleteMediaBulk(this, listOf(uri)), code, null, 0, 0, 0)
+            startIntentSenderForResult(deleteMediaBulk(this, listOf(uri)), REQUEST_PERMISSION_DELETE, null, 0, 0, 0)
         }else {
             CommonUtil.deleteImages(this, mediaFile)
             callback?.deleted()
@@ -119,7 +116,5 @@ abstract class BaseActivity: AppCompatActivity() {
         const val SHARE_IMAGES_HEADER_SCALE_NUMBER = "header_images_scale_float_number"
         const val SHARE_SHOW_COST_COLUMN = "gameinfo_show_cost_column"
         const val REQUEST_PERMISSION_DELETE = 4044
-        const val REQUEST_PERMISSION_DELETE2 = 4046
-        const val REQUEST_PERMISSION_DELETE3 = 4048
     }
 }
