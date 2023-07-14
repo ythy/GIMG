@@ -142,11 +142,7 @@ object CultivationSetting {
             PresetInfo(15000091, Triple("\u5E73\u513F", "", 1209), 0, 100, 200),
             PresetInfo(15000101, Triple("\u9999\u83F1", "", 1210), 0, 100, 200),
             PresetInfo(15000111, Triple("\u5999\u7389", "", 1211), 0, 100, 200),
-            PresetInfo(15000121, Triple("\u88AD\u4EBA", "", 1212), 0, 100, 200),
-
-            PresetInfo(15010011, Triple("\u7532\u6590\u59EC", "", 1215), 0, 1000, 2000),
-            PresetInfo(15010021, Triple("\u4E95\u4F0A", "\u76F4\u864E", 1216), 0, 200, 600),
-            PresetInfo(15010031, Triple("\u963F\u9505", "\u4E4B\u65B9", 1217), 0, 200, 600)
+            PresetInfo(15000121, Triple("\u88AD\u4EBA", "", 1212), 0, 100, 200)
     )
 
     private val SpecPersonFirstName6:MutableList<PresetInfo> = mutableListOf(

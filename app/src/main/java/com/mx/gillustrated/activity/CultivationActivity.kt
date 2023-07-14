@@ -1668,12 +1668,7 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun addBossHandler(){
-        val boss = when (Random().nextInt(10)) { // 1 2 3 4 = 10
-                in 0 .. 3 -> CultivationEnemyHelper.generateLiYuanBa(mAlliance["6000101"]!!)
-                in 4 .. 6 -> CultivationEnemyHelper.generateShadowMao(mAlliance["6000104"]!!)
-                in 7 .. 8  -> CultivationEnemyHelper.generateShadowQiu(mAlliance["6000105"]!!)
-                else -> CultivationEnemyHelper.generateYaoWang(mAlliance["6000102"]!!)
-            }
+        val boss = CultivationEnemyHelper.generateBoss(mAlliance)
         mBoss[boss.id] = boss
         mBattleRound.boss[boss.type - 1]++
         writeHistory("====================================")

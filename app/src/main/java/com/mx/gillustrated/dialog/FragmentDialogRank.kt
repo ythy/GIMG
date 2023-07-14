@@ -188,10 +188,12 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
                 val index = mType - 20
                 val record = CultivationHelper.mBossRecord[index]
                 title = CultivationHelper.showing(CultivationEnemyHelper.bossSettings[index].name)
-                list.addAll(record.map { r->
-                    SimpleData(r.value,  mContext.mPersons[r.value]?.name ?: "", "", mType, mutableListOf(), r.key)
+                list.addAll(record.mapNotNull { r->
+                    if(mContext.mPersons[r.value] == null)
+                        null
+                    else
+                        SimpleData(r.value,  mContext.mPersons[r.value]?.name ?: "", "", mType, mutableListOf(), r.key)
                 })
-
             }
         }
         binding.tvTitle.text = title
