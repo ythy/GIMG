@@ -541,11 +541,12 @@ object CultivationHelper {
         val tipsDefence = person.tipsList.filter { it.detail.defence.isNotEmpty() }.sumOf { it.detail.defence[it.level] }
         val tipsSpeed = person.tipsList.filter { it.detail.speed.isNotEmpty() }.sumOf { it.detail.speed[it.level] }
 
-        val jingJieLevel = getJingJieLevel(person.jingJieId)
-        val extraHP = jingJieLevel.first + 10 * jingJieLevel.second + property[0] + tipsHP// 0 ~ 70 + 80
-        val attack =  5 * jingJieLevel.second +  property[1] + tipsAttack// yuan 2, hua 4, he 4,di 5, tai 6, zhun 7, di 8 // 0 ~ 40
-        val defence = 5 * jingJieLevel.second +  property[2] + tipsDefence // 0 ~ 40
-        val speed =   5 * jingJieLevel.second + property[3] + tipsSpeed// 0 ~ 40
+        //val jingJieLevel = getJingJieLevel(person.jingJieId) 取消境界影响属性
+
+        val extraHP = property[0] + tipsHP// 0 ~ 70 + 80
+        val attack =  property[1] + tipsAttack// yuan 2, hua 4, he 4,di 5, tai 6, zhun 7, di 8 // 0 ~ 40
+        val defence = property[2] + tipsDefence // 0 ~ 40
+        val speed =   property[3] + tipsSpeed// 0 ~ 40
 
         //val multipleSpeed = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.1f)
        // val multiplePrimary = Math.max((person.HP + extraHP).toFloat()/( person.maxHP + extraHP).toFloat(), 0.5f)

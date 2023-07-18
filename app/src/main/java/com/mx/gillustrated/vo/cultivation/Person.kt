@@ -102,7 +102,7 @@ open class PersonBak {
         person.maxXiuWei = this.maxXiuWei
         person.pointXiuWei = this.pointXiuWei
         person.allianceId = this.allianceId
-        person.genres = this.genres
+        person.genres = this.genres.filter { CultivationHelper.mConfig.genre.find { g-> g.id == it } != null }.toMutableList()
         person.specIdentity = this.specIdentity
         person.specIdentityTurn = this.specIdentityTurn
         person.feiziLevel = this.feiziLevel
