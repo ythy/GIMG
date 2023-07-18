@@ -13,6 +13,8 @@ open class EquipmentBak(val id: String, val amuletSerialNo:Int = 0) {
 
 }
 
+//8 100 //9 150 //10 200 //11 250 //12 300 //13 400 //14 500 //15 600
+//300hp: 150 //200hp: 100 //100hp: 50
 data class EquipmentConfig(
         val id:String,
         val name:String,
