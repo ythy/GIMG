@@ -1,6 +1,7 @@
 package com.mx.gillustrated.vo.cultivation
 
 
+import com.mx.gillustrated.component.CultivationAmuletHelper
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.util.NameUtil
 import java.util.*
@@ -110,8 +111,15 @@ open class PersonBak {
 
         person.lingGenDetail = CultivationHelper.mConfig.lingGenType.find { it.id == person.lingGenTypeId }!!
         person.tianfuList = this.tianfu.mapNotNull { CultivationHelper.mConfig.tianFuType.find { t -> t.id == it } }.toMutableList()
-        person.equipmentList = this.equipment.map {
-           it.toEquipment()
+        person.equipmentList = this.equipment.mapNotNull {
+            if(it.amuletSerialNo > 0 ){
+                if(CultivationAmuletHelper.Amulet.types.find { type-> type.id == it.amuletSerialNo / 100 } == null)
+                    null
+                else
+                    it.toEquipment()
+            }else{
+                it.toEquipment()
+            }
         }.toMutableList()
         if (person.specIdentity > 0){
             person.equipmentList.addAll(CultivationHelper.getSpecPersonEquipment(person))

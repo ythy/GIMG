@@ -8,7 +8,7 @@ object CultivationAmuletHelper {
                           val xiuwei:Int, val teji:MutableList<String> = mutableListOf())
     data class AmuletNormal(val id:Int, val weight:Int, val rarityAddon:Int, val bonusMultiple:Int, val xiuweiAddon:Int, val prefix:String)
 
-    private object Amulet {
+    object Amulet {
         val NormalSizeWeight = mutableListOf(1,50,500)// used in creation
         val NormalSizeMultiple = mutableListOf(1,1,2,4)
         val NormalSizeRarityAddon = mutableListOf(0,0,1,2)
@@ -31,12 +31,10 @@ object CultivationAmuletHelper {
 
             AmuletType(201,  "\u5854-\u62c9\u590f\u7684\u5224\u51b3", "7005104",5000,9, mutableListOf(0,50,0,50), 100, mutableListOf("8001005")),
             AmuletType(202,  "\u5730\u72f1\u706b\u70ac", "7005102",5000,9, mutableListOf(200,0,100,0), 100),
-            AmuletType(203,  "\u57fa\u5fb7\u7684\u8fd0\u6c14", "7005103",2000,6, mutableListOf(0,0,0,40), 100),
+            AmuletType(203,  "\u57fa\u5fb7\u7684\u8fd0\u6c14", "7005103",2000,6, mutableListOf(0,0,0,50), 100),
             AmuletType(204,  "\u4e54\u4e39\u4e4b\u77f3", "7005105",5000,9, mutableListOf(200,0,0,0), 200),
             AmuletType(205,  "\u5e03\u5c14\u51ef\u7d22\u4e4b\u6212","7005105", 5000,10, mutableListOf(0,100,0,0), 200, mutableListOf("8003006")),
-            AmuletType(206,  "\u62ff\u5404\u7684\u6212\u6307", "7005105",200,4, mutableListOf(0,0,0,0), 50),
-            AmuletType(207,  "\u4e4c\u9e26\u4e4b\u971c", "7005105",200,5, mutableListOf(100,0,0,50), 0),
-            AmuletType(208,  "\u739B\u62C9\u7684\u4E07\u82B1\u7B52", "7005104",1000,6, mutableListOf(0,0,50,0), 100)
+            AmuletType(208,  "\u739B\u62C9\u7684\u4E07\u82B1\u7B52", "7005104",2000,6, mutableListOf(0,0,50,0), 100)
         )
 
     }
