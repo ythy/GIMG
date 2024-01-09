@@ -11,7 +11,6 @@ import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstNameWeight
 import com.mx.gillustrated.databinding.FragmentVpPersonBinding
 import com.mx.gillustrated.dialog.FragmentDialogPerson
 import com.mx.gillustrated.util.NameUtil
@@ -53,15 +52,8 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
             CultivationHelper.updatePersonExtraProperty(mPerson)
             Toast.makeText(context, "设置成功", Toast.LENGTH_SHORT).show()
         }
-        binding.btnRevive.setOnClickListener{
-            val btn = it as Button
-            if(btn.text == "Kill"){
-                mContext.killPerson(mPerson.id)
-                btn.text = "Revive"
-            }else{
-                mContext.revivePerson(mPerson.id)
-                btn.text = "Kill"
-            }
+        binding.btnKill.setOnClickListener{
+            mContext.killPerson(mPerson.id)
             mCallback.update(3)
         }
         binding.btnClan.setOnClickListener {
@@ -126,7 +118,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
             Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show()
         }
         binding.btnBe.setOnClickListener {
-            val partner = mContext.getOnlinePersonDetail(mPerson.partner) ?: mContext.getOfflinePersonDetail(mPerson.partner)
+            val partner = mContext.getOnlinePersonDetail(mPerson.partner)
             mPerson.partner = null
             mPerson.partnerName = null
             if(partner?.partner == mPerson.id){
@@ -165,11 +157,6 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         val id = requireArguments().getString("id", "")
         mPerson = mContext.getPersonData(id)!!
         initSkinSpinner()
-        if(mContext.getOnlinePersonDetail(mPerson.id) == null){
-            binding.btnRevive.text = "Revive"
-        }else{
-            binding.btnRevive.text = "Kill"
-        }
         binding.schSingled.isChecked = mPerson.singled
         binding.schDink.isChecked = mPerson.dink
         binding.schNeverDead.isChecked =  mPerson.neverDead
@@ -177,13 +164,8 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         if(mPerson.specIdentity > 0){
             val persons =  CultivationSetting.getAllSpecPersons()
             val spec = persons.find { it.identity == mPerson.specIdentity }
-            if(spec == null){
-                binding.etTianfu.setText(SpecPersonFirstNameWeight.first.toString())
-                binding.etLinggen.setText(SpecPersonFirstNameWeight.second.toString())
-            }else{
-                binding.etTianfu.setText(spec.tianfuWeight.toString())
-                binding.etLinggen.setText(spec.linggenWeight.toString())
-            }
+            binding.etTianfu.setText(spec?.tianfuWeight.toString())
+            binding.etLinggen.setText(spec?.linggenWeight.toString())
         }
         updateView()
     }

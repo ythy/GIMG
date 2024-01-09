@@ -22,6 +22,7 @@ import android.content.pm.PackageManager
 import android.os.*
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem

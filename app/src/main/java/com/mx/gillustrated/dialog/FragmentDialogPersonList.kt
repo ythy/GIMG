@@ -119,31 +119,6 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
             mThreadRunnable = false
             this.dismiss()
         }
-        binding.btnBe.setOnClickListener {
-            mContext.bePerson()
-        }
-        binding.btnClear.setOnClickListener {
-            mContext.mDeadPersons.clear()
-        }
-        binding.btnSwitch.setOnClickListener {
-            if (mType > 0)
-                return@setOnClickListener
-            val btn = it as Button
-            val tag = btn.tag
-            if(tag == "ON"){
-                btn.text = "offline"
-                btn.tag = "OFF"
-                binding.btnBe.visibility = View.VISIBLE
-                binding.btnClear.visibility = View.VISIBLE
-                setOfflineList()
-            }else{
-                btn.text = "online"
-                btn.tag = "ON"
-                binding.btnBe.visibility = View.GONE
-                binding.btnClear.visibility = View.GONE
-                setOnlineList()
-            }
-        }
     }
 
     private fun registerTimeLooper(){
@@ -160,19 +135,9 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     }
 
     private fun updateList(){
-        if(binding.btnSwitch.tag == "ON"){
-            setOnlineList()
-        }else{
-            setOfflineList()
-        }
+        setOnlineList()
     }
 
-    private fun setOfflineList(){
-        val list = mContext.mDeadPersons.map { it.value }.toMutableList()
-        list.sortByDescending { it.lifeTurn * 1000000 + it.jinJieMax}
-        (binding.lvPerson.adapter as CultivationPersonListAdapter).submitList(list)
-        binding.tvTotal.text = list.size.toString()
-    }
 
     private fun setOnlineList(){
         val persons = when (mType) {

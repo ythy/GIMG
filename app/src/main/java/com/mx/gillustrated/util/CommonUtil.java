@@ -224,6 +224,26 @@ public class CommonUtil {
 		return path;
 	}
 
+	public static File generateDataFileNew(Context context, String filename) {
+		File path = null;
+		File fileDir = context.getExternalFilesDir(
+				MConfig.SD_DATA_PATH_NEW );
+		if (!fileDir.exists()) {
+			fileDir.mkdirs();
+		}
+		File jsonFile = new File(fileDir.getPath(), filename);
+		if (!jsonFile.exists()) {
+			try {
+				jsonFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		path = jsonFile;
+
+		return path;
+	}
+
 	public static void printFile(String str, File file) {
 		printFile(str, file, false);
 	}

@@ -16,6 +16,8 @@ class MConfig {
 
         const val SD_EVENT_PATH = "Android/data/com.mx.gillustrated/eventImg"
 
+        const val SD_DATA_PATH_NEW = "data"
+
         const val SD_CULTIVATION_HEADER_PATH = "cultivationHeader"
 
         const val SD_CULTIVATION_HEADER_PATH_OLD = "Android/data/com.mx.gillustrated/files/cultivationHeader"

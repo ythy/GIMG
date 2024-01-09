@@ -16,7 +16,6 @@ import com.google.gson.Gson
 import com.mx.gillustrated.R
 import com.mx.gillustrated.adapter.CultivationHistoryAdapter
 import com.mx.gillustrated.component.*
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName
 import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstName2
 import com.mx.gillustrated.component.CultivationHelper.addPersonEvent
 import com.mx.gillustrated.component.CultivationHelper.getPersonBasicString
@@ -35,9 +34,7 @@ import com.mx.gillustrated.component.CultivationHelper.maxFemaleProfile
 import com.mx.gillustrated.component.CultivationHelper.maxMaleProfile
 import com.mx.gillustrated.component.CultivationSetting.getIdentityGender
 import com.mx.gillustrated.component.CultivationSetting.getIdentityIndex
-import com.mx.gillustrated.component.CultivationSetting.createIdentitySeq
 import com.mx.gillustrated.component.CultivationSetting.PresetInfo
-import com.mx.gillustrated.component.CultivationSetting.SpecPersonFirstNameWeight
 import com.mx.gillustrated.component.CultivationSetting.getAllSpecPersons
 import com.mx.gillustrated.component.CultivationSetting.getIdentityType
 import com.mx.gillustrated.databinding.ActivityCultivationBinding
@@ -66,7 +63,6 @@ class CultivationActivity : BaseActivity() {
     private var readRecord = true
 
     var mPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
-    var mDeadPersons:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var mAlliance:ConcurrentHashMap<String, Alliance> = ConcurrentHashMap()
     var mClans:ConcurrentHashMap<String, Clan> = ConcurrentHashMap()
     var mNations:ConcurrentHashMap<String, Nation> = ConcurrentHashMap()
@@ -103,7 +99,7 @@ class CultivationActivity : BaseActivity() {
         mProgressDialog.show()
         Thread{
             Thread.sleep(100)
-            val backup = CultivationBakUtil.getDataFromFiles()
+            val backup = CultivationBakUtil.getDataFromFiles(this)
             val message = Message.obtain()
             message.what = 3
             message.obj = backup
@@ -200,7 +196,7 @@ class CultivationActivity : BaseActivity() {
                 val it = p.value
                 it.profile = CultivationHelper.getRandomProfile(it.gender, it.profile)
                 it.HP = it.HP.coerceAtMost(it.maxHP)
-                it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null && getOfflinePersonDetail(f) == null }.toMutableList()
+                it.children = it.children.filterNot { f-> getOnlinePersonDetail(f) == null }.toMutableList()
             }
             genreShuffled()
             backupInfo.persons = mPersons.mapValues { it.value.toPersonBak() }
@@ -213,7 +209,7 @@ class CultivationActivity : BaseActivity() {
             backupInfo.nation = mNations.mapValues {
                 it.value.toNationBak()
             }
-            CultivationBakUtil.saveDataToFiles(Gson().toJson(backupInfo))
+            CultivationBakUtil.saveDataToFiles(this, Gson().toJson(backupInfo))
             val message = Message.obtain()
             message.what = 2
             message.arg1 = if(setBusyProgression) 0 else 1
@@ -533,7 +529,6 @@ class CultivationActivity : BaseActivity() {
                         }
                     }
                 })
-        binding.tvSpeed.text = mSpeed.toString()
 
         loadSkin()
     }
@@ -571,7 +566,7 @@ class CultivationActivity : BaseActivity() {
     fun getPersonData(id: String?):Person?{
         if(id == null)
             return null
-        return  getOnlinePersonDetail(id) ?: getOfflinePersonDetail(id) ?: mBoss[id]
+        return  getOnlinePersonDetail(id) ?:  mBoss[id]
     }
 
     private fun getSpecOnlinePerson(id:Int?):Person?{
@@ -582,12 +577,6 @@ class CultivationActivity : BaseActivity() {
         if(id == null)
             return null
         return mPersons[id]
-    }
-
-    fun getOfflinePersonDetail(id:String?):Person?{
-        if(id == null)
-            return null
-        return mDeadPersons[id]
     }
 
     fun setTimeLooper(flag:Boolean){
@@ -608,9 +597,11 @@ class CultivationActivity : BaseActivity() {
 
     private fun deadHandler(it:Person, force:Boolean = false){
         mPersons.remove(it.id)
-        mDeadPersons[it.id] = it
-        addPersonEvent(it, personDataString[0])
-        writeHistory("${getPersonBasicString(it)} ${personDataString[0]}", it)
+        val partner = getOnlinePersonDetail(it.partner)
+        if( partner != null ){
+            partner.partnerName = null
+            partner.partner = null
+        }
         val alliance = mAlliance[it.allianceId]
         alliance?.personList?.remove(it.id)
         it.allianceId = ""
@@ -626,12 +617,6 @@ class CultivationActivity : BaseActivity() {
                 val person = when (alliance.type) {
                     0 -> //Name2
                         addSingleSpecPerson(config!!)
-                    1 -> {
-                        val firstName = SpecPersonFirstName[CultivationSetting.getIdentitySeq(it.specIdentity) - 1]
-                        addSingleSpecPerson(PresetInfo(it.specIdentity, Pair(it.lastName, firstName),
-                                0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second),
-                                alliance)
-                    }
                     else -> addSingleSpecPerson(config!!, alliance)
                 }
 
@@ -775,12 +760,10 @@ class CultivationActivity : BaseActivity() {
         //以下辅助操作
         when {
             inDurationByXun("Xun100000", 100000) && isHidden -> {
-                mDeadPersons.clear()
                 addSpecPerson()
                 saveAllData(false)
             }
             inDurationByXun("Xun12000", 12000) -> {
-                bePerson()
                 updateBadge()
             }
             else -> randomBattle(currentXun)
@@ -788,7 +771,6 @@ class CultivationActivity : BaseActivity() {
         updateCareerEffect(currentXun)
         updateClans(currentXun)
         updateBoss(currentXun)
-        randomSpecialEquipmentEvent(currentXun)
     }
 
     private fun updateBadge(){
@@ -844,8 +826,12 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun updateHistory(){
-        if(isHidden)
+        if(isHidden){
+            if(CultivationHelper.mHistoryTempData.size > 100){
+                CultivationHelper.mHistoryTempData.clear()
+            }
             return
+        }
         val list = (binding.lvHistory.adapter as CultivationHistoryAdapter).getData().toMutableList()
         if(list.size > 400 && mThreadRunnable){
             list.clear()
@@ -914,58 +900,6 @@ class CultivationActivity : BaseActivity() {
     }
 
 
-    fun bePerson(){
-        setTimeLooper(false)
-        Thread{
-            Thread.sleep(500)
-            mDeadPersons.forEach {
-                it.value.partnerName = null
-                it.value.partner = null
-            }
-            mPersons.forEach {
-                val person = it.value
-                val partner = getOnlinePersonDetail(person.partner)
-                if(person.partner != null && partner == null ){
-                    person.partnerName = null
-                    person.partner = null
-                }
-            }
-            val message = Message.obtain()
-            message.what = 6
-            mTimeHandler.sendMessage(message)
-        }.start()
-    }
-
-    fun revivePerson(id:String){
-        setTimeLooper(false)
-        Thread{
-            Thread.sleep(500)
-            val person = mDeadPersons[id]
-            if(person != null){
-                mDeadPersons.remove(id)
-                person.id =  UUID.randomUUID().toString()
-                if(person.specIdentityTurn == 0)
-                    person.fullName = person.name
-                person.specIdentityTurn = person.specIdentityTurn + 1
-                person.name = person.fullName + CultivationSetting.createLifeTurnName(person.specIdentityTurn)
-                resetCustomBonusSingle(person)
-                person.xiuXei = 0
-                person.jingJieId = mConfig.jingJieType[0].id
-                person.jinJieName = CultivationHelper.getJinJieName(mConfig.jingJieType[0].name)
-                person.jingJieSuccess = mConfig.jingJieType[0].success
-                person.jinJieColor = mConfig.jingJieType[0].color
-                person.jinJieMax = mConfig.jingJieType[0].max
-                combinedPersonRelationship(person, false)
-                val commonText = "\u590d\u6d3b"
-                addPersonEvent(person,commonText)
-                writeHistory("${getPersonBasicString(person)} $commonText", person)
-            }
-            val message = Message.obtain()
-            message.what = 6
-            mTimeHandler.sendMessage(message)
-        }.start()
-    }
-
     fun killPerson(id:String){
         setTimeLooper(false)
         Thread{
@@ -998,24 +932,17 @@ class CultivationActivity : BaseActivity() {
             val temp = it.split("-")
             Pair(temp.first().trim().toInt(), temp.last().trim().toInt())
         }
-        if(inDurationByXun("BattleBoss", weight[0].first, xun) && isTrigger(weight[0].second)) {
+        if(inDurationByXun("BattleBoss", weight[0].first * 12 , xun) && isTrigger(weight[0].second)) {
             addBossHandler()
         }
-        if(inDurationByXun("BattleSingle", weight[1].first, xun) && isTrigger(weight[1].second)) {
+        if(inDurationByXun("BattleSingle", weight[1].first * 12, xun) && isTrigger(weight[1].second)) {
             battleSingleHandler(false)
         }
-        if(inDurationByXun("BattleBang", weight[2].first, xun) && isTrigger(weight[2].second)) {
+        if(inDurationByXun("BattleBang", weight[2].first * 12, xun) && isTrigger(weight[2].second)) {
             battleBangHandler(false)
         }
-        if(inDurationByXun("BattleClan", weight[3].first, xun) && isTrigger(weight[3].second)) {
+        if(inDurationByXun("BattleClan", weight[3].first * 12, xun) && isTrigger(weight[3].second)) {
             battleClanHandler(false)
-        }
-    }
-
-    private fun randomSpecialEquipmentEvent(xun: Long){
-        if(inDurationByXun("SpecialEvent", 121212, xun)) {
-            addAmuletEquipmentEvent(null, "Special", 100)
-            addTipsEquipmentEvent(null, "Special",1000)
         }
     }
 
@@ -1220,7 +1147,8 @@ class CultivationActivity : BaseActivity() {
                             person.equipmentList.add(equipment)
                             val commonText = "\u5236\u9020 : ${equipment.detail.name}"
                             CultivationHelper.updatePersonEquipment(person)
-                            addPersonEvent(person, commonText)
+                            if(equipment.detail.rarity >= 8)
+                                addPersonEvent(person, commonText)
                             writeHistory("${getPersonBasicString(person)} $commonText", person)
                         }
                     }
@@ -1252,13 +1180,6 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun addSpecPerson(){
-        Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 }.sortedBy { it.id }).forEachIndexed { i, alliance ->
-            SpecPersonFirstName.forEachIndexed { index, first ->
-                val nid = "110$i${createIdentitySeq(index)}1".toInt()
-                addSingleSpecPerson(PresetInfo(nid, Pair(alliance.name.slice(0 until 1), first),
-                            0,SpecPersonFirstNameWeight.first, SpecPersonFirstNameWeight.second), alliance)
-            }
-        }
 
         SpecPersonFirstName2.forEach { spec->
             addSingleSpecPerson(spec)
@@ -1376,7 +1297,6 @@ class CultivationActivity : BaseActivity() {
             mCurrentXun = 0
             mClans.clear()
             mPersons.clear()
-            mDeadPersons.clear()
             mAlliance.clear()
             mNations.clear()
             mBattleRound = BattleRound()

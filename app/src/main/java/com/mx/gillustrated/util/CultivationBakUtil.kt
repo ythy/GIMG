@@ -1,5 +1,6 @@
 package com.mx.gillustrated.util
 
+import android.content.Context
 import android.os.Environment
 import com.mx.gillustrated.common.MConfig
 import java.io.File
@@ -8,19 +9,18 @@ object CultivationBakUtil {
 
     private val BakFileName = "cultivation_1.json"
 
-    fun saveDataToFiles(json:String) {
+    fun saveDataToFiles(context: Context, json:String) {
         try {
-            CommonUtil.printFile(json, CommonUtil.generateDataFile(BakFileName))
+            CommonUtil.printFile(json, CommonUtil.generateDataFileNew(context, BakFileName))
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
     }
 
-    fun getDataFromFiles():String? {
-        val fileDir = File(Environment.getExternalStorageDirectory(),
-                MConfig.SD_DATA_PATH)
-        val jsonFile = File(fileDir.path, BakFileName)
+    fun getDataFromFiles(context: Context):String? {
+        val fileDir = context.getExternalFilesDir(MConfig.SD_DATA_PATH_NEW)
+        val jsonFile = File(fileDir?.path, BakFileName)
         if (jsonFile.exists()) {
             return JsonFileReader.getJson(jsonFile)
         }

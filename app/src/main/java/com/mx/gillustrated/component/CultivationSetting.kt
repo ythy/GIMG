@@ -38,12 +38,8 @@ object CultivationSetting {
     var TEMP_DEAD_SYMBOL = SP_DEAD_SYMBOL
     var TEMP_SKIN_BATTLE_MIN = SP_SKIN_BATTLE_MIN
     const val LIFE_TIME_YEAR = 100
-    val EVENT_WEIGHT = listOf("1200-50", "7200-40", "8400-40", "9600-100")
+    val EVENT_WEIGHT = listOf("1000-10", "2000-10", "2000-10", "5000-10")
     const val SP_PUNISH_BOSS_MILLION = 200
-
-    val SpecPersonFirstName: MutableList<String> = mutableListOf("主", "\u4f8d", "儿", "\u5983", "\u4ec6", "\u8bcf", "\u536b", "\u8bed", "\u9b41", "\u5f71", "\u8bed", "\u96e8", "\u82B1")
-    val SpecPersonFirstNameWeight: Pair<Int, Int> = Pair(50, 20)// tianfu.linggen
-
 
     val SpecPersonFirstName2: MutableList<PresetInfo> = mutableListOf(
             PresetInfo(12000010, Triple("\u6bdb", "\u6b23", 1002), 12000021, 1000, 2000),
@@ -291,14 +287,6 @@ object CultivationSetting {
             "${lifeturn + 1}世"
     }
 
-    //return 1 ~ 999
-    fun createIdentitySeq(index:Int):String{
-        return  when(index){
-            in 0..8 -> "00${index + 1}"
-            in 9..98 -> "0${index + 1}"
-            else -> "${min(999, index + 1)}"
-        }
-    }
 
     data class PersonFixedInfoMix(var lingGenId:String?, var tianFuIds:MutableList<String>?, var tianFuWeight: Int = 1, var lingGenWeight:Int = 1)
     // type 1 人物信息 assert(person != null), 2 流程信息 assert(battleId != "")

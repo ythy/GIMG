@@ -156,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/ButtonSmall"
-                    android:id="@+id/btn_revive"
+                    android:id="@+id/btn_kill"
                     android:layout_marginStart="5dp"
                     android:text="Kill"/>
                 <Button

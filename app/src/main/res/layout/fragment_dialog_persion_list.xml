@@ -82,28 +82,6 @@
            <Button
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:id="@+id/btn_be"
-               android:visibility="gone"
-               style="@style/ButtonMiddle"
-               android:text="Be"/>
-           <Button
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:id="@+id/btn_clear"
-               android:visibility="gone"
-               style="@style/ButtonMiddle"
-               android:text="Clear"/>
-           <Button
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:id="@+id/btn_switch"
-               android:layout_marginStart="5dp"
-               style="@style/ButtonMiddle"
-               android:tag="ON"
-               android:text="online"/>
-           <Button
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
                android:layout_marginStart="5dp"
                android:id="@+id/btn_close"
                style="@style/ButtonMiddle"
