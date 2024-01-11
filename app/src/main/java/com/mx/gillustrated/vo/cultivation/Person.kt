@@ -95,9 +95,15 @@ open class PersonBak {
 
         person.battleRecord = this.battleRecord
         person.jingJieId = this.jingJieId
-        person.jinJieName = CultivationHelper.getJinJieName(CultivationHelper.mConfig.jingJieType.find { it.id == this.jingJieId }!!.name)
-        person.jinJieColor = CultivationHelper.mConfig.jingJieType.find { it.id == this.jingJieId }!!.color
-        person.jinJieMax = CultivationHelper.mConfig.jingJieType.find { it.id == this.jingJieId }!!.max
+
+        var configJingJie =  CultivationHelper.mConfig.jingJieType.find { it.id == this.jingJieId }
+        if(configJingJie == null){
+            person.jingJieId = "2000014"
+            configJingJie = CultivationHelper.mConfig.jingJieType.find { it.id == "2000014" }!!
+        }
+        person.jinJieName = CultivationHelper.getJinJieName(configJingJie.name )
+        person.jinJieColor = configJingJie.color
+        person.jinJieMax = configJingJie.max
         person.jingJieSuccess = this.jingJieSuccess
         person.xiuXei = this.xiuXei
         person.maxXiuWei = this.maxXiuWei

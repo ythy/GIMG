@@ -112,93 +112,13 @@
 
   "jingJieType": [
     {
-      "id": "2000001",
-      "name": "LianQi-1",
-      "max": 200,
-      "success": 80,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
-      "id": "2000002",
-      "name": "LianQi-2",
-      "max": 300,
-      "success": 75,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
-      "id": "2000003",
-      "name": "LianQi-3",
-      "max": 500,
-      "success": 70,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
-      "id": "2000004",
-      "name": "LianQi-4",
-      "max": 800,
-      "success": 65,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
-      "id": "2000005",
-      "name": "LianQi-5",
-      "max": 1000,
-      "success": 60,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
-      "id": "2000006",
-      "name": "LianQi-6",
-      "max": 1500,
-      "success": 55,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
-      "id": "2000007",
-      "name": "LianQi-7",
-      "max": 2000,
-      "success": 50,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
-      "id": "2000008",
-      "name": "LianQi-8",
-      "max": 2500,
-      "success": 45,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
-      "id": "2000009",
-      "name": "LianQi-9",
-      "max": 3000,
-      "success": 30,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
-      "id": "2000010",
-      "name": "LianQi-10",
-      "max": 3500,
-      "success": 10,
-      "fault": 3,
-      "lifetime": 0
-    },
-    {
       "id": "2000011",
       "name": "ZhuJi-1",
       "max": 4000,
       "color": 1,
       "success": 20,
       "fault": 3,
-      "lifetime": 100
+      "lifetime": 0
     },
     {
       "id": "2000012",

@@ -31,6 +31,7 @@ import android.view.inputmethod.BaseInputConnection
 import android.widget.Toast
 import com.mx.gillustrated.databinding.ActivityMainBinding
 import com.mx.gillustrated.dialog.FragmentDialogTheme
+import java.io.IOException
 
 class MainActivity : BaseActivity() {
 
@@ -194,14 +195,13 @@ class MainActivity : BaseActivity() {
         setGameList()
 
         //temp
-        //		File fileDirTemp = new File(Environment.getExternalStorageDirectory(),
-        //				"backup");
-        //		File fileTemp = new File(fileDirTemp.getPath(), "all1.docx");
-        //		 try {
-        //			CommonUtil.copyBigDataToSD(this, "all1.docx", fileTemp.getPath());
-        //		} catch (IOException e) {
-        //			e.printStackTrace();
-        //		}
+//        val fileDirTemp = this.getExternalFilesDir("backup")!!
+//        val fileTemp = File(fileDirTemp.path, "HyperSnap.rar")
+//         try {
+//            CommonUtil.copyBigDataToSD(this, "HyperSnap.rar", fileTemp.path);
+//        } catch (e: IOException) {
+//            e.printStackTrace();
+//        }
     }
     private fun requestPermission() {
         if (!hasPermission()) {

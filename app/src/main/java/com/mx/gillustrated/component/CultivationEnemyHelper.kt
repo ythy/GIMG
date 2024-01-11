@@ -70,7 +70,7 @@ object CultivationEnemyHelper {
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 1
         val multi = getPowerMultiple()
-        updateBossProps(person, 4, Pair(4, 1), 65,
+        updateBossProps(person, 4, Pair(4, 1), 60,
             listOf(1500 + 10 * multi, 100 + multi, 50, 100 + multi), 50, listOf("8001004", "8002001"))
         return person
     }
@@ -81,7 +81,7 @@ object CultivationEnemyHelper {
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 2
         val multi = getPowerMultiple()
-        updateBossProps(person, 6, Pair(4, 2), 70,
+        updateBossProps(person, 6, Pair(4, 2), 65,
             listOf(1800 + 20 * multi, 150 + 2 * multi, 100, 200 + 2 * multi), 60, listOf("8001005", "8002002"))
         return person
     }
@@ -92,7 +92,7 @@ object CultivationEnemyHelper {
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 3
         val multi = getPowerMultiple()
-        updateBossProps(person, 8, Pair(6, 2), 75,
+        updateBossProps(person, 8, Pair(6, 2), 70,
             listOf(2200 + 30 * multi, 200 + 3 * multi, 150, 300 + 3 * multi), 80, listOf("8004001", "8002002"))
         return person
     }
@@ -103,7 +103,7 @@ object CultivationEnemyHelper {
         CultivationHelper.joinFixedAlliance(person, alliance)
         person.type = 4
         val multi = getPowerMultiple()
-        updateBossProps(person, 10, Pair(8, 3), 80,
+        updateBossProps(person, 10, Pair(8, 3), 75,
             listOf(2700 + 40 * multi, 250 + 4 * multi, 200, 400 + 4 * multi), 100, listOf("8004002", "8002002"))
         return person
     }

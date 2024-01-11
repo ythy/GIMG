@@ -58,6 +58,8 @@ class CultivationActivity : BaseActivity() {
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
     private var isHidden = false// Activity 是否不可见
+    private var mHiddenTime = 0L
+    private var mHiddenXun = 0L
     private var mSpeed = 10L//流失速度
     private val mInitPersonCount = 1000//初始化Person数量
     private var readRecord = true
@@ -158,6 +160,8 @@ class CultivationActivity : BaseActivity() {
         super.onPause()
         if(!isFinishing){
             isHidden = true
+            mHiddenTime = Date().time
+            mHiddenXun = mCurrentXun
             val serviceIntent = Intent(this, StopService::class.java)
             serviceIntent.putExtra("badgeNumber", getBadgeNumber())
             this.startForegroundService(serviceIntent)
@@ -169,6 +173,11 @@ class CultivationActivity : BaseActivity() {
         isHidden = false
         val serviceIntent = Intent(this, StopService::class.java)
         stopService(serviceIntent)
+        if(mHiddenTime > 0){
+            val duration = (Date().time - mHiddenTime) / 1000 / 60  //分钟
+            binding.tvSince.text = "离开${duration}分，经过${(mCurrentXun - mHiddenXun) / 12}年"
+        }
+
     }
 
 
@@ -177,7 +186,10 @@ class CultivationActivity : BaseActivity() {
         mThreadRunnable = false
         mHistoryThreadRunnable = false
         isHidden = false
+        val serviceIntent = Intent(this, StopService::class.java)
+        stopService(serviceIntent)
     }
+
 
     private fun saveAllData(setBusyProgression:Boolean = true){
         if(setBusyProgression){
@@ -625,6 +637,8 @@ class CultivationActivity : BaseActivity() {
                     person.name = person.name + CultivationSetting.createLifeTurnName(person.specIdentityTurn)
                 }
             }
+        }else{
+            writeHistory("${getPersonBasicString(it)} 卒")
         }
     }
 
@@ -650,8 +664,8 @@ class CultivationActivity : BaseActivity() {
     }
 
     private fun xunHandler(currentXun:Long, step:Int) {
-        val year = CultivationHelper.getYearString(currentXun)
-        if(!isHidden && binding.tvDate.text != year) {
+        val year = "${currentXun / 12}${CultivationHelper.showing("年")}"
+        if(!isHidden) {
             binding.tvDate.text = year
         }
         for ((_: String, it: Person) in mPersons) {
