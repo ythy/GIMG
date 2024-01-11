@@ -1,0 +1,10 @@
+.gradle/
+.idea/
+app/.externalNativeBuild/
+app/build/
+app/release/
+build/
+gradle/
+gradlew
+gradlew.bat
+res/
