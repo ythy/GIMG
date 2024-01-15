@@ -1,13 +1,13 @@
 package com.mx.gillustrated.vo.cultivation
 
+import com.mx.gillustrated.component.CultivationHelper
 import java.util.concurrent.ConcurrentHashMap
 
 open class AllianceBak{
-    var persons:List<String> = mutableListOf()
     var battleRecord:MutableMap<Int, Int> = mutableMapOf()
 
 
-    fun toAlliance(personMap: ConcurrentHashMap<String, Person>, allianceConfig: AllianceConfig):Alliance{
+    fun toAlliance(allianceConfig: AllianceConfig):Alliance{
         val alliance = Alliance()
         alliance.id = allianceConfig.id
         alliance.name = allianceConfig.name
@@ -26,7 +26,6 @@ open class AllianceBak{
         alliance.tips = allianceConfig.tips.toMutableList()
 
         alliance.battleRecord = ConcurrentHashMap(this.battleRecord)
-        alliance.personList.putAll(personMap.filterKeys { this.persons.contains(it) })
         return alliance
     }
 
@@ -54,19 +53,26 @@ open class AllianceConfig : AllianceBak() {
 
 class Alliance : AllianceConfig() {
 
-    var zhuPerson:Person? = null
-    var personList:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     var totalXiuwei:Long = 0 // extra props
     var xiuweiBattle:Int = 0 // extra props
     var battleWinner:Int = 0 // extra props
-
+    var totalPerson:String = "" // extra props
 
     fun toBak():AllianceBak{
         val bak = AllianceBak()
         bak.battleRecord = super.battleRecord
-        bak.persons = this.personList.filter { it.value.allianceId == super.id && it.value.type == 0}.map { it.key }
         return bak
     }
+
+    fun copy():Alliance{
+        val bak = AllianceBak()
+        bak.battleRecord = super.battleRecord
+        val alliance = bak.toAlliance(CultivationHelper.mConfig.alliance.find { it.id == super.id }!!)
+        alliance.xiuweiBattle = this.xiuweiBattle
+        alliance.battleWinner = this.battleWinner
+        return alliance
+    }
+
 
     override fun hashCode(): Int {
         return id.hashCode()

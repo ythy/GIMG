@@ -59,7 +59,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         binding.btnClan.setOnClickListener {
             if(mPerson.specIdentity > 0)
                 return@setOnClickListener
-            CultivationHelper.abdicateInClan(mPerson, mContext.mClans, mContext.mPersons)
+            CultivationHelper.abdicateInClan(mPerson, mContext.mClans)
             Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
             mCallback.update(3)
             updateView()
@@ -104,16 +104,6 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
             mPerson.name = first + second
             mPerson.lastName = first
             changedNameLoopHandler(mPerson)
-            if (mContext.mClans[mPerson.ancestorId] != null && mPerson.ancestorId == mPerson.id){
-                val clan = mContext.mClans[mPerson.ancestorId!!]!!
-                clan.name = first
-                clan.clanPersonList.forEach { (_: String, u: Person) ->
-                    val ming = u.name.substring(u.lastName.length)
-                    u.name = first + ming
-                    u.lastName = first
-                    changedNameLoopHandler(u)
-                }
-            }
             mCallback.update(3)
             Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show()
         }
@@ -190,7 +180,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
         binding.etNameLast.setText(CultivationHelper.showing(mPerson.name.substring(mPerson.lastName.length)))
 
         binding.tvAge.text = CultivationHelper.showAge(mPerson)
-        binding.tvAncestor.text = "${mPerson.ancestorOrignId}/${mPerson.ancestorOrignLevel}-${mPerson.ancestorId}/${mPerson.ancestorLevel}"
+        binding.tvAncestor.text = "${mPerson.ancestorOrignId}/${mPerson.ancestorOrignLevel}-${mPerson.clanHierarchy}"
     }
 
     private fun initSkinSpinner(){

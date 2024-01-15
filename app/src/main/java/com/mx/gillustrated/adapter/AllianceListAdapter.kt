@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mx.gillustrated.component.CultivationHelper
-import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.databinding.AdapterAllianceListBinding
 import com.mx.gillustrated.vo.cultivation.Alliance
 import androidx.recyclerview.widget.ListAdapter
@@ -22,7 +21,8 @@ class AllianceListAdapter(private val callback: Callback): ListAdapter<Alliance,
         }
 
         override fun areContentsTheSame(oldItem: Alliance, newItem: Alliance): Boolean {
-            return newItem == oldItem
+            return newItem.totalPerson == oldItem.totalPerson &&
+                    newItem.battleWinner == oldItem.battleWinner
         }
     }
 
@@ -37,7 +37,7 @@ class AllianceListAdapter(private val callback: Callback): ListAdapter<Alliance,
         val data = getItem(position)
         val abridgeName = if (data.abridgeName != "") "(${data.abridgeName})" else ""
         binding.tvName.text =  CultivationHelper.showing("${nation.find { it.id == data.nation }?.name}-${data.name}$abridgeName")
-        binding.tvPersons.text =  "${data.personList.size}-${data.personList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        binding.tvPersons.text =  data.totalPerson
         binding.tvTotal.text  = CultivationHelper.showLifeTurn(data.totalXiuwei)
         binding.tvWinner.text  = data.battleWinner.toString()
         binding.root.setOnClickListener {

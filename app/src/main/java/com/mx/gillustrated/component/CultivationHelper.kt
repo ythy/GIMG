@@ -42,20 +42,19 @@ object CultivationHelper {
         mHistoryTempData.add(0, HistoryInfo(mCurrentXun, 2, content, null, battleId))
     }
 
-    fun joinAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>){
+    fun joinAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>, allPersons: ConcurrentHashMap<String, Person>){
         val options = if(person.lingGenSpecId == "") {
             allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.filter { person.lingGenName.indexOf(it.value.lingGen!!) >= 0 }.map { it.value }.toMutableList()
         }else{
             allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.map { it.value }.toMutableList()
         }
-        options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfuList.filter { f->f.rarity >=3 }.size >= it.value.tianfu  && it.value.personList.size < it.value.maxPerson }.map { it.value })
+        options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfuList.filter { f->f.rarity >=3 }.size >= it.value.tianfu  }.map { it.value }) //allPersons.filterValues { p->p.allianceId == it.value.id }.size < it.value.maxPerson
         val random = Random().nextInt(options.sumOf { 100 / it.level })
         var count = 0
         for (i in 0 until options.size){
             val alliance = options[i]
             count += 100 / alliance.level
             if(random < count){
-                alliance.personList[person.id] = person
                 person.allianceId = alliance.id
                 person.allianceName = alliance.name
                 person.allianceSuccess = alliance.success
@@ -71,7 +70,6 @@ object CultivationHelper {
     }
 
     fun joinFixedAlliance(person: Person, alliance:Alliance, changed:Boolean = false){
-        alliance.personList[person.id] = person
         person.allianceId = alliance.id
         person.allianceName = alliance.name
         person.allianceSuccess = alliance.success
@@ -87,27 +85,9 @@ object CultivationHelper {
         generateTips(person, alliance)
     }
 
-    fun changedToFixedAlliance(person: Person, allAlliance:ConcurrentHashMap<String, Alliance>, newAlliance:Alliance){
-        val originAlliance = allAlliance[person.allianceId]!!
-        originAlliance.personList.remove(person.id)
-        if(originAlliance.zhuPerson == person)
-            originAlliance.zhuPerson = null
+    fun changedToFixedAlliance(person: Person, newAlliance:Alliance){
         person.tipsList.removeIf { it.detail.type == 0 }
         joinFixedAlliance(person, newAlliance, true)
-    }
-
-    fun updateAllianceGain(allAlliance:ConcurrentHashMap<String, Alliance>, updated:Boolean = false){
-        allAlliance.forEach { data->
-            val alliance = data.value
-            val alivePersons = ConcurrentHashMap(alliance.personList.filter { it.value.type == 0 })
-            if(alivePersons.isNotEmpty()){
-                if(updated) {
-                    updateZhuInAlliance(alliance, alivePersons)
-                }
-            }else{
-                alliance.zhuPerson = null
-            }
-        }
     }
 
     //前4， rank total 16
@@ -124,14 +104,6 @@ object CultivationHelper {
         }
     }
 
-
-    private fun updateZhuInAlliance(alliance: Alliance, persons:ConcurrentHashMap<String, Person>){
-        if(alliance.zhuPerson != null){
-            return
-        }
-        val personList = Collections.synchronizedList( persons.map { it.value })
-        alliance.zhuPerson = personList.minByOrNull { it.birthtime }!!
-    }
 
     // rank total 4
     fun updateClanBattleBonus(allClan:ConcurrentHashMap<String, Clan>){
@@ -150,50 +122,29 @@ object CultivationHelper {
         }
     }
 
-    fun createClan(person: Person, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>):Clan{
+    fun createClan(person: Person, allClan:ConcurrentHashMap<String, Clan>):Clan{
         val clan = Clan()
-        clan.id = person.id
-        clan.name = if (person.ancestorLevel == 0) person.lastName else "${person.lastName}[${person.ancestorLevel}]"
+        clan.id = UUID.randomUUID().toString()
+        clan.elder = person.id
+        clan.name = person.lastName
+        clan.nickName = person.lastName
         clan.zhu = person
         clan.createDate = mCurrentXun
-        clan.clanPersonList = ConcurrentHashMap(allPersons.filter { it.value.ancestorId == clan.id })
         allClan[clan.id] = clan
         return clan
     }
 
-    fun addPersonToClan(person: Person, clan:Clan, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>){
-        val originClanId = person.ancestorId!!
-        person.ancestorId = clan.id
-        val minLevel = clan.clanPersonList.minByOrNull { it.value.ancestorLevel }?.value?.ancestorLevel ?: 0
-        person.ancestorLevel = minLevel + 1
-        allClan[originClanId]?.clanPersonList?.remove(person.id)
-        changedAncestorId(person, allClan, allPersons)
-        clan.clanPersonList[person.id] = person
+    fun addPersonToClan(person: Person, clan:Clan, allPersons:ConcurrentHashMap<String, Person>){
+        person.clanId = clan.id
+        val clanPersons = allPersons.filterValues { it.clanId == clan.id }
+        val minLevel = clanPersons.minByOrNull { it.value.clanHierarchy }?.value?.clanHierarchy ?: 0
+        person.clanHierarchy = minLevel + 1
     }
 
-    fun abdicateInClan(person: Person, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>){
-        val originClanId = person.ancestorId!!
-        person.ancestorId = person.id
-        person.ancestorLevel = 0
-        allClan[originClanId]?.clanPersonList?.remove(person.id)
-        changedAncestorId(person, allClan, allPersons)
-        createClan(person, allClan, allPersons)
-    }
-
-    private fun changedAncestorId(person: Person, allClan:ConcurrentHashMap<String, Clan>, allPersons:ConcurrentHashMap<String, Person>){
-        if(person.gender == NameUtil.Gender.Female)
-            return
-        person.children.forEach {
-            if(allPersons[it] != null){
-                val child = allPersons[it]!!
-                allClan[child.ancestorId]?.clanPersonList?.remove(it)
-                child.ancestorId = person.ancestorId
-                child.ancestorLevel = person.ancestorLevel + 1
-                if(child.gender == NameUtil.Gender.Male && child.children.size  > 0){
-                    changedAncestorId(child, allClan, allPersons)
-                }
-            }
-        }
+    fun abdicateInClan(person: Person, allClan:ConcurrentHashMap<String, Clan>){
+        val newClan = createClan(person, allClan)
+        person.clanId = newClan.id
+        person.clanHierarchy = 0
     }
 
     fun updateSingleBattleBonus(allPerson:ConcurrentHashMap<String, Person>){
@@ -453,15 +404,15 @@ object CultivationHelper {
         if(parent != null){
             result.parent = Pair(parent.first.id, parent.second.id)
             result.parentName = Pair(parent.first.name, parent.second.name)
-            result.ancestorLevel = parent.first.ancestorLevel + 1
             result.ancestorOrignLevel = parent.first.ancestorOrignLevel + 1
-            result.ancestorId = parent.first.ancestorId ?: parent.first.id
-            result.ancestorOrignId = result.ancestorId
+            result.ancestorOrignId = parent.first.ancestorOrignId ?: parent.first.id
+            if(parent.first.clanId != null){
+                result.clanId = parent.first.clanId
+                result.clanHierarchy = parent.first.clanHierarchy + 1
+            }
         }else{
-            result.ancestorId = result.id
-            result.ancestorOrignId = result.ancestorId
+            result.ancestorOrignId = result.id
         }
-
         return result
     }
 
@@ -743,8 +694,8 @@ object CultivationHelper {
     }
 
     fun showAncestorLevel(person:Person):String{
-        return if(person.ancestorLevel == 0) ""
-        else "-${person.ancestorLevel}"
+        return if(person.ancestorOrignLevel == 0) ""
+        else "-${person.ancestorOrignLevel}"
     }
 
     fun showAge(person:Person):String{
@@ -900,8 +851,8 @@ object CultivationHelper {
         }else{
             if (person.specIdentity == 12000100){
                 return Triple(R.drawable.profile_frame_hb_1, -1, 10)
-            }else if((clans[person.ancestorId]?.crest ?: -1) > 0){
-                return getClanCrest(clans[person.ancestorId]?.crest ?: -1)
+            }else if((clans[person.clanId]?.crest ?: -1) > 0){
+                return getClanCrest(clans[person.clanId]?.crest ?: -1)
             }
         }
 

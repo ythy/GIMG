@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.AllianceListAdapter
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.databinding.FragmentDialogAllianceListBinding
 import com.mx.gillustrated.vo.cultivation.Alliance
 import com.mx.gillustrated.vo.cultivation.Person
@@ -108,14 +109,15 @@ class FragmentDialogAllianceList  : DialogFragment() {
     }
 
     private fun updateView(){
-        val list = mContext.mAlliance.map { it.value }.toMutableList()
+        val list = mContext.mAlliance.map { it.value.copy() }.toMutableList()
         list.forEach {
-            it.totalXiuwei = it.personList.reduceValuesToLong(1000,
+            val personList = mContext.getAlliancePersonList(it.id)
+            it.totalXiuwei = personList.reduceValuesToLong(1000,
                     { p: Person -> p.lifeTurn.toLong() }, 0, { left, right -> left + right })
+            it.totalPerson =  "${personList.size}-${personList.map { it.value }.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
         }
         list.sortWith(compareByDescending<Alliance> {it.battleWinner}.thenByDescending { it.totalXiuwei })
         (binding.lvAlliance.adapter as AllianceListAdapter).submitList(list)
-        binding.tvTotal.text = list.sumOf { it.personList.size }.toString()
     }
 
 }

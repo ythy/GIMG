@@ -2,6 +2,7 @@ package com.mx.gillustrated.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +28,7 @@ class CultivationPersonListAdapter constructor(private val showStar:Boolean, pri
         }
 
         override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
-            return newItem == oldItem
+            return false
         }
     }
 

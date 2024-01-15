@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationClanListAdapter
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.databinding.FragmentDialogClanListBinding
 import com.mx.gillustrated.vo.cultivation.Clan
 import java.lang.ref.WeakReference
@@ -61,7 +62,7 @@ class FragmentDialogClanList  : DialogFragment() {
         binding.lvClan.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
         binding.lvClan.adapter = CultivationClanListAdapter(object : CultivationClanListAdapter.Callback{
             override fun onItemClick(item: Clan) {
-                if(item.clanPersonList.map { it.value }.isEmpty()){
+                if(mContext.mPersons.filterValues { p-> p.clanId == item.id }.isEmpty()){
                     Toast.makeText(mContext, "size 0", Toast.LENGTH_SHORT).show()
                     return
                 }
@@ -107,7 +108,9 @@ class FragmentDialogClanList  : DialogFragment() {
 
     fun updateView(){
         mContext.mClans.forEach {
-            it.value.totalXiuwei = it.value.clanPersonList.map { c->c.value }.sumOf { s-> s.lifeTurn.toDouble() }.toLong()
+            val list = mContext.mPersons.filterValues { p-> p.clanId == it.key }.map { m -> m.value }
+            it.value.totalXiuwei = list.sumOf { s-> s.lifeTurn.toDouble() }.toLong()
+            it.value.totalPerson = "${list.size}-${list.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
         }
         val list = mContext.mClans.map { it.value }.toMutableList()
         list.sortByDescending { it.totalXiuwei }

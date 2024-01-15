@@ -380,7 +380,7 @@ class FragmentDialogPerson : DialogFragment() {
         binding.tvCareer.text = mPerson.careerList.joinToString()
         binding.tvProps.text = getProperty()
         binding.tvWinner.text = "${mPerson.battleWinner}-${mPerson.battlexiuwei}↑"
-        binding.tvClan.text = CultivationHelper.showing(mContext.mClans[mPerson.ancestorId]?.nickName ?: "")
+        binding.tvClan.text = CultivationHelper.showing(mContext.mClans[mPerson.clanId]?.nickName ?: "")
         binding.tvJingjie.text = CultivationHelper.showing(mPerson.jinJieName)
         binding.tvJingjie.setTextColor(Color.parseColor(CommonColors[mPerson.jinJieColor]))
         binding.tvXiuweiAdd.text =  "${CultivationHelper.getXiuweiGrow(mPerson)}"

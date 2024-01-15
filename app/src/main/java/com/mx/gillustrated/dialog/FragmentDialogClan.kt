@@ -113,7 +113,7 @@ class FragmentDialogClan : DialogFragment() {
             val name = binding.etAbdicate.text.toString()
             val person = mContext.mPersons.map { it.value }.find { it.name == name || PinyinUtil.convert(it.name) == name }
             if (person != null){
-                CultivationHelper.addPersonToClan(person,  mContext.mClans[mId]!!, mContext.mClans, mContext.mPersons)
+                CultivationHelper.addPersonToClan(person,  mContext.mClans[mId]!!, mContext.mPersons)
                 binding.etAbdicate.setText("")
                 Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
             }
@@ -180,7 +180,7 @@ class FragmentDialogClan : DialogFragment() {
             onCloseHandler()
             return
         }
-        val personList = clan.clanPersonList.map { it.value }
+        val personList = mContext.mPersons.filterValues { it.clanId == mId }.map { it.value }
         if(personList.isEmpty()){
             onCloseHandler()
             return
@@ -189,7 +189,7 @@ class FragmentDialogClan : DialogFragment() {
         binding.tvZhu.text = if(clan.zhu?.name == null ) "" else CultivationHelper.showing(clan.zhu!!.name)
         binding.tvXiuwei.text = "${clan.battleWinner}-${clan.xiuweiBattle}↑"
 
-        val list = personList.sortedBy { it.ancestorLevel }
+        val list = personList.sortedBy { it.clanHierarchy }
         (binding.lvPerson.adapter as CultivationPersonListAdapter).submitList(list)
     }
 

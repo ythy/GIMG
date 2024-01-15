@@ -33,14 +33,13 @@ class CultivationClanListAdapter(private val callback: Callback): ListAdapter<Cl
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val binding = viewHolder.binding
         val clan = getItem(position)
-        val personList = clan.clanPersonList.map { it.value }
 
         binding.tvName.text = CultivationHelper.showing(clan.name)
         if(clan.zhu != null)
             binding.tvZhu.text = CultivationHelper.showing(clan.zhu!!.name)
         else
             binding.tvZhu.text = ""
-        binding.tvPersons.text = "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        binding.tvPersons.text = clan.totalPerson
         binding.tvTotal.text  = CultivationHelper.showLifeTurn(clan.totalXiuwei)
         binding.tvWinner.text = clan.battleWinner.toString()
 

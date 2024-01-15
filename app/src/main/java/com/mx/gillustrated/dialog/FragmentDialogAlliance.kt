@@ -79,7 +79,7 @@ class FragmentDialogAlliance : DialogFragment() {
             if (mAlliance.type != 5)
                 return@setOnClickListener
             val ft = mContext.supportFragmentManager.beginTransaction()
-            val newFragment = FragmentDialogEmperor.newInstance(mAlliance.personList.map { it.value }.shuffled()[0].id)
+            val newFragment = FragmentDialogEmperor.newInstance(mContext.getAlliancePersonList(mAlliance.id).map { it.value }.shuffled()[0].id)
             newFragment.isCancelable = false
             newFragment.show(ft, "dialog_emperor")
         }
@@ -87,7 +87,7 @@ class FragmentDialogAlliance : DialogFragment() {
             val name = binding.etInsert.text.toString()
             val person = mContext.mPersons.map { it.value }.find { it.name == name || PinyinUtil.convert(it.name) == name }
             if (person != null){
-                CultivationHelper.changedToFixedAlliance(person, mContext.mAlliance, mAlliance)
+                CultivationHelper.changedToFixedAlliance(person, mAlliance)
                 binding.etInsert.setText("")
                 Toast.makeText(this.context, "成功", Toast.LENGTH_SHORT).show()
             }
@@ -139,19 +139,20 @@ class FragmentDialogAlliance : DialogFragment() {
         }.start()
     }
 
-    private fun updateView(){
-        if(mAlliance.zhuPerson == null){
-            binding.tvZhu.text = ""
-        }else{
-            val zhuName = CultivationHelper.showing(mAlliance.zhuPerson!!.name)
+    private fun updateView() {
+        val personList = mContext.getAlliancePersonList(mAlliance.id).map { it.value }.toMutableList()
+        personList.sortWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId })
+        if (personList.isNotEmpty()){
+            val zhuName = CultivationHelper.showing(personList[0].name)
             binding.tvZhu.text = zhuName
+        }else{
+            binding.tvZhu.text = ""
         }
         binding.tvWinner.text = "${mAlliance.battleWinner}-${mAlliance.xiuweiBattle}↑"
 
-        val list = mAlliance.personList.map { it.value }.toMutableList()
-        list.sortWith(compareByDescending<Person>{ it.lifeTurn }.thenByDescending { it.jingJieId })
-        (binding.lvPerson.adapter as CultivationPersonListAdapter).submitList(list)
-        binding.tvTotal.text = "${list.size}-${list.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        mAlliance.totalPerson =  "${personList.size}-${personList.count { it.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        (binding.lvPerson.adapter as CultivationPersonListAdapter).submitList(personList)
+        binding.tvTotal.text = mAlliance.totalPerson
     }
 
     private fun showPersonInfo(id:String?){

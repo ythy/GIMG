@@ -35,10 +35,10 @@ open class PersonBak {
     var tianfu: MutableList<String> = mutableListOf()
     var label: MutableList<String> = Collections.synchronizedList(mutableListOf())
     var skin:String = ""
-    var ancestorLevel: Int = 0//加入其他clan 会变更
-    var ancestorId: String? = null// 可能多次，独立后变更为ID
-    var ancestorOrignId: String? = ancestorId// 一次
-    var ancestorOrignLevel: Int = ancestorLevel//一直累加
+    var ancestorOrignId: String? = null// 一次
+    var ancestorOrignLevel: Int = 0//一直累加
+    var clanId:String = ""
+    var clanHierarchy: Int = 0
 
     var teji: MutableList<String> = Collections.synchronizedList(mutableListOf())
     var career: MutableList<CareerBak> = Collections.synchronizedList(mutableListOf())
@@ -73,10 +73,10 @@ open class PersonBak {
         person.lifetime = this.lifetime
         person.events = this.events
         person.skin = this.skin
-        person.ancestorLevel = this.ancestorLevel
-        person.ancestorId = this.ancestorId
         person.ancestorOrignId = this.ancestorOrignId
         person.ancestorOrignLevel = this.ancestorOrignLevel
+        person.clanId = this.clanId
+        person.clanHierarchy = this.clanHierarchy
 
         person.isFav = this.isFav
         person.profile = this.profile
