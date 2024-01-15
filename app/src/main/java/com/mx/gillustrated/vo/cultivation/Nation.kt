@@ -22,10 +22,10 @@ open class NationConfig: NationBak() {
 
 
 class Nation : NationConfig(){
-    var nationPersonList: ConcurrentHashMap<String, Person> = ConcurrentHashMap() //此值不保存到全局mNation里
     var totalTurn:Int = 0
     var xiuweiBattle:Int = 0
     var battleWinner:Int = 0
+    var totalPerson:String = ""// extra props
 
     fun toNationBak():NationBak{
         val nation = NationBak()

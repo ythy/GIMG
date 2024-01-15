@@ -35,7 +35,7 @@ class CultivationNationAdapter(private val callback: Callback): ListAdapter<Nati
         val data = getItem(position)
 
         binding.tvName.text =  CultivationHelper.showing(data.name)
-        binding.tvPersons.text = "${ data.nationPersonList.size}-${ data.nationPersonList.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+        binding.tvPersons.text =  data.totalPerson
         binding.tvWinner.text = data.battleWinner.toString()
         binding.tvTotal.text  = CultivationHelper.showLifeTurn(data.totalTurn.toLong())
 

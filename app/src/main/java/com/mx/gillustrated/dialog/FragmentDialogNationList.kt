@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.activity.CultivationActivity
 import com.mx.gillustrated.adapter.CultivationNationAdapter
+import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.databinding.FragmentDialogNationListBinding
 import com.mx.gillustrated.vo.cultivation.Nation
 import java.lang.ref.WeakReference
@@ -103,13 +104,13 @@ class FragmentDialogNationList  : DialogFragment() {
     private fun updateView(){
         val list = mContext.mNations.map { c->
             val nation = c.value.copy()
-            nation.nationPersonList = ConcurrentHashMap(mContext.mPersons.filter { it.value.nationId == nation.id })
-            nation.totalTurn =  nation.nationPersonList.map { it.value }.sumOf { it.lifeTurn }
+            val list =  mContext.mPersons.filter { it.value.nationId == nation.id }
+            nation.totalPerson = "${list.size}-${ list.count { it.value.lifeTurn >= CultivationSetting.TEMP_SP_JIE_TURN }}"
+            nation.totalTurn =  list.map { it.value }.sumOf { it.lifeTurn }
             nation
         }.sortedByDescending { it.totalTurn }
-
         (binding.lvNation.adapter as CultivationNationAdapter).submitList(list)
-        binding.tvTotal.text = list.sumOf { it.nationPersonList.size }.toString()
+        binding.tvTotal.text = list.size.toString()
     }
 
 }

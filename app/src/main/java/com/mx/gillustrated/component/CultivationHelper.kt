@@ -48,24 +48,23 @@ object CultivationHelper {
         }else{
             allAlliance.filter { it.value.level == 1 && it.value.type == 0 }.map { it.value }.toMutableList()
         }
-        options.addAll(allAlliance.filter { it.value.level > 1 && person.tianfuList.filter { f->f.rarity >=3 }.size >= it.value.tianfu  }.map { it.value }) //allPersons.filterValues { p->p.allianceId == it.value.id }.size < it.value.maxPerson
-        val random = Random().nextInt(options.sumOf { 100 / it.level })
-        var count = 0
-        for (i in 0 until options.size){
-            val alliance = options[i]
-            count += 100 / alliance.level
-            if(random < count){
-                person.allianceId = alliance.id
-                person.allianceName = alliance.name
-                person.allianceSuccess = alliance.success
-                person.allianceProperty = alliance.property.toMutableList()
-                person.allianceXiuwei = alliance.xiuwei
-                person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
-                person.lifetime = mCurrentXun + getLifetimeBonusInitial(person, alliance)
-                person.nationId = alliance.nation
-                break
+        var alliance = options[Random().nextInt(options.size)]//五行优先随机选定一个
+        //allPersons.filterValues { p->p.allianceId == it.value.id }.size < it.value.maxPerson
+        val holyList = allAlliance.filter { it.value.level > 1 && person.tianfuList.filter { f->f.rarity >=3 }.size >= it.value.tianfu  }.map { it.value }
+        holyList.sortedByDescending { it.level }.forEach holy@{
+            if (isTrigger(it.level)) {
+                alliance = it
+                return@holy
             }
         }
+        person.allianceId = alliance.id
+        person.allianceName = alliance.name
+        person.allianceSuccess = alliance.success
+        person.allianceProperty = alliance.property.toMutableList()
+        person.allianceXiuwei = alliance.xiuwei
+        person.extraXuiweiMulti = getExtraXuiweiMulti(person, alliance)
+        person.lifetime = mCurrentXun + getLifetimeBonusInitial(person, alliance)
+        person.nationId = alliance.nation
         generateTips(person, allAlliance[person.allianceId]!!)
     }
 

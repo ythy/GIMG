@@ -53,6 +53,7 @@ open class PersonBak {
     var maxXiuWei: Long = 0
     var pointXiuWei: Long = 0
     var allianceId: String = ""
+    var nationId = ""
     var genres:MutableList<String> = Collections.synchronizedList(mutableListOf())
     var specIdentity: Int = 0 //spec person nid
     var specIdentityTurn: Int = 0 //spec person turn added while dead
@@ -109,6 +110,7 @@ open class PersonBak {
         person.maxXiuWei = this.maxXiuWei
         person.pointXiuWei = this.pointXiuWei
         person.allianceId = this.allianceId
+        person.nationId = this.nationId
         person.genres = this.genres.filter { CultivationHelper.mConfig.genre.find { g-> g.id == it } != null }.toMutableList()
         person.specIdentity = this.specIdentity
         person.specIdentityTurn = this.specIdentityTurn
@@ -163,7 +165,6 @@ class Person: PersonBak() {
     var attack: Int = 20
     var defence: Int = 20
     var speed: Int = 20
-    var nationId = ""
 
     var extraProperty: MutableList<Int> = mutableListOf(0, 0, 0, 0, 0, 0, 0, 0)//update once deps tian linggen, label, skin
     var extraXiuwei: Int = 0 //tianfu + label + skin 初始和读取更新, skin changed 更新
