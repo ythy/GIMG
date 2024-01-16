@@ -908,7 +908,7 @@ object CultivationHelper {
     }
 
     fun talentValue(person: Person):Int{
-        val tianfu = person.tianfuList.sumOf {
+        val genius = person.tianfuList.sumOf {
             when(it.type){
                 1 -> it.rarity.toDouble() * 1.0
                 2 -> it.rarity.toDouble() * 1.5
@@ -923,9 +923,9 @@ object CultivationHelper {
                 .sumOf { it.rarity * 2 }
 
         return if(person.lingGenDetail.type == 0 )
-            tianfu + label
+            genius + label
         else
-            tianfu + + label + 2 * person.lingGenDetail.type
+            genius + label + 2 * person.lingGenDetail.type
     }
 
     fun getResouresId(resources:Resources, name:String):Int{

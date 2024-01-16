@@ -296,13 +296,6 @@ class CultivationActivity : BaseActivity() {
             }
         }
 
-//         mPersons.forEach { (_: String, u: Person) ->
-//             u.events.removeIf { r -> r.content.contains("获得秘籍") }
-//         }
-
-//        mPersons.forEach { (_: String, u: Person) ->
-//            u.lifeTurn = 0
-//        }
 
 //        mutableListOf(205, 206, 207, 208).forEach { type->
 //                val lucky = mPersons.map { it.value }.shuffled().first()
@@ -318,49 +311,6 @@ class CultivationActivity : BaseActivity() {
 //                writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
 //            }
 
-
-//        val allianceList = Collections.synchronizedList(mAlliance.map { it.value }.filter { it.type == 1 }.sortedBy { it.id })
-//        for ( i in 0 until allianceList.size){
-//            SpecPersonFirstName.forEachIndexed { index, first ->
-//                val person = mPersons.map { it.value }.find { it.name ==  allianceList[i].name.slice(0 until 1) + first}
-//                val id = "110$i${createIdentitySeq(index)}1".toInt()
-//                if(person != null && person.specIdentity != id){
-//                    person.specIdentity = id
-//                }
-//            }
-//        }
-//        val specConfig = getAllSpecPersons()
-//        mPersons.map { it.value }.filter { mAlliance[it.allianceId]?.type != 1 && it.specIdentity > 0 }.forEach { p->
-//            val spec = specConfig.find { it.identity == p.specIdentity }
-//            if(spec == null){
-//                p.specIdentity = 0
-//            }
-//        }
-
-//        SpecPersonFirstName2.forEach { spec->
-//            val person = mPersons.map { it.value }.find { it.name == spec.name.first + spec.name.second }
-//            if (person != null && person.specIdentity == 0){
-//                person.specIdentity = spec.identity
-//            }
-//        }
-//
-
-//       CultivationHelper.updateSingleBattleBonus(mPersons)
-//        mBattleRound.nation = 0
-
-
-//        for ((_: String, person: Person) in mPersons) {
-//            val list = person.careerList.map { t ->
-//                val career = mConfig.career.find { c -> c.id == t.first }!!.copy()
-//                career.level = t.second
-//                career
-//            }
-//            if (list.size > 1){
-//                person.careerList = Collections.synchronizedList(list.subList(0, list.size - 1).map { Triple(it.id, it.maxLevel, "") })
-//                val last = list.last()
-//                person.careerList.add(Triple(last.id, last.level, ""))
-//            }
-//        }
 
 
     }
@@ -699,13 +649,11 @@ class CultivationActivity : BaseActivity() {
                 }
                 2 -> {
                     it.lifetime += 10000L * 12
-                    it.deadExceptTimes++
-                    it.lifeTurn--
-                    addPersonEvent(it,"修行失败, Total: ${it.deadExceptTimes}")
+                    it.lifeTurn -= CultivationSetting.TEMP_SP_JIE_TURN
+                    addPersonEvent(it,"修行失败")
                 }
                 3 -> {
                     it.lifetime += 20000L * 12
-                    it.chongFailTimes++
                 }
             }
         }

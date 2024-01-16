@@ -47,12 +47,12 @@ class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageC
 
     fun initListener(){
         binding.tvSeq.setOnClickListener {
-            if(mPerson.nationId != "6200006")
-                return@setOnClickListener
-            val ft = mContext.supportFragmentManager.beginTransaction()
-            val newFragment = FragmentDialogEmperor.newInstance(mPerson.id)
-            newFragment.isCancelable = false
-            newFragment.show(ft, "dialog_emperor")
+            if(mPerson.nationId == "6200006" || mPerson.profile in 1701..1799){
+                val ft = mContext.supportFragmentManager.beginTransaction()
+                val newFragment = FragmentDialogEmperor.newInstance(mPerson.id)
+                newFragment.isCancelable = false
+                newFragment.show(ft, "dialog_emperor")
+            }
         }
         binding.schDel.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked)
@@ -68,7 +68,6 @@ class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageC
     fun init(){
         val id = requireArguments().getString("id", "")
         mPerson = mContext.getPersonData(id)!!
-        binding.tvDeadCount.text = "${mPerson.deadExceptTimes}-${mPerson.chongFailTimes}"
         if(mPerson.specIdentity > 0)
             binding.tvSeq.text = mPerson.specIdentity.toString()
         if(mPerson.profile in 1701..1799 && mPerson.gender == NameUtil.Gender.Female){

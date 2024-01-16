@@ -24,8 +24,6 @@ open class PersonBak {
     var parentName: Pair<String, String>? = null//赋值一次，显示用
     var children: MutableList<String> = Collections.synchronizedList(mutableListOf())
     var lifeTurn: Int = 0
-    var deadExceptTimes: Int = 0
-    var chongFailTimes: Int = 0
     var isFav: Boolean = false
     var singled: Boolean = false
     var dink: Boolean = false
@@ -87,8 +85,6 @@ open class PersonBak {
         person.parentName = this.parentName
         person.children = this.children
         person.lifeTurn = this.lifeTurn
-        person.deadExceptTimes = this.deadExceptTimes
-        person.chongFailTimes = this.chongFailTimes
         person.singled = this.singled
         person.dink = this.dink
         person.neverDead = this.neverDead
@@ -116,6 +112,7 @@ open class PersonBak {
         person.specIdentityTurn = this.specIdentityTurn
         person.feiziLevel = this.feiziLevel
         person.feiziFavor = this.feiziFavor
+
 
         person.lingGenDetail = CultivationHelper.mConfig.lingGenType.find { it.id == person.lingGenTypeId }!!
         person.tianfuList = this.tianfu.mapNotNull { CultivationHelper.mConfig.tianFuType.find { t -> t.id == it } }.toMutableList()
@@ -146,6 +143,7 @@ open class PersonBak {
            it.toCareer()
         }.toMutableList()
         person.label = this.label.mapNotNull { CultivationHelper.mConfig.label.find { f-> f.id == it} }.map { it.id }.toMutableList()
+
         return person
     }
 
@@ -173,9 +171,9 @@ class Person: PersonBak() {
     var extraXuiweiMulti: Int = 0 //tianfu + alliance + label + skin  初始和读取更新，skin changed 更新
     var tipsXiuwei:Int = 0 //初始和读取更新，变化更新
 
-    var equipmentXiuwei: Int = 0 //
-    var equipmentSuccess: Int = 0 //
-    var equipmentProperty: MutableList<Int> = mutableListOf(0, 0, 0, 0, 0, 0, 0, 0)//
+    var equipmentXiuwei: Int = 0
+    var equipmentSuccess: Int = 0
+    var equipmentProperty: MutableList<Int> = mutableListOf(0, 0, 0, 0, 0, 0, 0, 0)
 
     var allianceXiuwei: Int = 0 //alliance 增益 zhu / speed； 每轮更新
     var allianceSuccess: Int = 0 //alliance 增益 初始和读取更新
@@ -190,10 +188,6 @@ class Person: PersonBak() {
     var type = 0// 标注boss用 boss > 0
     var remainHit = 0// 标注boss attack round
     var battleMaxWin = 0//最大连胜次数
-    var bossXiuwei: Int = 0// 每次读取 && update depend boss battle  暂定取消
-    var bossRound: MutableList<Int> = mutableListOf()
-    var clanXiuwei: Int = 0// 每次读取 && update depend clan battle 暂定取消
-    var nationXiuwei: Int = 0//每次读取 &&  update depend nation battle 暂定取消
     var battlexiuwei: Int = 0 //每次读取和single battle后更新
     var battleWinner: Int = 0 //每次读取和single battle后更新
 
