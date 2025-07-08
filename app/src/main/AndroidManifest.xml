@@ -71,6 +71,11 @@
             tools:ignore="LockedOrientationActivity">
         </activity>
         <activity
+            android:name=".activity.EmperorActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
+        </activity>
+        <activity
             android:name=".activity.FlutterEventsActivity"
             android:launchMode="singleTop"
             android:exported="true"

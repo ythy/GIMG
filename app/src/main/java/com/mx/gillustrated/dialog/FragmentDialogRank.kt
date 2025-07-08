@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationRankAdapter
 import com.mx.gillustrated.component.CultivationEnemyHelper
 import com.mx.gillustrated.component.CultivationHelper
@@ -30,7 +30,7 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    lateinit var mContext: CultivationActivity
+    lateinit var mContext: GameBaseActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -40,7 +40,7 @@ class FragmentDialogRank constructor(private val mType:Int, private val mId:Stri
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         binding.lvPerson.layoutManager = LinearLayoutManager(mContext)
         binding.lvPerson.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
         binding.lvPerson.adapter = CultivationRankAdapter( object : CultivationRankAdapter.Callback {

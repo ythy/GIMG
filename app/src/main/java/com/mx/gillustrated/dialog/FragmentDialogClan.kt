@@ -13,7 +13,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
@@ -50,7 +50,7 @@ class FragmentDialogClan : DialogFragment() {
     private val binding get() = _binding!!
 
     lateinit var mId:String
-    lateinit var mContext:CultivationActivity
+    lateinit var mContext:GameBaseActivity
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
 
@@ -73,7 +73,7 @@ class FragmentDialogClan : DialogFragment() {
 
     fun init(){
         mId = requireArguments().getString("id", "")
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         val clan = mContext.mClans[mId]
         if(clan != null){
             binding.lvPerson.layoutManager = LinearLayoutManager(mContext)

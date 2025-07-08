@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.PersonPagerAdapter
 import com.mx.gillustrated.component.CultivationSetting.CommonColors
 import com.mx.gillustrated.common.MConfig
@@ -59,7 +59,7 @@ class FragmentDialogPerson : DialogFragment() {
     private val binding get() = _binding!!
 
     private lateinit var mPerson:Person
-    lateinit var mContext:CultivationActivity
+    lateinit var mContext:GameBaseActivity
     private val mFragments:MutableList<Fragment> = mutableListOf()
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
@@ -154,7 +154,7 @@ class FragmentDialogPerson : DialogFragment() {
     }
 
     fun init(){
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         val id = requireArguments().getString("id", "")
         val person = mContext.getPersonData(id)
         if(person == null){

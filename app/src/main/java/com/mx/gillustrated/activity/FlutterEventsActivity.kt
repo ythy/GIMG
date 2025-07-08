@@ -1,4 +1,6 @@
+
 package com.mx.gillustrated.activity
+
 
 import android.content.Intent
 import android.os.Bundle
@@ -86,3 +88,6 @@ class FlutterEventsActivity : FlutterActivity() {
 
 
 }
+
+
+

@@ -11,7 +11,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mx.gillustrated.R
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
@@ -53,7 +53,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
     // onDestroyView.
     private val binding get() = _binding!!
     private val mTimeHandler: TimeHandler = TimeHandler(this)
-    lateinit var mContext:CultivationActivity
+    lateinit var mContext:GameBaseActivity
     private var mThreadRunnable:Boolean = true
     private var mSort = "T"
 
@@ -65,7 +65,7 @@ class  FragmentDialogPersonList constructor(private val mType:Int)  : DialogFrag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         init()
     }
 

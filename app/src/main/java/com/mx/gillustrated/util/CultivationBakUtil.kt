@@ -9,18 +9,18 @@ object CultivationBakUtil {
 
     private val BakFileName = "cultivation_1.json"
 
-    fun saveDataToFiles(context: Context, json:String) {
+    fun saveDataToFiles(context: Context, json:String, filename:String = BakFileName) {
         try {
-            CommonUtil.printFile(json, CommonUtil.generateDataFileNew(context, BakFileName))
+            CommonUtil.printFile(json, CommonUtil.generateDataFileNew(context, filename))
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
     }
 
-    fun getDataFromFiles(context: Context):String? {
+    fun getDataFromFiles(context: Context, filename:String = BakFileName):String? {
         val fileDir = context.getExternalFilesDir(MConfig.SD_DATA_PATH_NEW)
-        val jsonFile = File(fileDir?.path, BakFileName)
+        val jsonFile = File(fileDir?.path, filename)
         if (jsonFile.exists()) {
             return JsonFileReader.getJson(jsonFile)
         }

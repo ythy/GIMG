@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationEquipmentAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.databinding.FragmentVpEquipmentBinding
@@ -22,7 +22,7 @@ class FragmentEquipment: Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    lateinit var mContext: CultivationActivity
+    lateinit var mContext: GameBaseActivity
     lateinit var mPerson: Person
     private val mEquipmentGroups: MutableList<Equipment> = mutableListOf()
 
@@ -33,7 +33,7 @@ class FragmentEquipment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         init()
     }
 

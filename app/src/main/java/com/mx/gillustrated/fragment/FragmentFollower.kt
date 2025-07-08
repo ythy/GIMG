@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationFollowerAdapter
 import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.databinding.FragmentVpFolowerBinding
@@ -21,7 +21,7 @@ class FragmentFollower: Fragment() {
     private val mConfigFollower = mConfig.follower
     private var _binding: FragmentVpFolowerBinding? = null
     private val binding get() = _binding!!
-    lateinit var mContext: CultivationActivity
+    lateinit var mContext: GameBaseActivity
     lateinit var mPerson: Person
     private val mFollowers: MutableList<Follower> = mutableListOf()
     lateinit var mCurrentSelected: FollowerConfig
@@ -33,7 +33,7 @@ class FragmentFollower: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         init()
     }
 

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
@@ -44,7 +44,7 @@ class FragmentDialogNation : DialogFragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var mNation: Nation
-    lateinit var mContext:CultivationActivity
+    lateinit var mContext:GameBaseActivity
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
 
@@ -80,7 +80,7 @@ class FragmentDialogNation : DialogFragment() {
 
     fun init(){
         val nationId = requireArguments().getString("id", "")
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         mNation = mContext.mNations[nationId]!!
         binding.tvName.text = CultivationHelper.showing(mNation.name)
         binding.lvPerson.layoutManager = LinearLayoutManager(mContext)

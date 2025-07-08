@@ -3,7 +3,6 @@ package com.mx.gillustrated.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.*
-import android.text.format.DateFormat
 import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
@@ -37,38 +36,29 @@ import com.mx.gillustrated.component.CultivationSetting.getIdentityGender
 import com.mx.gillustrated.component.CultivationSetting.getIdentityIndex
 import com.mx.gillustrated.component.CultivationSetting.PresetInfo
 import com.mx.gillustrated.component.CultivationSetting.getAllSpecPersons
-import com.mx.gillustrated.component.CultivationSetting.getIdentityType
-import com.mx.gillustrated.databinding.ActivityCultivationBinding
+import com.mx.gillustrated.databinding.ActivityEmperorBinding
 import com.mx.gillustrated.dialog.*
-import com.mx.gillustrated.service.StopService
 import com.mx.gillustrated.util.*
 import com.mx.gillustrated.vo.cultivation.*
 import java.io.IOException
 import java.lang.Exception
 import java.lang.ref.WeakReference
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
-import kotlin.math.roundToInt
 
 @SuppressLint("SetTextI18n")
-class CultivationActivity : GameBaseActivity() {
+class EmperorActivity : GameBaseActivity() {
 
     private var mThreadRunnable = true
     private var mHistoryThreadRunnable = true
-    private var isHidden = false// Activity 是否不可见
-    private var mHiddenTime = 0L
-    private var mHiddenXun = 0L
-    private var mLastSaveTime:LocalDateTime? = null
-    private var mSpeed = 10L//流失速度
-    private val mInitPersonCount = 1000//初始化Person数量
+    private var mSpeed = 1000L//流失速度
+    private val mInitPersonCount = 10//初始化Person数量
     private var readRecord = true
+    private val BakFileName = "emperor.json"
 
-    private var mBoss:ConcurrentHashMap<String, Person> = ConcurrentHashMap()
     private val mTimeHandler:TimeHandler = TimeHandler(this)
 
     private val mExecutor:ExecutorService = Executors.newFixedThreadPool(20)
@@ -76,23 +66,15 @@ class CultivationActivity : GameBaseActivity() {
     private val mHistoryExecutor:ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     private val mMicroMainExecutor:ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor() //12xun 为单位
 
-    private lateinit var binding: ActivityCultivationBinding
+    private lateinit var binding: ActivityEmperorBinding
 
-    private var badgeInit = 0
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCultivationBinding.inflate(layoutInflater)
+        binding = ActivityEmperorBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        try {
-            if(Build.getSerial().contains("EMULATOR")){ //判断是否是模拟器
-                pinyinMode = true
-            }
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
 
         initLayout()
         initListener()
@@ -100,7 +82,7 @@ class CultivationActivity : GameBaseActivity() {
         mProgressDialog.show()
         Thread{
             Thread.sleep(100)
-            val backup = CultivationBakUtil.getDataFromFiles(this)
+            val backup = CultivationBakUtil.getDataFromFiles(this, BakFileName)
             val message = Message.obtain()
             message.what = 3
             message.obj = backup
@@ -111,15 +93,8 @@ class CultivationActivity : GameBaseActivity() {
     }
 
     private fun initListener(){
-
         binding.btnSave.setOnClickListener {
             saveAllData()
-        }
-        binding.btnNation.setOnClickListener {
-            val ft = supportFragmentManager.beginTransaction()
-            val newFragment = FragmentDialogNationList.newInstance()
-            newFragment.isCancelable = false
-            newFragment.show(ft, "dialog_nation_list")
         }
         binding.btnTime.setOnClickListener {
             if(binding.btnTime.tag == "OFF")
@@ -154,48 +129,23 @@ class CultivationActivity : GameBaseActivity() {
         }
     }
 
-
     override fun onPause() {
         super.onPause()
-        if(!isFinishing){
-            isHidden = true
-            mHiddenTime = Date().time
-            mHiddenXun = mCurrentXun
-            val serviceIntent = Intent(this, StopService::class.java)
-            serviceIntent.putExtra("badgeNumber", getBadgeNumber())
-            this.startForegroundService(serviceIntent)
-        }
+        mThreadRunnable = false
+        mHistoryThreadRunnable = false
     }
 
     override fun onResume() {
         super.onResume()
-        isHidden = false
-        val serviceIntent = Intent(this, StopService::class.java)
-        stopService(serviceIntent)
-        setTextOnTop()
+        mThreadRunnable = true
+        mHistoryThreadRunnable = true
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
         mThreadRunnable = false
         mHistoryThreadRunnable = false
-        isHidden = false
-        val serviceIntent = Intent(this, StopService::class.java)
-        stopService(serviceIntent)
-    }
-
-    private fun setTextOnTop(saveAction:Boolean = false){
-        val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-        val saveDate = if (mLastSaveTime == null) "" else formatter.format(mLastSaveTime)
-        if (!saveAction){
-            if(mHiddenTime > 0){
-                val duration = (Date().time - mHiddenTime) / 1000 / 60  //分钟
-                binding.tvSince.text = "离开${duration}分，经过${(mCurrentXun - mHiddenXun) / 12}年, $saveDate"
-            }
-        }else{
-            binding.tvSince.text = "上一次保存： $saveDate"
-        }
-
     }
 
 
@@ -221,15 +171,11 @@ class CultivationActivity : GameBaseActivity() {
             genreShuffled()
             backupInfo.persons = mPersons.mapValues { it.value.toPersonBak() }
             backupInfo.clans = mClans.mapValues { it.value.toClanBak() }
-            backupInfo.nation = mNations.mapValues {
-                it.value.toNationBak()
-            }
-            CultivationBakUtil.saveDataToFiles(this, Gson().toJson(backupInfo))
+            CultivationBakUtil.saveDataToFiles(this, Gson().toJson(backupInfo), BakFileName)
             val message = Message.obtain()
             message.what = 2
             message.arg1 = if(setBusyProgression) 0 else 1
             mTimeHandler.sendMessage(message)
-            mLastSaveTime = LocalDateTime.now()
         }.start()
     }
 
@@ -252,62 +198,6 @@ class CultivationActivity : GameBaseActivity() {
             u.genres.add("7310001")
             CultivationHelper.generateTips(u, mAlliance[u.allianceId]!!)
         }
-    }
-
-    private fun temp(){
-        val specConfig = getAllSpecPersons()
-        mPersons.filterValues { it.specIdentity > 0 }.forEach { (_, u) ->
-            val config = specConfig.find { c-> c.identity == u.specIdentity }
-            if (config != null){
-                if (config.profile > 0)
-                    u.profile = config.profile
-                else if(config.profile == 0 && u.profile > 0)
-                    u.profile = 0
-                u.name = config.name.first + config.name.second + CultivationSetting.createLifeTurnName(u.specIdentityTurn)
-                u.fullName = config.name.first + config.name.second
-                u.lastName = config.name.first
-
-                if(config.partner == 0){
-                    if( u.partner != null && getOnlinePersonDetail(u.partner)?.partner == u.id){
-                        getOnlinePersonDetail(u.partner)?.partner = null
-                    }
-                    u.partner = null
-                    u.partnerName = null
-                }
-                if(config.parent == null){
-                    if(u.parent != null){
-                        getOnlinePersonDetail(u.parent?.first)?.children?.removeIf { it == u.id }
-                        getOnlinePersonDetail(u.parent?.second)?.children?.removeIf { it == u.id }
-                    }
-                    u.parent = null
-                    u.parentName = null
-                }
-
-                if (u.partner != null && mPersons[u.partner ?: ""]?.partner == u.id){
-                    mPersons[u.partner ?: ""]?.partnerName = u.name
-                }
-            }else if(getIdentityType(u.specIdentity) != 1) {
-                deadHandler(u, true)
-            }
-        }
-
-
-//        mutableListOf(205, 206, 207, 208).forEach { type->
-//                val lucky = mPersons.map { it.value }.shuffled().first()
-//                val spec = CultivationSetting.createEquipmentCustom(type)
-//                if(lucky.equipmentListPair.find { it.first == spec.first && it.second == spec.second } != null){
-//                    return
-//                }
-//                lucky.equipmentListPair.add(spec)
-//                CultivationHelper.updatePersonEquipment(lucky)
-//                val equipment = CultivationSetting.getEquipmentCustom(spec)
-//                val commonText = "SuperLucky \u5929\u5b98\u8d50\u798f \u83b7\u5f97${equipment.uniqueName}"
-//                addPersonEvent(lucky, commonText)
-//                writeHistory("${getPersonBasicString(lucky)} $commonText", lucky)
-//            }
-
-
-
     }
 
     private fun init(json:String?){
@@ -334,7 +224,6 @@ class CultivationActivity : GameBaseActivity() {
             mClans.putAll(backup.clans.mapValues {
                 it.value.toClan(mPersons)
             })
-
             mBattleRound = backup.battleRound ?: BattleRound()
             mXunDuration = ConcurrentHashMap(backup.xunDuration.mapKeys { m->
                 val arr = m.key.split("-")
@@ -344,15 +233,6 @@ class CultivationActivity : GameBaseActivity() {
             if(mBossRecord.isEmpty()){
                 repeat(CultivationEnemyHelper.bossSettings.size) {
                     mBossRecord.add(mutableMapOf())
-                }
-            }
-
-            mConfig.nation.forEach { nationConfig ->
-                val nationBak = backup.nation[nationConfig.id]
-                if(nationBak == null){
-                    mNations[nationConfig.id] = NationBak().toNation(nationConfig)
-                }else{
-                    mNations[nationConfig.id] = nationBak.toNation(nationConfig)
                 }
             }
             mConfig.alliance.forEach { allianceConfig ->
@@ -371,7 +251,6 @@ class CultivationActivity : GameBaseActivity() {
                 mBossRecord.add(mutableMapOf())
             }
             createAlliance()
-            createNation()
         }
         //更新人物Alliance属性
         mPersons.forEach {
@@ -385,10 +264,7 @@ class CultivationActivity : GameBaseActivity() {
             }
             CultivationHelper.updatePersonEquipment(it.value)
         }
-        CultivationHelper.updateAllianceBattleBonus(mAlliance)
-        CultivationHelper.updateClanBattleBonus(mClans)
         CultivationHelper.updateSingleBattleBonus(mPersons)
-        //CultivationHelper.updateBossBattleBonus(mPersons)
         mPersons.forEach {
            it.value.skin = CultivationHelper.generateSkinValue(it.value)
            val alliance =  mAlliance[it.value.allianceId]!!
@@ -403,7 +279,6 @@ class CultivationActivity : GameBaseActivity() {
         }else{
             writeHistory("返回世界...")
         }
-        badgeInit = mPersons.map { it.value }.find { it.specIdentity == 12000041 }?.lifeTurn ?: 0
         registerTimeLooper()
         registerHistoryTimeLooper()
     }
@@ -416,22 +291,10 @@ class CultivationActivity : GameBaseActivity() {
     }
 
     private fun initLayout(){
-        if(pinyinMode)
-            binding.navigationCultivation.inflateMenu(R.menu.menu_nav_left_cultivation)
-        else
-            binding.navigationCultivation.inflateMenu(R.menu.menu_nav_left_cultivation_cn)
-
         binding.navigationCultivationEnd.setNavigationItemSelectedListener { item ->
             when(item.itemId){
                 R.id.menu_reset -> {
                     resetHandler()
-                }
-                R.id.menu_reset_wtf->{
-                }
-                R.id.menu_shuffle->{
-                }
-                R.id.menu_temp->{
-                    temp()
                 }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.END)
@@ -440,30 +303,11 @@ class CultivationActivity : GameBaseActivity() {
 
         binding.navigationCultivation.setNavigationItemSelectedListener { item ->
             when(item.itemId){
-                R.id.menu_grace->{
-                    mPersons.forEach { (_: String, u: Person) ->
-                        u.xiuXei = u.xiuXei.coerceAtLeast(0)
-                    }
-                    showToast("不用谢")
-                }
-                R.id.menu_lucky ->{
-                    addAmuletEquipmentEvent(null, "Lucky", 1)
-                    addTipsEquipmentEvent(null, "Lucky", 1)
-                }
                 R.id.menu_add_spec ->{
                     addSpecPerson()
                 }
-                R.id.menu_battle_bang ->{
-                    battleBangHandler()
-                }
-                R.id.menu_battle_clan ->{
-                    battleClanHandler()
-                }
                 R.id.menu_battle_single ->{
                     battleSingleHandler()
-                }
-                R.id.menu_enemy_list->{
-                    addBossHandler()
                 }
                 R.id.menu_multi->{
                     mInitPersonCount.addMultiPerson()
@@ -524,30 +368,27 @@ class CultivationActivity : GameBaseActivity() {
         }
     }
 
-    private fun createNation(){
-        mConfig.nation.forEach { nationConfig ->
-            mNations[nationConfig.id] = NationBak().toNation(nationConfig)
-        }
-    }
-
-
 
     private fun getSpecOnlinePerson(id:Int?):Person?{
         return  mPersons.map { it.value }.find { it.specIdentity == id}
     }
 
+    override fun killPerson(id:String){
+
+    }
+
+    override fun addPersonLifetime(id:String):Boolean{
+        return false
+    }
+
     fun setTimeLooper(flag:Boolean){
         if(flag){
-            if(!isHidden){
-                binding.btnTime.tag = "ON"
-                binding.btnTime.text = resources.getString(R.string.cultivation_stop)
-            }
+            binding.btnTime.tag = "ON"
+            binding.btnTime.text = resources.getString(R.string.cultivation_stop)
             mThreadRunnable = true
         }else{
-            if(!isHidden) {
-                binding.btnTime.tag = "OFF"
-                binding.btnTime.text = resources.getString(R.string.cultivation_start)
-            }
+            binding.btnTime.tag = "OFF"
+            binding.btnTime.text = resources.getString(R.string.cultivation_start)
             mThreadRunnable = false
         }
     }
@@ -603,9 +444,7 @@ class CultivationActivity : GameBaseActivity() {
 
     private fun xunHandler(currentXun:Long, step:Int) {
         val year = "${currentXun / 12}${CultivationHelper.showing("年")}"
-        if(!isHidden) {
-            binding.tvDate.text = year
-        }
+        binding.tvDate.text = year
         for ((_: String, it: Person) in mPersons) {
             mExecutor.execute {
                 updatePersonByXun(it, currentXun, step)
@@ -654,7 +493,7 @@ class CultivationActivity : GameBaseActivity() {
                 if (next != null) {
                     val commonText = "${personDataString[1]} ${CultivationHelper.getJinJieName(next.name)}，${personDataString[2]} $random/$totalSuccess"
                     val lastJingJieDigt = CultivationHelper.getJingJieLevel(it.jingJieId)
-                    if (it.isFav && lastJingJieDigt.third == 4) {
+                    if (next.color == 8 &&  lastJingJieDigt.third == 4) {
                         writeHistory("${getPersonBasicString(it)} $commonText", it)
                     }
                     it.jingJieId = next.id
@@ -701,51 +540,28 @@ class CultivationActivity : GameBaseActivity() {
             updatePartnerChildren()
             updateHP()
             updateCareer()
-            addPersion(null, null)
         }
         if(inDurationByXun("Xun240",240)) {
             CultivationHelper.updatePartner(mPersons)
+            addPersion(null, null)
         }
         //以下辅助操作
-        when {
-            inDurationByXun("Xun100000", 100000) && isHidden -> {
-                addSpecPerson()
-                saveAllData(false)
-            }
-            inDurationByXun("Xun12000", 12000) -> {
-                updateBadge()
-            }
-            else -> randomBattle(currentXun)
-        }
+        randomBattle(currentXun)
         updateCareerEffect(currentXun)
         updateClans(currentXun)
-        updateBoss(currentXun)
     }
 
-    private fun updateBadge(){
-        if(isHidden){
-            val count = getBadgeNumber()
-            if (count > 0){
-                BadgeUtils.setBadgeNumber(this,count)
-            }
-        }
-    }
-
-    private fun getBadgeNumber():Int{
-        val currentNum = mPersons.map { it.value }.find { it.specIdentity == 12000041 }?.lifeTurn ?: 0
-        return currentNum - badgeInit
-    }
 
     private fun setMicroMainExecutor(){
         mMicroMainExecutor.scheduleAtFixedRate({
             if(mThreadRunnable){
-                mCurrentXun += 10
+                mCurrentXun += 1
                 val message = Message.obtain()
                 message.what = 9
                 message.obj = mCurrentXun
                 mTimeHandler.sendMessage(message)
             }
-        }, 0, mSpeed * 10, TimeUnit.MILLISECONDS)
+        }, 0, mSpeed, TimeUnit.MILLISECONDS)
     }
 
     //1旬一月
@@ -753,15 +569,14 @@ class CultivationActivity : GameBaseActivity() {
         setMicroMainExecutor()
         mMainExecutor.scheduleAtFixedRate({
             if(mThreadRunnable){
-                isHidden = CultivationHelper.isServiceRunning(this, StopService::class.java)
-                val step = 1000 / mSpeed // 旬增量，mSpeed == 1000 时, 基础增量； mSpeed == 10 时， 100倍增量
+                val step = 1// 旬增量，mSpeed == 1000 时, 基础增量； mSpeed == 10 时， 100倍增量
                 val message = Message.obtain()
                 message.what = 1
                 message.arg1 = step.toInt()
                 message.obj = mCurrentXun
                 mTimeHandler.sendMessage(message)
             }
-        }, 500, 1000, TimeUnit.MILLISECONDS)
+        }, 500, mSpeed, TimeUnit.MILLISECONDS)
     }
 
     private fun registerHistoryTimeLooper(){
@@ -771,16 +586,10 @@ class CultivationActivity : GameBaseActivity() {
                 message.what = 7
                 mTimeHandler.sendMessage(message)
             }
-        }, 100, 1000, TimeUnit.MILLISECONDS)
+        }, 100, 2000, TimeUnit.MILLISECONDS)
     }
 
     private fun updateHistory(){
-        if(isHidden){
-            if(CultivationHelper.mHistoryTempData.size > 100){
-                CultivationHelper.mHistoryTempData.clear()
-            }
-            return
-        }
         val list = (binding.lvHistory.adapter as CultivationHistoryAdapter).getData().toMutableList()
         if(list.size > 400 && mThreadRunnable){
             list.clear()
@@ -788,12 +597,6 @@ class CultivationActivity : GameBaseActivity() {
         }
         val tempList = CultivationHelper.mHistoryTempData.toList()
         CultivationHelper.mHistoryTempData.clear()
-
-        if(pinyinMode){
-            tempList.forEach {
-                it.content = PinyinUtil.convert(it.content)
-            }
-        }
 
         list.addAll(0, if(tempList.size > 200) tempList.subList(0, 200) else tempList)
         (binding.lvHistory.adapter as CultivationHistoryAdapter).submitList(list)
@@ -833,7 +636,7 @@ class CultivationActivity : GameBaseActivity() {
         return person
     }
 
-   override fun combinedPersonRelationship(person: Person, log:Boolean){
+    override fun combinedPersonRelationship(person: Person, log:Boolean){
         CultivationHelper.joinAlliance(person, mAlliance, mPersons)
         mPersons[person.id] = person
         genreShuffledSingle(person)
@@ -846,49 +649,13 @@ class CultivationActivity : GameBaseActivity() {
     }
 
 
-    override fun killPerson(id:String){
-        setTimeLooper(false)
-        Thread{
-            Thread.sleep(500)
-            val person = mPersons[id]
-            if(person != null){
-                person.lifetime = mCurrentXun
-                deadHandler(person)
-            }
-            val message = Message.obtain()
-            message.what = 6
-            mTimeHandler.sendMessage(message)
-        }.start()
-    }
-
-    override fun addPersonLifetime(id:String):Boolean{
-        val person = mPersons[id]
-        if(person != null){
-            person.lifetime += 5000L
-            val commonText = "天机，寿命增加5000Xun"
-            addPersonEvent(person,commonText)
-            writeHistory("${getPersonBasicString(person)} $commonText", person)
-            return true
-        }
-        return false
-    }
-
     private fun randomBattle(xun: Long){
         val weight = CultivationSetting.EVENT_WEIGHT.map {
             val temp = it.split("-")
             Pair(temp.first().trim().toInt(), temp.last().trim().toInt())
         }
-        if(inDurationByXun("BattleBoss", weight[0].first * 12 , xun) && isTrigger(weight[0].second)) {
-            addBossHandler()
-        }
         if(inDurationByXun("BattleSingle", weight[1].first * 12, xun) && isTrigger(weight[1].second)) {
             battleSingleHandler(false)
-        }
-        if(inDurationByXun("BattleBang", weight[2].first * 12, xun) && isTrigger(weight[2].second)) {
-            battleBangHandler(false)
-        }
-        if(inDurationByXun("BattleClan", weight[3].first * 12, xun) && isTrigger(weight[3].second)) {
-            battleClanHandler(false)
         }
     }
 
@@ -954,32 +721,6 @@ class CultivationActivity : GameBaseActivity() {
     }
 
 
-    private fun updateBoss(xun:Long){
-        if(inDurationByXun("BossUpdated", 12, xun)) {
-            mBoss.map(Map.Entry<String, Person>::value).filter { it.lifetime > xun && it.remainHit > 0  }.forEach { u ->
-                val targets = mPersons.map { it.value }.shuffled()
-                val person = targets[0]
-                if (CultivationHelper.getProperty(person)[0] > 0){
-                    val result = CultivationBattleHelper.battlePerson(mPersons, person, u, 50)
-                    if (result) {
-                        u.lifetime = 0
-                        writeHistory("${u.name} 倒", u)
-                        addAmuletEquipmentEvent(person, "Boss", (100f / u.type).roundToInt())
-                        addTipsEquipmentEvent(person, "Boss", (1000f / u.type).roundToInt())
-                        mBossRecord[u.type - 1][mBattleRound.boss[u.type - 1]] = person.id
-                        //CultivationHelper.updateBossBattleBonus(mPersons)
-                    }else{
-                        u.remainHit --
-                        val punishWeight = mSP.getInt("cultivation_punish_boss_million", CultivationSetting.SP_PUNISH_BOSS_MILLION)
-                        person.xiuXei -= u.type * punishWeight * 10000
-                        if(u.remainHit <= 0){
-                            writeHistory("${u.name} 消失", u)
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     private fun updateClans(xun:Long){
         if(inDurationByXun("ClanCreated", 480, xun)) {
@@ -1239,11 +980,9 @@ class CultivationActivity : GameBaseActivity() {
             mClans.clear()
             mPersons.clear()
             mAlliance.clear()
-            mNations.clear()
             mBattleRound = BattleRound()
             mXunDuration = ConcurrentHashMap()
             createAlliance()
-            createNation()
             val message = Message.obtain()
             message.what = 4
             mTimeHandler.sendMessage(message)
@@ -1285,6 +1024,7 @@ class CultivationActivity : GameBaseActivity() {
                 person.battleRecord[mBattleRound.single] = reverseIndex
                 writeHistory("第${mBattleRound.single}届 Single Battle No $reverseIndex : ${person.name}", person)
                 addAmuletEquipmentEvent(person, "Single", reverseIndex * 100)
+                addTipsEquipmentEvent(person, "Single", reverseIndex * 1000)
             }
             CultivationHelper.updateSingleBattleBonus(mPersons)
 
@@ -1298,93 +1038,7 @@ class CultivationActivity : GameBaseActivity() {
         }.start()
     }
 
-    private fun battleClanHandler(block: Boolean = true){
-        val minSize = CultivationSetting.BattleSettings.ClanMinSize
-        val clans = mClans.filter { mPersons.filterValues { p-> p.clanId == it.value.id }.isNotEmpty() }
-            .map { it.value }.toMutableList()
-        if(clans.isEmpty() || clans.size < minSize){
-            showToast("Clan less than $minSize")
-            return
-        }
-        setTimeLooper(false)
-        if(block){
-            CultivationHelper.mHistoryTempData.clear()
-            (binding.lvHistory.adapter as CultivationHistoryAdapter).submitList(mutableListOf())
-        }
-        Thread{
-            Thread.sleep(500)
-            fillingHP()
-            mBattleRound.clan++
-            writeHistory("第${mBattleRound.clan}届 Clan Battle Start")
-            val restClans = mutableListOf<Clan>()
-            var roundNumber = 1
-            while (true){
-                writeHistory("Clan Battle ${roundNumber}轮 Start")
-                roundNumber++
-                val result = 10.roundClanHandler(clans, restClans, 10)
-                if(result)
-                    break
-            }
-            repeat(minSize){ index-> // 0 ~ 3
-                val reverseIndex = minSize - index //4 ~ 1
-                val clan = restClans[reverseIndex - 1]
-                clan.battleRecord[mBattleRound.clan] = reverseIndex
-                writeHistory("第${mBattleRound.clan}届 Clan Battle No $reverseIndex : ${clan.name}")
-            }
-            CultivationHelper.updateClanBattleBonus(mClans)
 
-            if(!block){
-                Thread.sleep(5000)
-            }
-            val message = Message.obtain()
-            message.what = 8
-            message.arg1 = if (block) 0 else 1
-            mTimeHandler.sendMessage(message)
-        }.start()
-    }
-
-    private fun battleBangHandler(block: Boolean = true){
-        val minSize =  CultivationSetting.BattleSettings.AllianceMinSize
-        val alliances = mAlliance.filter { mPersons.filterValues { p-> p.allianceId == it.value.id }.isNotEmpty()  }
-            .map { it.value }.toMutableList()
-        if(alliances.isEmpty() || alliances.size < minSize){
-            showToast("Bang less than $minSize")
-            return
-        }
-        setTimeLooper(false)
-        if(block){
-            CultivationHelper.mHistoryTempData.clear()
-            (binding.lvHistory.adapter as CultivationHistoryAdapter).submitList(mutableListOf())
-        }
-        Thread{
-            Thread.sleep(500)
-            mBattleRound.bang++
-            writeHistory("第${mBattleRound.bang}届 Bang Battle Start")
-            val restAlliance = mutableListOf<Alliance>()
-            var roundNumber = 1
-            while (true){
-                writeHistory("Bang Battle ${roundNumber}轮 Start")
-                roundNumber++
-                val result = 20.roundBangHandler(alliances, restAlliance, 20)
-                if(result)
-                    break
-            }
-            repeat(minSize){ index-> // 0 ~ 15
-                val reverseIndex = minSize - index //16 ~ 1
-                val alliance = restAlliance[reverseIndex - 1]
-                alliance.battleRecord[mBattleRound.bang] = reverseIndex
-                writeHistory("第${mBattleRound.bang}届 Bang Battle No $reverseIndex : ${alliance.name}")
-            }
-            CultivationHelper.updateAllianceBattleBonus(mAlliance)
-            if(!block){
-                Thread.sleep(5000)
-            }
-            val message = Message.obtain()
-            message.what = 8
-            message.arg1 = if (block) 0 else 1
-            mTimeHandler.sendMessage(message)
-        }.start()
-    }
 
     private fun Int.roundSingleHandler(persons: MutableList<Person>, restPersons: MutableList<Person>):Boolean{
         persons.shuffle()
@@ -1414,128 +1068,6 @@ class CultivationActivity : GameBaseActivity() {
         }
     }
 
-    private fun Int.roundBangHandler(alliance: MutableList<Alliance>, restAlliance: MutableList<Alliance>, count: Int):Boolean{
-        alliance.shuffle()
-        val passIds = mutableListOf<String>()
-        for (i in 0 until alliance.size step 2){
-            if( i + 1 >= alliance.size){
-               break
-            }
-            val firstAlliance = alliance[i]
-            val secondAlliance = alliance[i+1]
-            val result = roundMultiBattle(getAlliancePersonList(firstAlliance.id), getAlliancePersonList(secondAlliance.id), this, count)
-            passIds.add(if(result) secondAlliance.id else firstAlliance.id)
-            restAlliance.add(0, if(result) secondAlliance else firstAlliance)
-        }
-        return if(alliance.size == 2){
-            alliance.removeIf { it.id == passIds[0] }
-            restAlliance.add(0, alliance.first())
-            true
-        }else{
-            alliance.removeIf { passIds.contains(it.id) }
-            false
-        }
-    }
-
-    private fun Int.roundClanHandler(clan: MutableList<Clan>, restClan: MutableList<Clan>, count: Int):Boolean{
-        clan.shuffle()
-        val passIds = mutableListOf<String>()
-        for (i in 0 until clan.size step 2){
-            if( i + 1 >= clan.size){
-                break
-            }
-            val firstClan = clan[i]
-            val secondClan = clan[i+1]
-            val result = roundMultiBattle(getClanPersonList(firstClan.id), getClanPersonList(secondClan.id), this, count)
-            passIds.add(if(result) secondClan.id else firstClan.id)
-            restClan.add(0, if(result) secondClan else firstClan)
-        }
-        return if(clan.size == 2){
-            clan.removeIf { it.id == passIds[0] }
-            restClan.add(0, clan.first())
-            true
-        }else{
-            clan.removeIf { passIds.contains(it.id) }
-            false
-        }
-    }
-
-    //true: fiest win
-    private fun roundMultiBattle(firstPersonList:ConcurrentHashMap<String, Person>, secondPersonList:ConcurrentHashMap<String, Person>, round:Int, count:Int):Boolean{
-        val firstPersonsBase = firstPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
-                .sortedByDescending { it.battleWinner }.take(count)
-        val secondPersonsBase = secondPersonList.filter { CultivationHelper.getProperty(it.value)[0] > 0 && it.value.type == 0 }.map { it.value }
-                .sortedByDescending { it.battleWinner }.take(count)
-        firstPersonsBase.forEachIndexed { index, person ->
-            person.battleMaxWin = if (index < 2 ) 10 else 5
-        }
-        secondPersonsBase.forEachIndexed { index, person ->
-            person.battleMaxWin = if (index < 2 ) 10 else 5
-        }
-        val firstPersons = firstPersonsBase.shuffled()
-        val secondPersons = secondPersonsBase.shuffled()
-
-        if(firstPersons.isEmpty()){
-            return false
-        }else if(secondPersons.isEmpty()){
-            return true
-        }
-        var firstIndex = 0
-        var secondIndex = 0
-        var firstWin = 0
-        var secondWin = 0
-        var firstMaxWin = firstPersons[firstIndex].battleMaxWin
-        var secondMaxWin = secondPersons[secondIndex].battleMaxWin
-        while (true) {
-            if(firstWin >= firstMaxWin){
-                firstWin = 0
-                firstIndex++
-                if (firstIndex == firstPersons.size || firstIndex == count) {
-                    return false
-                }
-                firstMaxWin = firstPersons[firstIndex].battleMaxWin
-            }
-            if(secondWin >= secondMaxWin){
-                secondWin = 0
-                secondIndex++
-                if (secondIndex == secondPersons.size || secondIndex == count) {
-                    return true
-                }
-                secondMaxWin = secondPersons[secondIndex].battleMaxWin
-            }
-
-            val result = CultivationBattleHelper.battlePerson(null, firstPersons[firstIndex],
-                    secondPersons[secondIndex], round)
-            if (result) {
-                secondIndex++
-                firstWin++
-                secondWin = 0
-                if (secondIndex == secondPersons.size || secondIndex == count) {
-                    return true
-                }
-                secondMaxWin = secondPersons[secondIndex].battleMaxWin
-            } else {
-                firstIndex++
-                secondWin++
-                firstWin = 0
-                if (firstIndex == firstPersons.size || firstIndex == count) {
-                   return false
-                }
-                firstMaxWin = firstPersons[firstIndex].battleMaxWin
-            }
-        }
-    }
-
-    private fun addBossHandler(){
-        val boss = CultivationEnemyHelper.generateBoss(mAlliance)
-        mBoss[boss.id] = boss
-        mBattleRound.boss[boss.type - 1]++
-        writeHistory("====================================")
-        writeHistory("↑↑============================↑↑")
-        writeHistory("${boss.name}天降", boss)
-        writeHistory("↓↓============================↓↓")
-        writeHistory("====================================")
-    }
 
     private fun gainTeji(person: Person, weight:Int = 1){
         CultivationHelper.getTeji(weight, false).forEach { t->
@@ -1548,30 +1080,11 @@ class CultivationActivity : GameBaseActivity() {
         }
     }
 
-
-    private fun resetCustomBonusSingle(person: Person){
-        person.followerList.clear()
-        person.teji.clear()
-        person.careerList = Collections.synchronizedList(mutableListOf())
-        person.pointXiuWei = person.maxXiuWei
-        person.equipmentList.removeIf {
-            it.detail.type <= 3
-        }
-        person.events.removeIf {
-            it.content.contains("\u5236\u9020") || it.content.contains("\u53ec\u5524") ||
-                    it.content.contains("\u83B7\u5F97\u7279\u6280")  || it.content.contains("\u83b7\u5f97\u804c\u4e1a")
-        }
-        CultivationHelper.updatePersonEquipment(person)
-    }
-
-
     override fun showToast(content:String){
-        if(isHidden)
-            return
         try {
             Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
         }catch (e:Exception){
-            Log.e("CultivationActivity", e.message ?: "")
+            Log.e("EmperorActivity", e.message ?: "")
         }
 
     }
@@ -1612,9 +1125,9 @@ class CultivationActivity : GameBaseActivity() {
 
     companion object {
 
-        class TimeHandler constructor(val context: CultivationActivity):Handler(Looper.getMainLooper()){
+        class TimeHandler constructor(val context: EmperorActivity):Handler(Looper.getMainLooper()){
 
-            private val reference:WeakReference<CultivationActivity> = WeakReference(context)
+            private val reference:WeakReference<EmperorActivity> = WeakReference(context)
 
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
@@ -1631,7 +1144,6 @@ class CultivationActivity : GameBaseActivity() {
                         activity.mProgressDialog.dismiss()
                     }
                     activity.showToast("保存完成")
-                    activity.setTextOnTop(true)
                     activity.setTimeLooper(true)
                 }else if(msg.what == 3){
                     activity.mProgressDialog.dismiss()

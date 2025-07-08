@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.databinding.FragmentDialogAddPersonBinding
@@ -35,7 +35,7 @@ class FragmentDialogAddPerson: DialogFragment()  {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mContext = activity as CultivationActivity
+        val mContext = activity as GameBaseActivity
         binding.btnSave.setOnClickListener {
             val mum = mContext.mPersons.map { it.value }.find {
                 it.name == binding.etMum.text.toString() || PinyinUtil.convert(it.name) == binding.etMum.text.toString()  }

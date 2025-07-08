@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationClanListAdapter
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.databinding.FragmentDialogClanListBinding
@@ -45,7 +45,7 @@ class FragmentDialogClanList  : DialogFragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    lateinit var mContext: CultivationActivity
+    lateinit var mContext: GameBaseActivity
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
 
@@ -57,7 +57,7 @@ class FragmentDialogClanList  : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         binding.lvClan.layoutManager = LinearLayoutManager(mContext)
         binding.lvClan.addItemDecoration(DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL))
         binding.lvClan.adapter = CultivationClanListAdapter(object : CultivationClanListAdapter.Callback{

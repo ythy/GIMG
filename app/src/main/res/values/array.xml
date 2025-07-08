@@ -10,6 +10,13 @@
         <item>1</item>
     </string-array>
 
+    <string-array name="extraImageNum">
+        <item>6</item>
+        <item>5</item>
+        <item>4</item>
+        <item>3</item>
+    </string-array>
+
     <string-array name="pagerArray">
         <item>20</item>
         <item>50</item>
@@ -24,6 +31,7 @@
         <item>更新数值图</item>
         <item>更新附加图</item>
         <item>新增无图</item>
+        <item>新增多图</item>
     </string-array>
 
     <string-array name="char_character">

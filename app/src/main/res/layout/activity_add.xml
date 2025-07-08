@@ -32,9 +32,17 @@
                     android:id="@+id/spinnerType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                   android:paddingRight="20dp"
+                    android:paddingRight="20dp"
                     android:entries="@array/addType" />
-               
+
+                <Spinner
+                    android:id="@+id/spinnerExtra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp"
+                    android:visibility="gone"
+                    android:entries="@array/extraImageNum" />
+
                 <ImageButton
                     android:id="@+id/btnSave"
                     style="@style/CommonImageButtonStyle"
@@ -331,6 +339,106 @@
                     android:background="@drawable/material_delete"
                     android:visibility="gone"/>
             </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/llImageExtra"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/imgExtra6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerInside" />
+                    <ImageButton
+                        android:id="@+id/btnDelExtra6"
+                        style="@style/CommonImageButtonStyle"
+                        android:background="@drawable/material_delete"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/imgExtra5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerInside" />
+                    <ImageButton
+                        android:id="@+id/btnDelExtra5"
+                        style="@style/CommonImageButtonStyle"
+                        android:background="@drawable/material_delete"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/imgExtra4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerInside" />
+                    <ImageButton
+                        android:id="@+id/btnDelExtra4"
+                        style="@style/CommonImageButtonStyle"
+                        android:background="@drawable/material_delete"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/imgExtra3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerInside" />
+                    <ImageButton
+                        android:id="@+id/btnDelExtra3"
+                        style="@style/CommonImageButtonStyle"
+                        android:background="@drawable/material_delete"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/imgExtra2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerInside" />
+                    <ImageButton
+                        android:id="@+id/btnDelExtra2"
+                        style="@style/CommonImageButtonStyle"
+                        android:background="@drawable/material_delete"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/imgExtra1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerInside" />
+                    <ImageButton
+                        android:id="@+id/btnDelExtra1"
+                        style="@style/CommonImageButtonStyle"
+                        android:background="@drawable/material_delete"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+
         </LinearLayout>
     </ScrollView>
 

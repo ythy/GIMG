@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import androidx.fragment.app.Fragment
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationTeJiAdapter
 import com.mx.gillustrated.component.CultivationHelper.mConfig
 import com.mx.gillustrated.databinding.FragmentVpTejiBinding
@@ -20,7 +20,7 @@ class FragmentTeJi: Fragment() {
     private val mConfigTeji = mConfig.teji
     private var _binding: FragmentVpTejiBinding? = null
     private val binding get() = _binding!!
-    lateinit var mContext: CultivationActivity
+    lateinit var mContext: GameBaseActivity
     lateinit var mPerson: Person
     private val mTeJi: MutableList<TeJi> = mutableListOf()
 
@@ -31,7 +31,7 @@ class FragmentTeJi: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         init()
     }
 

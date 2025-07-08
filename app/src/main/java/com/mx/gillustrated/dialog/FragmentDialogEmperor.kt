@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.*
 import androidx.fragment.app.DialogFragment
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.common.MConfig
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.EmperorData.FeiLevel
@@ -105,7 +105,7 @@ class FragmentDialogEmperor constructor(private val mId:String)  : DialogFragmen
     }
 
     fun init(){
-        val context = activity as CultivationActivity
+        val context = activity as GameBaseActivity
         mPerson = context.getPersonData(mId)!!
         showName()
         initLevelSpinner()

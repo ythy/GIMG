@@ -159,33 +159,6 @@ object CultivationHelper {
         }
     }
 
-    //暂定取消
-//    fun updateBossBattleBonus(allPerson:ConcurrentHashMap<String, Person>){
-//        allPerson.forEach { data->
-//            data.value.bossXiuwei = 0
-//            data.value.bossRound = mutableListOf()
-//            repeat(CultivationEnemyHelper.bossSettings.size) {
-//                data.value.bossRound.add(0)
-//            }
-//        }
-//        mBossRecord.forEachIndexed { index, mutableMap ->
-//            mutableMap.forEach { (t, u) ->
-//                val person = allPerson[u]
-//                if (person != null){
-//                    person.bossRound[index]++
-//                }
-//            }
-//            mutableMap.entries.removeIf { allPerson[it.value] == null }
-//        }
-//        allPerson.forEach { data->
-//            var count = 0
-//            data.value.bossRound.forEachIndexed { index, total->
-//                count += CultivationEnemyHelper.bossSettings[index].bonus * getValidBonus(total)
-//            }
-//            data.value.bossXiuwei = count
-//        }
-//    }
-
     private fun getTianFu(parent: Pair<Person, Person>?, fixedTianfus:MutableList<String>?, tianFuWeight:Int):MutableList<TianFu>{
         if(fixedTianfus != null && fixedTianfus.isNotEmpty()){
             return fixedTianfus.map { getPersonTianfu(it)!! }.toMutableList()

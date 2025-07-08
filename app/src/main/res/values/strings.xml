@@ -53,6 +53,7 @@
     <string name="menu_web_view">H5</string>
     <string name="menu_flutter">Flutter</string>
     <string name="menu_game">Xian</string>
+    <string name="menu_emperor">Di</string>
     <string name="menu_theme">主题</string>
 
     <string name="cultivation_menu">菜单</string>

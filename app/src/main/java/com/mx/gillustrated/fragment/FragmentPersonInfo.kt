@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.SpinnerCommonAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
@@ -22,7 +22,7 @@ import com.mx.gillustrated.vo.cultivation.Skin
 @SuppressLint("SetTextI18n")
 class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCallback)  : Fragment(){
 
-    lateinit var mContext: CultivationActivity
+    lateinit var mContext: GameBaseActivity
     private var _binding: FragmentVpPersonBinding? = null
     private val binding get() = _binding!!
     private lateinit var mPerson: Person
@@ -35,7 +35,7 @@ class FragmentPersonInfo(private val mCallback: FragmentDialogPerson.IViewpageCa
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         init()
         initListener()
     }

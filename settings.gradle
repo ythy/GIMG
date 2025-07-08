@@ -1,4 +1,0 @@
-rootProject.name = "GIMG"
-include ':app'
-setBinding(new Binding([gradle: this]))
-evaluate(new File('D:/works/flutter_work/learn/.android/include_flutter.groovy'))

@@ -9,7 +9,7 @@ import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationPersonListAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.component.CultivationSetting
@@ -47,7 +47,7 @@ class FragmentDialogAlliance : DialogFragment() {
 
     private lateinit var mAlliance: Alliance
     private lateinit var mId:String
-    lateinit var mContext:CultivationActivity
+    lateinit var mContext:GameBaseActivity
 
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
@@ -106,7 +106,7 @@ class FragmentDialogAlliance : DialogFragment() {
 
     fun init(){
         mId = this.requireArguments().getString("id", "")
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         mAlliance = mContext.mAlliance[mId]!!
         val abridgeName = if (mAlliance.abridgeName != "") "(${mAlliance.abridgeName})" else ""
 

@@ -35,6 +35,11 @@
 		android:title="@string/menu_game"/>
 
 	<item
+		android:id="@+id/action_emperor"
+		android:orderInCategory="950"
+		android:title="@string/menu_emperor"/>
+
+	<item
 		android:id="@+id/action_theme"
 		android:orderInCategory="1500"
 		android:title="@string/menu_theme"/>

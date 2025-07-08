@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.AllianceListAdapter
 import com.mx.gillustrated.component.CultivationSetting
 import com.mx.gillustrated.databinding.FragmentDialogAllianceListBinding
@@ -48,7 +48,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    lateinit var mContext: CultivationActivity
+    lateinit var mContext: GameBaseActivity
     private val mTimeHandler: TimeHandler = TimeHandler(this)
     private var mThreadRunnable:Boolean = true
 
@@ -67,7 +67,7 @@ class FragmentDialogAllianceList  : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         init()
         updateView()
         registerTimeLooper()

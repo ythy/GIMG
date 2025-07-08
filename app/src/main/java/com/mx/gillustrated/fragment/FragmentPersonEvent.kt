@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import com.mx.gillustrated.R
-import com.mx.gillustrated.activity.CultivationActivity
+import com.mx.gillustrated.activity.GameBaseActivity
 import com.mx.gillustrated.adapter.CultivationEventAdapter
 import com.mx.gillustrated.component.CultivationHelper
 import com.mx.gillustrated.databinding.FragmentVpEventBinding
@@ -21,7 +21,7 @@ import com.mx.gillustrated.vo.cultivation.PersonEvent
 @SuppressLint("SetTextI18n")
 class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageCallback) : Fragment(){
 
-    lateinit var mContext:CultivationActivity
+    lateinit var mContext:GameBaseActivity
     private var _binding: FragmentVpEventBinding? = null
     private val binding get() = _binding!!
     private var mEventData = mutableListOf<PersonEvent>()
@@ -35,7 +35,7 @@ class FragmentPersonEvent(private val mCallback: FragmentDialogPerson.IViewpageC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mContext = activity as CultivationActivity
+        mContext = activity as GameBaseActivity
         init()
         initListener()
     }

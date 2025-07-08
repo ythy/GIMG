@@ -20,9 +20,13 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
+import android.util.SparseArray
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Toast
+import androidx.core.util.forEach
+import androidx.core.util.isEmpty
+import androidx.core.util.valueIterator
 import com.mx.gillustrated.databinding.ActivityAddBinding
 
 @Suppress("DEPRECATION")
@@ -32,6 +36,10 @@ class AddCardActivity : BaseActivity() {
     private var mFileAll: File? = null
     private var mBitMapNumber: Bitmap? = null
     private var mBitMapAll: Bitmap? = null
+
+    private var mFileExtras:SparseArray<File> = SparseArray()
+    private var mBitmapExtras:SparseArray<Bitmap> = SparseArray()
+
     private var mGameType: Int = 0
     private var mImagesFileDir: File? = null
     lateinit var binding:ActivityAddBinding
@@ -40,24 +48,18 @@ class AddCardActivity : BaseActivity() {
 
         override fun onItemSelected(arg0: AdapterView<*>, arg1: View, index: Int,
                                     arg3: Long) {
-
+            if(index == 5){
+                binding.spinnerExtra.visibility = View.VISIBLE
+                binding.spinnerExtra.setSelection(1)
+            }else{
+                binding.spinnerExtra.visibility = View.GONE
+            }
             try {
                 showPicture()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
 
-            val array = resources.getStringArray(R.array.addType)
-            if (array[index] == "更新附加图" || array[index] == "更新数值图" || array[index] == "新增单张图" || array[index] == "新增无图") {
-                binding.imgWithNumber.setImageDrawable(null)
-                binding.btnDelNumber.visibility = View.GONE
-                mBitMapNumber = null
-            }
-            if (array[index] == "新增无图") {
-                binding.imgAll.setImageDrawable(null)
-                binding.btnDelAll.visibility = View.GONE
-                mBitMapAll = null
-            }
         }
 
         override fun onNothingSelected(arg0: AdapterView<*>) {
@@ -139,7 +141,7 @@ class AddCardActivity : BaseActivity() {
                     mImagesFileDir!!.mkdirs()
                 }
 
-                if (type == 0 || type == 1 || type == 4) { // type=4 && m_BitMapAll=null
+                if (type == 0 || type == 1 || type == 4 || type == 5) { // type=4 && m_BitMapAll=null
                     mOrmHelper.cardInfoDao.create(card)
                     val newId = card.id.toLong()
                     if (newId != 0L) {
@@ -164,7 +166,7 @@ class AddCardActivity : BaseActivity() {
                                     }
 
                                 })
-                            else
+                            else if(type == 1)
                                 deleteImages(mFileAll!!, object :OnCallback{
                                     override fun deleted() {
                                         val msg = Message.obtain()
@@ -174,14 +176,30 @@ class AddCardActivity : BaseActivity() {
                                     }
 
                                 })
-                        }else{
+                        }else if(!mBitmapExtras.isEmpty()) { //0 - 5
+                            val total = mBitmapExtras.size()
+                            mBitmapExtras.forEach { key, value ->
+                                createImages(newId.toInt(), value, total - key)
+                            }
+                            val files = mutableListOf<File>()
+                            mFileExtras.forEach { key, value ->  files.add(value)}
+                            deleteImages(files, object :OnCallback{
+                                override fun deleted() {
+                                    val msg = Message.obtain()
+                                    msg.what = 1
+                                    msg.arg1 = newId.toInt()
+                                    addHandler.sendMessage(msg)
+                                }
+
+                            })
+                        }else {
                             val msg = Message.obtain()
                             msg.what = 1
                             msg.arg1 = newId.toInt()
                             addHandler.sendMessage(msg)
                         }
                     }
-                } else {
+                } else if(type == 2 || type == 3) {
                     // 更新数值图  更新附加图
                     val id = Integer.parseInt(binding.etDetailId.text.toString().trim { it <= ' ' })
                     val nextnum = getNextImagesIndex(id)
@@ -312,6 +330,34 @@ class AddCardActivity : BaseActivity() {
 
     @Throws(FileNotFoundException::class, IOException::class)
     private fun showPicture() {
+        binding.btnDelAll.visibility = View.GONE
+        binding.btnDelNumber.visibility = View.GONE
+        binding.btnDelExtra1.visibility = View.GONE
+        binding.btnDelExtra2.visibility = View.GONE
+        binding.btnDelExtra3.visibility = View.GONE
+        binding.btnDelExtra4.visibility = View.GONE
+        binding.btnDelExtra5.visibility = View.GONE
+        binding.btnDelExtra6.visibility = View.GONE
+        binding.imgAll.setImageBitmap(null)
+        binding.imgWithNumber.setImageBitmap(null)
+        binding.imgExtra1.setImageBitmap(null)
+        binding.imgExtra2.setImageBitmap(null)
+        binding.imgExtra3.setImageBitmap(null)
+        binding.imgExtra4.setImageBitmap(null)
+        binding.imgExtra5.setImageBitmap(null)
+        binding.imgExtra6.setImageBitmap(null)
+        mBitMapNumber = null
+        mBitMapAll = null
+        mFileAll = null
+        mFileNumber = null
+        mFileExtras = SparseArray()
+        mBitmapExtras = SparseArray()
+        binding.llImageExtra.visibility = View.GONE
+        val type = binding.spinnerType.selectedItemPosition
+        if (type == 4)
+            return
+        if (type == 5)
+            binding.llImageExtra.visibility = View.VISIBLE
         if (Environment.MEDIA_MOUNTED == Environment
                         .getExternalStorageState()) {
             var fileDir = File(Environment.getExternalStorageDirectory(),
@@ -339,31 +385,70 @@ class AddCardActivity : BaseActivity() {
                 }
 
             })
-
-            binding.btnDelAll.visibility = View.GONE
-            binding.btnDelNumber.visibility = View.GONE
-            binding.imgAll.setImageBitmap(null)
-            binding.imgWithNumber.setImageBitmap(null)
             val isOrientation = mSP.getBoolean(SHARE_IMAGE_ORIENTATION + mGameType, false)
+            val extraTotal =  binding.spinnerExtra.selectedItem.toString().toInt()
             for (i in fs.indices) {
-                if (i == 2)
+                if (i == 1 && (type == 1 || type == 2 || type == 3))
                     break
-
+                if (i == 2 && type == 0)
+                    break
+                if (i == extraTotal && type == 5)
+                    break
                 var bmp = MediaStore.Images.Media.getBitmap(
                         this.contentResolver, Uri.fromFile(fs[i]))
                 if (binding.chkAdjustImg.isChecked)
                     bmp = getMatrixBitmap(bmp)
-
-                if (i == 0) {
-                    mFileAll = fs[i]
-                    mBitMapAll = bmp
-                    binding.imgAll.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
-                    binding.btnDelAll.visibility = View.VISIBLE
-                } else {
-                    mFileNumber = fs[i]
-                    mBitMapNumber = bmp
-                    binding.imgWithNumber.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
-                    binding.btnDelNumber.visibility = View.VISIBLE
+                if(type != 5){
+                    if (i == 0) {
+                        mFileAll = fs[i]
+                        mBitMapAll = bmp
+                        binding.imgAll.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                        binding.btnDelAll.visibility = View.VISIBLE
+                    } else if (i == 1) {
+                        mFileNumber = fs[i]
+                        mBitMapNumber = bmp
+                        binding.imgWithNumber.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                        binding.btnDelNumber.visibility = View.VISIBLE
+                    }
+                }else{
+                    when(i){
+                        0 -> {
+                            mFileExtras.put(0, fs[i])
+                            mBitmapExtras.put(0, bmp)
+                            binding.imgExtra1.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                            binding.btnDelExtra1.visibility = View.VISIBLE
+                        }
+                        1 -> {
+                            mFileExtras.put(1, fs[i])
+                            mBitmapExtras.put(1, bmp)
+                            binding.imgExtra2.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                            binding.btnDelExtra2.visibility = View.VISIBLE
+                        }
+                        2 -> {
+                            mFileExtras.put(2, fs[i])
+                            mBitmapExtras.put(2, bmp)
+                            binding.imgExtra3.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                            binding.btnDelExtra3.visibility = View.VISIBLE
+                        }
+                        3 -> {
+                            mFileExtras.put(3, fs[i])
+                            mBitmapExtras.put(3, bmp)
+                            binding.imgExtra4.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                            binding.btnDelExtra4.visibility = View.VISIBLE
+                        }
+                        4 -> {
+                            mFileExtras.put(4, fs[i])
+                            mBitmapExtras.put(4, bmp)
+                            binding.imgExtra5.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                            binding.btnDelExtra5.visibility = View.VISIBLE
+                        }
+                        5 -> {
+                            mFileExtras.put(5, fs[i])
+                            mBitmapExtras.put(5, bmp)
+                            binding.imgExtra6.setImageBitmap(if (isOrientation) CommonUtil.rotatePic(bmp, 90) else bmp)
+                            binding.btnDelExtra6.visibility = View.VISIBLE
+                        }
+                    }
                 }
             }
 

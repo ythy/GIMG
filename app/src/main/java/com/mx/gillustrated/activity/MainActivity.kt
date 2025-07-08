@@ -92,10 +92,10 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        //requestWindowFeature(Window.FEATURE_NO_TITLE)
         mGameType = intent.getIntExtra("game", CommonUtil.getGameType(this))
         requestPermission()
     }
@@ -289,6 +289,11 @@ class MainActivity : BaseActivity() {
             }
             R.id.action_game-> {
                 val intent = Intent(this, CultivationActivity::class.java)
+                startActivity(intent)
+                this.finish()
+            }
+            R.id.action_emperor-> {
+                val intent = Intent(this, EmperorActivity::class.java)
                 startActivity(intent)
                 this.finish()
             }
